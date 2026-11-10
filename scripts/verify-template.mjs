@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-import { execFileSync } from "node:child_process";
-import { appendFile, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { execFileSync, spawn } from "node:child_process";
+import { existsSync } from "node:fs";
+import { appendFile, mkdir, mkdtemp, readFile, readdir, rm, stat, symlink, writeFile } from "node:fs/promises";
+import { createServer } from "node:net";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -240,41 +242,252 @@ for (const tone of ["green", "violet", "orange"]) {
   requireContrast("escuro", dark, `tone-${tone}-foreground`, `tone-${tone}`, 4.5);
 }
 
-// Roteiro do consumidor: versão em dia, fases, diagnóstico e verificador no zip.
+// Roteiro do consumidor: versão em dia, fases, diagnóstico e verificadores no zip.
 const replicar = await read("REPLICAR.md");
-for (const needle of [`tema-mppa-next-v${packageJson.version}.zip`, `## Interface (tema-mppa ${packageJson.version})`, "## 3. Fase 0: Diagnóstico", "verificar-camada.mjs"]) {
+const diagnostico = await read("DIAGNOSTICO.md");
+for (const needle of [`tema-mppa-next-v${packageJson.version}.zip`, `## Interface (tema-mppa ${packageJson.version})`, "## 3. Fase 0: Diagnóstico", "verificar-camada.mjs", "verificar-design.mjs"]) {
   if (!replicar.includes(needle)) errors.push(`REPLICAR.md sem "${needle}"`);
 }
 const empacotar = await read("scripts/empacotar.mjs");
-for (const file of ["DIAGNOSTICO.md", "scripts/verificar-camada.mjs", "scripts/copy-template.mjs"]) {
+const zipFiles = ["DIAGNOSTICO.md", "DESIGN.md", "CHANGELOG.md", "scripts/verificar-camada.mjs", "scripts/verificar-design.mjs", "scripts/copy-template.mjs"];
+for (const file of zipFiles) {
   if (!empacotar.includes(`"${file}"`)) errors.push(`empacotar.mjs não leva ${file} ao zip`);
 }
-await read("DIAGNOSTICO.md");
 
-// Cópia de verdade num consumidor descartável: a lista de conferência aprova a camada intacta e
-// reprova a editada.
-const consumer = await mkdtemp(path.join(os.tmpdir(), "tema-mppa-consumidor-"));
+/** Trecho de um .md da linha do título até o próximo título de mesmo nível ou acima. */
+function section(markdown, heading) {
+  const start = markdown.indexOf(`\n${heading}`);
+  if (start < 0) return "";
+  const level = heading.match(/^#+/)[0].length;
+  const rest = markdown.slice(start + 1);
+  const next = rest.slice(heading.length).search(new RegExp(`\\n#{1,${level}} `));
+  return next < 0 ? rest : rest.slice(0, heading.length + next);
+}
+/** Primeiro bloco ```tsx de um trecho. */
+const tsxBlock = (text) => text.match(/```tsx\n([\s\S]*?)\n```/)?.[1] ?? "";
+
+// A versão que o copy-template grava vem do primeiro título do CHANGELOG (o zip não leva o package.json).
+const firstRelease = changelog.match(/^## (\d+\.\d+\.\d+) /m)?.[1];
+if (firstRelease !== packageJson.version) errors.push(`CHANGELOG: o primeiro título é ${firstRelease ?? "ausente"}, esperado ${packageJson.version} (o copy-template lê a versão dali)`);
+if (!changelog.includes(`### Ao atualizar de `)) errors.push("CHANGELOG sem a seção \"Ao atualizar de\"");
+
+// Script de tema: num módulo sem "use client", para chegar ao layout raiz (Server Component) como texto.
+const themeScript = await read("src/components/tema-mppa/theme-script.tsx");
+if (/^\s*["']use client["']/m.test(themeScript)) errors.push('theme-script.tsx não pode ter "use client" (o script chegaria ao servidor como referência de cliente)');
+for (const name of ["THEME_STORAGE_KEY", "THEME_BOOT_SCRIPT", "ThemeScript"]) {
+  if (!new RegExp(`export (const|function) ${name}\\b`).test(themeScript)) errors.push(`theme-script.tsx não exporta ${name}`);
+}
+if (!/export \{ THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript \} from "\.\/theme-script";/.test(index)) errors.push("index.ts deve exportar THEME_BOOT_SCRIPT, THEME_STORAGE_KEY e ThemeScript de ./theme-script");
+const themeProvider = await read("src/components/tema-mppa/theme-provider.tsx");
+// Na hidratação, o tema da renderização ainda é o do servidor: o efeito aplica o guardado.
+const themeEffect = themeProvider.match(/useEffect\(\(\) => \{([\s\S]*?)\}, \[resolvedTheme\]\);/)?.[1] ?? "";
+if (!themeEffect.includes("readStoredTheme()") || /classList\.add\(resolvedTheme\)/.test(themeEffect)) {
+  errors.push("theme-provider.tsx: o efeito deve aplicar o tema guardado (readStoredTheme), não o resolvedTheme da hidratação");
+}
+if (/THEME_BOOT_SCRIPT\s*=/.test(themeProvider)) errors.push("theme-provider.tsx (\"use client\") não pode definir THEME_BOOT_SCRIPT");
+const rootLayoutExample = tsxBlock(section(replicar, "### 4.4 "));
+if (!rootLayoutExample.includes("<ThemeScript nonce={nonce} />") || rootLayoutExample.includes("THEME_BOOT_SCRIPT")) {
+  errors.push("REPLICAR 4.4: o exemplo do layout raiz deve usar <ThemeScript nonce={nonce} /> e não o THEME_BOOT_SCRIPT");
+}
+
+// Nenhuma versão escrita nos arquivos da camada: o consumidor costuma reprovar versão fora dos pontos de versão.
+for (const file of [...files.filter((file) => /\.(tsx?|css)$/.test(file)), path.join(root, "src/styles/tema-mppa.css")]) {
+  const found = (await readFile(file, "utf8")).match(/(?<![\w.])[vV]?\d+\.\d+\.\d+(?![\w.])/);
+  if (found) errors.push(`${path.relative(root, file)}: versão escrita ("${found[0]}"); a versão da camada fica só no camada.json e no CHANGELOG`);
+}
+
+// Contrato observável (REPLICAR 4.8): cada item está no roteiro e no código da camada.
+const contractSection = section(replicar, "### 4.8 ");
+const layerSource = async (file) => read(`src/components/tema-mppa/${file}`);
+const contract = [
+  ["`tema-mppa-theme`", "theme-script.tsx", 'THEME_STORAGE_KEY = "tema-mppa-theme"'],
+  ["`tema-mppa-sidebar-collapsed`", "sidebar-context.tsx", 'SIDEBAR_STORAGE_KEY = "tema-mppa-sidebar-collapsed"'],
+  ['"Tema: Claro. Alterar para Escuro"', "theme-toggle.tsx", "aria-label={`Tema: ${labels[theme]}. Alterar para ${labels[next]}`}"],
+  ["claro → escuro → sistema", "theme-toggle.tsx", 'const sequence: Theme[] = ["light", "dark", "system"];'],
+  ["claro → escuro → sistema", "theme-toggle.tsx", '{ light: "Claro", dark: "Escuro", system: "Sistema" }'],
+  ['"Navegação principal"', "app-sidebar.tsx", 'aria-label="Navegação principal"'],
+  ["`-translate-x-full`", "app-sidebar.tsx", '"-translate-x-full"'],
+  ['"Abrir menu lateral"', "app-header.tsx", 'aria-label="Abrir menu lateral"'],
+  ["`h1`", "breadcrumbs.tsx", "<h1"],
+  ["`header`", "app-header.tsx", "<header"],
+  ['"Seções do menu"', "app-sidebar.tsx", 'aria-label="Seções do menu"'],
+  ['"Abrir busca"', "command-palette.tsx", 'aria-label="Abrir busca"'],
+  ['"Busca e navegação"', "command-palette.tsx", 'aria-label="Busca e navegação"'],
+  ["`signOutLabel`", "user-identity.tsx", "aria-label={signOutLabel}"],
+  ["`el.style.color = 'var(--x)'`", null, null],
+];
+for (const [doc, file, needle] of contract) {
+  if (!contractSection.includes(doc)) errors.push(`REPLICAR 4.8 (contrato observável) sem ${doc}`);
+  if (file && !(await layerSource(file)).includes(needle)) errors.push(`contrato: ${file} mudou (${needle}); atualize a lista da 4.8 e o CHANGELOG`);
+}
+
+// Fase 0 e regras do consumidor que a cópia aciona.
+for (const needle of ["@next/next/no-img-element", "--max-warnings", "reportUnusedDisableDirectives", "todo arquivo rastreado", "bg-primary/10"]) {
+  if (!diagnostico.includes(needle) && !replicar.includes(needle)) errors.push(`DIAGNOSTICO/REPLICAR sem "${needle}"`);
+}
+for (const needle of ["@next/next/no-img-element", "todo arquivo rastreado", "bg-primary/10"]) {
+  if (!diagnostico.includes(needle)) errors.push(`DIAGNOSTICO.md sem a pergunta sobre "${needle}"`);
+}
+if (!section(replicar, "## 8. ").includes("`text-primary` sobre `bg-primary/10`")) errors.push("REPLICAR seção 8 sem o \"não faça\" de text-primary sobre bg-primary/10");
+// O aviso só vale enquanto o par ficar abaixo de 7:1 com os tokens atuais (mistura de 10% da primária).
+const mix = (fg, bg, alpha) => `#${[0, 2, 4].map((offset) => {
+  const channel = (hex) => parseInt(hex.replace("#", "").slice(offset, offset + 2), 16);
+  return Math.round(alpha * channel(fg) + (1 - alpha) * channel(bg)).toString(16).padStart(2, "0");
+}).join("")}`;
+for (const surface of ["background", "card"]) {
+  const ratio = contrast(light.primary, mix(light.primary, light[surface], 0.1));
+  if (ratio >= 7) errors.push(`o "não faça" de bg-primary/10 ficou obsoleto: ${ratio.toFixed(2)}:1 sobre --${surface}`);
+}
+
+// DESIGN.md do modelo preso ao CSS, e DESIGN.md exigido na Fase 1.
+for (const needle of ["DESIGN.md", "verificar-design.mjs"]) {
+  if (!section(replicar, "### 4.9 ").includes(needle)) errors.push(`REPLICAR 4.9 sem "${needle}"`);
+}
 try {
-  await writeFile(path.join(consumer, "package.json"), "{}\n");
-  execFileSync(process.execPath, [path.join(root, "scripts/copy-template.mjs"), consumer], { stdio: "pipe" });
-  const verifier = path.join(consumer, "docs/tema-mppa/verificar-camada.mjs");
-  const run = () => {
-    try {
-      execFileSync(process.execPath, [verifier], { stdio: "pipe" });
-      return 0;
-    } catch (error) {
-      return error.status ?? 1;
-    }
-  };
-  const manifest = JSON.parse(await readFile(path.join(consumer, "docs/tema-mppa/camada.json"), "utf8"));
-  if (manifest.versao !== packageJson.version) errors.push(`camada.json na versão ${manifest.versao}, esperado ${packageJson.version}`);
-  if (run() !== 0) errors.push("verificar-camada reprova a camada recém-copiada");
-  await appendFile(path.join(consumer, "components/tema-mppa/utils.ts"), "// editado\n");
-  if (run() === 0) errors.push("verificar-camada aprova a camada editada");
+  execFileSync(process.execPath, [path.join(root, "scripts/verificar-design.mjs"), path.join(root, "DESIGN.md"), "--css", path.join(root, "src/styles/tema-mppa.css")], { stdio: "pipe" });
 } catch (error) {
-  errors.push(`cópia para um consumidor de teste falhou: ${error.message}`);
+  errors.push(`DESIGN.md do modelo difere do CSS:\n${error.stderr?.toString().trim()}`);
+}
+
+// O zip de verdade: gerado numa pasta temporária, descompactado e copiado DE LÁ para um consumidor
+// descartável, que é compilado e servido.
+const work = await mkdtemp(path.join(os.tmpdir(), "tema-mppa-verify-"));
+const run = (file, args, options = {}) => {
+  try {
+    execFileSync(process.execPath, [file, ...args], { stdio: "pipe", ...options });
+    return { status: 0 };
+  } catch (error) {
+    return { status: error.status ?? 1, output: `${error.stdout ?? ""}${error.stderr ?? ""}`.trim() };
+  }
+};
+const modeOf = async (file) => (await stat(file)).mode & 0o777;
+const hasShebang = async (file) => (await readFile(file)).subarray(0, 2).toString("utf8") === "#!";
+let server;
+try {
+  const zipDir = path.join(work, "zip");
+  await mkdir(zipDir);
+  execFileSync(process.execPath, [path.join(root, "scripts/empacotar.mjs"), zipDir], { stdio: "pipe" });
+  const zipPath = path.join(zipDir, `tema-mppa-next-v${packageJson.version}.zip`);
+
+  // Modo de cada entrada: 644, e 755 só para script com shebang.
+  const listing = execFileSync("unzip", ["-Z", zipPath], { encoding: "utf8" }).split("\n").filter((line) => /^[-d]r/.test(line));
+  const entries = new Map(listing.map((line) => [line.split(/\s+/).at(-1), line.split(/\s+/)[0]]));
+  for (const file of zipFiles) if (!entries.has(`tema-mppa-next/${file}`)) errors.push(`zip sem ${file}`);
+  if (entries.has("tema-mppa-next/package.json")) errors.push("zip não deve levar o package.json do modelo");
+  for (const [entry, mode] of entries) {
+    if (entry.endsWith("/")) continue;
+    const expectedMode = (await hasShebang(path.join(root, entry.replace(/^tema-mppa-next\//, "")))) ? "-rwxr-xr-x" : "-rw-r--r--";
+    if (mode !== expectedMode) errors.push(`zip: ${entry} com modo ${mode}, esperado ${expectedMode}`);
+  }
+
+  const unzipped = path.join(work, "descompactado");
+  execFileSync("unzip", ["-q", zipPath, "-d", unzipped]);
+  const consumer = path.join(work, "consumidor");
+  await mkdir(consumer);
+  await writeFile(path.join(consumer, "package.json"), '{ "name": "consumidor", "private": true }\n');
+  const copy = run(path.join(unzipped, "tema-mppa-next/scripts/copy-template.mjs"), [consumer]);
+  if (copy.status !== 0) throw new Error(`copy-template a partir do zip falhou: ${copy.output}`);
+
+  const reference = path.join(consumer, "docs/tema-mppa");
+  const manifest = JSON.parse(await readFile(path.join(reference, "camada.json"), "utf8"));
+  if (manifest.versao !== packageJson.version) errors.push(`camada.json na versão ${manifest.versao}, esperado ${packageJson.version}`);
+  for (const file of [...(await walk(consumer))]) {
+    const expectedMode = (await hasShebang(file)) ? 0o755 : 0o644;
+    if ((await modeOf(file)) !== expectedMode) errors.push(`consumidor: ${path.relative(consumer, file)} com modo ${(await modeOf(file)).toString(8)}, esperado ${expectedMode.toString(8)}`);
+  }
+  for (const file of ["DESIGN.md", "verificar-design.mjs", "verificar-camada.mjs", "REPLICAR.md"]) {
+    if (!existsSync(path.join(reference, file))) errors.push(`consumidor sem docs/tema-mppa/${file}`);
+  }
+
+  // DESIGN.md do sistema: parte do da camada e acrescenta os tokens próprios (REPLICAR 4.9).
+  const ownCss = path.join(consumer, "app/globals.css");
+  await mkdir(path.dirname(ownCss), { recursive: true });
+  await writeFile(ownCss, '@import "tailwindcss";\n@import "../styles/tema-mppa.css";\n@custom-variant dark (&:is(.dark *));\n\n:root {\n  --accent-blue: #0842a1;\n}\n');
+  const consumerDesign = (await readFile(path.join(reference, "DESIGN.md"), "utf8")).replace(/^colors:\n/m, 'colors:\n  accent-blue: "#0842a1"\n');
+  await writeFile(path.join(consumer, "DESIGN.md"), consumerDesign);
+  const designVerifier = path.join(reference, "verificar-design.mjs");
+  const designOk = run(designVerifier, ["--css", ownCss], { cwd: consumer });
+  if (designOk.status !== 0) errors.push(`verificar-design reprova o DESIGN.md do sistema conforme: ${designOk.output}`);
+  await writeFile(path.join(consumer, "DESIGN.md"), consumerDesign.replace('primary: "#9f0712"', 'primary: "#9f0713"'));
+  if (run(designVerifier, ["--css", ownCss], { cwd: consumer }).status === 0) errors.push("verificar-design aprova cor diferente da camada");
+  await writeFile(path.join(consumer, "DESIGN.md"), consumerDesign.replace(/^ {2}primary: "#9f0712"\n/m, ""));
+  if (run(designVerifier, ["--css", ownCss], { cwd: consumer }).status === 0) errors.push("verificar-design aprova DESIGN.md sem uma cor da camada");
+
+  // Build do consumidor com os exemplos do roteiro tais como estão: layout raiz (4.4) e configuração (4.5).
+  await symlink(path.join(root, "node_modules"), path.join(consumer, "node_modules"), "junction");
+  await writeFile(path.join(consumer, "tsconfig.json"), JSON.stringify({
+    compilerOptions: {
+      target: "ES2017", lib: ["dom", "dom.iterable", "esnext"], strict: true, noEmit: true, esModuleInterop: true, skipLibCheck: true,
+      module: "esnext", moduleResolution: "bundler", resolveJsonModule: true, isolatedModules: true, jsx: "react-jsx",
+      plugins: [{ name: "next" }], paths: { "@/*": ["./*"] },
+    },
+    include: ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+    exclude: ["node_modules"],
+  }, null, 2));
+  // O node_modules é um link para o do modelo: a raiz do Turbopack precisa abranger os dois.
+  await writeFile(path.join(consumer, "next.config.mjs"), `export default { turbopack: { root: ${JSON.stringify(path.parse(consumer).root)} } };\n`);
+  await writeFile(path.join(consumer, "postcss.config.mjs"), 'export default { plugins: { "@tailwindcss/postcss": {} } };\n');
+  await writeFile(path.join(consumer, "app/layout.tsx"), `import "./globals.css";\n${rootLayoutExample}\n`);
+  await mkdir(path.join(consumer, "config"));
+  await writeFile(path.join(consumer, "config/shell.tsx"), `${tsxBlock(section(replicar, "### 4.5 "))}\n`);
+  await writeFile(path.join(consumer, "app/casca.tsx"), [
+    '"use client";',
+    'import { AppShell } from "@/components/tema-mppa";',
+    'import { shellConfig } from "@/config/shell";',
+    "export function Casca({ children }: { children: React.ReactNode }) {",
+    '  return <AppShell config={shellConfig} session={{ user_id: "1", name: "Pessoa Teste", email: "p@t.br", is_admin: true }} onSignOut={() => {}}>{children}</AppShell>;',
+    "}",
+    "",
+  ].join("\n"));
+  await writeFile(path.join(consumer, "app/page.tsx"), 'import { Casca } from "./casca";\nexport default function Inicio() {\n  return <Casca><p>Conteúdo</p></Casca>;\n}\n');
+  // Sonda: no servidor, o script de tema tem de ser texto, não referência de cliente.
+  await mkdir(path.join(consumer, "app/sonda"));
+  await writeFile(path.join(consumer, "app/sonda/page.tsx"), 'import { THEME_BOOT_SCRIPT } from "@/components/tema-mppa";\nexport default function Sonda() {\n  return <p id="sonda">{typeof THEME_BOOT_SCRIPT}</p>;\n}\n');
+
+  const next = path.join(root, "node_modules/next/dist/bin/next");
+  const env = { ...process.env, NEXT_TELEMETRY_DISABLED: "1" };
+  const build = run(next, ["build"], { cwd: consumer, env, timeout: 300_000 });
+  if (build.status !== 0) throw new Error(`build do consumidor falhou (exemplos da 4.4/4.5 ou camada):\n${build.output.split("\n").slice(-25).join("\n")}`);
+
+  const port = await new Promise((resolve, reject) => {
+    const listener = createServer().listen(0, "127.0.0.1", () => {
+      const { port: free } = listener.address();
+      listener.close(() => resolve(free));
+    }).on("error", reject);
+  });
+  server = spawn(process.execPath, [next, "start", "-p", String(port), "-H", "127.0.0.1"], { cwd: consumer, env, stdio: "ignore" });
+  const fetchPage = async (route) => {
+    for (let attempt = 0; attempt < 60; attempt += 1) {
+      try {
+        const response = await fetch(`http://127.0.0.1:${port}${route}`);
+        return await response.text();
+      } catch {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    }
+    throw new Error(`o consumidor não respondeu em ${route}`);
+  };
+  const home = await fetchPage("/");
+  if (!home.includes("sessionStorage.getItem('tema-mppa-theme')")) errors.push("HTML servido sem o script de tema (sessionStorage.getItem('tema-mppa-theme'))");
+  if (home.includes("Attempted to call")) errors.push('HTML servido com "Attempted to call": o script de tema chegou como referência de cliente');
+  for (const label of ['aria-label="Navegação principal"', 'aria-label="Abrir busca"', 'aria-label="Tema: Claro. Alterar para Escuro"', 'aria-label="Sair"', "<h1"]) {
+    if (!home.includes(label)) errors.push(`contrato: o HTML servido não tem ${label}`);
+  }
+  const probe = await fetchPage("/sonda");
+  if (!probe.includes('<p id="sonda">string</p>')) errors.push(`no servidor, THEME_BOOT_SCRIPT não é texto (sonda: ${probe.match(/<p id="sonda">([^<]*)<\/p>/)?.[1] ?? "ausente"})`);
+  server.kill();
+  server = undefined;
+
+  // Lista de conferência: camada intacta aprovada, editada reprovada.
+  const verifier = path.join(reference, "verificar-camada.mjs");
+  if (run(verifier, []).status !== 0) errors.push("verificar-camada reprova a camada recém-copiada");
+  await appendFile(path.join(consumer, "components/tema-mppa/utils.ts"), "// editado\n");
+  if (run(verifier, []).status === 0) errors.push("verificar-camada aprova a camada editada");
+} catch (error) {
+  errors.push(`consumidor de teste a partir do zip: ${error.message}`);
 } finally {
-  await rm(consumer, { recursive: true, force: true });
+  server?.kill();
+  await rm(work, { recursive: true, force: true });
 }
 
 if (errors.length) {
@@ -294,5 +507,10 @@ console.log("- contraste: 7:1 no claro, 4,5:1 no escuro, ícones de tom com 4,5:
 console.log("- componentes sem cor fixa nem canto reto; título só no cabeçalho");
 console.log("- rodapé padrão: texto de brand (5 casos executados), fixo na faixa do Recolher (--shell-bar), sem corte e sem substituição");
 console.log("- package-lock.json na mesma versão do package.json");
-console.log("- REPLICAR.md na versão, com fases e diagnóstico; zip com DIAGNOSTICO.md e o verificador");
-console.log("- cópia num consumidor de teste: camada intacta aprovada, editada reprovada");
+console.log("- REPLICAR.md na versão, com fases, diagnóstico, contrato observável (4.8) e DESIGN.md (4.9)");
+console.log("- DIAGNOSTICO.md com lint, regras visuais, pares de cor antigos e conferências de todo arquivo rastreado");
+console.log("- camada sem versão escrita; script de tema em módulo sem \"use client\"; DESIGN.md do modelo igual ao CSS");
+console.log("- zip gerado, descompactado e copiado DE LÁ: sem package.json, modos 644/755, versão lida do CHANGELOG");
+console.log("- consumidor de teste compilado com os exemplos da 4.4 e da 4.5: script de tema no HTML servido, texto no servidor, contrato no HTML");
+console.log("- verificar-design: DESIGN.md do sistema aprovado, cor trocada ou ausente reprovada");
+console.log("- verificar-camada: camada intacta aprovada, editada reprovada");

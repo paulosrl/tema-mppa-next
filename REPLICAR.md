@@ -56,7 +56,7 @@ Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "
 | Fase | O que faz | Muda arquivos? |
 | --- | --- | --- |
 | **0. Diagnóstico** (seção 3) | Lê o consumidor e preenche o `DIAGNOSTICO.md`. | Não. Para e espera o desenvolvedor. |
-| **1. Casca** (seção 4) | Copia a camada; liga fonte, cores e tema; configura marca, menus e sessão; troca o rodapé; ajusta os testes do layout antigo. | Sim. Uma entrega. |
+| **1. Casca** (seção 4) | Copia a camada; liga fonte, cores e tema; configura marca, menus e sessão; troca o rodapé; ajusta os testes do layout antigo; cria o `DESIGN.md`. | Sim. Uma entrega. |
 | **2. Telas** (seção 5) | Repinta as telas com os primitivos. | Sim. Uma entrega por tela ou grupo de telas. |
 | **3. Limpeza** (seção 6) | Tira componentes, bibliotecas e tokens antigos que ficaram sem uso. | Sim. Uma entrega. |
 | **Atualização** (seção 7) | Leva o consumidor a uma versão nova do modelo. | Sim. |
@@ -95,7 +95,7 @@ Leia o `package.json` e a estrutura de pastas do consumidor.
 
 ## 3. Fase 0: Diagnóstico
 
-1. Descompacte o zip na raiz do repositório (`unzip tema-mppa-next-v1.5.0.zip`); ele cria `tema-mppa-next/`.
+1. Descompacte o zip na raiz do repositório (`unzip tema-mppa-next-v1.6.0.zip`); ele cria `tema-mppa-next/`.
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -121,12 +121,15 @@ O script detecta a estrutura do consumidor:
 Use `--components-dir` e `--styles-dir` para outro lugar. Ele também grava em `docs/tema-mppa/`:
 
 - a referência visual (protótipo, prévia, comparações), este guia e o CHANGELOG do modelo;
+- `DESIGN.md`, os tokens e a intenção do design da camada no formato DESIGN.md (ponto de partida da 4.9), e
+  `verificar-design.mjs`, que confere um DESIGN.md contra o CSS;
 - `camada.json`, a lista de conferência: a versão do modelo e o SHA-256 de cada arquivo da camada;
 - `verificar-camada.mjs`, que confere a camada contra essa lista (`node docs/tema-mppa/verificar-camada.mjs`,
   da raiz do consumidor). Ligue-o aos testes ou ao `check` do consumidor, se ele tiver um.
 
 Se a camada já existir, ele para; rode de novo com `--force`, que faz backup antes de substituir. A camada só
-usa imports relativos: não depende do alias `@/`.
+usa imports relativos: não depende do alias `@/`. Os arquivos saem com modo 644, e 755 só os scripts com
+shebang (`verificar-camada.mjs`, `verificar-design.mjs`), seja qual for o modo que o zip trouxe.
 
 Logo depois da cópia, **apague a pasta descompactada `tema-mppa-next/`**: tudo o que o consumidor precisa já
 está em `components/`, `styles/` e `docs/tema-mppa/`. Se ela ficar, o `tsconfig` e o ESLint do consumidor
@@ -136,6 +139,24 @@ arquivo está em `docs/tema-mppa/prototipo/index.html`.
 
 **Não edite os arquivos copiados.** O que é de cada sistema entra por configuração e propriedades. Se a
 camada não atende a uma necessidade real, registre-a para o modelo (seção 11) em vez de editar.
+
+**Conferências do consumidor que a cópia aciona.** O diagnóstico (item 4) já as listou. Ajuste a
+configuração delas, nunca os arquivos copiados:
+
+- **Lint:** a camada desliga `@next/next/no-img-element` só na linha do `<img>` do `ImageSlot`. Se o consumidor
+  desliga essa regra no projeto inteiro e reprova aviso (`--max-warnings 0`), a diretiva vira "Unused
+  eslint-disable directive". Acrescente ao `eslint.config` do consumidor um bloco só para a camada:
+
+  ```js
+  { files: ["components/tema-mppa/**"], linterOptions: { reportUnusedDisableDirectives: "off" } },
+  ```
+
+  Use o caminho real da camada (com `src/`, se for o caso). Ignorar a pasta inteira também resolve, mas deixa
+  de compilar a camada no lint.
+- **Conferências que leem todo arquivo rastreado** (versão escrita fora dos pontos de versão, modo dos arquivos
+  no git, links mortos em `.md`, cor fixa, ortografia): a camada não tem versão escrita e sai com modo
+  644/755, mas `docs/tema-mppa/` é referência copiada (o CHANGELOG cita versões do modelo; o protótipo e a
+  prévia têm cores fixas). Exclua `docs/tema-mppa/` dessas conferências, uma por uma.
 
 ### 4.2 Dependências, com versões exatas
 
@@ -180,7 +201,7 @@ globais (reset de formulário, impressão, animações) podem ficar.
 ```tsx
 import { Outfit } from "next/font/google";
 import { headers } from "next/headers";
-import { TemaMppaProvider, THEME_BOOT_SCRIPT } from "@/components/tema-mppa"; // ajuste o caminho
+import { TemaMppaProvider, ThemeScript } from "@/components/tema-mppa"; // ajuste o caminho
 
 const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
 
@@ -188,16 +209,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const nonce = (await headers()).get("x-nonce") ?? undefined; // só se o consumidor tem CSP com nonce
   return (
     <html lang="pt-BR" className={outfit.variable} suppressHydrationWarning>
-      <head><script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} /></head>
+      <head><ThemeScript nonce={nonce} /></head>
       <body><TemaMppaProvider>{children}</TemaMppaProvider></body>
     </html>
   );
 }
 ```
 
+- **Script de tema:** use o `<ThemeScript>`. Ele aplica o tema antes da hidratação, sem piscar. Ele e o
+  `THEME_BOOT_SCRIPT` vêm de `theme-script.tsx`, módulo sem `"use client"`, e chegam ao layout raiz como texto.
+  Não importe nada de `theme-provider.tsx` no servidor: ali tudo é `"use client"` e vira referência de cliente.
 - **CSP:** se o consumidor tem `Content-Security-Policy` com `nonce`, passe o mesmo nonce que ele já usa (o
-  cabeçalho ou a função dele) ao `<script>`; sem isso, o navegador bloqueia o script de tema. Sem CSP, tire
-  as linhas do `nonce`.
+  cabeçalho ou a função dele) ao `<ThemeScript>`; sem isso, o navegador bloqueia o script de tema. Sem CSP, tire
+  a linha do `nonce` e use `<ThemeScript />`.
 - O layout raiz continua Server Component; os componentes da camada são client e podem ser usados nele.
 - Se o consumidor já tem um `QueryClient`, passe-o: `<TemaMppaProvider queryClient={queryClient}>`.
 - Se já tem um provedor de tema, remova-o e troque os usos dele (`useTheme`, alternador) pelos da camada. O
@@ -351,13 +375,58 @@ textos e posição da marca, rodapé, busca, alternador e chave de tema, fonte, 
 - Se o consumidor tem teste de cor fixa, a camada e o `tema-mppa.css` precisam passar nele; se não passarem,
   registre para o modelo (seção 11) em vez de editar a camada.
 
-### 4.9 Verificar a Fase 1
+**Contrato observável da camada.** O que testes de unidade e e2e costumam ler, e o que muda em relação a uma
+casca antiga típica:
 
-Os itens 3 a 7 precisam de navegador. Se você não tiver um, rode os itens 1, 2 e 8, e entregue os demais ao
+| O quê | Na camada | Costuma quebrar |
+| --- | --- | --- |
+| Chaves de armazenamento | tema em `tema-mppa-theme` (`sessionStorage`); barra recolhida em `tema-mppa-sidebar-collapsed` (`localStorage`) | teste que gravava a chave antiga ou o tema no `localStorage` |
+| Alternador de tema | botão com aria-label "Tema: Claro. Alterar para Escuro"; ciclo claro → escuro → sistema | teste que procurava "Ativar tema escuro" ou alternava só entre claro e escuro |
+| Barra lateral | `aside` com aria-label "Navegação principal"; abas com aria-label "Seções do menu" | seletor da `nav` ou da `aside` antigas |
+| Título | um `h1` dentro do `header` (papel `banner`), sem trilha (breadcrumb) | teste que procurava o título no conteúdo ou a trilha |
+| Abas | na aba Plataforma, os links administrativos não ficam no DOM | teste que clicava num link administrativo a partir do dashboard: abra antes a aba Administração |
+| Menu móvel | é a própria `aside`, fechada por translação (`-translate-x-full`); botão "Abrir menu lateral" | o Playwright a considera "visível" mesmo fechada: confira a posição (`boundingBox`) ou a classe, não `toBeVisible` |
+| Busca | botão "Abrir busca" e diálogo "Busca e navegação" | seletor da busca antiga |
+| Sair | botão com o aria-label do `signOutLabel` da configuração | texto do botão antigo |
+| Tokens | cores em hex | teste que lia `--x` como HSL: leia a cor resolvida pelo navegador numa sonda (`el.style.color = 'var(--x)'` e `getComputedStyle(el).color`) |
+
+### 4.9 DESIGN.md do sistema
+
+O `DESIGN.md` ([formato aberto do Google Labs](https://github.com/google-labs-code/design.md), versão
+`alpha`) dá aos agentes de IA os tokens e a intenção do design. Todo consumidor tem o seu, na raiz do
+frontend, ao lado do `package.json`:
+
+1. Copie `docs/tema-mppa/DESIGN.md` para a raiz e troque o `name`, a `description` e o título pelos do
+   sistema (por exemplo, `"Nome do sistema · tema MPPA"`).
+2. Mantenha todas as cores da camada, com os mesmos valores. Acrescente ao grupo `colors` os tokens próprios
+   que ficaram no CSS do consumidor (tabela de 4.3), com o valor do tema claro; o escuro vai na tabela de
+   "Colors". Componentes do sistema (por exemplo, o painel do login) entram em `components`, com referências
+   `{colors.x}`.
+3. Nas seções, diga o que é do sistema (quem usa, telas próprias, regras do `AGENTS.md` que afetam a
+   interface) e, em "Do's and Don'ts", as regras visuais próprias decididas no diagnóstico. Telas ainda não
+   repintadas vão numa seção "Known Gaps", no fim.
+4. Confira:
+
+   ```bash
+   node docs/tema-mppa/verificar-design.mjs --css <CSS com os tokens próprios, por exemplo app/globals.css>
+   ```
+
+   O script reprova cor diferente da do CSS, cor da camada ausente, referência `{grupo.token}` inexistente
+   e seção fora da ordem do formato. Ligue-o aos testes ou ao `check` do consumidor, como o
+   `verificar-camada.mjs`. Se houver rede, rode também o linter oficial: `npx @google/design.md lint DESIGN.md`
+   (0 erros; avisos de cor sem componente podem ficar).
+
+Na Fase 3, tire do `DESIGN.md` os tokens que saíram do CSS.
+
+### 4.10 Verificar a Fase 1
+
+Os itens 3 a 7 precisam de navegador. Se você não tiver um, rode os itens 1, 2, 8 e 9, e entregue os demais ao
 usuário como lista de conferência, dizendo que não foram verificados.
 
-1. `node docs/tema-mppa/verificar-camada.mjs`: camada íntegra.
-2. `typecheck`, `lint`, testes e `build` do consumidor sem erro.
+1. `node docs/tema-mppa/verificar-camada.mjs`: camada íntegra. `node docs/tema-mppa/verificar-design.mjs --css …`:
+   DESIGN.md conforme.
+2. `typecheck`, `lint`, testes e `build` do consumidor sem erro. No HTML servido (`curl` da página), o
+   `<head>` traz `sessionStorage.getItem('tema-mppa-theme')`, sem "Attempted to call".
 3. Abra o app em 1280px e em 390px, nos temas claro e escuro, e compare com `docs/tema-mppa/comparacao/` e o
    protótipo: raio, sombra, fundos, bordas, espaçamentos e cores da casca iguais.
 4. Em 390px, a página não rola na horizontal.
@@ -365,7 +434,8 @@ usuário como lista de conferência, dizendo que não foram verificados.
    aparecem.
 6. Cada rota mostra o título certo, uma vez, no cabeçalho, e um só item marcado.
 7. Login, logout, sessão expirada e chamadas de dados continuam funcionando como antes.
-8. Procure cor fixa nas telas: `grep -rnE "#[0-9a-fA-F]{3,6}\b|bg-white|text-(red|gray|zinc)-[0-9]" <pasta das telas>`.
+8. As conferências do consumidor que leem todo arquivo rastreado (4.1) passam.
+9. Procure cor fixa nas telas: `grep -rnE "#[0-9a-fA-F]{3,6}\b|bg-white|text-(red|gray|zinc)-[0-9]" <pasta das telas>`.
    O resultado vai para a lista da Fase 2.
 
 Registre no `AGENTS.md` do consumidor (seção 11) e faça o commit no padrão do consumidor.
@@ -418,7 +488,7 @@ const colunas: DataTableColumn<Linha>[] = [
   equivalente.
 - **Testes:** ajuste os testes da tela que procuravam o `<h1>`, textos ou classes antigas, pelo mesmo
   critério de 4.8.
-- **Verificar:** itens 2 a 4 e 8 de 4.9 nas telas da entrega.
+- **Verificar:** itens 2 a 4 e 9 de 4.10 nas telas da entrega.
 
 ### 5.2 Referência dos primitivos
 
@@ -441,8 +511,9 @@ Quando nenhuma tela usar mais o visual antigo:
 
 - remova os componentes de UI antigos que os primitivos substituíram e as bibliotecas que só eles usavam
   (por exemplo, `@radix-ui/*`), com o lock regenerado;
-- remova os tokens próprios sem uso (tabela de 4.3) e as classes utilitárias antigas;
-- confira com busca no código que nada mais importa o que saiu, e rode a verificação de 4.9.
+- remova os tokens próprios sem uso (tabela de 4.3), também do `DESIGN.md` (4.9), e as classes utilitárias
+  antigas;
+- confira com busca no código que nada mais importa o que saiu, e rode a verificação de 4.10.
 
 ## 7. Atualizar para uma versão nova do modelo
 
@@ -450,9 +521,10 @@ Quando nenhuma tela usar mais o visual antigo:
    ela será perdida (vai para o backup).
 2. Descompacte o zip novo e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
    O script lista os arquivos que estavam editados e grava a lista de conferência da versão nova.
-3. Leia o `docs/tema-mppa/CHANGELOG.md` da versão anterior até a nova e faça o que cada versão pede ao
-   consumidor (configuração nova, propriedade que saiu).
-4. Rode a verificação de 4.9, atualize a versão na seção "Interface" do `AGENTS.md` e apague a pasta
+3. Leia o `docs/tema-mppa/CHANGELOG.md` da versão anterior até a nova e faça o que a seção "Ao atualizar de"
+   de cada versão pede ao consumidor (configuração nova, propriedade que saiu).
+4. Rode o `verificar-design.mjs`: se a camada mudou alguma cor, leve-a ao `DESIGN.md` do sistema.
+5. Rode a verificação de 4.10, atualize a versão na seção "Interface" do `AGENTS.md` e apague a pasta
    descompactada.
 
 ## 8. Código de cores (tokens)
@@ -489,6 +561,16 @@ Contraste obrigatório:
 
 Os tokens já cumprem isso. Se o consumidor precisar de uma cor nova, crie um token no **próprio**
 consumidor e confira o contraste.
+
+Não faça:
+
+- **`text-primary` sobre `bg-primary/10`** (a pílula comum do shadcn/ui): com a primária `#9f0712`, o par fica
+  abaixo de 7:1 (cerca de 6,7:1 sobre o cartão e 6,9:1 sobre o fundo). Use `text-foreground` sobre o fundo
+  atenuado e deixe a primária no ícone ou na borda. O mesmo vale para qualquer cor sobre a própria versão
+  transparente: confira o contraste do par, não só o da cor.
+- **Texto colorido onde o consumidor exige texto preto:** `text-success` e `text-warning` são coloridos (7:1 no
+  claro). Se o consumidor tem regra de todo texto preto no claro, isso é conflito do diagnóstico (item 12): a
+  cor fica no ícone ou no ponto de status, com o texto em `text-foreground`.
 
 Fonte: Outfit (`font-sans`).
 
@@ -563,7 +645,7 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
   - `usePathname` vira a rota atual;
   - as abas usam qualquer componente acessível de abas;
   - o rodapé usa o mesmo texto de `footerText` (`src/components/tema-mppa/utils.ts`).
-- **Fidelidade:** mantenha as medidas da seção 9 e compare visualmente com o protótipo, como em 4.9.
+- **Fidelidade:** mantenha as medidas da seção 9 e compare visualmente com o protótipo, como em 4.10.
 
 ## 11. Registro e retorno ao modelo
 
@@ -574,12 +656,14 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.5.0)
+## Interface (tema-mppa 1.6.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
   (`docs/tema-mppa/REPLICAR.md`, seção 7).
 - Referência visual: `docs/tema-mppa/prototipo/index.html` (manda) e `docs/tema-mppa/preview/index.html`.
+- `DESIGN.md` na raiz do frontend: tokens e intenção do design para os agentes; confira com
+  `node docs/tema-mppa/verificar-design.mjs --css <CSS próprio>` a cada mudança de token.
 - Telas só com os primitivos (`PageFrame`, `Card`, `CardGrid`, `MetricCard`, `DataTable`, `BarChart`,
   `Button`); cores só pelos tokens; título só no cabeçalho, vindo do item de navegação.
 - Contraste: 7:1 no claro (secundário igual ao principal), 4,5:1 no escuro.

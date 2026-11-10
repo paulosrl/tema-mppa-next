@@ -1,6 +1,6 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.5.0**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com o
+Versão **1.6.0**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com o
 cabeçalho padrão dos sistemas:
 
 - barra lateral com abas Plataforma e Administração;
@@ -16,12 +16,12 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 
 ## Usar num codebase
 
-1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.5.0.zip` e o `.sha256` na pasta acima
+1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.6.0.zip` e o `.sha256` na pasta acima
    desta.
 2. Copie o zip para a raiz do codebase que vai receber a interface.
 3. Diga ao agente desse codebase:
 
-   > Descompacte tema-mppa-next-v1.5.0.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
+   > Descompacte tema-mppa-next-v1.6.0.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
    > interface neste codebase.
 
 O agente trabalha em fases, cada uma uma entrega:
@@ -29,7 +29,7 @@ O agente trabalha em fases, cada uma uma entrega:
 | Fase | O agente faz | O desenvolvedor faz |
 | --- | --- | --- |
 | 0. Diagnóstico | Lê o codebase e preenche o [`DIAGNOSTICO.md`](DIAGNOSTICO.md), sem mudar nada | Aprova e decide os conflitos com o padrão |
-| 1. Casca | Copia a camada; liga fonte, cores e tema; configura marca, menus e sessão; troca o rodapé; ajusta os testes | Confere as capturas e testa na mão |
+| 1. Casca | Copia a camada; liga fonte, cores e tema; configura marca, menus e sessão; troca o rodapé; ajusta os testes; cria o `DESIGN.md` do sistema | Confere as capturas e testa na mão |
 | 2. Telas | Repinta as telas com os primitivos, aos poucos | Confere cada entrega |
 | 3. Limpeza | Tira o visual antigo que ficou sem uso | Confere |
 
@@ -41,7 +41,10 @@ O zip tem só o que o agente usa:
 - [`REPLICAR.md`](REPLICAR.md), o roteiro dele, e o [`DIAGNOSTICO.md`](DIAGNOSTICO.md), o formulário da Fase 0;
 - a camada visual (`src/components/tema-mppa/`);
 - as cores (`src/styles/tema-mppa.css`);
-- o script de cópia e o `verificar-camada.mjs`, que confere no codebase que ninguém editou a camada;
+- o [`DESIGN.md`](DESIGN.md) da camada (tokens e intenção do design para agentes de IA, no formato aberto
+  DESIGN.md), base do `DESIGN.md` de cada sistema;
+- o script de cópia, o `verificar-camada.mjs`, que confere no codebase que ninguém editou a camada, e o
+  `verificar-design.mjs`, que prende o `DESIGN.md` do sistema às cores do CSS;
 - o protótipo, a prévia e as comparações.
 
 Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
@@ -52,6 +55,7 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 | --- | --- |
 | `REPLICAR.md` | roteiro do agente no codebase consumidor, em fases |
 | `DIAGNOSTICO.md` | formulário da Fase 0, preenchido pelo agente no consumidor |
+| `DESIGN.md` | tokens e intenção do design da camada (formato DESIGN.md), conferido contra o CSS |
 | `src/components/tema-mppa/` | camada visual (shell e primitivos) |
 | `src/styles/tema-mppa.css` | tokens: cores, raio, sombra, base |
 | `src/app/` | demonstração que compila e exibe a camada (fica fora do zip) |
@@ -65,7 +69,7 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 ```bash
 npm install
 npm run dev          # demonstração em http://localhost:3000
-npm run check        # verificação (pinos, tokens, contraste), typecheck, lint e build
+npm run check        # verificação (pinos, tokens, contraste, zip e consumidor de teste), typecheck, lint e build
 npm run empacotar    # zip para os consumidores
 ```
 
@@ -79,6 +83,10 @@ FONTE=$(curl -s http://localhost:3123/ | grep -o '/_next/static/media/[^")]*woff
 node scripts/capturar-comparacao.mjs "$FONTE" /tmp/capturas
 node scripts/compor-comparacao.mjs /tmp/capturas docs/comparacao
 ```
+
+O `npm run check` gera o zip numa pasta temporária, copia a camada dele para um consumidor descartável e
+compila esse consumidor (requer `zip` e `unzip`; leva cerca de um minuto a mais). Ao mudar uma cor, atualize o
+`DESIGN.md` e, com rede, rode `npx @google/design.md lint DESIGN.md`.
 
 Requer Node 22 ou mais novo. O `npm run check` executa `footerText` de verdade: transpila `utils.ts` com o TypeScript do projeto, sem depender do TypeScript nativo do Node.
 

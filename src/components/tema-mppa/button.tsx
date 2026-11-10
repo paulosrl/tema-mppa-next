@@ -10,7 +10,7 @@ const buttonVariants = cva(
       variant: {
         default: "border border-primary bg-primary text-primary-foreground hover:border-primary/90 hover:bg-primary/90",
         secondary: "border border-border bg-card text-card-foreground hover:bg-muted",
-        /** Igual a `secondary`; mantido por compatibilidade com a 1.0.0. */
+        /** Igual a `secondary`; mantido por compatibilidade com o primeiro zip. */
         outline: "border border-border bg-card text-card-foreground hover:bg-muted",
         ghost: "text-foreground hover:bg-accent hover:text-accent-foreground",
         destructive: "border border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90",

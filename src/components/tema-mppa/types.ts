@@ -11,7 +11,7 @@ export type ImageAsset = {
   className?: string;
 };
 
-/** Tons do protótipo para o ícone de seção. Uma string fora da lista é tratada como classes (1.0.0). */
+/** Tons do protótipo para o ícone de seção. Uma string fora da lista é tratada como classes, como no primeiro zip. */
 export type NavigationTone = "red" | "green" | "violet" | "orange";
 
 export type NavigationItem = {

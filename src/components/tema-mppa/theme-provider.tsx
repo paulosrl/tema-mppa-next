@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { THEME_STORAGE_KEY } from "./theme-script";
 
 export type Theme = "light" | "dark" | "system";
 type ResolvedTheme = "light" | "dark";
@@ -11,8 +12,6 @@ type ThemeContextValue = {
   setTheme: (theme: Theme) => void;
 };
 
-export const THEME_STORAGE_KEY = "tema-mppa-theme";
-export const THEME_BOOT_SCRIPT = `(function(){try{var t=sessionStorage.getItem('${THEME_STORAGE_KEY}')||'light';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.remove('light','dark');document.documentElement.classList.add(d?'dark':'light');}catch(e){document.documentElement.classList.add('light')}})();`;
 
 const DARK_MEDIA = "(prefers-color-scheme: dark)";
 const listeners = new Set<() => void>();
@@ -53,9 +52,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const systemTheme = useSyncExternalStore(subscribe, readSystemTheme, serverSystemTheme);
   const resolvedTheme: ResolvedTheme = theme === "system" ? systemTheme : theme;
 
+  // Lê o tema guardado, e não o `resolvedTheme` da renderização: na hidratação ele ainda é o do servidor
+  // ("light"), e aplicá-lo trocaria o escuro do ThemeScript pelo claro por um instante. Uma casca montada
+  // nesse instante (por exemplo, depois de a sessão chegar) nasceria com as cores do claro e faria a
+  // transição até as do escuro.
   useEffect(() => {
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(resolvedTheme);
+    const stored = readStoredTheme();
+    const current = stored === "system" ? readSystemTheme() : stored;
+    document.documentElement.classList.remove(current === "dark" ? "light" : "dark");
+    document.documentElement.classList.add(current);
   }, [resolvedTheme]);
 
   function setTheme(next: Theme) {

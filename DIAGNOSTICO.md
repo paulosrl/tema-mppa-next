@@ -31,6 +31,14 @@ Em cada item, diga o que encontrou, com o caminho do arquivo. "Não há" também
 - Fluxo de planejamento (OpenSpec ou outro) e se ele exige plano revisado antes de código.
 - Convenção de branch e de commit.
 - Como rodar typecheck, lint, testes de unidade, e2e e build; hooks e CI.
+- **Lint:** regras desligadas no projeto inteiro e se o lint reprova aviso (`--max-warnings 0`,
+  `reportUnusedDisableDirectives`). A camada desliga `@next/next/no-img-element` na linha do `ImageSlot`; se o
+  consumidor desliga essa regra no projeto todo, a diretiva vira aviso e precisa do bloco da 4.1 do `REPLICAR.md`.
+  Liste as outras regras desligadas que a camada usa em diretiva.
+- **Conferências que leem todo arquivo rastreado** (scripts, testes, hooks ou CI): versão escrita fora dos
+  pontos de versão, modo dos arquivos no git, links mortos em `.md`, cor fixa, ortografia, cabeçalho de
+  licença. Para cada uma: o que ela lê, se `components/`, `styles/` e `docs/tema-mppa/` entram, e como
+  excluir `docs/tema-mppa/` (referência copiada, com versões do modelo e cores fixas no protótipo).
 - Specs, requisitos ou documentos que descrevem o layout, a marca, a fonte, o tema ou o rodapé de hoje.
 
 ## 5. Layout atual
@@ -75,27 +83,41 @@ ou somem por condição (consulta, permissão) e como a condição chega.
 ## 11. Cores, fonte e bibliotecas
 
 - Arquivo de tokens de hoje e a fonte.
+- `DESIGN.md` existente (ou outro documento de design para agentes) e o que ele diz.
+- **Regras visuais próprias** (spec, `AGENTS.md`, testes): por exemplo, "todo texto preto no tema claro",
+  contraste mínimo, cores proibidas. Compare com a camada: `text-success` e `text-warning` são coloridos; a
+  primária é `#9f0712`.
+- **Pares de cor antigos** que mudam de contraste com os tokens novos. Procure ao menos texto sobre a
+  própria cor atenuada, como `text-primary` sobre `bg-primary/10` (pílula comum do shadcn/ui), que fica
+  abaixo de 7:1 com a primária nova. Tabela com o par, onde aparece, o contraste com os tokens novos e a
+  proposta:
+
+| Par (texto / fundo) | Onde | Contraste com os tokens novos | Proposta |
+| --- | --- | --- | --- |
 - Tabela de cada token do consumidor, com o destino:
 
 | Token de hoje | Uso | Destino: token do modelo / token próprio mantido (`var()` do modelo ou valor completo) / removido |
 | --- | --- | --- |
 
-- Cores fixas nas telas (resultado do grep da Fase 1, item 4.9).
+- Cores fixas nas telas (resultado do grep da Fase 1, 4.10, item 9).
 - Bibliotecas de UI (Radix, MUI, outras) e os arquivos que as usam: saem na Fase 3.
 
 ## 12. Conflitos com o padrão (decisão do desenvolvedor)
 
 Cada regra, requisito ou teste do consumidor que contradiz o padrão (marca, rodapé, larguras, busca,
-tema, fonte), com a recomendação do agente e as alternativas. Nada aqui é decidido pelo agente.
+tema, fonte, cores de texto, regras visuais do item 11), com a recomendação do agente e as alternativas. Nada aqui é decidido pelo agente.
 
 ## 13. Testes afetados
 
 Cada teste (unidade, componente, e2e, script) que confere o layout, a fonte, o tema, a marca ou o rodapé
-de hoje, e o que muda nele. Nenhum teste sai sem que o que ele comprovava passe a outro.
+de hoje, e o que muda nele. Use o contrato observável da camada (`REPLICAR.md`, 4.8): chaves de
+armazenamento, rótulos do alternador de tema, da barra lateral, da busca e do sair, título no `header`,
+links administrativos fora do DOM na aba Plataforma, menu móvel fechado por translação, tokens em hex. Nenhum teste sai sem que o que ele comprovava passe a outro.
 
 ## 14. Plano por fase
 
-- **Fase 1 (casca):** arquivos que entram, mudam e saem.
+- **Fase 1 (casca):** arquivos que entram, mudam e saem, o `DESIGN.md` do sistema e as conferências do item 4
+  que precisam de ajuste.
 - **Fase 2 (telas):** lista das telas, agrupadas em entregas pequenas.
 - **Fase 3 (limpeza):** componentes, bibliotecas e tokens que sairão.
 - Riscos e como cada um será conferido.

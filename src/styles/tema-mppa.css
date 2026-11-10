@@ -1,10 +1,10 @@
 /*
- * Tema MPPA 1.1.0: vermelho sobre Zinc, Outfit, raio 8px, bordas suaves, sombras discretas e
+ * Tema MPPA: vermelho sobre Zinc, Outfit, raio 8px, bordas suaves, sombras discretas e
  * gráficos com degradê, iguais ao protótipo "Template Visual HubIA v1.0" (docs/prototipo/index.html).
  *
  * Contraste: no claro, todo texto tem 7:1 sobre o próprio fundo e o texto secundário é o preto do
  * texto principal; no escuro, 4,5:1 e texto escuro sobre a primária. Onde o protótipo fica abaixo
- * disso, o tom foi escurecido sem mudar a aparência (CHANGELOG 1.1.0).
+ * disso, o tom foi escurecido sem mudar a aparência (CHANGELOG do modelo).
  *
  * Única fonte de cor da camada visual: os componentes usam só estes tokens.
  */

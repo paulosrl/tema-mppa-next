@@ -85,7 +85,7 @@ export const FOOTER_CREDIT = "Desenvolvido pelo Ministério Público do Estado d
 
 /**
  * Texto do rodapé padrão dos sistemas: crédito institucional, nome, "V " + versão e ano(s) da versão.
- * Só um "v" seguido de número é removido da versão ("v2.0.0" vira "V 2.0.0"); nome, versão ou ano
+ * Só um "v" seguido de número é removido da versão ("vX.Y.Z" com números vira "V X.Y.Z"); nome, versão ou ano
  * vazios ou ausentes saem do texto, sem erro.
  */
 export function footerText(brand: BrandConfig) {

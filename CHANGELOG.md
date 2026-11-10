@@ -1,5 +1,75 @@
 # Changelog
 
+## 1.6.0 — 2026-11-10
+
+Correções do que a adoção pelo Heimdall (o primeiro consumidor antigo, Fase 1) mostrou no zip, no roteiro e
+na camada. A aparência não muda. A API ganha o `<ThemeScript>`; nada sai.
+
+- **Zip sem `package.json`:** o `copy-template.mjs` lia a versão do `package.json` do modelo, que o zip não leva,
+  e falhava com ENOENT sem gravar nada. Agora lê a versão do primeiro título do `CHANGELOG.md`, que vai no zip.
+- **Script de tema (`<ThemeScript nonce />`):** `THEME_STORAGE_KEY`, `THEME_BOOT_SCRIPT` e o novo `ThemeScript`
+  passam para `theme-script.tsx`, módulo sem `"use client"`. Vindo do `theme-provider.tsx` (`"use client"`), o
+  `THEME_BOOT_SCRIPT` importado no layout raiz era, no servidor, uma referência de cliente: uma função que
+  lança "Attempted to call THEME_BOOT_SCRIPT() from the server". O HTML só saía certo porque o React
+  resolvia a referência ao renderizar; qualquer outro uso no servidor (concatenar, testar o tipo) quebrava.
+  O exemplo da seção 4.4 do `REPLICAR.md` e a demonstração usam `<ThemeScript nonce={nonce} />`.
+- **Tema escuro sem transição na montagem:** na hidratação, o `ThemeProvider` aplicava por um instante o tema do
+  servidor (claro) e voltava ao escuro no mesmo quadro. Uma casca montada nesse instante (no consumidor que
+  espera a sessão chegar no navegador) nascia com as cores do claro e fazia a transição de cor até as do
+  escuro, em cerca de 150ms: item e aba ativos piscavam em rosa. Achado no teste cego da 1.6.0. Agora o
+  provedor aplica o tema guardado, e não o da renderização.
+- **Modo dos arquivos:** o zip trazia a camada com 0777, que vira `100755` sem shebang num repositório que confere
+  o modo pelo índice do git. O `empacotar` fixa 644, e 755 só para script com shebang, seja qual for o modo
+  na pasta; o `copy-template` grava os mesmos modos no consumidor; e o próprio modelo corrigiu os modos no git.
+- **Sem versão escrita na camada:** comentários com versões (`1.5.0`, `1.0.0`, `v2.0.0`…) acionavam a
+  conferência de "versão fora dos pontos de versão" do consumidor. A versão da camada fica só no `camada.json`
+  e no CHANGELOG.
+- **Contrato observável (`REPLICAR.md`, 4.8):** tabela do que a camada muda e os testes do consumidor costumam
+  ler: chaves de armazenamento, alternador de tema e o ciclo claro → escuro → sistema, `aside` "Navegação
+  principal", título num `h1` dentro do `header`, links administrativos fora do DOM na aba Plataforma, menu
+  móvel fechado por translação (o Playwright o vê "visível"), busca, sair e leitura dos tokens em hex.
+- **`DESIGN.md`:** novo `DESIGN.md` da camada, no formato aberto do Google Labs (`alpha`; linter oficial com
+  0 erros e 0 avisos), copiado para `docs/tema-mppa/DESIGN.md`. A Fase 1 passa a criar o `DESIGN.md` do
+  sistema na raiz do frontend (`REPLICAR.md`, 4.9; a verificação da Fase 1 vira 4.10). O novo
+  `verificar-design.mjs`, copiado com a camada, reprova cor diferente da do CSS, cor da camada ausente,
+  referência inexistente e seção fora de ordem, sem rede e sem Vitest.
+- **Fase 0 (`DIAGNOSTICO.md`):** pergunta pelas regras de lint desligadas no projeto inteiro e por
+  `--max-warnings 0`; pelas regras visuais próprias e pelos pares de cor antigos, com o contraste recalculado;
+  pelas conferências que leem todo arquivo rastreado (versão, modo, links em `.md`, cor fixa); e por um
+  `DESIGN.md` existente.
+- **`REPLICAR.md`:**
+  - 4.1: bloco de lint só para a pasta da camada (`reportUnusedDisableDirectives: "off"`) e exclusão de
+    `docs/tema-mppa/` das conferências de todo arquivo;
+  - 4.10: confere o script de tema no HTML servido;
+  - seção 8: "não faça" `text-primary` sobre `bg-primary/10` (abaixo de 7:1 com a primária `#9f0712`) e
+    texto colorido onde o consumidor exige texto preto.
+- **`verify-template`:**
+  - gera o zip numa pasta temporária, confere o modo de cada entrada e que ele não leva o `package.json`;
+  - descompacta o zip e roda o `copy-template` **de lá** num consumidor descartável;
+  - compila esse consumidor com os exemplos da 4.4 e da 4.5 tais como estão, e confere no HTML servido o
+    script de tema (sem "Attempted to call"), o contrato observável e, numa sonda, que o script é texto no
+    servidor;
+  - confere o contrato da 4.8 contra o código da camada, a ausência de versão escrita na camada, o
+    `DESIGN.md` do modelo contra o CSS e o `verificar-design.mjs` num `DESIGN.md` de consumidor (aprovado,
+    cor trocada e cor ausente reprovadas).
+
+### Ao atualizar de 1.5.x
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (seção 7). Os arquivos da
+   camada voltam com modo 644; se o git do consumidor os tinha como `100755`, o commit registra a troca de
+   modo.
+2. Troque o script de tema do layout raiz por `<ThemeScript nonce={nonce} />` (importado de
+   `components/tema-mppa`) e apague o contorno local, se houver (por exemplo, um Client Component que
+   renderizava o `THEME_BOOT_SCRIPT`). Testes que importam `THEME_BOOT_SCRIPT` ou `THEME_STORAGE_KEY`
+   continuam funcionando: os nomes não mudaram.
+3. Se o consumidor desliga `@next/next/no-img-element` no projeto inteiro e ignorou a pasta da camada no lint,
+   pode trocar pelo bloco da 4.1 (`reportUnusedDisableDirectives: "off"` só na pasta), que volta a compilar a
+   camada no lint.
+4. Crie o `DESIGN.md` do sistema (4.9) e ligue o `verificar-design.mjs` aos testes. Se ele já existe, rode o
+   verificador: ele exige as cores da camada com os mesmos valores.
+5. Confira na tabela da 4.8 os testes do consumidor e, na seção 4.1, as conferências que leem todo arquivo
+   rastreado; troque a versão na seção "Interface" do `AGENTS.md`.
+
 ## 1.5.0 — 2026-11-10
 
 Procedimento padrão para levar o modelo a codebases antigos, com o que o planejamento do Heimdall (o

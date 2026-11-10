@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { cp, mkdir, readdir, readFile, rename, stat, writeFile } from "node:fs/promises";
+import { chmod, cp, mkdir, open, readdir, readFile, rename, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -50,7 +50,13 @@ const referenceDir = path.join(target, "docs/tema-mppa");
 const manifestPath = path.join(referenceDir, "camada.json");
 const sha256 = async (file) => createHash("sha256").update(await readFile(file)).digest("hex");
 const toPosix = (file) => file.split(path.sep).join("/");
-const { version } = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+// A versão vem do primeiro título do CHANGELOG ("## 1.6.0 — data"), que vai no zip; o package.json do
+// modelo não vai.
+const version = (await readFile(path.join(root, "CHANGELOG.md"), "utf8")).match(/^## (\d+\.\d+\.\d+) /m)?.[1];
+if (!version) {
+  console.error(`Sem versão no CHANGELOG.md do modelo (${path.join(root, "CHANGELOG.md")}).`);
+  process.exit(1);
+}
 
 const comparisons = (await readdir(path.join(root, "docs/comparacao"))).filter((name) => name.endsWith(".png"));
 
@@ -59,6 +65,8 @@ const sources = [
   { from: path.join(root, "src/styles/tema-mppa.css"), to: path.join(stylesDir, "tema-mppa.css") },
   { from: path.join(root, "REPLICAR.md"), to: path.join(referenceDir, "REPLICAR.md") },
   { from: path.join(root, "scripts/verificar-camada.mjs"), to: path.join(referenceDir, "verificar-camada.mjs") },
+  { from: path.join(root, "scripts/verificar-design.mjs"), to: path.join(referenceDir, "verificar-design.mjs") },
+  { from: path.join(root, "DESIGN.md"), to: path.join(referenceDir, "DESIGN.md") },
   { from: path.join(root, "CHANGELOG.md"), to: path.join(referenceDir, "CHANGELOG.md") },
   { from: path.join(root, "docs/prototipo/index.html"), to: path.join(referenceDir, "prototipo/index.html") },
   { from: path.join(root, "docs/preview/index.html"), to: path.join(referenceDir, "preview/index.html") },
@@ -100,9 +108,30 @@ if (existing.length && force) {
   }
 }
 
+// Modo fixo, sem herdar o da origem (um zip feito no Windows chega com 0777): 644, e 755 só para script
+// com shebang. Num repositório que confere o modo pelo índice do git, nada vira executável por engano.
+async function startsWithShebang(file) {
+  const handle = await open(file, "r");
+  try {
+    const { buffer, bytesRead } = await handle.read(Buffer.alloc(2), 0, 2, 0);
+    return bytesRead === 2 && buffer.toString("utf8") === "#!";
+  } finally {
+    await handle.close();
+  }
+}
+async function normalizeModes(target) {
+  if ((await stat(target)).isDirectory()) {
+    await chmod(target, 0o755);
+    for (const name of await readdir(target)) await normalizeModes(path.join(target, name));
+  } else {
+    await chmod(target, (await startsWithShebang(target)) ? 0o755 : 0o644);
+  }
+}
+
 for (const { from, to } of sources) {
   await mkdir(path.dirname(to), { recursive: true });
   await cp(from, to, { recursive: true });
+  await normalizeModes(to);
 }
 
 // Lista de conferência: versão e SHA-256 de cada arquivo da camada, lida pelo verificar-camada.mjs.
@@ -119,14 +148,16 @@ const manifest = {
   componentes: toPosix(path.relative(target, path.join(componentsDir, "tema-mppa"))),
   arquivos: files,
 };
-await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, { mode: 0o644 });
+await chmod(manifestPath, 0o644);
 
 const rel = (to) => path.relative(target, to) || ".";
 console.log("Camada visual copiada:");
 console.log(`- componentes: ${rel(path.join(componentsDir, "tema-mppa"))}/`);
 console.log(`- cores e tokens: ${rel(path.join(stylesDir, "tema-mppa.css"))}`);
-console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (REPLICAR.md, protótipo, prévia, comparações)`);
+console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (REPLICAR.md, DESIGN.md, protótipo, prévia, comparações)`);
 if (backupRoot) console.log(`Backup: ${rel(backupRoot)}`);
 console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version}); confira com: node ${rel(path.join(referenceDir, "verificar-camada.mjs"))}`);
+console.log(`- conferência do DESIGN.md do sistema: node ${rel(path.join(referenceDir, "verificar-design.mjs"))} --css <CSS com os tokens próprios>`);
 console.log("Próximos passos: REPLICAR.md, Fase 1 (seção 4), a partir de 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).");
 console.log("Nenhum arquivo de autenticação, BFF, API, rota ou regra de negócio foi alterado.");

@@ -1,10 +1,12 @@
 /**
- * Camada visual comum do ecossistema, modelo `tema-mppa-next` 1.5.0 (2026-11-10).
+ * Camada visual comum do ecossistema, modelo `tema-mppa-next`. A versão copiada está em
+ * `docs/tema-mppa/camada.json` no consumidor; aqui não se escreve versão, para não acionar as
+ * conferências de versão do consumidor.
  * Copie esta pasta e `styles/tema-mppa.css` sem editar; o que é de cada sistema entra por
  * configuração e propriedades. A referência visual é o protótipo aprovado ("Template Visual HubIA
  * v1.0"): `docs/prototipo/index.html` no modelo, `docs/tema-mppa/prototipo/index.html` no consumidor.
  *
- * Mudanças em relação ao zip 1.0.0 (detalhes no CHANGELOG):
+ * Mudanças em relação ao primeiro zip (detalhes no CHANGELOG):
  * 1. Tokens iguais ao protótipo: raio 8px (abas internas e ícones a 6px, avatar redondo), sombra
  *    `--shadow` em cartão, aba ativa e item ativo, fundos, borda e realce do ativo (`highlight`).
  * 2. Contraste: no claro, texto com 7:1 e secundário igual ao principal; no escuro, 4,5:1 e texto
@@ -12,7 +14,7 @@
  * 3. Componentes iguais ao protótipo e primitivos de página exportados: `PageFrame`, `Card`,
  *    `CardGrid`, `MetricCard`, `DataTable`, `BarChart`, `Button`, `SectionIcon`.
  * 4. Título só no cabeçalho, uma vez: `PageFrame` não aceita mais `title`, `icon` e `tone`.
- * 5. Rodapé padrão dos sistemas (`footerText`), sem substituição: a propriedade `footer` saiu na 1.4.0.
+ * 5. Rodapé padrão dos sistemas (`footerText`), sem substituição: a propriedade `footer` saiu.
  * 6. O topo da barra lateral, o cabeçalho e o rodapé da barra têm a mesma altura (56px).
  * 7. `NavigationItem` ganha `description` (mostrada e filtrada pela busca), `matches` (rotas que
  *    marcam o item) e `hidden` (fora do menu e da busca, mas dá o título e a aba). Um só item fica
@@ -27,6 +29,8 @@
  * 15. `ImageSlot` compila com `strict` sem asserção não nula.
  * 16. Escala de raio `xs` a `4xl` presa a `--radius`.
  * 17. Ponto de quebra do protótipo (801px) na variante `desk:`.
+ * 18. `<ThemeScript nonce />` (de `theme-script.tsx`, sem `"use client"`) põe o script de tema no layout
+ *     raiz; `THEME_BOOT_SCRIPT` e `THEME_STORAGE_KEY` vêm do mesmo módulo e chegam ao servidor como texto.
  */
 export { AppShell } from "./app-shell";
 export { BarChart, type BarChartDatum } from "./bar-chart";
@@ -38,7 +42,8 @@ export { PageFrame } from "./page-frame";
 export { TemaMppaProvider } from "./providers";
 export { SectionIcon } from "./section-icon";
 export { SIDEBAR_STORAGE_KEY } from "./sidebar-context";
-export { THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeProvider, useTheme, type Theme } from "./theme-provider";
+export { ThemeProvider, useTheme, type Theme } from "./theme-provider";
+export { THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript } from "./theme-script";
 export { ThemeToggle } from "./theme-toggle";
 export { canSeeAdministration, cn, currentNavigationItem, FOOTER_CREDIT, footerText, isNavigationActive } from "./utils";
 export type {
