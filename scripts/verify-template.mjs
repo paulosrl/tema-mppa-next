@@ -8,6 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import vm from "node:vm";
 import ts from "typescript";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -305,6 +306,69 @@ if (!themeEffect.includes("readStoredTheme()") || /classList\.add\(resolvedTheme
   errors.push("theme-provider.tsx: o efeito deve aplicar o tema guardado (readStoredTheme), não o resolvedTheme da hidratação");
 }
 if (/THEME_BOOT_SCRIPT\s*=/.test(themeProvider)) errors.push("theme-provider.tsx (\"use client\") não pode definir THEME_BOOT_SCRIPT");
+
+// Tema com o sessionStorage bloqueado ou cheio, executado de verdade: os dois módulos transpilados pelo TypeScript do
+// projeto e rodados num contexto do vm com um sessionStorage que lança, um document falso e o React trocado
+// por um substituto que só chama as funções do provedor.
+{
+  const compile = (source) => ts.transpileModule(source, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+  }).outputText;
+  const classList = (initial) => {
+    const set = new Set(initial);
+    return { set, add: (...names) => names.forEach((name) => set.add(name)), remove: (...names) => names.forEach((name) => set.delete(name)) };
+  };
+  const blocked = () => {
+    throw new Error("SecurityError: armazenamento bloqueado");
+  };
+  const blockedStorage = { getItem: blocked, setItem: blocked, removeItem: blocked };
+  const media = { matches: false, addEventListener() {}, removeEventListener() {} };
+  const load = (source, globals, requires = {}) => {
+    const loaded = { exports: {} };
+    vm.runInNewContext(compile(source), { ...globals, module: loaded, exports: loaded.exports, require: (name) => requires[name] ?? {} });
+    return loaded.exports;
+  };
+  try {
+    const scriptModule = load(themeScript, {});
+    // Boot com o armazenamento bloqueado e a página vinda com "dark": fica só "light".
+    const html = classList(["dark"]);
+    vm.runInNewContext(scriptModule.THEME_BOOT_SCRIPT, {
+      sessionStorage: blockedStorage,
+      window: { matchMedia: () => media },
+      document: { documentElement: { classList: html } },
+    });
+    const bootClasses = [...html.set].join(" ");
+    if (bootClasses !== "light") errors.push(`theme-script.tsx: com o sessionStorage bloqueado e "dark" no html, o THEME_BOOT_SCRIPT deixa "${bootClasses}", esperado "light"`);
+
+    // Provedor com o armazenamento bloqueado: setTheme troca o tema da aba.
+    const reactStub = {
+      createContext: () => ({ Provider: "Provider" }),
+      useContext: () => null,
+      useEffect: () => {},
+      useSyncExternalStore: (_subscribe, getSnapshot) => getSnapshot(),
+    };
+    const jsxStub = { jsx: (type, props) => ({ type, props }) };
+    const storages = [
+      ["bloqueado", blockedStorage],
+      ["cheio (só a gravação falha)", { getItem: () => null, setItem: blocked, removeItem() {} }],
+    ];
+    for (const [label, storage] of storages) {
+      const provider = load(themeProvider, {
+        sessionStorage: storage,
+        window: { matchMedia: () => media },
+        document: { documentElement: { classList: classList(["light"]) } },
+      }, { react: reactStub, "react/jsx-runtime": jsxStub, "./theme-script": scriptModule });
+      const render = () => provider.ThemeProvider({ children: null }).props.value;
+      for (const next of ["dark", "system", "light"]) {
+        render().setTheme(next);
+        const { theme } = render();
+        if (theme !== next) errors.push(`theme-provider.tsx: com o sessionStorage ${label}, setTheme("${next}") deixa o tema em "${theme}"`);
+      }
+    }
+  } catch (error) {
+    errors.push(`tema com o sessionStorage bloqueado: não pôde ser executado: ${error.message}`);
+  }
+}
 const rootLayoutExample = tsxBlock(section(replicar, "### 4.4 "));
 if (!rootLayoutExample.includes("<ThemeScript nonce={nonce} />") || rootLayoutExample.includes("THEME_BOOT_SCRIPT")) {
   errors.push("REPLICAR 4.4: o exemplo do layout raiz deve usar <ThemeScript nonce={nonce} /> e não o THEME_BOOT_SCRIPT");
@@ -532,6 +596,7 @@ console.log("- package-lock.json na mesma versão do package.json");
 console.log("- REPLICAR.md na versão, com fases, diagnóstico, contrato observável (4.8) e DESIGN.md (4.9)");
 console.log("- DIAGNOSTICO.md com lint, regras visuais, pares de cor antigos e conferências de todo arquivo rastreado");
 console.log("- camada sem versão escrita; script de tema em módulo sem \"use client\"; DESIGN.md do modelo igual ao CSS");
+console.log("- tema com o sessionStorage bloqueado ou cheio (executado): setTheme troca o tema; o script de tema deixa só \"light\"");
 console.log("- GUIA.html na versão: do zero, existente e atualização, com e sem OpenSpec; zip sozinho, sem .sha256");
 console.log("- REPLICAR 2.1 (sistema do zero) nas versões do modelo; OpenSpec em propor, aplicar e arquivar (1.2)");
 console.log("- zip gerado, descompactado e copiado DE LÁ: sem package.json, modos 644/755, versão lida do CHANGELOG");

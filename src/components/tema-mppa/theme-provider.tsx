@@ -31,7 +31,12 @@ function subscribe(listener: () => void) {
   };
 }
 
+// Tema da aba quando o sessionStorage falha (bloqueado ou cheio): vale até recarregar a página, que volta
+// ao claro, como o THEME_BOOT_SCRIPT.
+let fallbackTheme: Theme | null = null;
+
 function readStoredTheme(): Theme {
+  if (fallbackTheme) return fallbackTheme;
   try {
     const stored = sessionStorage.getItem(THEME_STORAGE_KEY);
     return stored === "dark" || stored === "system" ? stored : "light";
@@ -66,8 +71,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   function setTheme(next: Theme) {
     try {
       sessionStorage.setItem(THEME_STORAGE_KEY, next);
+      fallbackTheme = null;
     } catch {
-      // Armazenamento bloqueado: mantém a interface operacional nesta renderização.
+      fallbackTheme = next;
     }
     notify();
   }

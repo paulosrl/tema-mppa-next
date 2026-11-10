@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.6.1 — 2026-11-10
+
+Duas correções do tema com o `sessionStorage` bloqueado, achadas na revisão de código do Heimdall. A
+aparência e a API da camada não mudam.
+
+- **`setTheme` com o armazenamento bloqueado:** o `ThemeProvider` lia o tema só do `sessionStorage`; bloqueado
+  (navegação privada, política do navegador) ou cheio, a leitura devolvia sempre "light" e o alternador não
+  trocava o tema. O comentário "mantém a interface operacional" não era verdade. Agora, quando a gravação
+  falha, o tema fica numa variável do módulo e vale para a aba até recarregar a página, que volta ao claro,
+  como o script de tema. Quando a gravação volta a funcionar, o `sessionStorage` retoma o papel.
+- **Script de tema com o armazenamento bloqueado:** o `catch` do `THEME_BOOT_SCRIPT` acrescentava `light` sem
+  tirar `dark`; uma página servida com `class="dark"` ficava com as duas classes. Agora tira `dark` antes.
+- **`verify-template`:** executa os dois casos: transpila `theme-script.tsx` e `theme-provider.tsx` com o
+  TypeScript do projeto e roda o script de tema e o provedor no `vm` do Node, com o `sessionStorage` bloqueado
+  e cheio (só a gravação falha). Os testes reprovam a 1.6.0.
+
+### Ao atualizar de 1.6.0
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+   Mudam só `theme-provider.tsx` e `theme-script.tsx`; o `camada.json` volta com os novos SHA-256 e a versão
+   1.6.1. Se o `copy-template` avisar que um deles estava editado, refaça a edição local sobre o arquivo novo.
+2. O HTML do script de tema muda (o `catch` agora tira `dark`). Teste do consumidor que compara o
+   `THEME_BOOT_SCRIPT` com um texto fixo, ou um hash de CSP calculado sobre ele, precisa ser atualizado; com o
+   `nonce` do `<ThemeScript nonce={nonce} />`, nada muda.
+3. Se o consumidor tem teste que espera o tema preso no claro com o `sessionStorage` bloqueado, ele passa a
+   falhar: o alternador agora troca o tema na aba.
+4. Troque a versão na seção "Interface" do `AGENTS.md` para 1.6.1.
+
 ## 1.6.0 — 2026-11-10
 
 Correções do que a adoção pelo Heimdall (o primeiro consumidor antigo, Fase 1) mostrou no zip, no roteiro e
