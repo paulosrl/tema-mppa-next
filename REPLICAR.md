@@ -60,8 +60,11 @@ Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "
 | **2. Telas** (seção 5) | Repinta as telas com os primitivos. | Sim. Uma entrega por tela ou grupo de telas. |
 | **3. Limpeza** (seção 6) | Tira componentes, bibliotecas e tokens antigos que ficaram sem uso. | Sim. Uma entrega. |
 | **Atualização** (seção 7) | Leva o consumidor a uma versão nova do modelo. | Sim. |
+| **Do zero** (seção 2.1) | Cria o app num repositório sem frontend, já com a casca e as telas iniciais. | Sim. Uma entrega. |
 
-Num consumidor **novo** (sem telas, sem testes de layout), as fases 1 e 2 podem ir juntas, e a 3 não existe.
+Num sistema **do zero** (repositório sem frontend), siga a seção 2.1: não há diagnóstico nem limpeza.
+Num consumidor **novo** (app recém-criado, sem telas, sem testes de layout), as fases 1 e 2 podem ir juntas,
+e a 3 não existe.
 Num consumidor **antigo**, mantenha uma fase por entrega: a Fase 1 já entrega a cara nova, e as telas mudam
 aos poucos, cada entrega pequena o bastante para revisar.
 
@@ -71,8 +74,16 @@ Antes de tudo, leia o `AGENTS.md`, o `CLAUDE.md` e o `README.md` do consumidor. 
 com este guia; em conflito sobre **como trabalhar** (branch, commit, planejamento, testes), vale o consumidor.
 Em conflito sobre **o padrão visual**, não decida: leve ao desenvolvedor no diagnóstico (item 12).
 
-- **Planejamento:** se o consumidor usa OpenSpec ou outro fluxo que exige plano revisado antes de código,
-  cada fase é uma change (ou entrega) desse fluxo, e o diagnóstico é o insumo do plano.
+- **Planejamento:** se o consumidor usa OpenSpec (pasta `openspec/`) ou outro fluxo que exige plano revisado
+  antes de código, cada fase é uma change desse fluxo, e o diagnóstico é o insumo do plano. A change anda em
+  três passos, cada um num pedido do desenvolvedor:
+  1. **Propor:** crie a change (proposta, tarefas e, se o projeto usa, design e specs) e **pare** sem
+     implementar. O desenvolvedor revisa e pede ajustes.
+  2. **Aplicar:** só quando ele aprovar, implemente as tarefas, verifique e faça o commit na branch.
+  3. **Arquivar:** depois que ele conferir a entrega, arquive a change como o OpenSpec do projeto manda e
+     faça o commit na mesma branch, antes do merge.
+
+  Sem OpenSpec nem outro fluxo, cada fase é uma branch e um commit, sem passo de proposta.
 - **Branch:** no padrão do consumidor (por exemplo, `change/<nome>`). Sem padrão, `feat/interface-tema-mppa`
   na Fase 1, `feat/interface-tema-mppa-telas-<grupo>` na 2 e `feat/interface-tema-mppa-limpeza` na 3.
 - **Testes e documentação:** rode os que o consumidor manda rodar, e atualize os documentos que ele manda
@@ -92,6 +103,43 @@ Leia o `package.json` e a estrutura de pastas do consumidor.
 | --- | --- |
 | Next.js com App Router, React 19 e Tailwind CSS 4 | **Caminho A**: copiar a camada pronta (Fase 1, seção 4). |
 | Qualquer outra (Vite, Pages Router, Tailwind 3, outro framework) | **Caminho B**: portar (seção 10). Não copie às cegas. |
+| Sem frontend (repositório vazio ou só com documentos) | **Do zero**: criar o app (seção 2.1) e seguir o Caminho A. |
+
+### 2.1 Sistema do zero
+
+O desenvolvedor informa no pedido o nome do sistema, a versão, o ano (ou anos) da versão, a pasta do
+frontend e as telas iniciais. Se faltar um desses dados, pergunte antes de começar. Não há Fase 0 (não há o
+que diagnosticar) nem Fase 3 (não há visual antigo).
+
+1. **OpenSpec:** se o desenvolvedor pediu OpenSpec e o repositório ainda não o tem, inicialize-o
+   (`openspec init`) e trabalhe numa change, como em 1.2. Sem OpenSpec, trabalhe na branch
+   `feat/interface-tema-mppa`.
+2. **App:** crie o app Next.js na pasta do frontend (a raiz do consumidor, seção 1.3), na versão do modelo:
+
+   ```bash
+   npx create-next-app@16.3.5 <pasta> --ts --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --disable-git
+   ```
+
+   Se a pasta já tem arquivos que conflitam (README, AGENTS.md), crie o app numa pasta temporária e mova-o,
+   mantendo os arquivos que já estavam. Depois fixe as versões exatas, iguais às do modelo:
+
+   ```bash
+   npm install --save-exact next@16.3.5 react@19.2.3 react-dom@19.2.3
+   npm install --save-exact --save-dev tailwindcss@4.3.3 @tailwindcss/postcss@4.3.3 typescript@5.9.3 eslint-config-next@16.3.5
+   ```
+
+   Apague a página e os estilos de exemplo do `create-next-app` (o conteúdo de `page.tsx`, o CSS além do
+   `@import "tailwindcss";` e as imagens de `public/`).
+3. **Casca:** siga a Fase 1 inteira (4.1 a 4.7 e 4.9), com os dados do pedido no `config/shell.tsx` (4.5):
+   `brand.name`, `brand.version`, `brand.versionYears` e um item de `platformNavigation` por tela inicial,
+   cada um com ícone Lucide e `tone`. A 4.8 não se aplica: não há testes antigos.
+4. **Sessão:** o sistema ainda não tem autenticação, e este modelo não a implementa. Use uma sessão fixa
+   num único arquivo (`config/sessao-provisoria.ts`), com `is_admin: false`, nome e perfil de exemplo, e um
+   comentário dizendo que ela sai quando o sistema tiver autenticação. O botão de sair não faz nada até lá.
+5. **Telas iniciais:** uma rota por tela, cada uma com `PageFrame` e uma frase que diga para que ela serve,
+   só com os primitivos (seção 5). Sem dados inventados, sem API e sem regra de negócio.
+6. **Verificação e registro:** rode a 4.10 (o item 7 não se aplica), registre no `AGENTS.md` (seção 11),
+   apague a pasta descompactada e faça o commit.
 
 ## 3. Fase 0: Diagnóstico
 

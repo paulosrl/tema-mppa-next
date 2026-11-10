@@ -33,11 +33,18 @@ na camada. A aparência não muda. A API ganha o `<ThemeScript>`; nada sai.
   sistema na raiz do frontend (`REPLICAR.md`, 4.9; a verificação da Fase 1 vira 4.10). O novo
   `verificar-design.mjs`, copiado com a camada, reprova cor diferente da do CSS, cor da camada ausente,
   referência inexistente e seção fora de ordem, sem rede e sem Vitest.
-- **Guia do desenvolvedor (`GUIA.html`):** página que vai no zip e abre direto no navegador. Diz ao
-  desenvolvedor do sistema o que fazer em cada passo e traz o prompt pronto de cada fase (0 a 3) e da
-  atualização, com o que ele confere depois de cada um. O `copy-template` a grava em `docs/tema-mppa/`, onde
-  ela fica depois que a pasta descompactada sai. O zip passa a ser o único arquivo entregue: o `empacotar`
-  não grava mais o `.sha256`.
+- **Guia do desenvolvedor (`GUIA.html`):** página que vai no zip e abre direto no navegador. O
+  desenvolvedor responde duas perguntas (situação do sistema: do zero, já existe sem o tema ou já tem o
+  tema; e se o repositório usa OpenSpec) e o guia monta os passos daquele caso, cada um com o prompt pronto
+  e o que conferir depois. No sistema do zero, nome, versão, ano e telas iniciais entram por campos e vão
+  para o prompt. O `copy-template` grava o guia em `docs/tema-mppa/`, onde ele fica depois que a pasta
+  descompactada sai. O zip passa a ser o único arquivo entregue: o `empacotar` não grava mais o `.sha256`.
+- **Sistema do zero (`REPLICAR.md`, 2.1):** num repositório sem frontend, o agente cria o app com o
+  `create-next-app` nas versões exatas do modelo, monta a casca com os dados do pedido, uma sessão
+  provisória (sem autenticação, que o modelo não implementa) e uma página por tela inicial.
+- **OpenSpec em três passos (`REPLICAR.md`, 1.2):** cada fase é uma change: propor (o agente para e o
+  desenvolvedor revisa), aplicar e arquivar, cada passo num pedido. Sem OpenSpec, cada fase é uma branch e um
+  commit.
 - **Fase 0 (`DIAGNOSTICO.md`):** pergunta pelas regras de lint desligadas no projeto inteiro e por
   `--max-warnings 0`; pelas regras visuais próprias e pelos pares de cor antigos, com o contraste recalculado;
   pelas conferências que leem todo arquivo rastreado (versão, modo, links em `.md`, cor fixa); e por um

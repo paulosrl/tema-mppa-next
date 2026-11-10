@@ -250,14 +250,23 @@ for (const needle of [`tema-mppa-next-v${packageJson.version}.zip`, `## Interfac
 }
 // Guia do desenvolvedor: na versão do modelo (nenhuma outra versão escrita) e com o prompt de cada fase.
 const guia = await read("GUIA.html");
-for (const found of guia.match(/(?<![\w.#-])\d+\.\d+\.\d+(?![\w.])/g) ?? []) {
+for (const found of guia.replace(/placeholder="[^"]*"/g, "").match(/(?<![\w.#-])\d+\.\d+\.\d+(?![\w.])/g) ?? []) {
   if (found !== packageJson.version) errors.push(`GUIA.html cita a versão ${found}, esperado ${packageJson.version}`);
 }
-for (const needle of [`tema-mppa-next-v${packageJson.version}.zip`, "Fase 0", "Fase 1", "Fase 2", "Fase 3", "seção 7", "docs/tema-mppa/GUIA.html"]) {
+for (const needle of [`var VERSAO = "${packageJson.version}";`, `tema-mppa-next-v${packageJson.version}.zip`, 'value="zero"', 'value="existente"', 'value="atualizar"', 'value="openspec"', "Fase 0", "Fase 1", "Fase 2", "Fase 3", "seção 7", "seção 2.1", "Propor", "docs/tema-mppa/GUIA.html"]) {
   if (!guia.includes(needle)) errors.push(`GUIA.html sem "${needle}"`);
 }
-for (const heading of ["## 3. Fase 0: Diagnóstico", "### 4.9 ", "### 4.10 ", "## 7. Atualizar", "## 11. Registro"]) {
+for (const heading of ["### 1.2 ", "### 2.1 ", "## 3. Fase 0: Diagnóstico", "### 4.9 ", "### 4.10 ", "## 7. Atualizar", "## 11. Registro"]) {
   if (!replicar.includes(heading)) errors.push(`GUIA.html cita a seção "${heading.trim()}", ausente do REPLICAR.md`);
+}
+// Sistema do zero (2.1): o app nasce nas versões do modelo; OpenSpec em três passos (1.2).
+const doZero = section(replicar, "### 2.1 ");
+const pins = { ...packageJson.dependencies, ...packageJson.devDependencies };
+for (const needle of [`create-next-app@${pins.next}`, `next@${pins.next}`, `react@${pins.react}`, `react-dom@${pins["react-dom"]}`, `tailwindcss@${pins.tailwindcss}`, `@tailwindcss/postcss@${pins["@tailwindcss/postcss"]}`, `typescript@${pins.typescript}`, `eslint-config-next@${pins["eslint-config-next"]}`, "openspec init"]) {
+  if (!doZero.includes(needle)) errors.push(`REPLICAR 2.1 sem "${needle}" (versões do package.json do modelo)`);
+}
+for (const needle of ["**Propor:**", "**Aplicar:**", "**Arquivar:**"]) {
+  if (!section(replicar, "### 1.2 ").includes(needle)) errors.push(`REPLICAR 1.2 sem o passo ${needle}`);
 }
 const empacotar = await read("scripts/empacotar.mjs");
 const zipFiles = ["GUIA.html", "DIAGNOSTICO.md", "DESIGN.md", "CHANGELOG.md", "scripts/verificar-camada.mjs", "scripts/verificar-design.mjs", "scripts/copy-template.mjs"];
@@ -523,7 +532,8 @@ console.log("- package-lock.json na mesma versão do package.json");
 console.log("- REPLICAR.md na versão, com fases, diagnóstico, contrato observável (4.8) e DESIGN.md (4.9)");
 console.log("- DIAGNOSTICO.md com lint, regras visuais, pares de cor antigos e conferências de todo arquivo rastreado");
 console.log("- camada sem versão escrita; script de tema em módulo sem \"use client\"; DESIGN.md do modelo igual ao CSS");
-console.log("- GUIA.html na versão, com o prompt de cada fase e da atualização; zip sozinho, sem .sha256");
+console.log("- GUIA.html na versão: do zero, existente e atualização, com e sem OpenSpec; zip sozinho, sem .sha256");
+console.log("- REPLICAR 2.1 (sistema do zero) nas versões do modelo; OpenSpec em propor, aplicar e arquivar (1.2)");
 console.log("- zip gerado, descompactado e copiado DE LÁ: sem package.json, modos 644/755, versão lida do CHANGELOG");
 console.log("- consumidor de teste compilado com os exemplos da 4.4 e da 4.5: script de tema no HTML servido, texto no servidor, contrato no HTML");
 console.log("- verificar-design: DESIGN.md do sistema aprovado, cor trocada ou ausente reprovada");

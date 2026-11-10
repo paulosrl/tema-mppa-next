@@ -19,8 +19,10 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 1. Gere o zip: `npm run empacotar`. Ele grava só `tema-mppa-next-v1.6.0.zip`, na pasta acima desta.
 2. Entregue o zip ao desenvolvedor do sistema. Ele o copia para a raiz do repositório, descompacta e abre
    `tema-mppa-next/GUIA.html` no navegador.
-3. O [`GUIA.html`](GUIA.html) diz o que ele faz em cada passo e traz o prompt pronto de cada fase e da
-   atualização, para colar no Claude Code aberto no repositório do sistema.
+3. No [`GUIA.html`](GUIA.html), ele responde duas perguntas: a situação do sistema (do zero, já existe sem o
+   tema, já tem o tema) e se o repositório usa OpenSpec. O guia monta os passos daquele caso, cada um com o
+   prompt pronto para colar no Claude Code e o que conferir depois. No sistema do zero, nome, versão, ano e
+   telas iniciais entram por campos do guia.
 
 O agente trabalha em fases, cada uma uma entrega:
 
@@ -30,6 +32,10 @@ O agente trabalha em fases, cada uma uma entrega:
 | 1. Casca | Copia a camada; liga fonte, cores e tema; configura marca, menus e sessão; troca o rodapé; ajusta os testes; cria o `DESIGN.md` do sistema | Confere as capturas e testa na mão |
 | 2. Telas | Repinta as telas com os primitivos, aos poucos | Confere cada entrega |
 | 3. Limpeza | Tira o visual antigo que ficou sem uso | Confere |
+
+Num repositório sem frontend, o caminho "do zero" (`REPLICAR.md`, 2.1) cria o app Next.js nas versões do
+modelo e monta a casca e as telas iniciais numa entrega só. Com OpenSpec, cada fase é uma change em três
+pedidos: propor (o agente para e o desenvolvedor revisa), aplicar e arquivar.
 
 Ele segue o processo do codebase (OpenSpec, padrão de branch, testes). Para levar um codebase a uma versão
 nova do modelo, o mesmo pedido serve: o `REPLICAR.md` tem a seção de atualização.
