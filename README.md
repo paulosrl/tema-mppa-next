@@ -1,6 +1,6 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.4.2**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com o
+Versão **1.5.0**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com o
 cabeçalho padrão dos sistemas:
 
 - barra lateral com abas Plataforma e Administração;
@@ -16,20 +16,32 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 
 ## Usar num codebase
 
-1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.4.2.zip` e o `.sha256` na pasta acima
+1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.5.0.zip` e o `.sha256` na pasta acima
    desta.
 2. Copie o zip para a raiz do codebase que vai receber a interface.
 3. Diga ao agente desse codebase:
 
-   > Descompacte tema-mppa-next-v1.4.2.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
+   > Descompacte tema-mppa-next-v1.5.0.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
    > interface neste codebase.
+
+O agente trabalha em fases, cada uma uma entrega:
+
+| Fase | O agente faz | O desenvolvedor faz |
+| --- | --- | --- |
+| 0. Diagnóstico | Lê o codebase e preenche o [`DIAGNOSTICO.md`](DIAGNOSTICO.md), sem mudar nada | Aprova e decide os conflitos com o padrão |
+| 1. Casca | Copia a camada; liga fonte, cores e tema; configura marca, menus e sessão; troca o rodapé; ajusta os testes | Confere as capturas e testa na mão |
+| 2. Telas | Repinta as telas com os primitivos, aos poucos | Confere cada entrega |
+| 3. Limpeza | Tira o visual antigo que ficou sem uso | Confere |
+
+Ele segue o processo do codebase (OpenSpec, padrão de branch, testes). Para levar um codebase a uma versão
+nova do modelo, o mesmo pedido serve: o `REPLICAR.md` tem a seção de atualização.
 
 O zip tem só o que o agente usa:
 
-- [`REPLICAR.md`](REPLICAR.md), o roteiro dele;
+- [`REPLICAR.md`](REPLICAR.md), o roteiro dele, e o [`DIAGNOSTICO.md`](DIAGNOSTICO.md), o formulário da Fase 0;
 - a camada visual (`src/components/tema-mppa/`);
 - as cores (`src/styles/tema-mppa.css`);
-- o script de cópia;
+- o script de cópia e o `verificar-camada.mjs`, que confere no codebase que ninguém editou a camada;
 - o protótipo, a prévia e as comparações.
 
 Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
@@ -38,14 +50,15 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 
 | Caminho | Para quê |
 | --- | --- |
-| `REPLICAR.md` | roteiro do agente no codebase consumidor |
+| `REPLICAR.md` | roteiro do agente no codebase consumidor, em fases |
+| `DIAGNOSTICO.md` | formulário da Fase 0, preenchido pelo agente no consumidor |
 | `src/components/tema-mppa/` | camada visual (shell e primitivos) |
 | `src/styles/tema-mppa.css` | tokens: cores, raio, sombra, base |
 | `src/app/` | demonstração que compila e exibe a camada (fica fora do zip) |
 | `docs/prototipo/` | protótipo aprovado; manda em todo elemento gráfico |
 | `docs/preview/` | prévia offline gerada da demonstração |
 | `docs/comparacao/` | protótipo e modelo lado a lado, claro e escuro, 1280px e 390px |
-| `scripts/` | verificação, cópia, empacotamento, prévia e capturas |
+| `scripts/` | verificação, cópia, conferência da camada no consumidor, empacotamento, prévia e capturas |
 
 ## Manter o modelo
 

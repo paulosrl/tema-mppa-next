@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import { cp, mkdir, readdir, rename, stat } from "node:fs/promises";
+import { cp, mkdir, readdir, readFile, rename, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -20,6 +21,7 @@ const targetArg = args.find((arg, index) => !arg.startsWith("--") && !valued.has
 
 if (!targetArg) {
   console.error("Uso: node scripts/copy-template.mjs /caminho/do/consumidor [--force] [--components-dir dir] [--styles-dir dir]");
+  console.error("O consumidor é a pasta do package.json do frontend (num monorepo, a subpasta do frontend).");
   console.error("Sem --components-dir/--styles-dir, usa src/components e src/styles se o consumidor tiver src/; senão, components e styles.");
   process.exit(1);
 }
@@ -45,12 +47,18 @@ const componentsDir = path.resolve(target, option("--components-dir") ?? path.jo
 const stylesDir = path.resolve(target, option("--styles-dir") ?? path.join(base, "styles"));
 const referenceDir = path.join(target, "docs/tema-mppa");
 
+const manifestPath = path.join(referenceDir, "camada.json");
+const sha256 = async (file) => createHash("sha256").update(await readFile(file)).digest("hex");
+const toPosix = (file) => file.split(path.sep).join("/");
+const { version } = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+
 const comparisons = (await readdir(path.join(root, "docs/comparacao"))).filter((name) => name.endsWith(".png"));
 
 const sources = [
   { from: path.join(root, "src/components/tema-mppa"), to: path.join(componentsDir, "tema-mppa") },
   { from: path.join(root, "src/styles/tema-mppa.css"), to: path.join(stylesDir, "tema-mppa.css") },
   { from: path.join(root, "REPLICAR.md"), to: path.join(referenceDir, "REPLICAR.md") },
+  { from: path.join(root, "scripts/verificar-camada.mjs"), to: path.join(referenceDir, "verificar-camada.mjs") },
   { from: path.join(root, "CHANGELOG.md"), to: path.join(referenceDir, "CHANGELOG.md") },
   { from: path.join(root, "docs/prototipo/index.html"), to: path.join(referenceDir, "prototipo/index.html") },
   { from: path.join(root, "docs/preview/index.html"), to: path.join(referenceDir, "preview/index.html") },
@@ -65,6 +73,20 @@ if (existing.length && !force) {
   console.error("O destino já contém arquivos do modelo. Revise o diff ou execute novamente com --force (faz backup):");
   for (const item of existing) console.error(`- ${path.relative(target, item.to)}`);
   process.exit(2);
+}
+
+// Atualização: diz quais arquivos da camada o consumidor tinha editado, antes de substituí-los.
+if (existing.length && force && existsSync(manifestPath)) {
+  const previous = JSON.parse(await readFile(manifestPath, "utf8"));
+  const edited = [];
+  for (const [relative, expected] of Object.entries(previous.arquivos ?? {})) {
+    const file = path.join(target, relative);
+    if (existsSync(file) && (await sha256(file)) !== expected) edited.push(relative);
+  }
+  if (edited.length) {
+    console.warn(`Atenção: estes arquivos da camada ${previous.versao} tinham sido editados no consumidor e vão para o backup:`);
+    for (const relative of edited) console.warn(`- ${relative}`);
+  }
 }
 
 let backupRoot;
@@ -83,16 +105,28 @@ for (const { from, to } of sources) {
   await cp(from, to, { recursive: true });
 }
 
+// Lista de conferência: versão e SHA-256 de cada arquivo da camada, lida pelo verificar-camada.mjs.
+const layerFiles = [
+  ...(await readdir(path.join(componentsDir, "tema-mppa"))).sort().map((name) => path.join(componentsDir, "tema-mppa", name)),
+  path.join(stylesDir, "tema-mppa.css"),
+];
+const files = {};
+for (const file of layerFiles) files[toPosix(path.relative(target, file))] = await sha256(file);
+const manifest = {
+  modelo: "tema-mppa-next",
+  versao: version,
+  raiz: toPosix(path.relative(referenceDir, target)),
+  componentes: toPosix(path.relative(target, path.join(componentsDir, "tema-mppa"))),
+  arquivos: files,
+};
+await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
 const rel = (to) => path.relative(target, to) || ".";
 console.log("Camada visual copiada:");
 console.log(`- componentes: ${rel(path.join(componentsDir, "tema-mppa"))}/`);
 console.log(`- cores e tokens: ${rel(path.join(stylesDir, "tema-mppa.css"))}`);
 console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (REPLICAR.md, protótipo, prévia, comparações)`);
 if (backupRoot) console.log(`Backup: ${rel(backupRoot)}`);
-console.log("Próximos passos (detalhes em docs/tema-mppa/REPLICAR.md, seções 2.2 a 7):");
-console.log("1. Fixe as dependências: react/react-dom 19.2.3, @base-ui/react 1.9.0, @tanstack/react-query 5.102.8, lucide-react 1.46.0, tailwind-merge 3.6.0, class-variance-authority 0.7.1 e clsx 2.1.1.");
-console.log(`2. Importe ${rel(path.join(stylesDir, "tema-mppa.css"))} no CSS global, depois de @import "tailwindcss".`);
-console.log("3. Carregue a Outfit, o THEME_BOOT_SCRIPT e o TemaMppaProvider no layout raiz.");
-console.log("4. Configure ShellConfig e passe a sessão existente ao AppShell; repinte as telas com os primitivos.");
-console.log("5. Execute typecheck, lint e build do consumidor e compare com docs/tema-mppa/comparacao/.");
+console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version}); confira com: node ${rel(path.join(referenceDir, "verificar-camada.mjs"))}`);
+console.log("Próximos passos: REPLICAR.md, Fase 1 (seção 4), a partir de 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).");
 console.log("Nenhum arquivo de autenticação, BFF, API, rota ou regra de negócio foi alterado.");

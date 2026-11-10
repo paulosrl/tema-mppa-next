@@ -3,4 +3,4 @@
 @custom-variant dark (&:is(.dark *));
 
 /* Só isto: a base (bordas, fundo, texto, fonte, movimento reduzido) vem do tema-mppa.css,
-   exatamente como num codebase consumidor (REPLICAR.md, seção 2.3). */
+   exatamente como num codebase consumidor (REPLICAR.md, seção 4.3). */

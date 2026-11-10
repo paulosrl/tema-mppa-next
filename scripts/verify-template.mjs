@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { appendFile, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -238,6 +240,43 @@ for (const tone of ["green", "violet", "orange"]) {
   requireContrast("escuro", dark, `tone-${tone}-foreground`, `tone-${tone}`, 4.5);
 }
 
+// Roteiro do consumidor: versão em dia, fases, diagnóstico e verificador no zip.
+const replicar = await read("REPLICAR.md");
+for (const needle of [`tema-mppa-next-v${packageJson.version}.zip`, `## Interface (tema-mppa ${packageJson.version})`, "## 3. Fase 0: Diagnóstico", "verificar-camada.mjs"]) {
+  if (!replicar.includes(needle)) errors.push(`REPLICAR.md sem "${needle}"`);
+}
+const empacotar = await read("scripts/empacotar.mjs");
+for (const file of ["DIAGNOSTICO.md", "scripts/verificar-camada.mjs", "scripts/copy-template.mjs"]) {
+  if (!empacotar.includes(`"${file}"`)) errors.push(`empacotar.mjs não leva ${file} ao zip`);
+}
+await read("DIAGNOSTICO.md");
+
+// Cópia de verdade num consumidor descartável: a lista de conferência aprova a camada intacta e
+// reprova a editada.
+const consumer = await mkdtemp(path.join(os.tmpdir(), "tema-mppa-consumidor-"));
+try {
+  await writeFile(path.join(consumer, "package.json"), "{}\n");
+  execFileSync(process.execPath, [path.join(root, "scripts/copy-template.mjs"), consumer], { stdio: "pipe" });
+  const verifier = path.join(consumer, "docs/tema-mppa/verificar-camada.mjs");
+  const run = () => {
+    try {
+      execFileSync(process.execPath, [verifier], { stdio: "pipe" });
+      return 0;
+    } catch (error) {
+      return error.status ?? 1;
+    }
+  };
+  const manifest = JSON.parse(await readFile(path.join(consumer, "docs/tema-mppa/camada.json"), "utf8"));
+  if (manifest.versao !== packageJson.version) errors.push(`camada.json na versão ${manifest.versao}, esperado ${packageJson.version}`);
+  if (run() !== 0) errors.push("verificar-camada reprova a camada recém-copiada");
+  await appendFile(path.join(consumer, "components/tema-mppa/utils.ts"), "// editado\n");
+  if (run() === 0) errors.push("verificar-camada aprova a camada editada");
+} catch (error) {
+  errors.push(`cópia para um consumidor de teste falhou: ${error.message}`);
+} finally {
+  await rm(consumer, { recursive: true, force: true });
+}
+
 if (errors.length) {
   console.error("Falhas na validação estrutural:");
   for (const error of errors) console.error(`- ${error}`);
@@ -255,3 +294,5 @@ console.log("- contraste: 7:1 no claro, 4,5:1 no escuro, ícones de tom com 4,5:
 console.log("- componentes sem cor fixa nem canto reto; título só no cabeçalho");
 console.log("- rodapé padrão: texto de brand (5 casos executados), fixo na faixa do Recolher (--shell-bar), sem corte e sem substituição");
 console.log("- package-lock.json na mesma versão do package.json");
+console.log("- REPLICAR.md na versão, com fases e diagnóstico; zip com DIAGNOSTICO.md e o verificador");
+console.log("- cópia num consumidor de teste: camada intacta aprovada, editada reprovada");

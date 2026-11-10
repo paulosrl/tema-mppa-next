@@ -10,9 +10,10 @@
 - Mantenha tokens claro/escuro em `src/styles/tema-mppa.css` e não espalhe cores fixas no shell.
 - Garanta 390 px sem rolagem horizontal da página.
 - Antes de publicar: `npm run check`; se a aparência mudou, regere a prévia e as comparações (README, "Manter o modelo"); depois `npm run empacotar`.
-- `REPLICAR.md` é o roteiro do agente no consumidor: mantenha-o em dia com a API da camada, os tokens e o script de cópia.
+- `REPLICAR.md` é o roteiro do agente no consumidor, em fases (diagnóstico, casca, telas, limpeza, atualização), e `DIAGNOSTICO.md` é o formulário da Fase 0: mantenha os dois em dia com a API da camada, os tokens e os scripts de cópia e de conferência (`copy-template.mjs`, `verificar-camada.mjs`).
+- O que um consumidor relatar que o roteiro não previu (REPLICAR.md, seção 11) entra no modelo na versão seguinte.
 - O protótipo `docs/prototipo/index.html` manda em todo elemento gráfico: raio 8px, sombra `--shadow`, fundos, borda e realce dele; título só no cabeçalho.
-- Exceção: o cabeçalho segue o padrão dos sistemas, definido em 2026-11-10 (REPLICAR.md, seção 4):
+- Exceção: o cabeçalho segue o padrão dos sistemas, definido em 2026-11-10 (REPLICAR.md, seção 9):
   - marca com nome e versão na mesma linha;
   - título com ícone de 24px;
   - busca de 224px com `Ctrl K`;

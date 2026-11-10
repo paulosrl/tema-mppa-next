@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /*
  * Gera o zip entregue aos codebases consumidores, só com o que o agente de lá usa:
- * o guia (REPLICAR.md), a camada visual, as cores, o script de cópia e a referência visual.
+ * o guia (REPLICAR.md), o formulário do diagnóstico, a camada visual, as cores, os scripts de cópia e de
+ * conferência da camada e a referência visual.
  * A demonstração Next.js e as ferramentas de manutenção ficam fora.
  *
  * Uso: npm run empacotar [-- pasta-de-saida]   (padrão: a pasta acima do modelo)
@@ -22,9 +23,11 @@ const zipPath = path.join(outputDir, zipName);
 
 const files = [
   "REPLICAR.md",
+  "DIAGNOSTICO.md",
   "CHANGELOG.md",
   "LICENSE",
   "scripts/copy-template.mjs",
+  "scripts/verificar-camada.mjs",
   "src/styles/tema-mppa.css",
   "docs/prototipo/index.html",
   "docs/preview/index.html",

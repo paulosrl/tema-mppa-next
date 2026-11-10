@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.5.0 — 2026-11-10
+
+Procedimento padrão para levar o modelo a codebases antigos, com o que o planejamento do Heimdall (o
+primeiro consumidor antigo) mostrou. A aparência e a API da camada não mudam.
+
+- **Fases:** o `REPLICAR.md` passa a trabalhar em fases, cada uma uma entrega: 0. Diagnóstico (só lê e para
+  para o desenvolvedor decidir), 1. Casca, 2. Telas (aos poucos), 3. Limpeza, e a atualização para uma
+  versão nova. Num consumidor novo, as fases 1 e 2 podem ir juntas.
+- **Diagnóstico:** novo formulário `DIAGNOSTICO.md`, que o agente preenche sem mudar nada: stack, estrutura,
+  processo do projeto, casca, menus, sessão, marca, tema, rodapé, tokens, testes afetados, conflitos com o
+  padrão e o plano por fase.
+- **Processo do consumidor:** o agente segue as regras dele (OpenSpec, padrão de branch e de commit,
+  testes); a branch `feat/interface-tema-mppa` vale só para quem não tem padrão. Conflitos com o padrão
+  visual vão ao desenvolvedor.
+- **Monorepo:** a raiz do consumidor é a pasta do `package.json` do frontend; o roteiro e o script dizem isso.
+- **Lista de conferência da camada:** o `copy-template.mjs` grava `docs/tema-mppa/camada.json` (versão e
+  SHA-256 de cada arquivo) e copia o `verificar-camada.mjs`, que reprova arquivo editado, ausente ou a mais.
+  Na atualização com `--force`, o script avisa quais arquivos estavam editados.
+- **CSP:** o exemplo do layout raiz passa o `nonce` ao script de tema.
+- **Tokens próprios do consumidor:** tabela para mapear cada um (apontar para o token da camada, manter
+  com valor completo e contraste conferido, ou remover).
+- **Testes do layout antigo:** seção própria na Fase 1, com o mínimo a cobrir.
+- **Rodapé fora da casca:** páginas públicas com rodapé usam `footerText` com a mesma marca.
+- **Retorno ao modelo:** ao fim de cada fase, o agente lista o que o roteiro não previu.
+- **`verify-template`:** confere o `REPLICAR.md` na versão, o zip com o diagnóstico e o verificador, e faz uma
+  cópia de verdade num consumidor descartável (camada intacta aprovada, editada reprovada).
+
+### Ao atualizar de 1.4.x
+
+Nada muda na camada. Rode o `copy-template.mjs --force` para ganhar a lista de conferência e o verificador,
+e troque a versão na seção "Interface" do `AGENTS.md`.
+
 ## 1.4.2 — 2026-11-10
 
 Correções da terceira revisão de código. A aparência não muda.
