@@ -16,13 +16,11 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 
 ## Usar num codebase
 
-1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.6.0.zip` e o `.sha256` na pasta acima
-   desta.
-2. Copie o zip para a raiz do codebase que vai receber a interface.
-3. Diga ao agente desse codebase:
-
-   > Descompacte tema-mppa-next-v1.6.0.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
-   > interface neste codebase.
+1. Gere o zip: `npm run empacotar`. Ele grava só `tema-mppa-next-v1.6.0.zip`, na pasta acima desta.
+2. Entregue o zip ao desenvolvedor do sistema. Ele o copia para a raiz do repositório, descompacta e abre
+   `tema-mppa-next/GUIA.html` no navegador.
+3. O [`GUIA.html`](GUIA.html) diz o que ele faz em cada passo e traz o prompt pronto de cada fase e da
+   atualização, para colar no Claude Code aberto no repositório do sistema.
 
 O agente trabalha em fases, cada uma uma entrega:
 
@@ -36,8 +34,9 @@ O agente trabalha em fases, cada uma uma entrega:
 Ele segue o processo do codebase (OpenSpec, padrão de branch, testes). Para levar um codebase a uma versão
 nova do modelo, o mesmo pedido serve: o `REPLICAR.md` tem a seção de atualização.
 
-O zip tem só o que o agente usa:
+O zip tem só o que o desenvolvedor e o agente usam:
 
+- [`GUIA.html`](GUIA.html), o guia do desenvolvedor, com os prompts;
 - [`REPLICAR.md`](REPLICAR.md), o roteiro dele, e o [`DIAGNOSTICO.md`](DIAGNOSTICO.md), o formulário da Fase 0;
 - a camada visual (`src/components/tema-mppa/`);
 - as cores (`src/styles/tema-mppa.css`);
@@ -53,6 +52,7 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 
 | Caminho | Para quê |
 | --- | --- |
+| `GUIA.html` | guia do desenvolvedor do consumidor: passos e prompts de cada fase e da atualização |
 | `REPLICAR.md` | roteiro do agente no codebase consumidor, em fases |
 | `DIAGNOSTICO.md` | formulário da Fase 0, preenchido pelo agente no consumidor |
 | `DESIGN.md` | tokens e intenção do design da camada (formato DESIGN.md), conferido contra o CSS |

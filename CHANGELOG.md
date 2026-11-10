@@ -33,6 +33,11 @@ na camada. A aparência não muda. A API ganha o `<ThemeScript>`; nada sai.
   sistema na raiz do frontend (`REPLICAR.md`, 4.9; a verificação da Fase 1 vira 4.10). O novo
   `verificar-design.mjs`, copiado com a camada, reprova cor diferente da do CSS, cor da camada ausente,
   referência inexistente e seção fora de ordem, sem rede e sem Vitest.
+- **Guia do desenvolvedor (`GUIA.html`):** página que vai no zip e abre direto no navegador. Diz ao
+  desenvolvedor do sistema o que fazer em cada passo e traz o prompt pronto de cada fase (0 a 3) e da
+  atualização, com o que ele confere depois de cada um. O `copy-template` a grava em `docs/tema-mppa/`, onde
+  ela fica depois que a pasta descompactada sai. O zip passa a ser o único arquivo entregue: o `empacotar`
+  não grava mais o `.sha256`.
 - **Fase 0 (`DIAGNOSTICO.md`):** pergunta pelas regras de lint desligadas no projeto inteiro e por
   `--max-warnings 0`; pelas regras visuais próprias e pelos pares de cor antigos, com o contraste recalculado;
   pelas conferências que leem todo arquivo rastreado (versão, modo, links em `.md`, cor fixa); e por um

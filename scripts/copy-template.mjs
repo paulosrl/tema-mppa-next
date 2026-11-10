@@ -63,6 +63,7 @@ const comparisons = (await readdir(path.join(root, "docs/comparacao"))).filter((
 const sources = [
   { from: path.join(root, "src/components/tema-mppa"), to: path.join(componentsDir, "tema-mppa") },
   { from: path.join(root, "src/styles/tema-mppa.css"), to: path.join(stylesDir, "tema-mppa.css") },
+  { from: path.join(root, "GUIA.html"), to: path.join(referenceDir, "GUIA.html") },
   { from: path.join(root, "REPLICAR.md"), to: path.join(referenceDir, "REPLICAR.md") },
   { from: path.join(root, "scripts/verificar-camada.mjs"), to: path.join(referenceDir, "verificar-camada.mjs") },
   { from: path.join(root, "scripts/verificar-design.mjs"), to: path.join(referenceDir, "verificar-design.mjs") },
@@ -155,7 +156,7 @@ const rel = (to) => path.relative(target, to) || ".";
 console.log("Camada visual copiada:");
 console.log(`- componentes: ${rel(path.join(componentsDir, "tema-mppa"))}/`);
 console.log(`- cores e tokens: ${rel(path.join(stylesDir, "tema-mppa.css"))}`);
-console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (REPLICAR.md, DESIGN.md, protótipo, prévia, comparações)`);
+console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (GUIA.html, REPLICAR.md, DESIGN.md, protótipo, prévia, comparações)`);
 if (backupRoot) console.log(`Backup: ${rel(backupRoot)}`);
 console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version}); confira com: node ${rel(path.join(referenceDir, "verificar-camada.mjs"))}`);
 console.log(`- conferência do DESIGN.md do sistema: node ${rel(path.join(referenceDir, "verificar-design.mjs"))} --css <CSS com os tokens próprios>`);

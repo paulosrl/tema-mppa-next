@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do Tema MPPA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
+<style>
+/* Guia do desenvolvedor que recebe o zip. Cores do tema MPPA (styles/tema-mppa.css); abre direto no navegador. */
+:root {
+  --bg: #ffffff;
+  --card: #fafafa;
+  --fg: #18181b;
+  --muted: #f4f4f5;
+  --border: #d4d4d8;
+  --primary: #9f0712;
+  --primary-fg: #ffffff;
+  --highlight: #fee2e2;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+  --font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, monospace;
+  --radius: 8px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #09090b;
+    --card: #18181b;
+    --fg: #fafafa;
+    --muted: #27272a;
+    --border: rgba(255, 255, 255, 0.12);
+    --primary: #ef4444;
+    --primary-fg: #09090b;
+    --highlight: #351518;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55; padding: 0 16px; }
+.wrap { max-width: 780px; margin: 0 auto; padding: 40px 0 64px; display: grid; gap: 28px; }
+h1, h2, h3 { margin: 0; line-height: 1.2; text-wrap: balance; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.05rem; }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 1.25em; display: grid; gap: 4px; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--muted); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+a { color: var(--primary); font-weight: 600; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.eyebrow { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--primary); }
+header { display: grid; gap: 10px; }
+.lead { max-width: 64ch; }
+.paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.path { display: grid; gap: 4px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); color: var(--fg); text-decoration: none; font-weight: 400; box-shadow: var(--shadow); }
+.path strong { color: var(--primary); }
+.part { display: grid; gap: 16px; padding-top: 8px; }
+.part > h2 { padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; display: grid; gap: 14px; min-width: 0; }
+.card.is-done { background: var(--muted); }
+.step-head { display: flex; align-items: flex-start; gap: 12px; }
+.num { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: var(--primary-fg); display: grid; place-items: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.step-title { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.done { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer; white-space: nowrap; }
+.done input { width: 18px; height: 18px; accent-color: var(--primary); }
+.label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+.prompt { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--bg); min-width: 0; }
+.prompt-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--muted); }
+.prompt-bar span { font-size: 0.85rem; font-weight: 600; }
+.prompt pre { margin: 0; padding: 14px; font-family: var(--mono); font-size: 0.82rem; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+button.copy { font: inherit; font-size: 0.85rem; font-weight: 600; border: 0; border-radius: 6px; padding: 6px 12px; background: var(--primary); color: var(--primary-fg); cursor: pointer; }
+.you { border-left: 3px solid var(--primary); padding-left: 14px; display: grid; gap: 6px; }
+.note { background: var(--highlight); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; }
+.repeat { font-size: 0.85rem; font-weight: 600; background: var(--highlight); border-radius: 999px; padding: 2px 10px; justify-self: start; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+@media (max-width: 520px) {
+  h1 { font-size: 1.6rem; }
+  .step-head { flex-wrap: wrap; }
+  .done { margin-left: 44px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">tema-mppa-next 1.6.0 · guia do desenvolvedor</span>
+    <h1>Guia do Tema MPPA</h1>
+    <p class="lead">Como levar a interface padrão dos sistemas do MPPA ao seu repositório com o Claude Code. Em cada passo: onde abrir, o prompt para colar e o que você confere depois. O trabalho é do agente; o seu é decidir e conferir.</p>
+  </header>
+
+  <nav class="paths" aria-label="Escolha o caminho">
+    <a class="path" href="#adotar"><strong>O sistema ainda não tem o tema</strong><span>Adoção em fases: diagnóstico, casca, telas e limpeza.</span></a>
+    <a class="path" href="#atualizar"><strong>O sistema já tem o tema</strong><span>Atualização para a 1.6.0, num passo só.</span></a>
+  </nav>
+
+  <section class="card" data-step="preparar">
+    <div class="step-head">
+      <span class="num">0</span>
+      <div class="step-title"><h2>Preparar</h2><p>Vale para os dois caminhos.</p></div>
+      <label class="done"><input type="checkbox" id="done-preparar"> Feito</label>
+    </div>
+    <ol>
+      <li>Confira que a <code>main</code> do sistema está limpa e funcionando.</li>
+      <li>Copie <code>tema-mppa-next-v1.6.0.zip</code> para a raiz do repositório do sistema e descompacte. Ele cria a pasta <code>tema-mppa-next/</code>, de onde você abriu este guia. Não faça commit dela nem do zip.</li>
+      <li>Abra o Claude Code no repositório do sistema, numa conversa nova:
+        <ul>
+          <li><strong>VS Code:</strong> Arquivo › Abrir Pasta… › pasta do repositório; depois, o painel do Claude Code;</li>
+          <li><strong>terminal:</strong> entre na pasta do repositório e rode <code>claude</code>.</li>
+        </ul>
+      </li>
+    </ol>
+    <p>Depois da Fase 1, a pasta <code>tema-mppa-next/</code> é apagada e este guia passa a ficar em <code>docs/tema-mppa/GUIA.html</code>.</p>
+  </section>
+
+  <section class="part" id="adotar">
+    <h2>O sistema ainda não tem o tema</h2>
+
+    <section class="card" data-step="fase0">
+      <div class="step-head">
+        <span class="num">1</span>
+        <div class="step-title"><h3>Fase 0: diagnóstico</h3><p>O agente só lê o repositório e para.</p></div>
+        <label class="done"><input type="checkbox" id="done-fase0"> Feito</label>
+      </div>
+      <div class="prompt">
+        <div class="prompt-bar"><span>Prompt da Fase 0</span><button class="copy" type="button">Copiar</button></div>
+<pre>Leia tema-mppa-next/REPLICAR.md inteiro e faça só a Fase 0 (diagnóstico):
+- preencha o formulário tema-mppa-next/DIAGNOSTICO.md lendo este repositório, sem mudar nenhum arquivo dele;
+- grave o diagnóstico onde o processo deste repositório manda; sem processo, em docs/tema-mppa/diagnostico.md;
+- não faça commit.
+
+No fim, me diga em poucas linhas e sem jargão: onde gravou o diagnóstico, o que a Fase 1 vai mudar e, um por um, os conflitos com o padrão (item 12), cada um com a sua recomendação. Pare aí e espere eu decidir.</pre>
+      </div>
+      <div class="you">
+        <span class="label">Depois, você</span>
+        <ol>
+          <li>Abre o diagnóstico no caminho que o agente informou e vai ao item 12.</li>
+          <li>Embaixo de cada conflito em que discorda da recomendação, escreve <code>Decisão: …</code>.</li>
+          <li>Onde concorda, não escreve nada: o prompt da Fase 1 manda seguir a recomendação.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="card" data-step="fase1">
+      <div class="step-head">
+        <span class="num">2</span>
+        <div class="step-title"><h3>Fase 1: casca</h3><p>Cabeçalho, menu, rodapé, cores, tema e o <code>DESIGN.md</code> do sistema.</p></div>
+        <label class="done"><input type="checkbox" id="done-fase1"> Feito</label>
+      </div>
+      <div class="prompt">
+        <div class="prompt-bar"><span>Prompt da Fase 1</span><button class="copy" type="button">Copiar</button></div>
+<pre>Diagnóstico aprovado. As minhas decisões estão no item 12 do diagnóstico; onde não escrevi decisão, siga a sua recomendação.
+
+Faça a Fase 1 (casca) do tema-mppa-next/REPLICAR.md, de ponta a ponta, sem me perguntar nada no meio:
+- trabalhe numa branch no padrão deste repositório; se ele usa OpenSpec ou outro fluxo de plano, crie a change e siga em frente: este pedido vale como aprovação do plano;
+- não edite a camada copiada e não mexa em autenticação, API, BFF nem regra de negócio; o que é do sistema entra por configuração;
+- crie o DESIGN.md do sistema (4.9);
+- rode a verificação da 4.10 e os testes, o lint, o typecheck e o build que este repositório manda rodar; tudo tem de passar;
+- capture as telas principais em 390px e na largura de desktop, nos temas claro e escuro, antes (main) e depois (branch);
+- apague a pasta tema-mppa-next/ como o roteiro manda e faça o commit na branch. Não faça merge nem push.
+
+Pare e me relate se um teste só passar editando a camada ou regra de negócio, ou se aparecer uma decisão que é minha.
+
+Relatório final, curto e sem jargão: nome da branch, o que mudou, o resultado de cada teste, onde estão as capturas e o que o roteiro não previu (seção 11).</pre>
+      </div>
+      <div class="you">
+        <span class="label">Depois, você</span>
+        <ol>
+          <li>Olha as capturas, antes e depois.</li>
+          <li>Roda o sistema e testa na mão:
+            <ul>
+              <li>recolher o menu;</li>
+              <li>tema claro, escuro e sistema;</li>
+              <li>busca com <code>Ctrl K</code> e botão de sair;</li>
+              <li>aba Administração só com perfil de administrador;</li>
+              <li>celular em 390px, sem rolagem para o lado.</li>
+            </ul>
+          </li>
+          <li>Se estiver certo, junta a branch na <code>main</code> do jeito de sempre.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="card" data-step="fase2">
+      <div class="step-head">
+        <span class="num">3</span>
+        <div class="step-title"><h3>Fase 2: telas</h3><p>Uma entrega por tela ou grupo, na ordem do item 14 do diagnóstico.</p></div>
+        <label class="done"><input type="checkbox" id="done-fase2"> Feito</label>
+      </div>
+      <span class="repeat">Repita até o relatório dizer que não falta nada</span>
+      <div class="prompt">
+        <div class="prompt-bar"><span>Prompt da Fase 2</span><button class="copy" type="button">Copiar</button></div>
+<pre>Faça a próxima entrega da Fase 2 (telas) do docs/tema-mppa/REPLICAR.md: a próxima tela ou grupo de telas do plano do diagnóstico (item 14) que ainda não foi feito.
+- branch nova no padrão deste repositório; se ele usa OpenSpec ou outro fluxo de plano, crie a change e siga: este pedido vale como aprovação;
+- só a apresentação muda: lógica, chamadas e estado das páginas ficam como estão;
+- use só os primitivos da camada e não edite a camada;
+- rode todos os testes que este repositório manda rodar e capture as telas desta entrega em 390px e desktop, nos dois temas, antes e depois;
+- commit na branch, sem merge nem push.
+
+Relatório final, curto e sem jargão: telas feitas, testes, onde estão as capturas, o que ainda falta do item 14 e o que o roteiro não previu (seção 11).</pre>
+      </div>
+      <div class="you">
+        <span class="label">Depois de cada entrega, você</span>
+        <ol>
+          <li>Confere as capturas e abre as telas da entrega.</li>
+          <li>Junta na <code>main</code>.</li>
+          <li>Se o relatório disser que ainda falta tela, cola o mesmo prompt de novo.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="card" data-step="fase3">
+      <div class="step-head">
+        <span class="num">4</span>
+        <div class="step-title"><h3>Fase 3: limpeza</h3><p>Quando nenhuma tela usar mais o visual antigo.</p></div>
+        <label class="done"><input type="checkbox" id="done-fase3"> Feito</label>
+      </div>
+      <div class="prompt">
+        <div class="prompt-bar"><span>Prompt da Fase 3</span><button class="copy" type="button">Copiar</button></div>
+<pre>Faça a Fase 3 (limpeza) do docs/tema-mppa/REPLICAR.md. Antes, confira que nenhuma tela usa mais o visual antigo; se alguma usa, pare e me diga quais.
+- branch nova no padrão deste repositório;
+- remova os componentes de UI, as bibliotecas e os tokens antigos que ficaram sem uso, também do DESIGN.md, e regenere o lock;
+- confira com busca no código que nada importa o que saiu e rode a verificação da 4.10 e todos os testes;
+- commit na branch, sem merge nem push.
+
+Relatório final, curto e sem jargão: o que saiu, testes e o que o roteiro não previu (seção 11).</pre>
+      </div>
+      <div class="you">
+        <span class="label">Depois, você</span>
+        <ol>
+          <li>Roda o sistema uma última vez e confere as telas principais.</li>
+          <li>Junta na <code>main</code>.</li>
+        </ol>
+      </div>
+    </section>
+  </section>
+
+  <section class="part" id="atualizar">
+    <h2>O sistema já tem o tema</h2>
+
+    <section class="card" data-step="atualizar">
+      <div class="step-head">
+        <span class="num">1</span>
+        <div class="step-title"><h3>Atualizar para a 1.6.0</h3><p>Depois do passo 0 (Preparar), com o zip novo descompactado na raiz.</p></div>
+        <label class="done"><input type="checkbox" id="done-atualizar"> Feito</label>
+      </div>
+      <div class="prompt">
+        <div class="prompt-bar"><span>Prompt da atualização</span><button class="copy" type="button">Copiar</button></div>
+<pre>Atualize a interface tema-mppa deste repositório para a 1.6.0, de ponta a ponta, sem me perguntar nada no meio. A main está funcionando e não pode ser tocada.
+
+- Leia tema-mppa-next/REPLICAR.md e siga a seção 7 (atualização) à risca.
+- Faça os passos da seção "Ao atualizar de" do tema-mppa-next/CHANGELOG.md de cada versão entre a atual deste sistema e a 1.6.0, inclusive tirar os contornos locais que a versão nova tornou desnecessários.
+- Trabalhe numa branch no padrão deste repositório; se ele usa OpenSpec ou outro fluxo de plano, crie a change e siga em frente: este pedido vale como aprovação do plano.
+- Não edite a camada e não mexa em autenticação, API, BFF nem regra de negócio; o que é do sistema entra por configuração.
+- Rode a verificação da 4.10 e os testes, o lint, o typecheck e o build que este repositório manda rodar; tudo tem de passar.
+- Capture as telas principais em 390px e na largura de desktop, nos temas claro e escuro, na main e na branch, e compare. Se o CHANGELOG não anuncia mudança de aparência, diferença visual é defeito: corrija ou relate.
+- Atualize a versão na seção "Interface" do AGENTS.md, apague a pasta tema-mppa-next/ e faça o commit na branch. Não faça merge nem push.
+
+Pare e me relate se um teste só passar editando a camada ou regra de negócio, ou se aparecer uma decisão que é minha.
+
+Relatório final, curto e sem jargão: nome da branch, o que mudou e quais contornos locais saíram, o resultado de cada teste, onde estão as capturas e se houve diferença, e o que o roteiro não previu (seção 11).</pre>
+      </div>
+      <div class="you">
+        <span class="label">Depois, você</span>
+        <ol>
+          <li>Olha as capturas e testa o sistema na mão, como na Fase 1.</li>
+          <li>Se estiver certo, junta a branch na <code>main</code>.</li>
+        </ol>
+      </div>
+    </section>
+  </section>
+
+  <section class="note">
+    <h3>O que o roteiro não previu</h3>
+    <p>Todo relatório termina com os itens da seção 11. Se vier algum, mande ao responsável pelo modelo tema-mppa-next: eles entram na versão seguinte, e o próximo sistema já recebe o roteiro corrigido.</p>
+  </section>
+
+  <section class="card">
+    <h2>Arquivos</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Caminho no sistema</th><th>O que é</th><th>Você mexe?</th></tr></thead>
+        <tbody>
+          <tr><td><code>tema-mppa-next-v1.6.0.zip</code></td><td>O pacote do modelo. Fica fora do git.</td><td>Não</td></tr>
+          <tr><td><code>tema-mppa-next/</code></td><td>O zip descompactado. Sai na Fase 1 ou na atualização.</td><td>Não</td></tr>
+          <tr><td><code>docs/tema-mppa/diagnostico.md</code></td><td>O diagnóstico da Fase 0. Com OpenSpec ou outro processo, fica onde ele manda; o agente diz onde.</td><td><strong>Sim, item 12</strong></td></tr>
+          <tr><td><code>docs/tema-mppa/</code></td><td>Referência que fica no sistema: este guia, o roteiro, o protótipo e os verificadores.</td><td>Não</td></tr>
+          <tr><td><code>components/tema-mppa/</code> e <code>styles/tema-mppa.css</code></td><td>A camada visual (dentro de <code>src/</code>, se o sistema usa). Ninguém edita: o verificador reprova.</td><td>Não</td></tr>
+          <tr><td><code>DESIGN.md</code></td><td>O design do sistema, criado na Fase 1.</td><td>Não</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  document.querySelectorAll(".prompt").forEach(function (box) {
+    var button = box.querySelector("button.copy");
+    var pre = box.querySelector("pre");
+    var reset = function (delay) { setTimeout(function () { button.textContent = "Copiar"; }, delay); };
+    var select = function () {
+      var range = document.createRange();
+      range.selectNodeContents(pre);
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      button.textContent = "Selecionado: Ctrl C";
+      reset(2400);
+    };
+    button.addEventListener("click", function () {
+      try {
+        if (!navigator.clipboard || !navigator.clipboard.writeText) return select();
+        navigator.clipboard.writeText(pre.textContent).then(function () { button.textContent = "Copiado"; reset(1600); }, select);
+      } catch (error) { select(); }
+    });
+  });
+
+  var key = "tema-mppa-guia-passos";
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(key) || "{}") || {}; } catch (error) { state = {}; }
+  document.querySelectorAll("[data-step]").forEach(function (card) {
+    var id = card.getAttribute("data-step");
+    var box = card.querySelector(".done input");
+    var apply = function () { card.classList.toggle("is-done", box.checked); };
+    box.checked = Boolean(state[id]);
+    apply();
+    box.addEventListener("change", function () {
+      state[id] = box.checked;
+      apply();
+      try { localStorage.setItem(key, JSON.stringify(state)); } catch (error) { /* sem armazenamento: as marcas valem só nesta aba */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 /*
- * Gera o zip entregue aos codebases consumidores, só com o que o agente de lá usa:
- * o guia (REPLICAR.md), o formulário do diagnóstico, o DESIGN.md da camada, a camada visual, as cores, os
- * scripts de cópia e de conferência (da camada e do DESIGN.md) e a referência visual.
+ * Gera o zip entregue aos codebases consumidores, só com o que o desenvolvedor e o agente de lá usam:
+ * o guia do desenvolvedor (GUIA.html), o roteiro do agente (REPLICAR.md), o formulário do diagnóstico, o
+ * DESIGN.md da camada, a camada visual, as cores, os scripts de cópia e de conferência (da camada e do
+ * DESIGN.md) e a referência visual.
  * Cada entrada sai com modo fixo: 644, e 755 só para script com shebang, seja qual for o modo na pasta.
  * A demonstração Next.js e as ferramentas de manutenção ficam fora.
  *
  * Uso: npm run empacotar [-- pasta-de-saida]   (padrão: a pasta acima do modelo)
- * Gera tema-mppa-next-v<versão>.zip e o .sha256 ao lado. Requer o comando `zip`.
+ * Gera só tema-mppa-next-v<versão>.zip. Requer o comando `zip`.
  */
 import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
-import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -23,6 +23,7 @@ const zipName = `tema-mppa-next-v${version}.zip`;
 const zipPath = path.join(outputDir, zipName);
 
 const files = [
+  "GUIA.html",
   "REPLICAR.md",
   "DIAGNOSTICO.md",
   "CHANGELOG.md",
@@ -59,8 +60,4 @@ try {
   rmSync(staging, { recursive: true, force: true });
 }
 
-const hash = createHash("sha256").update(readFileSync(zipPath)).digest("hex");
-writeFileSync(`${zipPath}.sha256`, `${hash}  ${zipName}\n`);
-
 console.log(`${zipPath} (${files.length} arquivos)`);
-console.log(`${hash}  ${zipName}`);

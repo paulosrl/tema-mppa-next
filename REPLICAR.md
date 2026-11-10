@@ -95,7 +95,8 @@ Leia o `package.json` e a estrutura de pastas do consumidor.
 
 ## 3. Fase 0: Diagnóstico
 
-1. Descompacte o zip na raiz do repositório (`unzip tema-mppa-next-v1.6.0.zip`); ele cria `tema-mppa-next/`.
+1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
+   (`unzip tema-mppa-next-v1.6.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -120,7 +121,8 @@ O script detecta a estrutura do consumidor:
 
 Use `--components-dir` e `--styles-dir` para outro lugar. Ele também grava em `docs/tema-mppa/`:
 
-- a referência visual (protótipo, prévia, comparações), este guia e o CHANGELOG do modelo;
+- a referência visual (protótipo, prévia, comparações), este guia, o `GUIA.html` do desenvolvedor (os
+  prompts de cada fase) e o CHANGELOG do modelo;
 - `DESIGN.md`, os tokens e a intenção do design da camada no formato DESIGN.md (ponto de partida da 4.9), e
   `verificar-design.mjs`, que confere um DESIGN.md contra o CSS;
 - `camada.json`, a lista de conferência: a versão do modelo e o SHA-256 de cada arquivo da camada;

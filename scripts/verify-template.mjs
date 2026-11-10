@@ -248,8 +248,19 @@ const diagnostico = await read("DIAGNOSTICO.md");
 for (const needle of [`tema-mppa-next-v${packageJson.version}.zip`, `## Interface (tema-mppa ${packageJson.version})`, "## 3. Fase 0: Diagnóstico", "verificar-camada.mjs", "verificar-design.mjs"]) {
   if (!replicar.includes(needle)) errors.push(`REPLICAR.md sem "${needle}"`);
 }
+// Guia do desenvolvedor: na versão do modelo (nenhuma outra versão escrita) e com o prompt de cada fase.
+const guia = await read("GUIA.html");
+for (const found of guia.match(/(?<![\w.#-])\d+\.\d+\.\d+(?![\w.])/g) ?? []) {
+  if (found !== packageJson.version) errors.push(`GUIA.html cita a versão ${found}, esperado ${packageJson.version}`);
+}
+for (const needle of [`tema-mppa-next-v${packageJson.version}.zip`, "Fase 0", "Fase 1", "Fase 2", "Fase 3", "seção 7", "docs/tema-mppa/GUIA.html"]) {
+  if (!guia.includes(needle)) errors.push(`GUIA.html sem "${needle}"`);
+}
+for (const heading of ["## 3. Fase 0: Diagnóstico", "### 4.9 ", "### 4.10 ", "## 7. Atualizar", "## 11. Registro"]) {
+  if (!replicar.includes(heading)) errors.push(`GUIA.html cita a seção "${heading.trim()}", ausente do REPLICAR.md`);
+}
 const empacotar = await read("scripts/empacotar.mjs");
-const zipFiles = ["DIAGNOSTICO.md", "DESIGN.md", "CHANGELOG.md", "scripts/verificar-camada.mjs", "scripts/verificar-design.mjs", "scripts/copy-template.mjs"];
+const zipFiles = ["GUIA.html", "DIAGNOSTICO.md", "DESIGN.md", "CHANGELOG.md", "scripts/verificar-camada.mjs", "scripts/verificar-design.mjs", "scripts/copy-template.mjs"];
 for (const file of zipFiles) {
   if (!empacotar.includes(`"${file}"`)) errors.push(`empacotar.mjs não leva ${file} ao zip`);
 }
@@ -368,6 +379,8 @@ try {
   await mkdir(zipDir);
   execFileSync(process.execPath, [path.join(root, "scripts/empacotar.mjs"), zipDir], { stdio: "pipe" });
   const zipPath = path.join(zipDir, `tema-mppa-next-v${packageJson.version}.zip`);
+  const zipOutput = await readdir(zipDir);
+  if (zipOutput.join() !== path.basename(zipPath)) errors.push(`empacotar deve gerar só o zip; gerou: ${zipOutput.join(", ")}`);
 
   // Modo de cada entrada: 644, e 755 só para script com shebang.
   const listing = execFileSync("unzip", ["-Z", zipPath], { encoding: "utf8" }).split("\n").filter((line) => /^[-d]r/.test(line));
@@ -395,7 +408,7 @@ try {
     const expectedMode = (await hasShebang(file)) ? 0o755 : 0o644;
     if ((await modeOf(file)) !== expectedMode) errors.push(`consumidor: ${path.relative(consumer, file)} com modo ${(await modeOf(file)).toString(8)}, esperado ${expectedMode.toString(8)}`);
   }
-  for (const file of ["DESIGN.md", "verificar-design.mjs", "verificar-camada.mjs", "REPLICAR.md"]) {
+  for (const file of ["GUIA.html", "DESIGN.md", "verificar-design.mjs", "verificar-camada.mjs", "REPLICAR.md"]) {
     if (!existsSync(path.join(reference, file))) errors.push(`consumidor sem docs/tema-mppa/${file}`);
   }
 
@@ -510,6 +523,7 @@ console.log("- package-lock.json na mesma versão do package.json");
 console.log("- REPLICAR.md na versão, com fases, diagnóstico, contrato observável (4.8) e DESIGN.md (4.9)");
 console.log("- DIAGNOSTICO.md com lint, regras visuais, pares de cor antigos e conferências de todo arquivo rastreado");
 console.log("- camada sem versão escrita; script de tema em módulo sem \"use client\"; DESIGN.md do modelo igual ao CSS");
+console.log("- GUIA.html na versão, com o prompt de cada fase e da atualização; zip sozinho, sem .sha256");
 console.log("- zip gerado, descompactado e copiado DE LÁ: sem package.json, modos 644/755, versão lida do CHANGELOG");
 console.log("- consumidor de teste compilado com os exemplos da 4.4 e da 4.5: script de tema no HTML servido, texto no servidor, contrato no HTML");
 console.log("- verificar-design: DESIGN.md do sistema aprovado, cor trocada ou ausente reprovada");
