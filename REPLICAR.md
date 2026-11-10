@@ -61,7 +61,7 @@ estiver lá, `*.tsbuildinfo`, para nada disso entrar no commit.
 
 ### 2.1 Copiar
 
-Descompacte o zip (`unzip tema-mppa-next-v1.4.0.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
+Descompacte o zip (`unzip tema-mppa-next-v1.4.1.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
 consumidor:
 
 ```bash
@@ -389,8 +389,9 @@ Cabeçalho (igual em todos os sistemas):
 
 Rodapé (igual em todos os sistemas), montado pela camada a partir de `brand` (seção 2.5):
 
-- **A partir de 801px:** 56px fixos no pé da tela, na mesma linha do "Recolher", com até 3 linhas de
-  texto (o texto completo aparece ao passar o mouse).
+- **A partir de 801px:** fixo no pé da tela, na faixa do "Recolher", com a mesma altura (56px, token
+  `--shell-bar`) e a mesma borda.
+- **Texto:** nunca é cortado. Até 3 linhas cabem em 56px; com um nome muito longo, o rodapé cresce.
 - **No celular:** fica no fim da página, com a altura do texto.
 - **Aparência:** borda superior e texto `text-xs` centralizado, na cor secundária.
 
@@ -442,7 +443,7 @@ Os valores não mudam; só a forma.
    também. Troque `<pasta>` pelos caminhos reais (por exemplo, `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.4.0)
+## Interface (tema-mppa 1.4.1)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Atualize copiando uma versão nova do modelo.

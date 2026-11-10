@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.4.1 — 2026-11-10
+
+Correções da segunda revisão de código do rodapé. A aparência não muda.
+
+- **Texto institucional nunca cortado:** sai o limite de 3 linhas (`line-clamp`) e a dica no `title`. Até 3
+  linhas cabem em 56px; com um nome muito longo, o rodapé cresce em vez de esconder texto.
+- **Uma altura para as faixas:** token `--shell-bar` (56px), usado pelo cabeçalho, pela marca, pelo
+  "Recolher" e pelo rodapé (`h-(--shell-bar)`), no lugar de quatro `h-14` soltos.
+- **Uma borda para as faixas:** `--sidebar-border` passa a ser `var(--border)` nos dois temas, e o rodapé
+  usa a mesma borda do "Recolher". O valor não muda.
+- **Nome ausente:** `footerText` aguenta `brand.name` vazio ou ausente (sistemas em JavaScript ou com
+  configuração lida em tempo de execução) sem derrubar o shell; a parte vazia sai do texto.
+- **`verify-template`:**
+  - falha, em vez de só avisar, quando não consegue executar `footerText`;
+  - procura qualquer menção à propriedade `footer` no tipo e no componente;
+  - proíbe cortar o texto do rodapé;
+  - confere o token de altura nas faixas e a versão do `package-lock.json`;
+  - testa cinco casos.
+- **Node mínimo 22.18** (`engines`), a primeira versão 22 que executa TypeScript sem configuração.
+- **`package-lock.json`** volta a ter a versão do `package.json`.
+
 ## 1.4.0 — 2026-11-10
 
 Correções do rodapé da 1.3.0, apontadas na revisão de código. A aparência do resto da interface não muda.

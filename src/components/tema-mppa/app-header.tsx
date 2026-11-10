@@ -31,7 +31,7 @@ export function AppHeader({
   const BackIcon = config.header?.backLink?.icon;
 
   return (
-    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background px-3 sm:px-4">
+    <header className="sticky top-0 z-20 flex h-(--shell-bar) shrink-0 items-center gap-2 border-b bg-background px-3 sm:px-4">
       <button
         type="button"
         className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "-ml-1 desk:hidden")}

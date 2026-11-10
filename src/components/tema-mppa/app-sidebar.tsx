@@ -30,7 +30,7 @@ function Brand({ config }: { config: ShellConfig }) {
   const { collapsed, hideWhenCollapsed } = useCompact();
   const { brand } = config;
   return (
-    <div className={cn("flex h-14 shrink-0 items-center border-b border-sidebar-border px-2", collapsed && "desk:justify-center")}>
+    <div className={cn("flex h-(--shell-bar) shrink-0 items-center border-b border-sidebar-border px-2", collapsed && "desk:justify-center")}>
       <Link
         href={brand.homeHref}
         onClick={() => setMobileOpen(false)}
@@ -166,7 +166,7 @@ export function AppSidebar({ config, session }: { config: ShellConfig; session: 
         <Brand config={config} />
         <MobileLogos config={config} />
         <SidebarBody config={config} session={session} />
-        <div className={cn("flex h-14 shrink-0 items-center justify-between gap-2 border-t border-sidebar-border px-2.5", collapsed && "desk:justify-center")}>
+        <div className={cn("flex h-(--shell-bar) shrink-0 items-center justify-between gap-2 border-t border-sidebar-border px-2.5", collapsed && "desk:justify-center")}>
           <span className={cn("truncate text-sm font-bold text-sidebar-foreground", hideWhenCollapsed)}>
             {config.sidebarShortcutLabel ?? "Recolher"}
           </span>

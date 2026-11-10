@@ -32,6 +32,11 @@ for (const [name, version] of Object.entries(expected)) {
   if (actual !== version) errors.push(`${name}: esperado ${version}, encontrado ${actual ?? "ausente"}`);
 }
 
+const lock = JSON.parse(await read("package-lock.json"));
+if (lock.version !== packageJson.version || lock.packages?.[""]?.version !== packageJson.version) {
+  errors.push(`package-lock.json na versão ${lock.version}; package.json na ${packageJson.version} (rode npm install --package-lock-only)`);
+}
+
 const changelog = await read("CHANGELOG.md");
 if (!changelog.includes(`## ${packageJson.version} `)) errors.push(`CHANGELOG sem a versão ${packageJson.version}`);
 
@@ -59,13 +64,23 @@ const shell = await read("src/components/tema-mppa/app-shell.tsx");
 if (/fetch\(|\/api\//.test(shell)) errors.push("AppShell não pode chamar API");
 // Rodapé padrão dos sistemas: estrutura no AppShell, sem substituição, e texto montado de brand.
 if (!shell.includes("footerText(config.brand)")) errors.push("rodapé: AppShell deve montar o texto com footerText(config.brand)");
-for (const cls of ["desk:sticky", "desk:bottom-0", "desk:h-14", "line-clamp-3", "border-t"]) {
-  if (!shell.includes(cls)) errors.push(`rodapé: falta ${cls} (56px fixos no pé da tela, alinhado ao "Recolher")`);
+for (const cls of ["desk:sticky", "desk:bottom-0", "min-h-(--shell-bar)", "border-t", "border-sidebar-border"]) {
+  if (!shell.includes(cls)) errors.push(`rodapé: falta ${cls} (fixo no pé da tela, na faixa do "Recolher")`);
 }
-if (/\bfooter\s*(\?\?|,|\})/.test(shell) || /\bfooter\?:/.test(await read("src/components/tema-mppa/types.ts"))) {
-  errors.push("rodapé: a propriedade footer não pode substituir o texto padrão");
+if (/line-clamp|truncate|text-ellipsis/.test(shell)) errors.push("rodapé: o texto institucional não pode ser cortado");
+// Qualquer menção à propriedade footer no componente (fora da tag <footer> e de comentários) ou no tipo.
+const shellCode = shell.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "").replace(/<\/?footer\b/g, "");
+const typesSource = await read("src/components/tema-mppa/types.ts");
+const shellProps = typesSource.slice(typesSource.indexOf("export type AppShellProps"), typesSource.indexOf("};", typesSource.indexOf("export type AppShellProps")));
+if (/\bfooter\b/.test(shellCode) || /\bfooter\b/.test(shellProps)) {
+  errors.push("rodapé: a propriedade footer não pode existir (o texto padrão não tem substituição)");
 }
-// O Node lê o utils.ts com TypeScript nativo; o aviso de "reparsing" desse import é esperado.
+// Faixas alinhadas por um único token de altura.
+for (const [file, count] of [["app-header.tsx", 1], ["app-sidebar.tsx", 2]]) {
+  const source = await read(`src/components/tema-mppa/${file}`);
+  if ((source.match(/h-\(--shell-bar\)/g) ?? []).length < count) errors.push(`${file}: faixas devem usar h-(--shell-bar)`);
+  if (/\bh-14\b/.test(source)) errors.push(`${file}: altura fixa h-14; use h-(--shell-bar)`);
+}
 const emitWarning = process.emitWarning;
 process.emitWarning = (warning, ...rest) => {
   if (String(warning).includes("Reparsing as ES module")) return;
@@ -79,13 +94,16 @@ try {
     [{ name: "Heimdall", version: "v2.0.0", versionYears: "2025-2026" }, `${credit} - Heimdall - V 2.0.0 - 2025-2026`],
     [{ name: "X", version: "vNext-1", versionYears: " " }, `${credit} - X - V vNext-1`],
     [{ name: "X", version: "", versionYears: null }, `${credit} - X`],
+    [{ name: undefined, version: "1.0.0", versionYears: "2026" }, `${credit} - V 1.0.0 - 2026`],
   ];
   for (const [brand, expected] of cases) {
     const actual = footerText({ homeHref: "/", ...brand });
     if (actual !== expected) errors.push(`rodapé: footerText(${JSON.stringify(brand)}) = "${actual}", esperado "${expected}"`);
   }
 } catch (error) {
-  console.warn(`Aviso: footerText não foi executado (Node sem TypeScript nativo?): ${error.message}`);
+  errors.push(`rodapé: footerText não pôde ser executado (requer Node ${packageJson.engines?.node}): ${error.message}`);
+} finally {
+  process.emitWarning = emitWarning;
 }
 
 const header = await read("src/components/tema-mppa/app-header.tsx");
@@ -211,4 +229,5 @@ console.log("- shell sem chamadas de API/BFF/autenticação");
 console.log("- tokens iguais ao protótipo (raio, sombra, fundos, borda, realce), claro e escuro");
 console.log("- contraste: 7:1 no claro, 4,5:1 no escuro, ícones de tom com 4,5:1");
 console.log("- componentes sem cor fixa nem canto reto; título só no cabeçalho");
-console.log("- rodapé padrão: texto de brand (casos testados), 56px fixos no pé da tela no desktop, sem substituição");
+console.log("- rodapé padrão: texto de brand (5 casos executados), fixo na faixa do Recolher (--shell-bar), sem corte e sem substituição");
+console.log("- package-lock.json na mesma versão do package.json");

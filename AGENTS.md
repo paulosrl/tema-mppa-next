@@ -23,7 +23,8 @@
 
   Não volte ao avatar sozinho do protótipo.
 - Rodapé padrão dos sistemas, definido em 2026-11-10. O protótipo não tem rodapé; ele segue a página de exemplo do Heimdall e usa só tokens:
-  - a partir de 801px, 56px fixos no pé da tela (`sticky`), alinhado ao "Recolher";
+  - a partir de 801px, fixo no pé da tela (`sticky`), na faixa do "Recolher": altura `--shell-bar` (56px), a mesma de cabeçalho, marca e "Recolher", e borda `--sidebar-border` (= `--border`);
+  - o texto institucional nunca é cortado (sem `line-clamp`): até 3 linhas em 56px; além disso, cresce;
   - no celular, no fim da página, com a altura do texto;
   - sem substituição: o `AppShell` não aceita `footer`;
   - texto pequeno e centralizado, montado de `brand.name`, `brand.version` e `brand.versionYears`:
