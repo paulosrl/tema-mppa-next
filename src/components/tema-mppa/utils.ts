@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { CurrentNavigation, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
+import type { BrandConfig, CurrentNavigation, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -79,4 +79,19 @@ export function initials(session: ShellSession) {
 
 export function normalizeSearch(value: string) {
   return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+}
+
+export const FOOTER_CREDIT = "Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de Inteligência Artificial";
+
+/**
+ * Texto do rodapé padrão dos sistemas: crédito institucional, nome, "V " + versão e ano(s) da versão.
+ * Só um "v" seguido de número é removido da versão ("v2.0.0" vira "V 2.0.0"); versão ou ano vazios
+ * saem do texto.
+ */
+export function footerText(brand: BrandConfig) {
+  const version = brand.version?.trim().replace(/^v(?=\d)/i, "").trim();
+  const years = brand.versionYears?.trim();
+  return [FOOTER_CREDIT, brand.name.trim(), version ? `V ${version}` : null, years || null]
+    .filter(Boolean)
+    .join(" - ");
 }

@@ -22,8 +22,10 @@
   - botão de sair.
 
   Não volte ao avatar sozinho do protótipo.
-- Rodapé padrão dos sistemas, definido em 2026-11-10:
-  - 56px, alinhado ao "Recolher";
+- Rodapé padrão dos sistemas, definido em 2026-11-10. O protótipo não tem rodapé; ele segue a página de exemplo do Heimdall e usa só tokens:
+  - a partir de 801px, 56px fixos no pé da tela (`sticky`), alinhado ao "Recolher";
+  - no celular, no fim da página, com a altura do texto;
+  - sem substituição: o `AppShell` não aceita `footer`;
   - texto pequeno e centralizado, montado de `brand.name`, `brand.version` e `brand.versionYears`:
     "Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de Inteligência Artificial - Nome - V x.y.z - Ano".
 

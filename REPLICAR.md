@@ -61,7 +61,7 @@ estiver lá, `*.tsbuildinfo`, para nada disso entrar no commit.
 
 ### 2.1 Copiar
 
-Descompacte o zip (`unzip tema-mppa-next-v1.3.0.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
+Descompacte o zip (`unzip tema-mppa-next-v1.4.0.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
 consumidor:
 
 ```bash
@@ -172,9 +172,9 @@ Regras para preencher:
   do consumidor; não invente subtítulo.
 - `versionYears`: o ano da versão (ou o intervalo, como `"2025-2026"`). Com `name` e `version`, monta o
   rodapé padrão, sempre igual em todos os sistemas: *"Desenvolvido pelo Ministério Público do Estado do
-  Pará - Escritório de Inteligência Artificial - Nome do sistema - V 1.0.0 - 2026"*. Não passe a
-  propriedade `footer` ao `AppShell`: ela substituiria esse texto. Se o consumidor tinha rodapé próprio,
-  apague-o.
+  Pará - Escritório de Inteligência Artificial - Nome do sistema - V 1.0.0 - 2026"*. O `AppShell` monta esse
+  rodapé sozinho e não aceita substituição (a propriedade `footer` não existe mais). Se o consumidor
+  passava `footer` ou tinha rodapé próprio, apague-o.
 - `symbol`: a logo do sistema (`{ src, alt }`) ou, sem imagem, `<span className="tm-brand-mark">X</span>`
   com a inicial do sistema (quadrado de 32px com degradê vermelho, definido no `tema-mppa.css`).
 - `header.logos: []` é válido; logos institucionais entram como `{ src, alt, width, height }` e aparecem
@@ -387,8 +387,12 @@ Cabeçalho (igual em todos os sistemas):
   - nome (`text-xs` semibold) e perfil (`text-xs`, cor secundária) a partir de 1280px;
   - botão de sair de 34px.
 
-Rodapé (igual em todos os sistemas): 56px, alinhado ao "Recolher", borda superior, texto `text-xs`
-centralizado na cor secundária, montado pela camada a partir de `brand` (seção 2.5).
+Rodapé (igual em todos os sistemas), montado pela camada a partir de `brand` (seção 2.5):
+
+- **A partir de 801px:** 56px fixos no pé da tela, na mesma linha do "Recolher", com até 3 linhas de
+  texto (o texto completo aparece ao passar o mouse).
+- **No celular:** fica no fim da página, com a altura do texto.
+- **Aparência:** borda superior e texto `text-xs` centralizado, na cor secundária.
 
 Medidas:
 
@@ -438,7 +442,7 @@ Os valores não mudam; só a forma.
    também. Troque `<pasta>` pelos caminhos reais (por exemplo, `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.3.0)
+## Interface (tema-mppa 1.4.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Atualize copiando uma versão nova do modelo.

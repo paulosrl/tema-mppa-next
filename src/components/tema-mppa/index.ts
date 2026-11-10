@@ -1,5 +1,5 @@
 /**
- * Camada visual comum do ecossistema, modelo `tema-mppa-next` 1.3.0 (2026-11-10).
+ * Camada visual comum do ecossistema, modelo `tema-mppa-next` 1.4.0 (2026-11-10).
  * Copie esta pasta e `styles/tema-mppa.css` sem editar; o que é de cada sistema entra por
  * configuração e propriedades. A referência visual é o protótipo aprovado ("Template Visual HubIA
  * v1.0"): `docs/prototipo/index.html` no modelo, `docs/tema-mppa/prototipo/index.html` no consumidor.
@@ -12,7 +12,7 @@
  * 3. Componentes iguais ao protótipo e primitivos de página exportados: `PageFrame`, `Card`,
  *    `CardGrid`, `MetricCard`, `DataTable`, `BarChart`, `Button`, `SectionIcon`.
  * 4. Título só no cabeçalho, uma vez: `PageFrame` não aceita mais `title`, `icon` e `tone`.
- * 5. `AppShell` aceita `footer`, exibido abaixo do conteúdo.
+ * 5. Rodapé padrão dos sistemas (`footerText`), sem substituição: a propriedade `footer` saiu na 1.4.0.
  * 6. O topo da barra lateral, o cabeçalho e o rodapé da barra têm a mesma altura (56px).
  * 7. `NavigationItem` ganha `description` (mostrada e filtrada pela busca), `matches` (rotas que
  *    marcam o item) e `hidden` (fora do menu e da busca, mas dá o título e a aba). Um só item fica
@@ -40,7 +40,7 @@ export { SectionIcon } from "./section-icon";
 export { SIDEBAR_STORAGE_KEY } from "./sidebar-context";
 export { THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeProvider, useTheme, type Theme } from "./theme-provider";
 export { ThemeToggle } from "./theme-toggle";
-export { canSeeAdministration, cn, currentNavigationItem, isNavigationActive } from "./utils";
+export { canSeeAdministration, cn, currentNavigationItem, FOOTER_CREDIT, footerText, isNavigationActive } from "./utils";
 export type {
   AppShellProps,
   BrandConfig,

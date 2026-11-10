@@ -81,11 +81,6 @@ export type AppShellProps = {
   config: ShellConfig;
   session: ShellSession;
   children: ReactNode;
-  /**
-   * Substitui o texto padrão do rodapé. Não use: o rodapé padrão dos sistemas já vem montado com
-   * `brand.name`, `brand.version` e `brand.versionYears`.
-   */
-  footer?: ReactNode;
   onSignOut?: () => void;
 };
 

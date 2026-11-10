@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.4.0 — 2026-11-10
+
+Correções do rodapé da 1.3.0, apontadas na revisão de código. A aparência do resto da interface não muda.
+
+- **Sempre alinhado ao "Recolher":** a partir de 801px, o rodapé fica fixo no pé da tela (`sticky`), na
+  mesma linha do "Recolher" também em páginas longas. Antes, só se alinhava quando o conteúdo era curto.
+- **Altura fixa de 56px no desktop** (`h-14`), com o texto limitado a 3 linhas; o texto completo aparece
+  ao passar o mouse. No celular, onde não há "Recolher", o rodapé fica no fim da página com a altura do
+  texto.
+- **Sem substituição:** a propriedade `footer` do `AppShell` foi removida. Ela permitia trocar ou apagar
+  o texto institucional. Mudança que quebra quem a passava: apague a propriedade.
+- **`footerText(brand)` e `FOOTER_CREDIT`:** passam para `utils.ts`, módulo sem `"use client"`, e são
+  exportados pelo `index.ts`.
+- **Versão no rodapé:** só um "v" seguido de número é removido ("v2.0.0" vira "V 2.0.0"; "vNext-1"
+  fica). Versão ou ano vazios saem do texto.
+- **Borda do rodapé:** usa o token do conteúdo (`border`) no lugar do da barra lateral; o valor é o mesmo
+  nos dois temas.
+- **`verify-template`:** passa a conferir:
+  - o texto montado com `footerText(config.brand)`;
+  - `sticky`, `h-14`, o limite de 3 linhas e a borda;
+  - a ausência da propriedade `footer`.
+
+  Ele também executa `footerText` com quatro casos de teste.
+- **`AGENTS.md`:** registra que o rodapé, ausente no protótipo, segue a página de exemplo.
+
 ## 1.3.0 — 2026-11-10
 
 Rodapé padrão dos sistemas, no lado direito, embaixo do conteúdo. O "Recolher" da barra lateral e o resto

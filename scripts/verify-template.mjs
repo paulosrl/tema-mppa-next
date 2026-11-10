@@ -57,8 +57,35 @@ if (/asset!/.test(imageSlot)) errors.push("ImageSlot usa asserção não nula");
 
 const shell = await read("src/components/tema-mppa/app-shell.tsx");
 if (/fetch\(|\/api\//.test(shell)) errors.push("AppShell não pode chamar API");
-if (!shell.includes("Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de Inteligência Artificial")) {
-  errors.push("AppShell sem o rodapé padrão dos sistemas");
+// Rodapé padrão dos sistemas: estrutura no AppShell, sem substituição, e texto montado de brand.
+if (!shell.includes("footerText(config.brand)")) errors.push("rodapé: AppShell deve montar o texto com footerText(config.brand)");
+for (const cls of ["desk:sticky", "desk:bottom-0", "desk:h-14", "line-clamp-3", "border-t"]) {
+  if (!shell.includes(cls)) errors.push(`rodapé: falta ${cls} (56px fixos no pé da tela, alinhado ao "Recolher")`);
+}
+if (/\bfooter\s*(\?\?|,|\})/.test(shell) || /\bfooter\?:/.test(await read("src/components/tema-mppa/types.ts"))) {
+  errors.push("rodapé: a propriedade footer não pode substituir o texto padrão");
+}
+// O Node lê o utils.ts com TypeScript nativo; o aviso de "reparsing" desse import é esperado.
+const emitWarning = process.emitWarning;
+process.emitWarning = (warning, ...rest) => {
+  if (String(warning).includes("Reparsing as ES module")) return;
+  emitWarning.call(process, warning, ...rest);
+};
+try {
+  const { footerText } = await import(path.join(root, "src/components/tema-mppa/utils.ts"));
+  const credit = "Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de Inteligência Artificial";
+  const cases = [
+    [{ name: "Heimdall", version: "2.0.0", versionYears: "2026" }, `${credit} - Heimdall - V 2.0.0 - 2026`],
+    [{ name: "Heimdall", version: "v2.0.0", versionYears: "2025-2026" }, `${credit} - Heimdall - V 2.0.0 - 2025-2026`],
+    [{ name: "X", version: "vNext-1", versionYears: " " }, `${credit} - X - V vNext-1`],
+    [{ name: "X", version: "", versionYears: null }, `${credit} - X`],
+  ];
+  for (const [brand, expected] of cases) {
+    const actual = footerText({ homeHref: "/", ...brand });
+    if (actual !== expected) errors.push(`rodapé: footerText(${JSON.stringify(brand)}) = "${actual}", esperado "${expected}"`);
+  }
+} catch (error) {
+  console.warn(`Aviso: footerText não foi executado (Node sem TypeScript nativo?): ${error.message}`);
 }
 
 const header = await read("src/components/tema-mppa/app-header.tsx");
@@ -184,3 +211,4 @@ console.log("- shell sem chamadas de API/BFF/autenticação");
 console.log("- tokens iguais ao protótipo (raio, sombra, fundos, borda, realce), claro e escuro");
 console.log("- contraste: 7:1 no claro, 4,5:1 no escuro, ícones de tom com 4,5:1");
 console.log("- componentes sem cor fixa nem canto reto; título só no cabeçalho");
+console.log("- rodapé padrão: texto de brand (casos testados), 56px fixos no pé da tela no desktop, sem substituição");
