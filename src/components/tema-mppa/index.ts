@@ -1,8 +1,8 @@
 /**
  * Camada visual comum do ecossistema, modelo `tema-mppa-next` 1.1.1 (2026-11-10).
  * Copie esta pasta e `styles/tema-mppa.css` sem editar; o que é de cada sistema entra por
- * configuração e propriedades. A referência visual é o protótipo aprovado, em
- * `docs/prototipo/index.html` ("Template Visual HubIA v1.0").
+ * configuração e propriedades. A referência visual é o protótipo aprovado ("Template Visual HubIA
+ * v1.0"): `docs/prototipo/index.html` no modelo, `docs/tema-mppa/prototipo/index.html` no consumidor.
  *
  * Mudanças em relação ao zip 1.0.0 (detalhes no CHANGELOG):
  * 1. Tokens iguais ao protótipo: raio 8px (abas internas e ícones a 6px, avatar redondo), sombra

@@ -7,7 +7,7 @@
  *
  * Uso, com a demonstração rodando (npm run build && npx next start -p 3123) e o playwright-core
  * instalado fora do projeto:
- *   PLAYWRIGHT_CORE=/caminho/node_modules/playwright-core/index.mjs node docs/preview/gerar-preview.mjs [saida.html]
+ *   PLAYWRIGHT_CORE=/caminho/node_modules/playwright-core/index.mjs node scripts/gerar-preview.mjs [saida.html]
  * Variáveis: BASE_URL (padrão http://localhost:3123) e CHROMIUM (executável do Chromium).
  */
 import { writeFileSync } from "node:fs";
@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 const { chromium } = await import(process.env.PLAYWRIGHT_CORE ?? "playwright-core");
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const output = process.argv[2] ?? path.join(here, "index.html");
+const output = process.argv[2] ?? path.join(here, "../docs/preview/index.html");
 const base = process.env.BASE_URL ?? "http://localhost:3123";
 const exe =
   process.env.CHROMIUM ??

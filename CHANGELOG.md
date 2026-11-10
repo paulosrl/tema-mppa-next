@@ -18,6 +18,18 @@ que ele replique a interface. Sem mudança visual nem de API na camada.
     e as comparações;
   - recusa o próprio modelo como destino.
 - README e `AGENTS.md` do modelo apontam o agente do consumidor para o `REPLICAR.md`.
+- Repositório enxuto:
+  - saem o backup antigo `.backup-alinhamento-*`, o `postcss.config.mjs.backup-*`, o `tsconfig.tsbuildinfo`
+    (agora ignorado) e o `.env.example`;
+  - saem `docs/INSTALACAO`, `INTEGRACAO`, `ATUALIZACAO`, `CONFIGURACAO`, `VALIDACAO` e
+    `docs/comparacao/README`, cujo conteúdo foi para o `REPLICAR.md` e o README;
+  - as ferramentas de prévia e captura vão para `scripts/`.
+- `npm run empacotar` (`scripts/empacotar.mjs`) gera o zip só com o que o agente do consumidor usa:
+  - `REPLICAR.md`, CHANGELOG e licença;
+  - camada visual, `tema-mppa.css` e script de cópia;
+  - protótipo, prévia e comparações.
+
+  A demonstração Next.js fica fora do zip.
 - `tema-mppa.css` passa a trazer a base do `html`/`body` (fundo, cor do texto, fonte Outfit, suavização e
   movimento reduzido): o CSS global do consumidor precisa só do `@import` e do `@custom-variant`. O
   `globals.css` da demonstração ficou reduzido a isso.

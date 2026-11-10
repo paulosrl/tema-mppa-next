@@ -2,7 +2,7 @@
 
 Você é um agente de código trabalhando num **codebase consumidor**. O usuário colocou aqui o modelo
 `tema-mppa-next` e pediu que você **replique o modelo de interface**: o layout, a estrutura e o código de
-cores. Siga este arquivo do começo ao fim. Ele vale sozinho; os detalhes estão em `docs/`.
+cores. Siga este arquivo do começo ao fim. Ele vale sozinho; o código da camada está em `src/`.
 
 ## 0. O que replicar e o que não tocar
 
@@ -30,6 +30,14 @@ Referência visual, nesta ordem de autoridade:
 1. `docs/prototipo/index.html`: o protótipo aprovado. Manda em todo elemento gráfico.
 2. `docs/preview/index.html`: o modelo pronto, página única offline.
 3. `docs/comparacao/*.png`: protótipo e modelo lado a lado, claro e escuro, 1280px e 390px.
+
+Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "corrigidas":
+
+- **Tons escurecidos para o contraste:** primária, texto secundário, vermelho sobre o realce e ícones verde
+  e laranja (tabela de cores na seção 3).
+- **Ícones:** Lucide no lugar dos caracteres do protótipo.
+- **Busca:** mostra `Ctrl K` e uma lupa.
+- **Tema:** o botão alterna entre claro, escuro e sistema.
 
 ## 1. Conferir a stack do consumidor
 
@@ -65,6 +73,12 @@ guia para `docs/tema-mppa/`. Se a camada já existir, ele para; rode de novo com
 antes de substituir.
 
 A camada só usa imports relativos: não depende do alias `@/`.
+
+Logo depois da cópia, **apague a pasta descompactada `tema-mppa-next/`**: tudo o que o consumidor precisa já
+está em `components/`, `styles/` e `docs/tema-mppa/`. Se ela ficar, o `tsconfig` e o ESLint do consumidor
+compilam uma segunda cópia da camada. O zip é do usuário: deixe-o (o `.gitignore` já o exclui) e diga que
+pode ser apagado. O comentário do `index.ts` copiado cita `docs/prototipo/index.html`; no consumidor, o
+arquivo está em `docs/tema-mppa/prototipo/index.html`.
 
 **Não edite os arquivos copiados.** O que é de cada sistema entra por configuração e propriedades.
 
@@ -119,7 +133,7 @@ tem um provedor de tema, remova-o: o da camada aplica a classe `dark` no `<html>
 
 ### 2.5 Configuração do shell
 
-Crie um arquivo de configuração (por exemplo `config/shell.tsx`) com os dados **reais** do consumidor:
+Crie um arquivo de configuração `.tsx`, porque `symbol` pode ser JSX (por exemplo `config/shell.tsx`) com os dados **reais** do consumidor:
 nome, versão, menus atuais e logos. Modelo:
 
 ```tsx
@@ -135,7 +149,7 @@ export const shellConfig: ShellConfig = {
     symbol: <span className="tm-brand-mark" aria-hidden>N</span>, // ou { src: "/marca.svg", alt: "Nome" }
   },
   platformNavigation: [
-    { id: "inicio", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "red", description: "Resumo" },
+    { id: "inicio", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "red" },
     { id: "docs", label: "Documentos", href: "/documentos", icon: FileText, tone: "green" },
     { id: "doc", label: "Documento", href: "/documentos/detalhe", icon: FileText, tone: "green", hidden: true },
   ],
@@ -153,12 +167,27 @@ Regras para preencher:
 - `symbol`: a logo do sistema (`{ src, alt }`) ou, sem imagem, `<span className="tm-brand-mark">X</span>`
   com a inicial do sistema (quadrado de 34px com degradê vermelho, definido no `tema-mppa.css`).
 - `header.logos: []` é válido; logos institucionais entram como `{ src, alt, width, height }`.
+- `description` e `keywords` dos itens são opcionais: preencha só com texto real do consumidor.
 
 - Migre **todos** os itens do menu atual do consumidor, com as mesmas rotas.
 - Reveze os tons `"red"`, `"green"`, `"violet"` e `"orange"`, como no protótipo.
 - Rotas de detalhe ou fora do menu: crie itens com `hidden: true`, para darem o título certo.
 - Rotas que devem marcar um item sem serem sub-rotas dele: use `matches`.
 - Itens só de administrador vão em `administrationNavigation`.
+
+Campos de cada item de navegação:
+
+| Campo | Efeito |
+| --- | --- |
+| `id`, `label`, `href`, `icon` | obrigatórios; `icon` é um ícone do `lucide-react` |
+| `exact` | só a rota exata marca o item; sem ele, as sub-rotas também marcam |
+| `tone` | cor do ícone: `"red"` (padrão), `"green"`, `"violet"`, `"orange"` |
+| `description`, `keywords` | aparecem e entram no filtro da busca `Ctrl+K` |
+| `matches` | outras rotas (e sub-rotas) que marcam o item |
+| `hidden` | fora do menu e da busca, mas dá o título e a aba quando a rota é dele |
+
+Um só item fica marcado: o de rota mais longa. Atalhos extras da busca entram em `searchItems: [{ id, label,
+href, icon?, description?, keywords? }]`. A barra recolhe por botão ou `Ctrl+B` e lembra a escolha.
 
 ### 2.6 Sessão e layout autenticado
 
@@ -203,7 +232,8 @@ export function LayoutAutenticado({ children }: { children: React.ReactNode }) {
 ```
 
 `is_admin` tem de ser o booleano estrito vindo da sessão real. Não deduza administrador por e-mail,
-nome ou texto de perfil. `avatar` é opcional: sem foto, passe `null` e o avatar mostra as iniciais.
+nome ou texto de perfil. Se o consumidor não tinha tela de carregamento nem de erro, `return null` enquanto
+não há sessão é aceitável. `avatar` é opcional: sem foto, passe `null` e o avatar mostra as iniciais.
 `profileLabel` também; sem ele, aparece "Administrador" ou "Usuário". Remova o shell antigo (sidebar,
 header, navbar) que o `AppShell` substitui.
 
@@ -212,7 +242,7 @@ header, navbar) que o `AppShell` substitui.
 Repinte cada página só com os primitivos da camada:
 
 ```tsx
-import { BarChart, Button, Card, CardGrid, DataTable, MetricCard, PageFrame } from "@/components/tema-mppa";
+import { BarChart, Button, Card, CardGrid, DataTable, MetricCard, PageFrame, type DataTableColumn } from "@/components/tema-mppa";
 
 <PageFrame
   description="Uma frase sobre a página."
@@ -229,10 +259,23 @@ import { BarChart, Button, Card, CardGrid, DataTable, MetricCard, PageFrame } fr
 </PageFrame>
 ```
 
+```tsx
+// colunas da tabela, tipadas pela linha
+type Linha = { id: string; titulo: string; data: string };
+const colunas: DataTableColumn<Linha>[] = [
+  { key: "titulo", header: "Título", cell: (linha) => linha.titulo },
+  { key: "data", header: "Data", cell: (linha) => linha.data, align: "right" },
+];
+```
+
 - **Título:** o título da página aparece só no cabeçalho, vindo do item de navegação. Apague `<h1>` e
   títulos repetidos dentro do conteúdo.
 - **Ordem do conteúdo:** descrição e ações no topo (`PageFrame`), depois métricas (`CardGrid` de
   `MetricCard`), depois cartões com gráficos, depois tabelas. Mantenha todo o conteúdo que a página já tinha.
+  Uma página que só tinha título e um parágrafo fica com o `PageFrame` e a `description`: isso é o esperado.
+- **Cores com significado:** números em azul, verde ou laranja viram texto normal no `MetricCard`. Se a cor
+  carregava informação (atraso, sucesso), diga isso no `note`, com `text-success` ou `text-warning` se
+  preciso.
 - **Componentes antigos:** troque cartões, botões, tabelas e gráficos antigos pelos primitivos. Para o que
   não tem primitivo (formulários, diálogos), use os tokens da seção 3 e `rounded-lg` (8px).
 - **Cores:** troque toda cor fixa (`#hex`, `rgb()`, `text-red-600`, `bg-white`, `bg-gray-*`) pelo token
@@ -357,9 +400,8 @@ Os valores não mudam; só a forma.
 
 ## 7. Limpeza e registro
 
-1. Apague a pasta descompactada `tema-mppa-next/`. A referência fica em `docs/tema-mppa/`. Não deixe o
-   modelo inteiro dentro do consumidor: o `tsconfig` e o ESLint de lá tentariam compilar a demonstração.
-   O zip é do usuário: deixe-o (o `.gitignore` já o exclui) e diga que pode ser apagado.
+1. Confira que a pasta descompactada `tema-mppa-next/` já foi apagada (seção 2.1). A referência fica em
+   `docs/tema-mppa/`.
 2. Acrescente ao `AGENTS.md` do consumidor; se ele não existir, crie-o. Se houver `CLAUDE.md`, ponha lá
    também. Troque `<pasta>` pelos caminhos reais (por exemplo, `components` ou `src/components`):
 

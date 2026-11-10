@@ -51,7 +51,6 @@ const sources = [
   { from: path.join(root, "src/components/tema-mppa"), to: path.join(componentsDir, "tema-mppa") },
   { from: path.join(root, "src/styles/tema-mppa.css"), to: path.join(stylesDir, "tema-mppa.css") },
   { from: path.join(root, "REPLICAR.md"), to: path.join(referenceDir, "REPLICAR.md") },
-  { from: path.join(root, "docs/CONFIGURACAO.md"), to: path.join(referenceDir, "CONFIGURACAO.md") },
   { from: path.join(root, "CHANGELOG.md"), to: path.join(referenceDir, "CHANGELOG.md") },
   { from: path.join(root, "docs/prototipo/index.html"), to: path.join(referenceDir, "prototipo/index.html") },
   { from: path.join(root, "docs/preview/index.html"), to: path.join(referenceDir, "preview/index.html") },
