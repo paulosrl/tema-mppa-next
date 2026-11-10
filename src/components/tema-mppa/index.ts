@@ -1,5 +1,5 @@
 /**
- * Camada visual comum do ecossistema, modelo `tema-mppa-next` 1.2.0 (2026-11-10).
+ * Camada visual comum do ecossistema, modelo `tema-mppa-next` 1.3.0 (2026-11-10).
  * Copie esta pasta e `styles/tema-mppa.css` sem editar; o que é de cada sistema entra por
  * configuração e propriedades. A referência visual é o protótipo aprovado ("Template Visual HubIA
  * v1.0"): `docs/prototipo/index.html` no modelo, `docs/tema-mppa/prototipo/index.html` no consumidor.

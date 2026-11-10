@@ -57,7 +57,9 @@ if (/asset!/.test(imageSlot)) errors.push("ImageSlot usa asserção não nula");
 
 const shell = await read("src/components/tema-mppa/app-shell.tsx");
 if (/fetch\(|\/api\//.test(shell)) errors.push("AppShell não pode chamar API");
-if (!shell.includes("footer")) errors.push("AppShell sem footer");
+if (!shell.includes("Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de Inteligência Artificial")) {
+  errors.push("AppShell sem o rodapé padrão dos sistemas");
+}
 
 const header = await read("src/components/tema-mppa/app-header.tsx");
 const identity = await read("src/components/tema-mppa/user-identity.tsx");

@@ -22,5 +22,11 @@
   - botão de sair.
 
   Não volte ao avatar sozinho do protótipo.
+- Rodapé padrão dos sistemas, definido em 2026-11-10:
+  - 56px, alinhado ao "Recolher";
+  - texto pequeno e centralizado, montado de `brand.name`, `brand.version` e `brand.versionYears`:
+    "Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de Inteligência Artificial - Nome - V x.y.z - Ano".
+
+  Não mude o lado esquerdo (o "Recolher").
 - Contraste fixo: no claro, todo texto com 7:1 e secundário igual ao principal; no escuro, 4,5:1 e texto escuro sobre a primária; ícones de tom com 4,5:1.
 - Telas de demonstração usam só os primitivos exportados (`PageFrame`, `Card`, `MetricCard`, `DataTable`, `BarChart`, `Button`).

@@ -61,7 +61,7 @@ estiver lá, `*.tsbuildinfo`, para nada disso entrar no commit.
 
 ### 2.1 Copiar
 
-Descompacte o zip (`unzip tema-mppa-next-v1.2.0.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
+Descompacte o zip (`unzip tema-mppa-next-v1.3.0.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
 consumidor:
 
 ```bash
@@ -149,6 +149,7 @@ export const shellConfig: ShellConfig = {
   brand: {
     name: "Nome do sistema",
     version: "1.0.0",
+    versionYears: "2026", // ano (ou anos, "2025-2026") da versão, mostrado no rodapé
     tagline: "Subtítulo curto",
     homeHref: "/",
     symbol: <span className="tm-brand-mark" aria-hidden>N</span>, // ou { src: "/marca.svg", alt: "Nome" }
@@ -169,6 +170,11 @@ Regras para preencher:
 
 - `version` e `tagline` são opcionais: sem eles, a marca mostra só o nome. Use a versão do `package.json`
   do consumidor; não invente subtítulo.
+- `versionYears`: o ano da versão (ou o intervalo, como `"2025-2026"`). Com `name` e `version`, monta o
+  rodapé padrão, sempre igual em todos os sistemas: *"Desenvolvido pelo Ministério Público do Estado do
+  Pará - Escritório de Inteligência Artificial - Nome do sistema - V 1.0.0 - 2026"*. Não passe a
+  propriedade `footer` ao `AppShell`: ela substituiria esse texto. Se o consumidor tinha rodapé próprio,
+  apague-o.
 - `symbol`: a logo do sistema (`{ src, alt }`) ou, sem imagem, `<span className="tm-brand-mark">X</span>`
   com a inicial do sistema (quadrado de 32px com degradê vermelho, definido no `tema-mppa.css`).
 - `header.logos: []` é válido; logos institucionais entram como `{ src, alt, width, height }` e aparecem
@@ -231,7 +237,6 @@ export function LayoutAutenticado({ children }: { children: React.ReactNode }) {
         is_admin: sessao.is_admin === true,
       }}
       onSignOut={logoutExistente}
-      footer={undefined /* rodapé opcional */}
     >
       {children}
     </AppShell>
@@ -362,7 +367,9 @@ Raios, presos a `--radius` (8px):
 │ ▣ Item       │  └──────────────────┘      └──────────────────┘              │
 │              │  ↕ 20px                                                      │
 │              │  ┌ Tabela ─────────────────────────────────────┐             │
-│ Recolher  ‹  │  └─────────────────────────────────────────────┘             │
+│              │  └─────────────────────────────────────────────┘             │
+├──────────────┼──────────────────────────────────────────────────────────────┤
+│ Recolher  ‹  │  Desenvolvido pelo MPPA - EIA - Nome - V 1.0.0 - 2026 (56px)  │
 └──────────────┴──────────────────────────────────────────────────────────────┘
   260px (64px recolhida); abaixo de 801px vira menu móvel
 ```
@@ -379,6 +386,9 @@ Cabeçalho (igual em todos os sistemas):
   - avatar redondo de 32px com as iniciais (ou a foto);
   - nome (`text-xs` semibold) e perfil (`text-xs`, cor secundária) a partir de 1280px;
   - botão de sair de 34px.
+
+Rodapé (igual em todos os sistemas): 56px, alinhado ao "Recolher", borda superior, texto `text-xs`
+centralizado na cor secundária, montado pela camada a partir de `brand` (seção 2.5).
 
 Medidas:
 
@@ -428,7 +438,7 @@ Os valores não mudam; só a forma.
    também. Troque `<pasta>` pelos caminhos reais (por exemplo, `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.2.0)
+## Interface (tema-mppa 1.3.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Atualize copiando uma versão nova do modelo.

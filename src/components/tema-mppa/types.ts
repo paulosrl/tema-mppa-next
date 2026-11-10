@@ -52,6 +52,8 @@ export type ShellSession = {
 export type BrandConfig = {
   name: string;
   version?: string | null;
+  /** Ano (ou anos, como "2025-2026") da versão, mostrado no rodapé. */
+  versionYears?: string | null;
   tagline?: string | null;
   homeHref: string;
   symbol?: ImageAsset | ReactNode | null;
@@ -79,7 +81,10 @@ export type AppShellProps = {
   config: ShellConfig;
   session: ShellSession;
   children: ReactNode;
-  /** Rodapé do sistema consumidor, exibido abaixo do conteúdo. */
+  /**
+   * Substitui o texto padrão do rodapé. Não use: o rodapé padrão dos sistemas já vem montado com
+   * `brand.name`, `brand.version` e `brand.versionYears`.
+   */
   footer?: ReactNode;
   onSignOut?: () => void;
 };

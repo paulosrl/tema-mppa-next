@@ -17,7 +17,8 @@ const logoSetor = svg(
 export const demoConfig: ShellConfig = {
   brand: {
     name: "Template",
-    version: "1.2.0",
+    version: "1.3.0",
+    versionYears: "2026",
     homeHref: "/",
     symbol: <span className="tm-brand-mark" aria-hidden>T</span>,
   },

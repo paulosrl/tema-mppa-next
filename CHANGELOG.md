@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.0 — 2026-11-10
+
+Rodapé padrão dos sistemas, no lado direito, embaixo do conteúdo. O "Recolher" da barra lateral e o resto
+da interface sem mudança.
+
+- **Sempre presente:** 56px de altura, alinhado ao "Recolher"; borda superior; texto `text-xs`, centralizado,
+  na cor secundária.
+- **Texto montado da configuração:** *"Desenvolvido pelo Ministério Público do Estado do Pará - Escritório
+  de Inteligência Artificial - {brand.name} - V {brand.version} - {brand.versionYears}"*. A versão e o ano
+  saem do texto quando não informados. A função `footerText(brand)` monta esse texto.
+- **Configuração nova:** `brand.versionYears`, o ano (ou os anos, como `"2025-2026"`) da versão.
+- **`footer` do `AppShell`:** agora substitui o texto padrão; os sistemas não devem usá-lo.
+
 ## 1.2.0 — 2026-11-10
 
 Cabeçalho no padrão que os sistemas vão usar, igual ao do Heimdall 2.0.0. Estrutura, cores e tokens sem
