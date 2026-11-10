@@ -21,6 +21,8 @@ const expected = {
   "@tanstack/react-query": "5.102.8",
   "lucide-react": "1.46.0",
   "tailwind-merge": "3.6.0",
+  "class-variance-authority": "0.7.1",
+  clsx: "2.1.1",
   typescript: "5.9.3",
   tailwindcss: "4.3.3",
 };

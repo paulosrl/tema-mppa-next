@@ -1,5 +1,7 @@
 # Instalação
 
+> Para pedir a um agente que faça a integração, entregue o `REPLICAR.md` da raiz: ele cobre todos os passos abaixo.
+
 ## Opção A — novo projeto a partir deste codebase
 
 ```bash
@@ -24,7 +26,7 @@ node scripts/copy-template.mjs /caminho/do/consumidor
 No projeto consumidor, instale apenas o que ainda não existir:
 
 ```bash
-npm install --save-exact @base-ui/react@1.9.0 @tanstack/react-query@5.102.8 lucide-react@1.46.0 tailwind-merge@3.6.0 class-variance-authority clsx
+npm install --save-exact @base-ui/react@1.9.0 @tanstack/react-query@5.102.8 lucide-react@1.46.0 tailwind-merge@3.6.0 class-variance-authority@0.7.1 clsx@2.1.1
 ```
 
 React e React DOM ficam em `19.2.3`, a versão da matriz do ecossistema.

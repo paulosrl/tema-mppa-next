@@ -1,6 +1,11 @@
 # Tema MPPA — template Next.js reutilizável
 
-Versão **1.1.0**. Shell visual configurável igual ao protótipo aprovado, `docs/prototipo/index.html`
+> **Para replicar esta interface num codebase:** coloque o zip na raiz do codebase e diga ao agente
+> *"Descompacte tema-mppa-next-v1.1.1.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
+> interface neste codebase."* O [`REPLICAR.md`](REPLICAR.md) é o roteiro completo para o agente: cópia,
+> dependências, configuração, telas, código de cores, estrutura, verificação e limpeza.
+
+Versão **1.1.1**. Shell visual configurável igual ao protótipo aprovado, `docs/prototipo/index.html`
 ("Template Visual HubIA v1.0"): barra lateral recolhível, abas **Plataforma** e **Administração**,
 cabeçalho de 56px com o título da página, busca `Ctrl+K`, tema claro/escuro/sistema, avatar com painel
 da conta e primitivos de página (cartão, métrica, tabela, gráfico de barras, botões).

@@ -1,5 +1,7 @@
 # Regras do template
 
+> Se você é um agente num **codebase consumidor** (o modelo foi descompactado aqui para ser replicado), estas regras não são para você: siga `REPLICAR.md`.
+
 - Next.js 16 App Router; leia a documentação instalada em `node_modules/next/dist/docs/` antes de alterar APIs do framework.
 - Use Base UI; não adicione dependências `@radix-ui/*`.
 - Preserve `components.json` com estilo `base-nova` e Lucide.

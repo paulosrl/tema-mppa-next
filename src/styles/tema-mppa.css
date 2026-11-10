@@ -201,12 +201,38 @@
   --shadow-drawer: var(--drawer-shadow);
 }
 
-/* Base mínima para a camada funcionar sem o globals.css do modelo: bordas no token --border. */
+/*
+ * Base para a camada funcionar sem o globals.css do modelo: bordas, fundo, texto e fonte vêm dos
+ * tokens. O consumidor não deve redefinir fundo, cor ou fonte do html/body.
+ */
 @layer base {
   *,
   ::before,
   ::after {
     border-color: var(--border);
+  }
+
+  html {
+    font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 

@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.1.1 — 2026-11-10
+
+O modelo passa a servir para ser entregue a um agente: basta colocar o zip no codebase consumidor e pedir
+que ele replique a interface. Sem mudança visual nem de API na camada.
+
+- `REPLICAR.md` na raiz: roteiro para o agente do consumidor, com:
+  - escopo (o que replicar e o que não tocar);
+  - escolha entre copiar e portar, conforme a stack;
+  - dependências, CSS global, layout raiz, configuração do shell, sessão e telas;
+  - tabela do código de cores, estrutura com medidas;
+  - verificação, limpeza e o trecho para o `AGENTS.md` do consumidor.
+- `scripts/copy-template.mjs`:
+  - detecta se o consumidor usa `src/` (grava em `components/` e `styles/` quando não usa);
+  - aceita `--components-dir` e `--styles-dir`;
+  - copia para `docs/tema-mppa/` do consumidor o guia, a configuração, o CHANGELOG, o protótipo, a prévia
+    e as comparações;
+  - recusa o próprio modelo como destino.
+- README e `AGENTS.md` do modelo apontam o agente do consumidor para o `REPLICAR.md`.
+- `tema-mppa.css` passa a trazer a base do `html`/`body` (fundo, cor do texto, fonte Outfit, suavização e
+  movimento reduzido): o CSS global do consumidor precisa só do `@import` e do `@custom-variant`. O
+  `globals.css` da demonstração ficou reduzido a isso.
+- `PageFrame`: `children` opcional, para páginas só com descrição e ações.
+- `class-variance-authority` `0.7.1` e `clsx` `2.1.1` também com versão exata.
+- Testado às cegas: um agente sem contexto, só com a frase do README, integrou o modelo num consumidor
+  Next.js sem `src/` (typecheck, lint e build aprovados, tela igual à do modelo). Os pontos em que ele
+  precisou adivinhar foram respondidos no `REPLICAR.md`:
+  - route group para páginas públicas;
+  - campos opcionais da marca e da sessão;
+  - referência dos primitivos;
+  - ordem do conteúdo;
+  - o que fazer sem navegador;
+  - `.gitignore`;
+  - criação do `AGENTS.md`.
+
 ## 1.1.0 — 2026-11-10
 
 Correção visual: a 1.0.0 não reproduzia o protótipo aprovado (`docs/prototipo/index.html`, "Template

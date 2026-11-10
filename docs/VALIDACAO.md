@@ -46,3 +46,17 @@ Protótipo e demonstração lado a lado, página inteira, em `docs/comparacao/`:
 
 Depois de copiar a camada, rode o `typecheck`, o `lint` e o `build` do consumidor, e revise claro, escuro,
 390px, desktop, usuário comum e administrador com as rotas reais.
+
+## Teste cego de replicação (1.1.1)
+
+Um agente sem nenhum contexto recebeu só a frase do README: *"Descompacte tema-mppa-next-v1.1.1.zip, leia
+tema-mppa-next/REPLICAR.md e replique o modelo de interface neste codebase."* Dois consumidores Next.js 16
+de exemplo, com sidebar própria, cores fixas e hook de sessão próprio:
+
+| Consumidor | O que o agente fez | Resultado |
+| --- | --- | --- |
+| Sem `src/` | camada em `components/` e `styles/`; `AppShell` no layout raiz; telas com os primitivos; `AGENTS.md` criado | typecheck, lint e build aprovados; tela igual à do modelo em 1280px e 390px, claro e escuro |
+| Com `src/` e `/login` público | camada em `src/`; route group `(autenticado)` com o `AppShell`; `/login` fora do shell, só com tokens | typecheck, lint e build aprovados; `/login` sem shell; Painel igual ao modelo |
+
+Os pontos em que o primeiro agente precisou adivinhar foram respondidos no `REPLICAR.md` antes do segundo
+teste.
