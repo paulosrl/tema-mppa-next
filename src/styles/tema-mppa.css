@@ -1,73 +1,135 @@
-/* Tema Marvel refinado: vermelho sobre Zinc, Outfit, raio 8px e superficies suaves. */
+/*
+ * Tema MPPA 1.1.0: vermelho sobre Zinc, Outfit, raio 8px, bordas suaves, sombras discretas e
+ * gráficos com degradê, iguais ao protótipo "Template Visual HubIA v1.0" (docs/prototipo/index.html).
+ *
+ * Contraste: no claro, todo texto tem 7:1 sobre o próprio fundo e o texto secundário é o preto do
+ * texto principal; no escuro, 4,5:1 e texto escuro sobre a primária. Onde o protótipo fica abaixo
+ * disso, o tom foi escurecido sem mudar a aparência (CHANGELOG 1.1.0).
+ *
+ * Única fonte de cor da camada visual: os componentes usam só estes tokens.
+ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(0.985 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(0.985 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.505 0.213 27.518);
-  --primary-foreground: oklch(0.971 0.013 17.38);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.971 0.013 17.38);
-  --border: oklch(0.871 0.006 286.286);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.505 0.213 27.518);
-  --chart-1: oklch(0.808 0.114 19.571);
-  --chart-2: oklch(0.704 0.191 22.216);
-  --chart-3: oklch(0.637 0.237 25.331);
-  --chart-4: oklch(0.577 0.245 27.325);
-  --chart-5: oklch(0.505 0.213 27.518);
   --radius: 0.5rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.505 0.213 27.518);
-  --sidebar-primary-foreground: oklch(0.971 0.013 17.38);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.505 0.213 27.518);
+
+  --background: #ffffff;
+  --foreground: #18181b;
+  --card: #fafafa;
+  --card-foreground: #18181b;
+  --popover: #fafafa;
+  --popover-foreground: #18181b;
+
+  /* Protótipo #b91c1c (6,47:1 com branco) escurecido para 8,36:1. */
+  --primary: #9f0712;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  /* Protótipo #71717a (4,83:1): o secundário é o preto do texto. */
+  --muted-foreground: #18181b;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  /* Realce do item e da aba ativos. */
+  --highlight: #fee2e2;
+  --highlight-foreground: #18181b;
+
+  --destructive: #991b1b;
+  --destructive-foreground: #ffffff;
+  --success: #15603a;
+  --success-foreground: #ffffff;
+  --warning: #7a4510;
+  --warning-foreground: #ffffff;
+
+  --border: #d4d4d8;
+  --input: #d4d4d8;
+  --ring: #9f0712;
+
+  --overlay: #000000;
+  --logo-surface: #ffffff;
+
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+  --bar-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --drawer-shadow: 8px 0 24px rgba(0, 0, 0, 0.2);
+
+  /* Ícones de seção: fundo pastel do protótipo e traço com 4,5:1 ou mais sobre ele. */
+  --tone-red: #fee2e2;
+  --tone-red-foreground: #970611; /* 7,32:1 (protótipo #b91c1c, 5,30:1) */
+  --tone-green: #d1fae5;
+  --tone-green-foreground: #047857; /* 4,84:1 (protótipo #059669, 3,32:1) */
+  --tone-violet: #ede9fe;
+  --tone-violet-foreground: #7c3aed; /* 4,80:1, igual ao protótipo */
+  --tone-orange: #ffedd5;
+  --tone-orange-foreground: #a85005; /* 4,80:1 (protótipo #d97706, 2,78:1) */
+
+  /* Gráficos e marca: elementos gráficos, sem texto; cores do protótipo. */
+  --chart-strong-from: #b50008;
+  --chart-strong-to: #ff2935;
+  --chart-soft-from: #eb777d;
+  --chart-soft-to: #ff9da2;
+  --chart-1: #b50008;
+  --chart-2: #ff2935;
+  --chart-3: #eb777d;
+  --chart-4: #ff9da2;
+  --chart-5: #7f1d1d;
+  --brand-mark-from: #ef3340;
+  --brand-mark-to: #7f1d1d;
+  --brand-mark-foreground: #ffffff;
+
+  --sidebar: #fcfcfc;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #9f0712;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #d4d4d8;
+  --sidebar-ring: #9f0712;
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.444 0.177 26.899);
-  --primary-foreground: oklch(0.971 0.013 17.38);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.444 0.177 26.899);
-  --chart-1: oklch(0.808 0.114 19.571);
-  --chart-2: oklch(0.704 0.191 22.216);
-  --chart-3: oklch(0.637 0.237 25.331);
-  --chart-4: oklch(0.577 0.245 27.325);
-  --chart-5: oklch(0.505 0.213 27.518);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.444 0.177 26.899);
-  --sidebar-primary-foreground: oklch(0.971 0.013 17.38);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.444 0.177 26.899);
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #18181b;
+  --card-foreground: #fafafa;
+  --popover: #18181b;
+  --popover-foreground: #fafafa;
+
+  /* Texto escuro sobre a primária: 5,29:1. */
+  --primary: #ef4444;
+  --primary-foreground: #09090b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa; /* 6,91:1 no cartão, 5,81:1 no muted */
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --highlight: #351518;
+  --highlight-foreground: #fafafa;
+
+  --destructive: #f87171;
+  --destructive-foreground: #09090b;
+  --success: #4ade80;
+  --success-foreground: #09090b;
+  --warning: #facc15;
+  --warning-foreground: #09090b;
+
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: #ef4444;
+
+  --overlay: #000000;
+  --logo-surface: #ffffff;
+
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+
+  /* O protótipo mantém os ícones de seção pastéis também no escuro. */
+
+  --sidebar: #18181b;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #ef4444;
+  --sidebar-primary-foreground: #09090b;
+  --sidebar-accent: #27272a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: #ef4444;
 }
 
 @theme inline {
@@ -85,11 +147,27 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-overlay: var(--overlay);
+  --color-logo-surface: var(--logo-surface);
+  --color-tone-red: var(--tone-red);
+  --color-tone-red-foreground: var(--tone-red-foreground);
+  --color-tone-green: var(--tone-green);
+  --color-tone-green-foreground: var(--tone-green-foreground);
+  --color-tone-violet: var(--tone-violet);
+  --color-tone-violet-foreground: var(--tone-violet-foreground);
+  --color-tone-orange: var(--tone-orange);
+  --color-tone-orange-foreground: var(--tone-orange-foreground);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -103,45 +181,61 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Escala inteira presa a --radius (8px): md = 6px (abas internas e ícones), lg = 8px. */
+  --radius-xs: calc(var(--radius) * 0.25);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 3);
+  --radius-4xl: calc(var(--radius) * 4);
+
+  --shadow-surface: var(--shadow);
+  --shadow-bar: var(--bar-shadow);
+  --shadow-drawer: var(--drawer-shadow);
 }
 
-/* Acabamento visual v1.0, alinhado ao HTML de referência */
-.tm-surface {
-  border-radius: var(--radius);
-  box-shadow:
-    0 2px 6px rgb(0 0 0 / 0.08),
-    0 1px 2px rgb(0 0 0 / 0.05);
+/* Base mínima para a camada funcionar sem o globals.css do modelo: bordas no token --border. */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
 }
 
-.tm-bar-primary {
-  border-radius: 6px 6px 2px 2px;
-  background: linear-gradient(
-    to top,
-    oklch(0.42 0.19 27.5),
-    oklch(0.64 0.24 25.3)
-  );
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+/* Ponto de quebra do protótipo: barra lateral fixa a partir de 801px; abaixo, menu móvel. */
+@custom-variant desk (@media (width >= 801px));
+
+/* Barras de gráfico com degradê e topo arredondado (6px em cima, 2px embaixo). */
+@utility tm-bar {
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-xs) var(--radius-xs);
+  box-shadow: var(--bar-shadow);
 }
 
-.tm-bar-soft {
-  border-radius: 6px 6px 2px 2px;
-  background: linear-gradient(
-    to top,
-    oklch(0.68 0.16 22.5),
-    oklch(0.82 0.10 19.5)
-  );
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+@utility tm-bar-strong {
+  background: linear-gradient(to top, var(--chart-strong-from), var(--chart-strong-to));
 }
 
-.dark .tm-surface {
-  box-shadow:
-    0 2px 8px rgb(0 0 0 / 0.30),
-    0 1px 2px rgb(0 0 0 / 0.20);
+@utility tm-bar-soft {
+  background: linear-gradient(to top, var(--chart-soft-from), var(--chart-soft-to));
+}
+
+/* Símbolo padrão do protótipo (34px, degradê vermelho), para quem não tiver imagem própria. */
+@utility tm-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: linear-gradient(145deg, var(--brand-mark-from), var(--brand-mark-to));
+  color: var(--brand-mark-foreground);
+  font-weight: 800;
 }

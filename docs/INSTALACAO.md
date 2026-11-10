@@ -24,8 +24,10 @@ node scripts/copy-template.mjs /caminho/do/consumidor
 No projeto consumidor, instale apenas o que ainda não existir:
 
 ```bash
-npm install @base-ui/react @tanstack/react-query class-variance-authority clsx lucide-react tailwind-merge
+npm install --save-exact @base-ui/react@1.9.0 @tanstack/react-query@5.102.8 lucide-react@1.46.0 tailwind-merge@3.6.0 class-variance-authority clsx
 ```
+
+React e React DOM ficam em `19.2.3`, a versão da matriz do ecossistema.
 
 Adicione ao `globals.css` do consumidor, depois de `@import "tailwindcss";`:
 
@@ -34,11 +36,14 @@ Adicione ao `globals.css` do consumidor, depois de `@import "tailwindcss";`:
 @custom-variant dark (&:is(.dark *));
 ```
 
-Ajuste o caminho relativo caso o `globals.css` não esteja em `src/app/`.
+Ajuste o caminho relativo caso o `globals.css` não esteja em `src/app/`. O `tema-mppa.css` já traz a cor das
+bordas, a variante `desk:` (801px, o ponto de quebra do protótipo) e os utilitários `tm-*`; não é preciso
+copiar o `globals.css` deste modelo.
 
 ## Fonte
 
 No layout raiz, carregue Outfit e exponha `--font-outfit`. O exemplo completo está em `src/app/layout.tsx`.
+A fonte mono é a do sistema (`ui-monospace`); não é preciso carregar a Geist Mono.
 
 ```tsx
 import { Outfit } from "next/font/google";

@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Outfit } from "next/font/google";
+import { Outfit } from "next/font/google";
 import { TemaMppaProvider, THEME_BOOT_SCRIPT } from "@/components/tema-mppa";
 import "./globals.css";
 
 const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Template visual",
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${outfit.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html lang="pt-BR" className={outfit.variable} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} /></head>
       <body><TemaMppaProvider>{children}</TemaMppaProvider></body>
     </html>

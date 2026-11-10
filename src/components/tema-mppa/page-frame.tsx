@@ -1,41 +1,35 @@
 import type { ReactNode } from "react";
-import type { IconComponent } from "./types";
-import { SectionIcon } from "./section-icon";
+import { cn } from "./utils";
 
+/**
+ * Moldura da página, como o `.lead` do protótipo: descrição à esquerda, ações à direita (largura
+ * total no celular) e 38px até o conteúdo, com 20px entre os blocos.
+ *
+ * O título não entra aqui: ele aparece uma única vez, no cabeçalho, vindo do item de navegação
+ * marcado (use `hidden` para páginas fora do menu).
+ */
 export function PageFrame({
-  title,
   description,
-  icon,
-  tone,
   actions,
   children,
+  className,
 }: {
-  title?: string;
-  description?: string;
-  icon?: IconComponent;
-  tone?: string;
+  description?: ReactNode;
   actions?: ReactNode;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="flex min-w-0 flex-1 flex-col gap-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          {title ? (
-            <h1 className="flex items-center gap-2.5 text-2xl font-semibold tracking-tight">
-              {icon ? <SectionIcon icon={icon} tone={tone} /> : null}
-              <span className="truncate">{title}</span>
-            </h1>
-          ) : null}
-          {description ? (
-            <p className={title ? "mt-1 text-sm text-muted-foreground" : "text-sm text-muted-foreground"}>
-              {description}
-            </p>
+    <div className={cn("flex min-w-0 flex-col", className)}>
+      {description || actions ? (
+        <div className="mb-[38px] flex flex-wrap items-start justify-between gap-4">
+          {description ? <p className="m-0 text-muted-foreground">{description}</p> : null}
+          {actions ? (
+            <div className="flex w-full gap-2 *:flex-1 desk:w-auto desk:*:flex-none">{actions}</div>
           ) : null}
         </div>
-        {actions ? <div className="flex shrink-0 flex-wrap gap-2">{actions}</div> : null}
-      </div>
-      {children}
+      ) : null}
+      <div className="flex min-w-0 flex-col gap-5">{children}</div>
     </div>
   );
 }

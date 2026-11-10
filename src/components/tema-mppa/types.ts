@@ -11,14 +11,24 @@ export type ImageAsset = {
   className?: string;
 };
 
+/** Tons do protótipo para o ícone de seção. Uma string fora da lista é tratada como classes (1.0.0). */
+export type NavigationTone = "red" | "green" | "violet" | "orange";
+
 export type NavigationItem = {
   id: string;
   label: string;
   href: string;
   icon: IconComponent;
+  /** Só a rota exata marca o item; sem `exact`, as sub-rotas também marcam. */
   exact?: boolean;
-  tone?: string;
+  tone?: NavigationTone | (string & {});
   keywords?: string[];
+  /** Texto curto mostrado e filtrado pela busca. */
+  description?: string;
+  /** Outras rotas (e suas sub-rotas) que marcam este item. */
+  matches?: string[];
+  /** Fora do menu e da busca, mas dá o título e marca a aba quando a rota é dele. */
+  hidden?: boolean;
 };
 
 export type SearchItem = {
@@ -69,5 +79,14 @@ export type AppShellProps = {
   config: ShellConfig;
   session: ShellSession;
   children: ReactNode;
+  /** Rodapé do sistema consumidor, exibido abaixo do conteúdo. */
+  footer?: ReactNode;
   onSignOut?: () => void;
+};
+
+export type NavigationSection = "platform" | "administration";
+
+export type CurrentNavigation = {
+  item: NavigationItem;
+  section: NavigationSection;
 };

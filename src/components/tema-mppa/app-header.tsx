@@ -12,6 +12,7 @@ import type { ShellConfig, ShellSession } from "./types";
 import { UserIdentity } from "./user-identity";
 import { cn } from "./utils";
 
+/** Cabeçalho do protótipo: 56px, fundo sólido, borda inferior; título da página aparece só aqui. */
 export function AppHeader({
   config,
   session,
@@ -26,17 +27,17 @@ export function AppHeader({
   const BackIcon = config.header?.backLink?.icon;
 
   return (
-    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background/85 px-3 backdrop-blur md:px-4">
+    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-[9px] border-b bg-background px-[18px]">
       <button
-        className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "-ml-1 md:hidden")}
+        type="button"
+        className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "-ml-1.5 desk:hidden")}
         onClick={() => setMobileOpen(true)}
         aria-label="Abrir menu lateral"
       >
         <Menu />
       </button>
-      <span className="hidden h-4 w-px bg-border sm:block md:hidden" aria-hidden />
-      <Breadcrumbs config={config} />
-      <div className="ml-auto flex shrink-0 items-center gap-1">
+      <Breadcrumbs config={config} session={session} />
+      <div className="ml-auto flex shrink-0 items-center gap-[9px]">
         {config.header?.backLink ? (
           <Link
             href={config.header.backLink.href}
@@ -49,20 +50,14 @@ export function AppHeader({
         ) : null}
         <CommandPalette config={config} session={session} />
         <ThemeToggle />
-        {logos.length ? <span className="mx-1 hidden h-6 w-px bg-border sm:block" aria-hidden /> : null}
         {logos.length ? (
           <span className="hidden items-center gap-2 sm:flex">
             {logos.map((logo) => (
-              <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-7 w-auto bg-white px-1.5 py-0.5 dark:bg-white" />
+              <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-7 w-auto rounded-sm bg-logo-surface px-1.5 py-0.5" />
             ))}
           </span>
         ) : null}
-        <span className="mx-1 hidden h-6 w-px bg-border sm:block" aria-hidden />
-        <UserIdentity
-          session={session}
-          onSignOut={onSignOut}
-          signOutLabel={config.header?.signOutLabel ?? "Sair"}
-        />
+        <UserIdentity session={session} onSignOut={onSignOut} signOutLabel={config.header?.signOutLabel ?? "Sair"} />
       </div>
     </header>
   );

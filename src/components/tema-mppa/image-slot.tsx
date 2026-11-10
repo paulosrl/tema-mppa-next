@@ -14,11 +14,9 @@ export function ImageSlot({
 }) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
 
-  const src = asset?.src ?? null;
-
+  if (!asset) return null;
+  const { src, alt, width, height, className: assetClassName } = asset;
   if (!src || failedSrc === src) return null;
-
-  const { alt, width, height, className: assetClassName } = asset!;
 
   return (
     // O consumidor pode fornecer arquivo local, URL assinada ou data URL; por isso não usamos next/image.

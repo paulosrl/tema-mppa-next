@@ -5,18 +5,20 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "./button";
 import type { SearchItem, ShellConfig, ShellSession } from "./types";
-import { normalizeSearch } from "./utils";
+import { canSeeAdministration, cn, normalizeSearch, visibleNavigation } from "./utils";
 
 function configuredItems(config: ShellConfig, session: ShellSession): SearchItem[] {
-  const navigation = session.is_admin
-    ? [...config.platformNavigation, ...(config.administrationNavigation ?? [])]
-    : config.platformNavigation;
+  const navigation = [
+    ...visibleNavigation(config.platformNavigation),
+    ...(canSeeAdministration(config, session) ? visibleNavigation(config.administrationNavigation) : []),
+  ];
   return [
     ...navigation.map((item) => ({
       id: `nav-${item.id}`,
       label: item.label,
       href: item.href,
       icon: item.icon,
+      description: item.description,
       keywords: item.keywords,
     })),
     ...(config.searchItems ?? []),
@@ -28,6 +30,7 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const placeholder = config.header?.searchPlaceholder ?? "Buscar ou executar…";
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -61,37 +64,41 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
 
   return (
     <>
-      <Button
-        variant="outline"
-        size="sm"
-        className="hidden w-56 justify-start gap-2 text-muted-foreground sm:inline-flex"
+      <button
+        type="button"
+        className={cn(
+          "inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center gap-2 rounded-lg border bg-card text-[13px] text-muted-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
+          "desk:w-auto desk:justify-start desk:px-2.5",
+        )}
         onClick={() => setOpen(true)}
         aria-label="Abrir busca"
         aria-keyshortcuts="Control+K Meta+K"
       >
-        <Search />
-        <span className="flex-1 truncate text-left">{config.header?.searchPlaceholder ?? "Buscar ou executar…"}</span>
-        <kbd className="border bg-muted px-1.5 py-0.5 text-[10px]">Ctrl K</kbd>
-      </Button>
-      <Button variant="ghost" size="icon" className="sm:hidden" onClick={() => setOpen(true)} aria-label="Abrir busca">
-        <Search />
-      </Button>
+        <Search className="size-4 shrink-0" aria-hidden />
+        <span className="hidden truncate desk:inline">{placeholder}</span>
+        <kbd className="hidden rounded-xs border bg-muted px-1.5 py-px font-sans text-[10px] font-semibold desk:inline">Ctrl K</kbd>
+      </button>
       {open ? (
-        <div className="fixed inset-0 z-[80] flex items-start justify-center bg-black/65 px-4 pt-[12vh]" role="presentation" onMouseDown={() => setOpen(false)}>
+        <div
+          className="fixed inset-0 z-[80] flex items-start justify-center bg-overlay/60 px-4 pt-[12vh]"
+          role="presentation"
+          onMouseDown={() => setOpen(false)}
+        >
           <section
             role="dialog"
             aria-modal="true"
             aria-label="Busca e navegação"
-            className="w-full max-w-xl border bg-popover text-popover-foreground shadow-2xl"
+            className="w-full max-w-xl overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-surface"
             onMouseDown={(event) => event.stopPropagation()}
           >
             <div className="flex items-center gap-2 border-b px-3">
-              <Search className="size-4 text-muted-foreground" />
+              <Search className="size-4 text-muted-foreground" aria-hidden />
               <input
                 ref={inputRef}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder={config.header?.searchPlaceholder ?? "Buscar ou executar…"}
+                placeholder={placeholder}
+                aria-label={placeholder}
                 className="h-12 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
               <Button variant="ghost" size="icon" onClick={() => setOpen(false)} aria-label="Fechar busca"><X /></Button>
@@ -102,13 +109,14 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
                   const Icon = item.icon;
                   return (
                     <button
+                      type="button"
                       key={item.id}
                       onClick={() => navigate(item)}
-                      className="flex w-full items-center gap-3 px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
+                      className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
                     >
-                      {Icon ? <Icon className="size-4 shrink-0" /> : <span className="size-4" />}
+                      {Icon ? <Icon className="size-4 shrink-0" aria-hidden /> : <span className="size-4" />}
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate font-medium">{item.label}</span>
+                        <span className="block truncate font-semibold">{item.label}</span>
                         {item.description ? <span className="block truncate text-xs text-muted-foreground">{item.description}</span> : null}
                       </span>
                     </button>

@@ -31,6 +31,7 @@ export function LayoutAutenticado({ children }: { children: React.ReactNode }) {
       onSignOut={() => {
         // chame a rotina de logout já existente
       }}
+      footer={<span>Rodapé opcional do sistema</span>}
     >
       {children}
     </AppShell>
@@ -50,6 +51,11 @@ Loading, sessão expirada, 401, 403, indisponibilidade e retry continuam no layo
 
 TanStack Query está disponível no provider, mas o template não define `queryKey`, endpoint, mutation ou invalidação. Reaproveite a camada de dados existente.
 
-## 6. Substitua a demonstração
+## 6. Pinte as telas com os primitivos
+
+Use `PageFrame`, `Card`, `CardGrid`, `MetricCard`, `DataTable`, `BarChart` e `Button` (ver
+`docs/CONFIGURACAO.md`). Não repita o título da página no conteúdo: ele já aparece no cabeçalho.
+
+## 7. Substitua a demonstração
 
 Os arquivos `src/app/demo-config.tsx` e `src/app/demo-consumer.tsx` servem somente para visualizar o template. Em uma integração real, remova-os junto com `src/app/[[...slug]]/`.

@@ -1,25 +1,48 @@
-# Validação desta entrega
+# Validação desta entrega (1.1.0)
 
-## Executado com sucesso
+Executado em 2026-11-10, no WSL, com Node.js 24 e as dependências instaladas do registry npm.
 
-- verificação estrutural das versões centrais;
-- confirmação de `components.json` em `base-nova`, Base UI e Lucide;
-- confirmação da regra estrita `session.is_admin === true`;
-- confirmação de que o shell não chama API/BFF/autenticação;
-- confirmação de que imagens opcionais desaparecem quando ausentes ou inválidas;
-- parsing sintático de todos os arquivos TypeScript/TSX;
-- teste do copiador em destino vazio;
-- teste de recusa de sobrescrita sem `--force`;
-- teste de atualização com backup usando `--force`;
-- varredura de nomes institucionais fixos na camada reutilizável;
-- varredura de arquivos `:Zone.Identifier`.
+## `npm run check`
 
-## Pendente no ambiente consumidor
+Aprovado nas quatro etapas:
 
-O ambiente de geração bloqueou o registry npm com HTTP 403. Por isso não foi possível instalar dependências e executar aqui o `typecheck`, o ESLint, o build do Next.js e a renderização em navegador. Após `npm install` numa rede com acesso ao registry configurado, execute:
+1. `verify:template`:
+   - versões exatas da matriz;
+   - `base-nova`, Base UI e Lucide, sem `@radix-ui/*`;
+   - regra `is_admin === true` com item administrativo visível, também na busca;
+   - `ImageSlot` sem asserção não nula;
+   - `AppShell` sem chamada de API e com `footer`;
+   - `PageFrame` sem título;
+   - primitivos exportados;
+   - tokens iguais ao protótipo nos dois temas;
+   - contrastes recalculados do CSS;
+   - componentes sem cor fixa e sem canto reto;
+   - nada de Geist.
+2. `tsc --noEmit` com `strict`.
+3. ESLint (`eslint-config-next`).
+4. `next build` de produção.
 
-```bash
-npm run check
-```
+## Teste visual
 
-O bloqueio de rede não altera os arquivos entregues, mas a publicação em produção deve aguardar esse comando no CI ou na máquina do consumidor.
+Protótipo e demonstração lado a lado, página inteira, em `docs/comparacao/`: claro e escuro, 1280px e
+390px. A página não rola na horizontal em nenhum dos quatro casos (`scrollWidth - clientWidth = 0`).
+
+## Teste de comportamento (Chromium headless, build de produção)
+
+| Verificação | Resultado |
+| --- | --- |
+| Rota administrativa abre a aba Administração | aba "Administração", título "Usuários" |
+| Um só item marcado e um só `<h1>` | 1 item (`aria-current`), 1 `<h1>`, no cabeçalho |
+| Item `hidden` | dá o título ("Detalhe do item"), fora do menu e da busca |
+| Sub-rota (`/itens/outro`) | marca só "Meus itens" |
+| Alturas de marca, cabeçalho e rodapé da barra | 56px, 56px, 56px |
+| Barra recolhida | 64px, gravada no `localStorage` e mantida após recarregar |
+| Busca por `description` ("contas") | encontra "Usuários" |
+| `<kbd>` da busca | Outfit (`font-sans`) |
+| Avatar | painel com nome, e-mail, perfil e "Sair" |
+| Menu móvel em 390px com a barra recolhida salva | abre com 260px, rótulos visíveis; `Esc` fecha |
+
+## Pendente no consumidor
+
+Depois de copiar a camada, rode o `typecheck`, o `lint` e o `build` do consumidor, e revise claro, escuro,
+390px, desktop, usuário comum e administrador com as rotas reais.

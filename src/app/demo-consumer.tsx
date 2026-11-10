@@ -1,48 +1,40 @@
 "use client";
 
-import { ArrowRight, BarChart3, FilePlus2, Plus, Tag } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { AppShell, Button, PageFrame } from "@/components/tema-mppa";
+import {
+  AppShell,
+  BarChart,
+  Button,
+  Card,
+  CardGrid,
+  DataTable,
+  MetricCard,
+  PageFrame,
+  type DataTableColumn,
+} from "@/components/tema-mppa";
 import { demoConfig, demoSession } from "./demo-config";
 
-function titleForPath(pathname: string) {
-  const items = [...demoConfig.platformNavigation, ...(demoConfig.administrationNavigation ?? [])];
-  return items.find((item) => (item.exact ? pathname === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`)))
-    ?? demoConfig.platformNavigation[0];
-}
+/* Tela do protótipo pintada só com os primitivos exportados pela camada visual. */
 
-function MetricCard({ label, value, note, icon: Icon }: { label: string; value: string; note: string; icon: typeof Tag }) {
-  return (
-    <article className="rounded-lg border bg-card p-4 text-card-foreground tm-surface">
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-sm font-semibold text-primary">{label}</p>
-        <Icon className="size-4 text-muted-foreground" aria-hidden />
-      </div>
-      <p className="mt-4 text-3xl font-semibold tabular-nums">{value}</p>
-      <p className="mt-1 text-xs text-muted-foreground">{note}</p>
-    </article>
-  );
-}
+type RecentItem = { id: string; item: string; area: string; updated: string; hits: number };
 
-function Bars({ red = false }: { red?: boolean }) {
-  const values = [35, 62, 47, 84, 58];
-  return (
-    <div className="mt-6 flex h-32 items-end gap-3" aria-label="Gráfico ilustrativo">
-      {values.map((value, index) => (
-        <span
-          key={index}
-          className={red ? "tm-bar-primary flex-1" : "tm-bar-soft flex-1"}
-          style={{ height: `${value}%` }}
-        />
-      ))}
-    </div>
-  );
-}
+const activity = [
+  { label: "Seg", value: 35 },
+  { label: "Ter", value: 62 },
+  { label: "Qua", value: 47 },
+  { label: "Qui", value: 84 },
+  { label: "Sex", value: 58 },
+];
+
+const columns: DataTableColumn<RecentItem>[] = [
+  { key: "item", header: "Item", cell: (row) => row.item },
+  { key: "area", header: "Área", cell: (row) => row.area },
+  { key: "updated", header: "Atualizado", cell: (row) => row.updated },
+  { key: "hits", header: "Acessos", cell: (row) => row.hits },
+];
+
+const rows: RecentItem[] = [{ id: "1", item: "Exemplo configurável", area: "Categoria", updated: "Hoje", hits: 12 }];
 
 export function DemoConsumer() {
-  const pathname = usePathname();
-  const current = titleForPath(pathname);
-
   return (
     <AppShell
       config={demoConfig}
@@ -53,39 +45,24 @@ export function DemoConsumer() {
         description="Conteúdo demonstrativo. A moldura, a sessão e a navegação são fornecidas por propriedades."
         actions={
           <>
-            <Button><FilePlus2 />Nova ação</Button>
-            <Button variant="outline"><Plus />Ação secundária</Button>
+            <Button>Nova ação</Button>
+            <Button variant="secondary">Ação secundária</Button>
           </>
         }
       >
-        <section className="grid gap-4 sm:grid-cols-2">
-          <MetricCard label="Itens" value="24" note="Indicador fornecido pelo consumidor" icon={FilePlus2} />
-          <MetricCard label="Categorias" value="6" note="Indicador fornecido pelo consumidor" icon={Tag} />
-        </section>
-        <section className="grid gap-4 xl:grid-cols-2">
-          <article className="rounded-lg border bg-card p-5 text-card-foreground tm-surface">
-            <div className="flex items-center gap-2"><BarChart3 className="size-4 text-primary" /><h2 className="font-semibold">Atividade recente</h2></div>
-            <p className="mt-1 text-xs text-muted-foreground">Substitua pelo componente de dados do sistema.</p>
-            <Bars red />
-          </article>
-          <article className="rounded-lg border bg-card p-5 text-card-foreground tm-surface">
-            <div className="flex items-center gap-2"><BarChart3 className="size-4 text-chart-1" /><h2 className="font-semibold">Distribuição por categoria</h2></div>
-            <p className="mt-1 text-xs text-muted-foreground">O template não consulta APIs nem contém regra de negócio.</p>
-            <Bars />
-          </article>
-        </section>
-        <section className="overflow-hidden rounded-lg border bg-card text-card-foreground tm-surface">
-          <div className="flex items-center justify-between gap-3 border-b px-5 py-4">
-            <div><h2 className="font-semibold">Itens recentes</h2><p className="text-xs text-muted-foreground">Tabela demonstrativa</p></div>
-            <Button variant="ghost" size="sm">Ver todos <ArrowRight /></Button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] text-left text-sm">
-              <thead className="bg-muted/50 text-xs text-muted-foreground"><tr><th className="px-5 py-3 font-medium">Item</th><th className="px-5 py-3 font-medium">Área</th><th className="px-5 py-3 font-medium">Atualizado</th><th className="px-5 py-3 text-right font-medium">Acessos</th></tr></thead>
-              <tbody><tr className="border-t"><td className="px-5 py-4 font-medium">Exemplo configurável</td><td className="px-5 py-4">Categoria</td><td className="px-5 py-4">Hoje</td><td className="px-5 py-4 text-right tabular-nums">12</td></tr></tbody>
-            </table>
-          </div>
-        </section>
+        <CardGrid>
+          <MetricCard label="Itens" value="24" note="Indicador fornecido pelo consumidor" />
+          <MetricCard label="Categorias" value="6" note="Indicador fornecido pelo consumidor" />
+        </CardGrid>
+        <CardGrid>
+          <Card title="Atividade recente" description="Substitua pelo componente de dados do sistema.">
+            <BarChart data={activity} max={100} label="Atividade recente por dia" />
+          </Card>
+          <Card title="Distribuição por categoria" description="O template não consulta APIs nem contém regra de negócio.">
+            <BarChart data={activity} max={100} variant="soft" label="Distribuição por categoria" />
+          </Card>
+        </CardGrid>
+        <DataTable title="Itens recentes" columns={columns} rows={rows} rowKey={(row) => row.id} />
       </PageFrame>
     </AppShell>
   );

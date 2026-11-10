@@ -64,7 +64,7 @@ console.log("Camada visual copiada com sucesso.");
 if (backupRoot) console.log(`Backup: ${backupRoot}`);
 console.log("Próximos passos:");
 console.log("1. Importe src/styles/tema-mppa.css no globals.css.");
-console.log("2. Instale dependências ausentes: @base-ui/react, @tanstack/react-query, class-variance-authority, clsx, lucide-react e tailwind-merge.");
+console.log("2. Fixe as dependências: react/react-dom 19.2.3, @base-ui/react 1.9.0, @tanstack/react-query 5.102.8, lucide-react 1.46.0, tailwind-merge 3.6.0, class-variance-authority e clsx.");
 console.log("3. Configure ShellConfig e passe a sessão existente ao AppShell.");
 console.log("4. Execute typecheck, lint e build do consumidor.");
 console.log("Nenhum arquivo de autenticação, BFF, API, rota ou regra de negócio foi alterado.");
