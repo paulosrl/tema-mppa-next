@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Gera docs/preview/index.html: a demonstração 1.1.0 como página única, offline e autocontida, no
+ * Gera docs/preview/index.html: a demonstração como página única, offline e autocontida, no
  * papel que o index.html do protótipo tinha na 1.0. É capturada do build de produção, então o HTML
  * e o CSS são os dos componentes reais; o JavaScript do Next é trocado por um script pequeno que
  * alterna os estados capturados (rota, barra recolhida, tema e menu móvel).
@@ -10,13 +10,14 @@
  *   PLAYWRIGHT_CORE=/caminho/node_modules/playwright-core/index.mjs node scripts/gerar-preview.mjs [saida.html]
  * Variáveis: BASE_URL (padrão http://localhost:3123) e CHROMIUM (executável do Chromium).
  */
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 // playwright-core não é dependência do modelo: instale-o fora e aponte PLAYWRIGHT_CORE para ele.
 const { chromium } = await import(process.env.PLAYWRIGHT_CORE ?? "playwright-core");
 
 const here = path.dirname(fileURLToPath(import.meta.url));
+const { version } = JSON.parse(readFileSync(path.join(here, "../package.json"), "utf8"));
 const output = process.argv[2] ?? path.join(here, "../docs/preview/index.html");
 const base = process.env.BASE_URL ?? "http://localhost:3123";
 const exe =
@@ -191,7 +192,7 @@ const runtime = `
 `;
 
 const finalHtml = html
-  .replace(/<title>[^<]*<\/title>/, "<title>Template Visual MPPA v1.1.0</title>")
+  .replace(/<title>[^<]*<\/title>/, `<title>Template Visual MPPA v${version}</title>`)
   .replace("</head>", `<style>${css}</style></head>`)
   .replace("</body>", `<script>${runtime}</script></body>`);
 

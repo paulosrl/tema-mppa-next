@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-import { readFile, readdir } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import ts from "typescript";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
@@ -68,26 +69,45 @@ for (const cls of ["desk:sticky", "desk:bottom-0", "min-h-(--shell-bar)", "borde
   if (!shell.includes(cls)) errors.push(`rodapé: falta ${cls} (fixo no pé da tela, na faixa do "Recolher")`);
 }
 if (/line-clamp|truncate|text-ellipsis/.test(shell)) errors.push("rodapé: o texto institucional não pode ser cortado");
-// Qualquer menção à propriedade footer no componente (fora da tag <footer> e de comentários) ou no tipo.
-const shellCode = shell.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "").replace(/<\/?footer\b/g, "");
+// Qualquer identificador footer no componente (fora da tag <footer>) ou na declaração de AppShellProps.
+// Lido pela árvore do TypeScript: comentários e textos não contam, e tipos aninhados não escondem nada.
+const parse = (file, source) => ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, file.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+function hasFooter(node) {
+  if (ts.isIdentifier(node) && node.text === "footer") {
+    const parent = node.parent;
+    const isTag = (ts.isJsxOpeningElement(parent) || ts.isJsxClosingElement(parent) || ts.isJsxSelfClosingElement(parent)) && parent.tagName === node;
+    if (!isTag) return true;
+  }
+  return ts.forEachChild(node, hasFooter) ?? false;
+}
 const typesSource = await read("src/components/tema-mppa/types.ts");
-const shellProps = typesSource.slice(typesSource.indexOf("export type AppShellProps"), typesSource.indexOf("};", typesSource.indexOf("export type AppShellProps")));
-if (/\bfooter\b/.test(shellCode) || /\bfooter\b/.test(shellProps)) {
+let shellProps;
+parse("types.ts", typesSource).forEachChild((node) => {
+  if ((ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) && node.name.text === "AppShellProps") shellProps = node;
+});
+if (!shellProps) errors.push("types.ts: AppShellProps não encontrado");
+if (hasFooter(parse("app-shell.tsx", shell)) || (shellProps && hasFooter(shellProps))) {
   errors.push("rodapé: a propriedade footer não pode existir (o texto padrão não tem substituição)");
 }
-// Faixas alinhadas por um único token de altura.
+// Faixas alinhadas por um único token de altura, definido no CSS.
+const themeCss = await read("src/styles/tema-mppa.css");
+if (!/:root\s*\{[^}]*--shell-bar:\s*3\.5rem;/.test(themeCss)) errors.push("tema-mppa.css: falta --shell-bar: 3.5rem em :root (altura das faixas)");
 for (const [file, count] of [["app-header.tsx", 1], ["app-sidebar.tsx", 2]]) {
   const source = await read(`src/components/tema-mppa/${file}`);
-  if ((source.match(/h-\(--shell-bar\)/g) ?? []).length < count) errors.push(`${file}: faixas devem usar h-(--shell-bar)`);
+  if ((source.match(/(?<![\w-])h-\(--shell-bar\)/g) ?? []).length < count) errors.push(`${file}: faixas devem usar h-(--shell-bar)`);
   if (/\bh-14\b/.test(source)) errors.push(`${file}: altura fixa h-14; use h-(--shell-bar)`);
 }
-const emitWarning = process.emitWarning;
-process.emitWarning = (warning, ...rest) => {
-  if (String(warning).includes("Reparsing as ES module")) return;
-  emitWarning.call(process, warning, ...rest);
-};
+// footerText executado de verdade: transpilado pelo TypeScript do projeto (funciona em qualquer Node 22)
+// e gravado dentro de node_modules para resolver clsx e tailwind-merge.
 try {
-  const { footerText } = await import(path.join(root, "src/components/tema-mppa/utils.ts"));
+  const { outputText } = ts.transpileModule(await read("src/components/tema-mppa/utils.ts"), {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  });
+  const cacheDir = path.join(root, "node_modules/.cache/verify-template");
+  await mkdir(cacheDir, { recursive: true });
+  const compiled = path.join(cacheDir, "utils.mjs");
+  await writeFile(compiled, outputText);
+  const { footerText } = await import(`${pathToFileURL(compiled).href}?t=${Date.now()}`);
   const credit = "Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de Inteligência Artificial";
   const cases = [
     [{ name: "Heimdall", version: "2.0.0", versionYears: "2026" }, `${credit} - Heimdall - V 2.0.0 - 2026`],
@@ -101,9 +121,13 @@ try {
     if (actual !== expected) errors.push(`rodapé: footerText(${JSON.stringify(brand)}) = "${actual}", esperado "${expected}"`);
   }
 } catch (error) {
-  errors.push(`rodapé: footerText não pôde ser executado (requer Node ${packageJson.engines?.node}): ${error.message}`);
-} finally {
-  process.emitWarning = emitWarning;
+  errors.push(`rodapé: footerText não pôde ser executado: ${error.message}`);
+}
+
+// A prévia entregue mostra a versão do pacote.
+const preview = await read("docs/preview/index.html");
+if (!preview.includes(`<title>Template Visual MPPA v${packageJson.version}</title>`)) {
+  errors.push(`docs/preview/index.html: título fora da versão ${packageJson.version} (regere a prévia)`);
 }
 
 const header = await read("src/components/tema-mppa/app-header.tsx");

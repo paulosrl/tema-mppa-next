@@ -61,7 +61,7 @@ estiver lá, `*.tsbuildinfo`, para nada disso entrar no commit.
 
 ### 2.1 Copiar
 
-Descompacte o zip (`unzip tema-mppa-next-v1.4.1.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
+Descompacte o zip (`unzip tema-mppa-next-v1.4.2.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
 consumidor:
 
 ```bash
@@ -443,7 +443,7 @@ Os valores não mudam; só a forma.
    também. Troque `<pasta>` pelos caminhos reais (por exemplo, `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.4.1)
+## Interface (tema-mppa 1.4.2)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Atualize copiando uma versão nova do modelo.

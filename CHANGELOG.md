@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.4.2 — 2026-11-10
+
+Correções da terceira revisão de código. A aparência não muda.
+
+- **Node mínimo volta a 22.0** (`engines`): o `verify-template` transpila `utils.ts` com o TypeScript do
+  projeto em vez de depender do TypeScript nativo do Node 22.18.
+- **`verify-template`:**
+  - procura a propriedade `footer` pela árvore do TypeScript, no componente e na declaração inteira de
+    `AppShellProps`: comentários, textos com `//` e tipos aninhados não escondem mais nada;
+  - confere que `--shell-bar: 3.5rem` está definido em `:root`, não só que as classes o usam;
+  - confere que o título da prévia traz a versão do pacote.
+- **Prévia:** `gerar-preview.mjs` lê a versão do `package.json`; o título deixa de dizer v1.1.0.
+
 ## 1.4.1 — 2026-11-10
 
 Correções da segunda revisão de código do rodapé. A aparência não muda.

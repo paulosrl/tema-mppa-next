@@ -1,6 +1,6 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.4.1**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com o
+Versão **1.4.2**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com o
 cabeçalho padrão dos sistemas:
 
 - barra lateral com abas Plataforma e Administração;
@@ -16,12 +16,12 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 
 ## Usar num codebase
 
-1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.4.1.zip` e o `.sha256` na pasta acima
+1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.4.2.zip` e o `.sha256` na pasta acima
    desta.
 2. Copie o zip para a raiz do codebase que vai receber a interface.
 3. Diga ao agente desse codebase:
 
-   > Descompacte tema-mppa-next-v1.4.1.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
+   > Descompacte tema-mppa-next-v1.4.2.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
    > interface neste codebase.
 
 O zip tem só o que o agente usa:
@@ -67,7 +67,7 @@ node scripts/capturar-comparacao.mjs "$FONTE" /tmp/capturas
 node scripts/compor-comparacao.mjs /tmp/capturas docs/comparacao
 ```
 
-Requer Node 22.18 ou mais novo: o `npm run check` executa `utils.ts` com o TypeScript nativo do Node.
+Requer Node 22 ou mais novo. O `npm run check` executa `footerText` de verdade: transpila `utils.ts` com o TypeScript do projeto, sem depender do TypeScript nativo do Node.
 
 Stack fixada (versões exatas, conferidas por `npm run check`):
 
