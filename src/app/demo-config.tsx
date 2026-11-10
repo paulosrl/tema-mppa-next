@@ -1,6 +1,15 @@
 import { Bot, FileText, Gauge, Share2, ShieldCheck, Users } from "lucide-react";
 import type { ShellConfig, ShellSession } from "@/components/tema-mppa";
 
+/* Logos genéricas de exemplo (SVG embutido); o consumidor passa as logos institucionais reais. */
+const svg = (markup: string) => `data:image/svg+xml;utf8,${encodeURIComponent(markup)}`;
+const logoOrgao = svg(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="132" height="76" viewBox="0 0 132 76"><rect width="132" height="76" fill="#fff"/><text x="66" y="44" font-family="Arial" font-size="30" font-weight="700" fill="#9f0712" text-anchor="middle">ÓRGÃO</text><text x="66" y="62" font-family="Arial" font-size="11" fill="#18181b" text-anchor="middle">logo de exemplo</text></svg>',
+);
+const logoSetor = svg(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="76" height="76" viewBox="0 0 76 76"><circle cx="38" cy="38" r="34" fill="#fff" stroke="#1e3a8a" stroke-width="5"/><text x="38" y="45" font-family="Arial" font-size="20" font-weight="700" fill="#1e3a8a" text-anchor="middle">SET</text></svg>',
+);
+
 /**
  * Exemplo substituível, com o conteúdo do protótipo (docs/prototipo/index.html). Todos os nomes,
  * rotas e itens chegam ao shell por configuração.
@@ -8,8 +17,7 @@ import type { ShellConfig, ShellSession } from "@/components/tema-mppa";
 export const demoConfig: ShellConfig = {
   brand: {
     name: "Template",
-    version: "1.1",
-    tagline: "Sistema consumidor",
+    version: "1.2.0",
     homeHref: "/",
     symbol: <span className="tm-brand-mark" aria-hidden>T</span>,
   },
@@ -27,7 +35,10 @@ export const demoConfig: ShellConfig = {
     { id: "users", label: "Usuários", href: "/administracao/usuarios", icon: Users, tone: "green", description: "Contas e perfis" },
   ],
   header: {
-    logos: [],
+    logos: [
+      { src: logoOrgao, alt: "Órgão (exemplo)", width: 132, height: 76 },
+      { src: logoSetor, alt: "Setor (exemplo)", width: 76, height: 76 },
+    ],
     searchPlaceholder: "Buscar ou executar…",
     signOutLabel: "Sair",
   },

@@ -67,16 +67,16 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
       <button
         type="button"
         className={cn(
-          "inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center gap-2 rounded-lg border bg-card text-[13px] text-muted-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
-          "desk:w-auto desk:justify-start desk:px-2.5",
+          "inline-flex size-[34px] shrink-0 items-center justify-center gap-2 rounded-lg text-xs text-muted-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
+          "sm:h-8 sm:w-56 sm:justify-start sm:border sm:bg-card sm:px-3",
         )}
         onClick={() => setOpen(true)}
         aria-label="Abrir busca"
         aria-keyshortcuts="Control+K Meta+K"
       >
         <Search className="size-4 shrink-0" aria-hidden />
-        <span className="hidden truncate desk:inline">{placeholder}</span>
-        <kbd className="hidden rounded-xs border bg-muted px-1.5 py-px font-sans text-[10px] font-semibold desk:inline">Ctrl K</kbd>
+        <span className="hidden flex-1 truncate text-left sm:inline">{placeholder}</span>
+        <kbd className="hidden rounded-xs border bg-muted px-1.5 py-0.5 font-sans text-[10px] font-semibold sm:inline">Ctrl K</kbd>
       </button>
       {open ? (
         <div

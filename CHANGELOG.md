@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.2.0 — 2026-11-10
+
+Cabeçalho no padrão que os sistemas vão usar, igual ao do Heimdall 2.0.0. Estrutura, cores e tokens sem
+mudança.
+
+- **Marca no topo da barra lateral:** símbolo de 32px; nome (semibold) e versão (`text-xs`, cor secundária)
+  na mesma linha; subtítulo, se houver, abaixo. `tm-brand-mark` passa de 34px para 32px.
+- **Título:** ícone de seção de 24px (`SectionIcon size="sm"`) e título em `text-sm`, peso 500, 10px depois do
+  ícone.
+- **Busca:** caixa de 224px × 32px, com lupa, texto (`header.searchPlaceholder`) e `Ctrl K`, a partir de 640px;
+  abaixo, só a lupa.
+- **Lado direito:** tema; divisória; logos institucionais; divisória; identidade.
+- **Identidade:**
+  - avatar redondo de 32px;
+  - nome e perfil visíveis a partir de 1280px;
+  - e-mail ao passar o mouse;
+  - botão de sair visível (`onSignOut`).
+
+  O painel que o avatar abria (Base UI Popover) saiu.
+- Espaçamentos do cabeçalho: padding de 16px (12px no celular) e 4px entre os controles da direita.
+- Demonstração com duas logos genéricas de exemplo e sem subtítulo; prévia e comparações regeradas.
+- `REPLICAR.md` e `AGENTS.md` descrevem o cabeçalho padrão, que prevalece sobre o do protótipo.
+
 ## 1.1.1 — 2026-11-10
 
 O modelo passa a servir para ser entregue a um agente: basta colocar o zip no codebase consumidor e pedir

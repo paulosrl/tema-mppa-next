@@ -13,22 +13,30 @@ function toneClass(tone: string | undefined) {
   return tone in tones ? tones[tone as NavigationTone] : tone;
 }
 
-/** Ícone de seção do protótipo: 28px, raio 6px, fundo pastel do tom. */
+/** Ícone de seção: 28px no menu (`md`), 24px no título do cabeçalho (`sm`); raio 6px, fundo pastel do tom. */
 export function SectionIcon({
   icon: Icon,
   tone,
+  size = "md",
   className,
 }: {
   icon: IconComponent;
   tone?: NavigationTone | (string & {});
+  size?: "sm" | "md";
   className?: string;
 }) {
   return (
     <span
       aria-hidden="true"
-      className={cn("inline-flex size-7 shrink-0 items-center justify-center rounded-md", tones.red, toneClass(tone), className)}
+      className={cn(
+        "inline-flex shrink-0 items-center justify-center rounded-md",
+        size === "sm" ? "size-6" : "size-7",
+        tones.red,
+        toneClass(tone),
+        className,
+      )}
     >
-      <Icon className="size-4" strokeWidth={2.25} />
+      <Icon className={size === "sm" ? "size-3.5" : "size-4"} strokeWidth={2.25} />
     </span>
   );
 }

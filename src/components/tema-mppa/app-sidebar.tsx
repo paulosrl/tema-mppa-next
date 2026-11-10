@@ -30,22 +30,26 @@ function Brand({ config }: { config: ShellConfig }) {
   const { collapsed, hideWhenCollapsed } = useCompact();
   const { brand } = config;
   return (
-    <Link
-      href={brand.homeHref}
-      onClick={() => setMobileOpen(false)}
-      className={cn(
-        "flex h-14 shrink-0 items-center gap-2.5 border-b border-sidebar-border px-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sidebar-ring",
-        collapsed && "desk:justify-center desk:px-0",
-      )}
-      title={`${brand.name}${brand.version ? ` v${brand.version}` : ""}`}
-    >
-      {isImageAsset(brand.symbol) ? <ImageSlot asset={brand.symbol} className="size-[34px] shrink-0" /> : brand.symbol ?? null}
-      <span className={cn("grid min-w-0 flex-1 text-left leading-[1.2]", hideWhenCollapsed)}>
-        <span className="truncate font-bold">{brand.name}</span>
-        {brand.version ? <span className="truncate text-[13px] font-bold text-muted-foreground">v{brand.version}</span> : null}
-        {brand.tagline ? <span className="truncate text-[13px] text-muted-foreground">{brand.tagline}</span> : null}
-      </span>
-    </Link>
+    <div className={cn("flex h-14 shrink-0 items-center border-b border-sidebar-border px-2", collapsed && "desk:justify-center")}>
+      <Link
+        href={brand.homeHref}
+        onClick={() => setMobileOpen(false)}
+        className={cn(
+          "flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg px-2 outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+          collapsed && "desk:flex-none desk:justify-center desk:px-1",
+        )}
+        title={`${brand.name}${brand.version ? ` v${brand.version}` : ""}`}
+      >
+        {isImageAsset(brand.symbol) ? <ImageSlot asset={brand.symbol} className="size-8 shrink-0" /> : brand.symbol ?? null}
+        <span className={cn("grid min-w-0 flex-1 text-left leading-tight", hideWhenCollapsed)}>
+          <span className="flex min-w-0 items-baseline gap-1.5">
+            <span className="truncate font-semibold tracking-tight">{brand.name}</span>
+            {brand.version ? <span className="shrink-0 text-xs font-normal text-muted-foreground">v{brand.version}</span> : null}
+          </span>
+          {brand.tagline ? <span className="truncate text-xs text-muted-foreground">{brand.tagline}</span> : null}
+        </span>
+      </Link>
+    </div>
   );
 }
 

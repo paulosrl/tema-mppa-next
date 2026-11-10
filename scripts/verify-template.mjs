@@ -59,6 +59,12 @@ const shell = await read("src/components/tema-mppa/app-shell.tsx");
 if (/fetch\(|\/api\//.test(shell)) errors.push("AppShell não pode chamar API");
 if (!shell.includes("footer")) errors.push("AppShell sem footer");
 
+const header = await read("src/components/tema-mppa/app-header.tsx");
+const identity = await read("src/components/tema-mppa/user-identity.tsx");
+if (!header.includes("<UserIdentity") || !header.includes("bg-logo-surface")) errors.push("cabeçalho sem identidade ou logos");
+if (!identity.includes("onSignOut ?") || !identity.includes("xl:flex")) errors.push("cabeçalho padrão: nome/perfil (xl) e botão de sair visíveis");
+if (/popover/i.test(identity)) errors.push("cabeçalho padrão não usa painel no avatar");
+
 const pageFrame = await read("src/components/tema-mppa/page-frame.tsx");
 if (/<h1/.test(pageFrame)) errors.push("PageFrame não pode repetir o título (ele fica só no cabeçalho)");
 

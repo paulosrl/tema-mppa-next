@@ -12,5 +12,15 @@
 - Antes de publicar: `npm run check`; se a aparência mudou, regere a prévia e as comparações (README, "Manter o modelo"); depois `npm run empacotar`.
 - `REPLICAR.md` é o roteiro do agente no consumidor: mantenha-o em dia com a API da camada, os tokens e o script de cópia.
 - O protótipo `docs/prototipo/index.html` manda em todo elemento gráfico: raio 8px, sombra `--shadow`, fundos, borda e realce dele; título só no cabeçalho.
+- Exceção: o cabeçalho segue o padrão dos sistemas, definido em 2026-11-10 (REPLICAR.md, seção 4):
+  - marca com nome e versão na mesma linha;
+  - título com ícone de 24px;
+  - busca de 224px com `Ctrl K`;
+  - tema;
+  - logos entre divisórias;
+  - avatar com nome e perfil;
+  - botão de sair.
+
+  Não volte ao avatar sozinho do protótipo.
 - Contraste fixo: no claro, todo texto com 7:1 e secundário igual ao principal; no escuro, 4,5:1 e texto escuro sobre a primária; ícones de tom com 4,5:1.
 - Telas de demonstração usam só os primitivos exportados (`PageFrame`, `Card`, `MetricCard`, `DataTable`, `BarChart`, `Button`).

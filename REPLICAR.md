@@ -10,7 +10,7 @@ Replicar:
 
 - **Layout:**
   - barra lateral de 260px (64px recolhida);
-  - cabeçalho de 56px com o título da página;
+  - cabeçalho de 56px no padrão dos sistemas (seção 4);
   - conteúdo com padding 38px e largura máxima de 1500px;
   - menu móvel abaixo de 801px.
 - **Estrutura:**
@@ -18,7 +18,7 @@ Replicar:
   - menu com ícones de seção coloridos;
   - busca `Ctrl+K`;
   - tema claro, escuro e sistema;
-  - avatar com painel da conta;
+  - identidade do usuário (avatar, nome e perfil) e botão de sair no cabeçalho;
   - cartões, métricas, tabelas e gráficos de barras.
 - **Cores:** só os tokens de `src/styles/tema-mppa.css` (tabela na seção 3).
 
@@ -37,6 +37,11 @@ Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "
   e laranja (tabela de cores na seção 3).
 - **Ícones:** Lucide no lugar dos caracteres do protótipo.
 - **Busca:** mostra `Ctrl K` e uma lupa.
+- **Cabeçalho:** segue o padrão dos sistemas, não o do protótipo:
+  - marca com nome e versão na mesma linha;
+  - logos institucionais;
+  - nome e perfil do usuário visíveis;
+  - botão de sair.
 - **Tema:** o botão alterna entre claro, escuro e sistema.
 
 ## 1. Conferir a stack do consumidor
@@ -56,7 +61,7 @@ estiver lá, `*.tsbuildinfo`, para nada disso entrar no commit.
 
 ### 2.1 Copiar
 
-Descompacte o zip (`unzip tema-mppa-next-v1.1.1.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
+Descompacte o zip (`unzip tema-mppa-next-v1.2.0.zip`); ele cria a pasta `tema-mppa-next/`. Da raiz do
 consumidor:
 
 ```bash
@@ -165,8 +170,11 @@ Regras para preencher:
 - `version` e `tagline` são opcionais: sem eles, a marca mostra só o nome. Use a versão do `package.json`
   do consumidor; não invente subtítulo.
 - `symbol`: a logo do sistema (`{ src, alt }`) ou, sem imagem, `<span className="tm-brand-mark">X</span>`
-  com a inicial do sistema (quadrado de 34px com degradê vermelho, definido no `tema-mppa.css`).
-- `header.logos: []` é válido; logos institucionais entram como `{ src, alt, width, height }`.
+  com a inicial do sistema (quadrado de 32px com degradê vermelho, definido no `tema-mppa.css`).
+- `header.logos: []` é válido; logos institucionais entram como `{ src, alt, width, height }` e aparecem
+  no cabeçalho a partir de 640px (abaixo disso, no menu móvel).
+- `header.searchPlaceholder` é o texto da caixa de busca (por exemplo, "Ir para…"); `header.signOutLabel`, o
+  rótulo do botão de sair.
 - `description` e `keywords` dos itens são opcionais: preencha só com texto real do consumidor.
 
 - Migre **todos** os itens do menu atual do consumidor, com as mesmas rotas.
@@ -234,7 +242,8 @@ export function LayoutAutenticado({ children }: { children: React.ReactNode }) {
 `is_admin` tem de ser o booleano estrito vindo da sessão real. Não deduza administrador por e-mail,
 nome ou texto de perfil. Se o consumidor não tinha tela de carregamento nem de erro, `return null` enquanto
 não há sessão é aceitável. `avatar` é opcional: sem foto, passe `null` e o avatar mostra as iniciais.
-`profileLabel` também; sem ele, aparece "Administrador" ou "Usuário". Remova o shell antigo (sidebar,
+`profileLabel` também; sem ele, aparece "Administrador" ou "Usuário". O nome e o perfil aparecem ao
+lado do avatar a partir de 1280px; o e-mail, ao passar o mouse. Sem `onSignOut`, o botão de sair não aparece. Remova o shell antigo (sidebar,
 header, navbar) que o `AppShell` substitui.
 
 ### 2.7 Telas
@@ -344,7 +353,7 @@ Raios, presos a `--radius` (8px):
 
 ```text
 ┌──────────────┬──────────────────────────────────────────────────────────────┐
-│ marca   56px │ [☰] [ícone] Título da página    [Buscar… Ctrl K] [tema] (PL) │ 56px, borda inferior
+│ [▣] Nome v1.0│ [ícone] Título    [⌕ Buscar… Ctrl K] [☼] │ [logos] │ (PL) Nome / Perfil [⇥] │ 56px
 ├──────────────┼──────────────────────────────────────────────────────────────┤
 │[Plataf.|Adm.]│  padding 38px (22/14 no celular), máx. 1500px                │
 │ Plataforma   │  Descrição da página ............ [Ação] [Secundária]        │
@@ -358,9 +367,22 @@ Raios, presos a `--radius` (8px):
   260px (64px recolhida); abaixo de 801px vira menu móvel
 ```
 
+Cabeçalho (igual em todos os sistemas):
+
+- **Marca, no topo da barra lateral:** símbolo de 32px, com nome (semibold) e versão (`text-xs`, cor
+  secundária) na mesma linha.
+- **Título:** ícone de seção de 24px, 10px até o título (`text-sm`, peso 500).
+- **Busca:** caixa de 224px × 32px com lupa, texto e `Ctrl K`. Abaixo de 640px, só a lupa.
+- **Tema:** botão de ícone de 34px.
+- **Logos:** 28px de altura sobre `bg-logo-surface`, com divisórias de 24px antes e depois.
+- **Identidade:**
+  - avatar redondo de 32px com as iniciais (ou a foto);
+  - nome (`text-xs` semibold) e perfil (`text-xs`, cor secundária) a partir de 1280px;
+  - botão de sair de 34px.
+
 Medidas:
 
-- **Ícone de seção:** 28px.
+- **Ícone de seção:** 28px no menu.
 - **Item de menu:** padding 7px 8px, 10px entre ícone e texto, 5px entre itens.
 - **Abas:** 32px de altura, num trilho com padding de 3px.
 - **Botões:** 36px de altura, peso 700.
@@ -406,7 +428,7 @@ Os valores não mudam; só a forma.
    também. Troque `<pasta>` pelos caminhos reais (por exemplo, `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.1.1)
+## Interface (tema-mppa 1.2.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Atualize copiando uma versão nova do modelo.

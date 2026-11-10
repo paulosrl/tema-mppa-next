@@ -1,9 +1,11 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.1.1**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)):
+Versão **1.2.0**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com o
+cabeçalho padrão dos sistemas:
 
 - barra lateral com abas Plataforma e Administração;
-- cabeçalho de 56px com o título da página;
+- cabeçalho de 56px: título da página, busca, tema, logos institucionais, nome e perfil do usuário e
+  botão de sair;
 - busca `Ctrl+K`;
 - tema claro e escuro;
 - cartões, métricas, tabelas e gráficos;
@@ -13,12 +15,12 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 
 ## Usar num codebase
 
-1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.1.1.zip` e o `.sha256` na pasta acima
+1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.2.0.zip` e o `.sha256` na pasta acima
    desta.
 2. Copie o zip para a raiz do codebase que vai receber a interface.
 3. Diga ao agente desse codebase:
 
-   > Descompacte tema-mppa-next-v1.1.1.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
+   > Descompacte tema-mppa-next-v1.2.0.zip, leia tema-mppa-next/REPLICAR.md e replique o modelo de
    > interface neste codebase.
 
 O zip tem só o que o agente usa:
