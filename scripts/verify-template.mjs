@@ -298,7 +298,7 @@ if (/^\s*["']use client["']/m.test(themeScript)) errors.push('theme-script.tsx n
 for (const name of ["THEME_STORAGE_KEY", "THEME_BOOT_SCRIPT", "ThemeScript"]) {
   if (!new RegExp(`export (const|function) ${name}\\b`).test(themeScript)) errors.push(`theme-script.tsx não exporta ${name}`);
 }
-if (!/export \{ THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript \} from "\.\/theme-script";/.test(index)) errors.push("index.ts deve exportar THEME_BOOT_SCRIPT, THEME_STORAGE_KEY e ThemeScript de ./theme-script");
+if (!/export \{ SIDEBAR_STORAGE_KEY, THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript \} from "\.\/theme-script";/.test(index)) errors.push("index.ts deve exportar SIDEBAR_STORAGE_KEY, THEME_BOOT_SCRIPT, THEME_STORAGE_KEY e ThemeScript de ./theme-script");
 const themeProvider = await read("src/components/tema-mppa/theme-provider.tsx");
 // Na hidratação, o tema da renderização ainda é o do servidor: o efeito aplica o guardado.
 const themeEffect = themeProvider.match(/useEffect\(\(\) => \{([\s\S]*?)\}, \[resolvedTheme\]\);/)?.[1] ?? "";
@@ -385,7 +385,7 @@ const contractSection = section(replicar, "### 4.8 ");
 const layerSource = async (file) => read(`src/components/tema-mppa/${file}`);
 const contract = [
   ["`tema-mppa-theme`", "theme-script.tsx", 'THEME_STORAGE_KEY = "tema-mppa-theme"'],
-  ["`tema-mppa-sidebar-collapsed`", "sidebar-context.tsx", 'SIDEBAR_STORAGE_KEY = "tema-mppa-sidebar-collapsed"'],
+  ["`tema-mppa-sidebar-collapsed`", "theme-script.tsx", 'SIDEBAR_STORAGE_KEY = "tema-mppa-sidebar-collapsed"'],
   ['"Tema: Claro. Alterar para Escuro"', "theme-toggle.tsx", "aria-label={`Tema: ${labels[theme]}. Alterar para ${labels[next]}`}"],
   ["claro → escuro → sistema", "theme-toggle.tsx", 'const sequence: Theme[] = ["light", "dark", "system"];'],
   ["claro → escuro → sistema", "theme-toggle.tsx", '{ light: "Claro", dark: "Escuro", system: "Sistema" }'],

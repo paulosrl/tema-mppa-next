@@ -144,7 +144,7 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 ## 3. Fase 0: Diagnóstico
 
 1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
-   (`unzip tema-mppa-next-v1.6.1.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
+   (`unzip tema-mppa-next-v1.7.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -266,7 +266,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 ```
 
-- **Script de tema:** use o `<ThemeScript>`. Ele aplica o tema antes da hidratação, sem piscar. Ele e o
+- **Script de tema:** use o `<ThemeScript>`. Ele aplica o tema e marca a barra recolhida
+  (`data-tm-sidebar` no `<html>`) antes da hidratação, sem piscar nenhum dos dois. Ele e o
   `THEME_BOOT_SCRIPT` vêm de `theme-script.tsx`, módulo sem `"use client"`, e chegam ao layout raiz como texto.
   Não importe nada de `theme-provider.tsx` no servidor: ali tudo é `"use client"` e vira referência de cliente.
 - **CSP:** se o consumidor tem `Content-Security-Policy` com `nonce`, passe o mesmo nonce que ele já usa (o
@@ -328,7 +329,8 @@ Regras para preencher:
   as descrições de uma busca antiga).
 
 - Migre **todos** os itens do menu atual do consumidor, com as mesmas rotas.
-- Reveze os tons `"red"`, `"green"`, `"violet"` e `"orange"`, como no protótipo.
+- Reveze os tons `"red"`, `"green"`, `"violet"` e `"orange"`, como no protótipo. Se o sistema precisa de uma
+  cor por item e tem mais de quatro, use também `"blue"`, `"teal"`, `"pink"` e `"amber"`.
 - Rotas de detalhe ou fora do menu: crie itens com `hidden: true`, para darem o título certo.
 - Item que some por condição (uma consulta, uma função desligada): monte a configuração numa função que
   recebe a condição e devolve o item com `hidden: true`; ele continua dando o título na própria rota.
@@ -341,7 +343,7 @@ Campos de cada item de navegação:
 | --- | --- |
 | `id`, `label`, `href`, `icon` | obrigatórios; `icon` é um ícone do `lucide-react` |
 | `exact` | só a rota exata marca o item; sem ele, as sub-rotas também marcam |
-| `tone` | cor do ícone: `"red"` (padrão), `"green"`, `"violet"`, `"orange"` |
+| `tone` | cor do ícone: `"red"` (padrão), `"green"`, `"violet"`, `"orange"`, `"blue"`, `"teal"`, `"pink"`, `"amber"` |
 | `description`, `keywords` | aparecem e entram no filtro da busca `Ctrl+K` |
 | `matches` | outras rotas (e sub-rotas) que marcam o item |
 | `hidden` | fora do menu e da busca, mas dá o título e a aba quando a rota é dele |
@@ -391,10 +393,19 @@ export function LayoutAutenticado({ children }: { children: React.ReactNode }) {
 }
 ```
 
+Outras propriedades do `AppShell`, todas opcionais:
+
+| Propriedade | Efeito |
+| --- | --- |
+| `session={null}` | sessão ainda a caminho: a casca aparece (layout estático, sem salto), sem dado de usuário nem administração, com o botão de sair. Passe a sessão quando ela chegar. |
+| `title` | título vindo do conteúdo, como o nome do registro numa rota de detalhe; substitui o rótulo do item no cabeçalho e sai sem ícone de seção |
+| `headerActions` | ações do sistema no cabeçalho, à esquerda da busca (por exemplo, um botão de volta a outro sistema que só aparece em certa condição) |
+| `renderSearch` | busca própria do sistema no lugar da paleta do modelo: recebe `{ open, setOpen }` e devolve o diálogo; o botão "Abrir busca" e o `Ctrl+K` continuam do modelo |
+
 `is_admin` tem de ser o booleano estrito vindo da sessão real (por exemplo, `sessao.role === "admin"`). Não
 deduza administrador por e-mail, nome ou texto de perfil. A camada só esconde a administração; a proteção
 das rotas administrativas continua no consumidor, como estava. `avatar` é opcional: sem foto, passe `null` e
-o avatar mostra as iniciais. `profileLabel` também; sem ele, aparece "Administrador" ou "Usuário". O nome e
+o avatar mostra as iniciais (ou as de `initials`, se o sistema tem regra própria). `profileLabel` também; sem ele, aparece "Administrador" ou "Usuário". O nome e
 o perfil aparecem ao lado do avatar a partir de 1280px; o e-mail, ao passar o mouse. Sem `onSignOut`, o
 botão de sair não aparece. Remova o shell antigo (sidebar, header, navbar, busca) que o `AppShell` substitui.
 
@@ -430,7 +441,8 @@ casca antiga típica:
 
 | O quê | Na camada | Costuma quebrar |
 | --- | --- | --- |
-| Chaves de armazenamento | tema em `tema-mppa-theme` (`sessionStorage`); barra recolhida em `tema-mppa-sidebar-collapsed` (`localStorage`) | teste que gravava a chave antiga ou o tema no `localStorage` |
+| Chaves de armazenamento | tema em `tema-mppa-theme` (`sessionStorage`); barra recolhida em `tema-mppa-sidebar-collapsed` (`localStorage`, `"1"` ou `"0"`) | teste que gravava a chave antiga ou o tema no `localStorage` |
+| Barra recolhida | atributo `data-tm-sidebar="collapsed"` (ou `"expanded"`) no `<html>`; botão "Recolher menu lateral" / "Expandir menu lateral" com `aria-expanded` | teste que lia `data-state` da barra antiga |
 | Alternador de tema | botão com aria-label "Tema: Claro. Alterar para Escuro"; ciclo claro → escuro → sistema | teste que procurava "Ativar tema escuro" ou alternava só entre claro e escuro |
 | Barra lateral | `aside` com aria-label "Navegação principal"; abas com aria-label "Seções do menu" | seletor da `nav` ou da `aside` antigas |
 | Título | um `h1` dentro do `header` (papel `banner`), sem trilha (breadcrumb) | teste que procurava o título no conteúdo ou a trilha |
@@ -589,15 +601,19 @@ Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 | `bg-muted` | `#f4f4f5` | `#27272a` | trilho das abas, avatar, áreas neutras |
 | `bg-highlight` | `#fee2e2` | `#351518` | item e aba ativos |
 | `text-foreground` | `#18181b` | `#fafafa` | texto |
-| `text-muted-foreground` | `#18181b` | `#a1a1aa` | texto secundário (no claro, igual ao texto) |
+| `text-muted-foreground` | `#18181b` | `#f4f4f5` | texto secundário (no claro, igual ao texto) |
 | `border` (`border-border`) | `#d4d4d8` | `rgba(255,255,255,.12)` | bordas |
 | `bg-primary` / `text-primary-foreground` | `#9f0712` / `#ffffff` | `#ef4444` / `#09090b` | ação principal, foco |
 | `bg-destructive` | `#991b1b` | `#f87171` | ação destrutiva |
-| `text-success` / `text-warning` | `#15603a` / `#7a4510` | `#4ade80` / `#facc15` | status |
+| `text-success` / `text-warning` | `#08351f` / `#432506` | `#bbf7d0` / `#fef08a` | status |
 | `bg-tone-red` + `text-tone-red-foreground` | `#fee2e2` + `#970611` | igual | ícone de seção vermelho |
 | `bg-tone-green` + `text-tone-green-foreground` | `#d1fae5` + `#047857` | igual | ícone verde |
 | `bg-tone-violet` + `text-tone-violet-foreground` | `#ede9fe` + `#7c3aed` | igual | ícone violeta |
 | `bg-tone-orange` + `text-tone-orange-foreground` | `#ffedd5` + `#a85005` | igual | ícone laranja |
+| `bg-tone-blue` + `text-tone-blue-foreground` | `#dbeafe` + `#1d4ed8` | igual | ícone azul |
+| `bg-tone-teal` + `text-tone-teal-foreground` | `#ccfbf1` + `#0f766e` | igual | ícone verde-água |
+| `bg-tone-pink` + `text-tone-pink-foreground` | `#fce7f3` + `#be185d` | igual | ícone rosa |
+| `bg-tone-amber` + `text-tone-amber-foreground` | `#fef3c7` + `#92400e` | igual | ícone âmbar |
 | `bg-overlay/40` | `#000` a 40% | igual | fundo atrás do menu móvel |
 | `bg-logo-surface` | `#ffffff` | `#ffffff` | fundo das logos |
 | `shadow-surface` | `0 2px 6px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05)` | `0 2px 8px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2)` | cartão, aba e item ativos |
@@ -605,8 +621,9 @@ Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 
 Contraste obrigatório:
 
-- **Claro:** todo texto com 7:1 sobre o próprio fundo, e o texto secundário igual ao principal.
-- **Escuro:** 4,5:1, com texto escuro sobre a primária.
+- **Texto sobre superfície neutra** (fundo, cartão, muted, barra), nos dois temas: 12:1, inclusive o
+  secundário e o de status. No claro, o secundário é igual ao principal.
+- **Texto sobre preenchimento colorido** (botão primário, pílula): 4,5:1; no escuro, texto escuro sobre a primária.
 - **Ícones de tom:** 4,5:1.
 
 Os tokens já cumprem isso. Se o consumidor precisar de uma cor nova, crie um token no **próprio**
@@ -618,8 +635,8 @@ Não faça:
   abaixo de 7:1 (cerca de 6,7:1 sobre o cartão e 6,9:1 sobre o fundo). Use `text-foreground` sobre o fundo
   atenuado e deixe a primária no ícone ou na borda. O mesmo vale para qualquer cor sobre a própria versão
   transparente: confira o contraste do par, não só o da cor.
-- **Texto colorido onde o consumidor exige texto preto:** `text-success` e `text-warning` são coloridos (7:1 no
-  claro). Se o consumidor tem regra de todo texto preto no claro, isso é conflito do diagnóstico (item 12): a
+- **Texto colorido onde o consumidor exige texto preto:** `text-success` e `text-warning` são coloridos (12:1
+  sobre superfície neutra, quase pretos no claro). Se o consumidor tem regra de todo texto preto no claro, isso é conflito do diagnóstico (item 12): a
   cor fica no ícone ou no ponto de status, com o texto em `text-foreground`.
 
 Fonte: Outfit (`font-sans`).
@@ -706,7 +723,7 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.6.1)
+## Interface (tema-mppa 1.7.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
@@ -716,7 +733,8 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
   `node docs/tema-mppa/verificar-design.mjs --css <CSS próprio>` a cada mudança de token.
 - Telas só com os primitivos (`PageFrame`, `Card`, `CardGrid`, `MetricCard`, `DataTable`, `BarChart`,
   `Button`); cores só pelos tokens; título só no cabeçalho, vindo do item de navegação.
-- Contraste: 7:1 no claro (secundário igual ao principal), 4,5:1 no escuro.
+- Contraste: 12:1 em texto sobre superfície neutra nos dois temas (secundário igual ao principal no claro);
+  4,5:1 em texto sobre preenchimento colorido.
 - Administração aparece só com `session.is_admin === true`.
 ```
 

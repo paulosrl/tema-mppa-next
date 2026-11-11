@@ -1,5 +1,55 @@
 # Changelog
 
+## 1.7.0 — 2026-11-10
+
+Pedidos do HubIA (o segundo consumidor antigo, Fase 1), P1 a P5 do plano dele, e dois ajustes que a adoção
+mostrou. Parte da 1.6.1, que ele não tinha: o tema com o `sessionStorage` bloqueado continua corrigido. A API só ganha propriedades opcionais; nada sai. O que muda na aparência: o texto secundário e o de
+status passam a 12:1 sobre superfície neutra nos dois temas.
+
+- **P1. Mais tons de seção:** `NavigationTone` ganha `"blue"`, `"teal"`, `"pink"` e `"amber"` (tokens
+  `--tone-*` e `--tone-*-foreground`, de 4,86:1 a 6,37:1 sobre o próprio fundo), para sistemas com mais de
+  quatro itens que pedem uma cor por item.
+- **P2. Barra recolhida sem piscar em layout estático:** o script de boot (`<ThemeScript>`) passa a marcar
+  `data-tm-sidebar="collapsed"` no `<html>` a partir do `localStorage`, e a barra se desenha pela variante
+  `tm-collapsed` do `tema-mppa.css`, não pelo estado do React. Antes, numa casca hidratada, a barra recolhida
+  nascia expandida e fechava depois. O pedido era um cookie opcional; o atributo resolve o mesmo sem obrigar
+  o layout a ler cookie (que o tornaria dinâmico). `SIDEBAR_STORAGE_KEY` passa a vir de `theme-script.tsx`.
+- **P3. Busca do sistema (`renderSearch`):** o `AppShell` aceita `renderSearch({ open, setOpen })`, que troca
+  a paleta do modelo pelo diálogo do sistema (por exemplo, uma busca no servidor). O botão "Abrir busca" e o
+  `Ctrl+K` continuam do modelo.
+- **P4. Ações do sistema no cabeçalho (`headerActions`):** nó renderizado à esquerda da busca, para um botão
+  que depende de estado do sistema (por exemplo, "Voltar ao Heimdall" só para quem veio de lá). O
+  `header.backLink` fixo continua.
+- **P5. Contraste de 12:1 em superfície neutra:** `--muted-foreground` escuro vai de `#a1a1aa` (5,81:1 no
+  muted) a `#f4f4f5` (13,55:1); `--success`/`--warning` vão a `#08351f`/`#432506` no claro (12,41:1 e
+  12,69:1 no muted) e a `#bbf7d0`/`#fef08a` no escuro (12,29:1 e 12,80:1). Texto sobre preenchimento
+  colorido continua em 4,5:1.
+- **Sessão a caminho (`session={null}`):** a casca aparece sem esperar a sessão (sem salto de layout), sem
+  dado de usuário nem administração, com o espaço do avatar reservado e o botão de sair disponível.
+- **Título vindo do conteúdo (`title`):** numa rota de detalhe, o nome do registro substitui o rótulo do item
+  no cabeçalho e sai sem ícone de seção; o item continua marcado na barra.
+- **Rota sob `<Suspense>`:** a barra lateral e o título do cabeçalho leem `usePathname()` dentro de
+  `<Suspense>`. Com Cache Components (Next 16), ler a rota fora dele reprovava o `next build` nas rotas
+  dinâmicas ("URL data `usePathname()` in a Client Component outside of `<Suspense>`"). Enquanto a rota não
+  chega, a barra mostra os itens de plataforma sem item marcado, e o título fica vazio. Os itens leem a barra
+  recolhida pela loja externa (`useCollapsedAttribute`), não pelo contexto: a fronteira hidrata depois do resto,
+  e o `title` do item em modo ícone divergiria do HTML servido e ficaria ausente.
+- **Iniciais próprias (`session.initials`):** opcional; sem ele, a regra da camada continua.
+- **`REPLICAR.md`:** 4.4 (o script também marca a barra), 4.5 (tons novos), 4.6 (tabela das propriedades
+  novas), 4.8 (atributo `data-tm-sidebar`), seção 8 (tons novos e contraste de 12:1) e seção 11.
+- **`DESIGN.md`:** tons novos, status e secundário do escuro com os valores novos, e a regra de 12:1.
+
+### Ao atualizar de 1.6.x
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (seção 7).
+2. Rode o `verificar-design.mjs`: `success`, `warning` e os tons novos mudaram; leve os valores ao `DESIGN.md`
+   do sistema.
+3. Testes que leem o estado da barra recolhida passam a ler `data-tm-sidebar` no `<html>` (ou o
+   `aria-expanded` do botão "Recolher menu lateral").
+4. Opcional: troque a busca, o botão de volta e o título de detalhe locais por `renderSearch`, `headerActions`
+   e `title`.
+5. Troque a versão na seção "Interface" do `AGENTS.md`.
+
 ## 1.6.1 — 2026-11-10
 
 Duas correções do tema com o `sessionStorage` bloqueado, achadas na revisão de código do Heimdall. A

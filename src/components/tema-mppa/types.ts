@@ -11,8 +11,11 @@ export type ImageAsset = {
   className?: string;
 };
 
-/** Tons do protótipo para o ícone de seção. Uma string fora da lista é tratada como classes, como no primeiro zip. */
-export type NavigationTone = "red" | "green" | "violet" | "orange";
+/**
+ * Tons do ícone de seção: os quatro do protótipo e mais quatro, para sistemas com mais de quatro itens que
+ * precisam de uma cor por item. Uma string fora da lista é tratada como classes, como no primeiro zip.
+ */
+export type NavigationTone = "red" | "green" | "violet" | "orange" | "blue" | "teal" | "pink" | "amber";
 
 export type NavigationItem = {
   id: string;
@@ -46,6 +49,8 @@ export type ShellSession = {
   email: string;
   profileLabel?: string;
   avatar?: ImageAsset | null;
+  /** Iniciais do avatar quando o sistema tem regra própria; sem elas, a camada as deriva do nome ou do e-mail. */
+  initials?: string | null;
   is_admin: boolean;
 };
 
@@ -77,11 +82,30 @@ export type ShellConfig = {
   sidebarShortcutLabel?: string;
 };
 
+/** Controle da busca entregue ao `renderSearch`: o modelo cuida do botão e do `Ctrl+K`; o sistema, do diálogo. */
+export type SearchControls = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+};
+
 export type AppShellProps = {
   config: ShellConfig;
-  session: ShellSession;
+  /** `null` enquanto a sessão não chega: a casca aparece sem dado de usuário, sem administração e com o botão de sair. */
+  session: ShellSession | null;
   children: ReactNode;
   onSignOut?: () => void;
+  /**
+   * Título vindo do conteúdo (por exemplo, o nome do registro numa rota de detalhe). Substitui o rótulo do
+   * item no cabeçalho e aparece sem ícone de seção; o item continua marcado na barra.
+   */
+  title?: string | null;
+  /** Ações do sistema no cabeçalho, à esquerda da busca (por exemplo, um botão de volta a outro sistema). */
+  headerActions?: ReactNode;
+  /**
+   * Busca própria do sistema no lugar da paleta do modelo. O botão "Abrir busca" e o atalho `Ctrl+K` continuam
+   * do modelo; o diálogo é o que esta função devolve, controlado por `open`/`setOpen`.
+   */
+  renderSearch?: (controls: SearchControls) => ReactNode;
 };
 
 export type NavigationSection = "platform" | "administration";

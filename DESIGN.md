@@ -5,7 +5,8 @@ description: >-
   Camada visual comum dos sistemas do Escritório de Inteligência Artificial do Ministério Público do Estado do
   Pará (modelo tema-mppa-next): vermelho institucional sobre Zinc, fonte Outfit, raio de 8px, sombras
   discretas, barra lateral de 260px com abas Plataforma e Administração, cabeçalho de 56px e rodapé padrão.
-  Tema claro com contraste AAA (7:1, texto secundário igual ao principal) e tema escuro com 4,5:1. Os valores
+  Texto sobre superfície neutra com 12:1 nos dois temas (secundário e status inclusive) e texto sobre
+  preenchimento colorido com 4,5:1. Os valores
   abaixo são os do tema claro; os do escuro estão em "Colors". A fonte da verdade é styles/tema-mppa.css.
 
 colors:
@@ -26,8 +27,8 @@ colors:
   highlight-foreground: "#18181b"
   destructive: "#991b1b"
   destructive-foreground: "#ffffff"
-  success: "#15603a"
-  warning: "#7a4510"
+  success: "#08351f"
+  warning: "#432506"
   border: "#d4d4d8"
   ring: "#9f0712"
   overlay: "#000000"
@@ -44,6 +45,14 @@ colors:
   tone-violet-foreground: "#7c3aed"
   tone-orange: "#ffedd5"
   tone-orange-foreground: "#a85005"
+  tone-blue: "#dbeafe"
+  tone-blue-foreground: "#1d4ed8"
+  tone-teal: "#ccfbf1"
+  tone-teal-foreground: "#0f766e"
+  tone-pink: "#fce7f3"
+  tone-pink-foreground: "#be185d"
+  tone-amber: "#fef3c7"
+  tone-amber-foreground: "#92400e"
   chart-strong-from: "#b50008"
   chart-strong-to: "#ff2935"
   chart-soft-from: "#eb777d"
@@ -216,6 +225,26 @@ components:
     textColor: "{colors.tone-orange-foreground}"
     rounded: "{rounded.md}"
     size: 28px
+  section-icon-blue:
+    backgroundColor: "{colors.tone-blue}"
+    textColor: "{colors.tone-blue-foreground}"
+    rounded: "{rounded.md}"
+    size: 28px
+  section-icon-teal:
+    backgroundColor: "{colors.tone-teal}"
+    textColor: "{colors.tone-teal-foreground}"
+    rounded: "{rounded.md}"
+    size: 28px
+  section-icon-pink:
+    backgroundColor: "{colors.tone-pink}"
+    textColor: "{colors.tone-pink-foreground}"
+    rounded: "{rounded.md}"
+    size: 28px
+  section-icon-amber:
+    backgroundColor: "{colors.tone-amber}"
+    textColor: "{colors.tone-amber-foreground}"
+    rounded: "{rounded.md}"
+    size: 28px
   search-box:
     backgroundColor: "{colors.card}"
     textColor: "{colors.muted-foreground}"
@@ -354,7 +383,8 @@ sistema, na raiz do frontend, parte dele e acrescenta os tokens e as regras pró
 **Institucional, sóbrio, legível.** Os sistemas do Escritório de Inteligência Artificial do Ministério
 Público do Estado do Pará têm a mesma casca e o mesmo código de cores: quem passa de um para outro reconhece
 o MPPA e não reaprende a navegação. A interface não tenta impressionar; ela tem de ser legível por qualquer
-pessoa, inclusive com baixa visão. Por isso o tema claro tem contraste AAA, com todo texto em preto.
+pessoa, inclusive com baixa visão. Por isso todo texto sobre superfície neutra tem 12:1 ou mais nos dois
+temas, e no claro todo texto é preto.
 
 A identidade vem de três escolhas:
 
@@ -397,9 +427,12 @@ A identidade vem de três escolhas:
 
 ### Status e tons
 
-- **Success** (`#15603a`) e **Warning** (`#7a4510`): status, com 7:1 sobre o cartão no claro.
+- **Success** (`#08351f`) e **Warning** (`#432506`): status, com 12:1 ou mais sobre toda superfície neutra
+  (12,41:1 e 12,69:1 sobre o muted).
 - **Tons dos ícones de seção:** vermelho `#fee2e2` + `#970611`, verde `#d1fae5` + `#047857`, violeta
-  `#ede9fe` + `#7c3aed`, laranja `#ffedd5` + `#a85005`, todos com 4,5:1 ou mais; iguais nos dois temas.
+  `#ede9fe` + `#7c3aed`, laranja `#ffedd5` + `#a85005`, e mais quatro para menus com mais de quatro itens:
+  azul `#dbeafe` + `#1d4ed8`, verde-água `#ccfbf1` + `#0f766e`, rosa `#fce7f3` + `#be185d` e âmbar
+  `#fef3c7` + `#92400e`; todos com 4,5:1 ou mais e iguais nos dois temas.
 - **Gráficos:** degradê forte `#b50008 → #ff2935` e suave `#eb777d → #ff9da2` (`tm-bar-strong`,
   `tm-bar-soft`); são elementos gráficos, sem texto.
 - **Símbolo padrão** (`tm-brand-mark`, 32px): degradê `#ef3340 → #7f1d1d` com a inicial em branco, peso 800.
@@ -407,18 +440,19 @@ A identidade vem de três escolhas:
 
 ### Tema escuro
 
-O formato não tem modos; os valores do escuro ficam aqui. Contraste mínimo de 4,5:1.
+O formato não tem modos; os valores do escuro ficam aqui. Texto sobre superfície neutra com 12:1 ou mais;
+texto sobre preenchimento colorido com 4,5:1.
 
 | Token | Escuro |
 | --- | --- |
 | background / foreground | `#09090b` / `#fafafa` |
 | card, popover, sidebar | `#18181b` |
 | muted, secondary, accent, sidebar-accent | `#27272a` |
-| muted-foreground | `#a1a1aa` |
+| muted-foreground | `#f4f4f5` (13,55:1 no muted) |
 | primary / primary-foreground | `#ef4444` / `#09090b` |
 | destructive / destructive-foreground | `#f87171` / `#09090b` |
 | highlight / highlight-foreground | `#351518` / `#fafafa` |
-| success / warning (texto sobre eles: `#09090b`) | `#4ade80` / `#facc15` |
+| success / warning (texto sobre eles: `#09090b`) | `#bbf7d0` / `#fef08a` |
 | border | `rgba(255, 255, 255, 0.12)` |
 | ring | `#ef4444` |
 | tons dos ícones, gráficos, logo surface | iguais ao claro |
@@ -522,10 +556,10 @@ nas páginas públicas que têm rodapé.
 
 - **Do** pinte só com tokens (`bg-card`, `text-muted-foreground`, `border`…); nunca `#hex`, `rgb()`,
   `bg-white` ou `text-gray-*` nas telas.
-- **Do** mantenha o texto preto no tema claro, inclusive o secundário, e confira 7:1 no claro e 4,5:1 no
-  escuro.
+- **Do** mantenha o texto preto no tema claro, inclusive o secundário, e confira 12:1 em texto sobre
+  superfície neutra nos dois temas (4,5:1 sobre preenchimento colorido).
 - **Do** ponha o título só no cabeçalho, vindo do item de navegação; uma rota fora do menu ganha um item com
-  `hidden: true`.
+  `hidden: true`, e uma rota de detalhe passa o nome do registro ao `title` do `AppShell`.
 - **Do** entre o que é do sistema por configuração (`ShellConfig`, tokens próprios no CSS do sistema).
 - **Don't** edite `components/tema-mppa/` nem `styles/tema-mppa.css`: o `verificar-camada.mjs` reprova.
   Necessidade que a camada não atende volta ao modelo `tema-mppa-next`.

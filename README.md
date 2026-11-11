@@ -1,6 +1,6 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.6.1**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com o
+Versão **1.7.0**. Interface igual ao protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com o
 cabeçalho padrão dos sistemas:
 
 - barra lateral com abas Plataforma e Administração;
@@ -16,7 +16,7 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 
 ## Usar num codebase
 
-1. Gere o zip: `npm run empacotar`. Ele grava só `tema-mppa-next-v1.6.1.zip`, na pasta acima desta.
+1. Gere o zip: `npm run empacotar`. Ele grava só `tema-mppa-next-v1.7.0.zip`, na pasta acima desta.
 2. Entregue o zip ao desenvolvedor do sistema. Ele o copia para a raiz do repositório, descompacta e abre
    `tema-mppa-next/GUIA.html` no navegador.
 3. No [`GUIA.html`](GUIA.html), ele responde duas perguntas: a situação do sistema (do zero, já existe sem o

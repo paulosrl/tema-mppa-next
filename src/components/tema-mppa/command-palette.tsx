@@ -4,10 +4,10 @@ import { Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "./button";
-import type { SearchItem, ShellConfig, ShellSession } from "./types";
+import type { AppShellProps, SearchItem, ShellConfig, ShellSession } from "./types";
 import { canSeeAdministration, cn, normalizeSearch, visibleNavigation } from "./utils";
 
-function configuredItems(config: ShellConfig, session: ShellSession): SearchItem[] {
+function configuredItems(config: ShellConfig, session: ShellSession | null): SearchItem[] {
   const navigation = [
     ...visibleNavigation(config.platformNavigation),
     ...(canSeeAdministration(config, session) ? visibleNavigation(config.administrationNavigation) : []),
@@ -25,12 +25,25 @@ function configuredItems(config: ShellConfig, session: ShellSession): SearchItem
   ];
 }
 
-export function CommandPalette({ config, session }: { config: ShellConfig; session: ShellSession }) {
+/**
+ * Botão "Abrir busca" e atalho `Ctrl+K`. O diálogo é a paleta do modelo (itens da configuração) ou, com
+ * `renderSearch`, a busca própria do sistema, controlada por `open`/`setOpen`.
+ */
+export function CommandPalette({
+  config,
+  session,
+  renderSearch,
+}: {
+  config: ShellConfig;
+  session: ShellSession | null;
+  renderSearch?: AppShellProps["renderSearch"];
+}) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const placeholder = config.header?.searchPlaceholder ?? "Buscar ou executar…";
+  const customSearch = Boolean(renderSearch);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -38,15 +51,15 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
         event.preventDefault();
         setOpen((value) => !value);
       }
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape" && !customSearch) setOpen(false);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [customSearch]);
 
   useEffect(() => {
-    if (open) requestAnimationFrame(() => inputRef.current?.focus());
-  }, [open]);
+    if (open && !customSearch) requestAnimationFrame(() => inputRef.current?.focus());
+  }, [open, customSearch]);
 
   const items = useMemo(() => configuredItems(config, session), [config, session]);
   const filtered = useMemo(() => {
@@ -78,7 +91,8 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
         <span className="hidden flex-1 truncate text-left sm:inline">{placeholder}</span>
         <kbd className="hidden rounded-xs border bg-muted px-1.5 py-0.5 font-sans text-[10px] font-semibold sm:inline">Ctrl K</kbd>
       </button>
-      {open ? (
+      {renderSearch ? renderSearch({ open, setOpen }) : null}
+      {open && !renderSearch ? (
         <div
           className="fixed inset-0 z-[80] flex items-start justify-center bg-overlay/60 px-4 pt-[12vh]"
           role="presentation"

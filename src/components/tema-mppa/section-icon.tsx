@@ -6,11 +6,15 @@ const tones: Record<NavigationTone, string> = {
   green: "bg-tone-green text-tone-green-foreground",
   violet: "bg-tone-violet text-tone-violet-foreground",
   orange: "bg-tone-orange text-tone-orange-foreground",
+  blue: "bg-tone-blue text-tone-blue-foreground",
+  teal: "bg-tone-teal text-tone-teal-foreground",
+  pink: "bg-tone-pink text-tone-pink-foreground",
+  amber: "bg-tone-amber text-tone-amber-foreground",
 };
 
 function toneClass(tone: string | undefined) {
   if (!tone) return tones.red;
-  return tone in tones ? tones[tone as NavigationTone] : tone;
+  return Object.hasOwn(tones, tone) ? tones[tone as NavigationTone] : tone;
 }
 
 /** Ícone de seção: 28px no menu (`md`), 24px no título do cabeçalho (`sm`); raio 6px, fundo pastel do tom. */

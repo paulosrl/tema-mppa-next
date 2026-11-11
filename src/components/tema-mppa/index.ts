@@ -31,6 +31,12 @@
  * 17. Ponto de quebra do protótipo (801px) na variante `desk:`.
  * 18. `<ThemeScript nonce />` (de `theme-script.tsx`, sem `"use client"`) põe o script de tema no layout
  *     raiz; `THEME_BOOT_SCRIPT` e `THEME_STORAGE_KEY` vêm do mesmo módulo e chegam ao servidor como texto.
+ * 19. Mais quatro tons de seção (`blue`, `teal`, `pink`, `amber`), para uma cor por item em menus maiores.
+ * 20. A barra recolhida se desenha pela variante `tm-collapsed` (atributo `data-tm-sidebar` no <html>, posto
+ *     pelo script de boot): nasce recolhida no HTML, sem piscar, mesmo em layout estático.
+ * 21. `AppShell` aceita `session={null}` (sessão a caminho), `title` (título vindo do conteúdo, sem ícone),
+ *     `headerActions` (ações do sistema à esquerda da busca) e `renderSearch` (busca própria do sistema).
+ * 22. Texto sobre superfície neutra com 12:1 nos dois temas, inclusive o secundário e o de status.
  */
 export { AppShell } from "./app-shell";
 export { BarChart, type BarChartDatum } from "./bar-chart";
@@ -41,9 +47,8 @@ export { ImageSlot } from "./image-slot";
 export { PageFrame } from "./page-frame";
 export { TemaMppaProvider } from "./providers";
 export { SectionIcon } from "./section-icon";
-export { SIDEBAR_STORAGE_KEY } from "./sidebar-context";
 export { ThemeProvider, useTheme, type Theme } from "./theme-provider";
-export { THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript } from "./theme-script";
+export { SIDEBAR_STORAGE_KEY, THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript } from "./theme-script";
 export { ThemeToggle } from "./theme-toggle";
 export { canSeeAdministration, cn, currentNavigationItem, FOOTER_CREDIT, footerText, isNavigationActive } from "./utils";
 export type {
@@ -55,6 +60,7 @@ export type {
   NavigationItem,
   NavigationSection,
   NavigationTone,
+  SearchControls,
   SearchItem,
   ShellConfig,
   ShellSession,
