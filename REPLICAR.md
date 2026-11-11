@@ -37,8 +37,9 @@ Referência visual, nesta ordem de autoridade:
 
 Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "corrigidas":
 
-- **Tons escurecidos para o contraste:** primária, texto secundário, vermelho sobre o realce e ícones verde
-  e laranja (tabela de cores na seção 8).
+- **Primária azul:** o protótipo era vermelho; todos os sistemas do MPPA usam azul como cor de ação (a mesma do
+  Heimdall), e o realce, o ícone padrão e os gráficos o seguem (seção 8, "Equilíbrio de cores").
+- **Tons escurecidos para o contraste:** texto secundário e ícones verde e laranja (tabela de cores na seção 8).
 - **Ícones:** Lucide no lugar dos caracteres do protótipo.
 - **Busca:** mostra `Ctrl K` e uma lupa.
 - **Cabeçalho:** segue o padrão dos sistemas, não o do protótipo:
@@ -144,7 +145,7 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 ## 3. Fase 0: Diagnóstico
 
 1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
-   (`unzip tema-mppa-next-v1.7.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
+   (`unzip tema-mppa-next-v1.8.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -299,7 +300,7 @@ export const shellConfig: ShellConfig = {
     symbol: <span className="tm-brand-mark" aria-hidden>N</span>, // ou { src: "/marca.svg", alt: "Nome" }
   },
   platformNavigation: [
-    { id: "inicio", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "red" },
+    { id: "inicio", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "blue" },
     { id: "docs", label: "Documentos", href: "/documentos", icon: FileText, tone: "green" },
     { id: "doc", label: "Documento", href: "/documentos/detalhe", icon: FileText, tone: "green", hidden: true },
   ],
@@ -329,8 +330,9 @@ Regras para preencher:
   as descrições de uma busca antiga).
 
 - Migre **todos** os itens do menu atual do consumidor, com as mesmas rotas.
-- Reveze os tons `"red"`, `"green"`, `"violet"` e `"orange"`, como no protótipo. Se o sistema precisa de uma
-  cor por item e tem mais de quatro, use também `"blue"`, `"teal"`, `"pink"` e `"amber"`.
+- Reveze os tons `"blue"` (o primeiro item e o padrão), `"green"`, `"violet"` e `"orange"`. Se o sistema precisa
+  de uma cor por item e tem mais de quatro, use também `"teal"`, `"pink"` e `"amber"`. Não use `"red"` em item
+  de menu: o vermelho é reservado ao que tem significado (seção 8).
 - Rotas de detalhe ou fora do menu: crie itens com `hidden: true`, para darem o título certo.
 - Item que some por condição (uma consulta, uma função desligada): monte a configuração numa função que
   recebe a condição e devolve o item com `hidden: true`; ele continua dando o título na própria rota.
@@ -343,7 +345,7 @@ Campos de cada item de navegação:
 | --- | --- |
 | `id`, `label`, `href`, `icon` | obrigatórios; `icon` é um ícone do `lucide-react` |
 | `exact` | só a rota exata marca o item; sem ele, as sub-rotas também marcam |
-| `tone` | cor do ícone: `"red"` (padrão), `"green"`, `"violet"`, `"orange"`, `"blue"`, `"teal"`, `"pink"`, `"amber"` |
+| `tone` | cor do ícone: `"blue"` (padrão), `"green"`, `"violet"`, `"orange"`, `"teal"`, `"pink"`, `"amber"`, `"red"` (reservado) |
 | `description`, `keywords` | aparecem e entram no filtro da busca `Ctrl+K` |
 | `matches` | outras rotas (e sub-rotas) que marcam o item |
 | `hidden` | fora do menu e da busca, mas dá o título e a aba quando a rota é dele |
@@ -561,7 +563,7 @@ const colunas: DataTableColumn<Linha>[] = [
 | `CardGrid` | `columns?`: `1`, `2` (padrão), `3` ou `4`; uma coluna abaixo de 801px; 20px entre cartões |
 | `MetricCard` | `label`, `value`, `note?` |
 | `DataTable<Row>` | `title?`, `actions?`, `columns: { key, header, cell(row), align? }[]`, `rows`, `rowKey(row, i)`, `emptyMessage?`, `caption?` |
-| `BarChart` | `data: { label, value }[]`, `label` (leitor de tela), `max?`, `variant?`: `"strong"` (vermelho) ou `"soft"` (rosado) |
+| `BarChart` | `data: { label, value }[]`, `label` (leitor de tela), `max?`, `variant?`: `"strong"` (azul) ou `"soft"` (azul claro) |
 | `Button` | `variant?`: `"default"` (primário), `"secondary"`, `"ghost"`, `"destructive"`; `size?`: `"default"`, `"sm"`, `"icon"` (34px); atributos de `<button>` |
 | `SectionIcon` | `icon` (Lucide), `tone?` |
 
@@ -599,25 +601,25 @@ Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 | `bg-card` | `#fafafa` | `#18181b` | cartões, botão secundário, busca |
 | `bg-sidebar` | `#fcfcfc` | `#18181b` | barra lateral |
 | `bg-muted` | `#f4f4f5` | `#27272a` | trilho das abas, avatar, áreas neutras |
-| `bg-highlight` | `#fee2e2` | `#351518` | item e aba ativos |
+| `bg-highlight` | `#dbeafe` | `#12264a` | item e aba ativos (azul-claro) |
 | `text-foreground` | `#18181b` | `#fafafa` | texto |
 | `text-muted-foreground` | `#18181b` | `#f4f4f5` | texto secundário (no claro, igual ao texto) |
 | `border` (`border-border`) | `#d4d4d8` | `rgba(255,255,255,.12)` | bordas |
-| `bg-primary` / `text-primary-foreground` | `#9f0712` / `#ffffff` | `#ef4444` / `#09090b` | ação principal, foco |
+| `bg-primary` / `text-primary-foreground` | `#0842a1` / `#ffffff` | `#61a6fa` / `#080c16` | ação principal, foco, links de ação |
 | `bg-destructive` | `#991b1b` | `#f87171` | ação destrutiva |
 | `text-success` / `text-warning` | `#08351f` / `#432506` | `#bbf7d0` / `#fef08a` | status |
-| `bg-tone-red` + `text-tone-red-foreground` | `#fee2e2` + `#970611` | igual | ícone de seção vermelho |
+| `bg-tone-red` + `text-tone-red-foreground` | `#fee2e2` + `#970611` | igual | ícone vermelho (reservado) |
 | `bg-tone-green` + `text-tone-green-foreground` | `#d1fae5` + `#047857` | igual | ícone verde |
 | `bg-tone-violet` + `text-tone-violet-foreground` | `#ede9fe` + `#7c3aed` | igual | ícone violeta |
 | `bg-tone-orange` + `text-tone-orange-foreground` | `#ffedd5` + `#a85005` | igual | ícone laranja |
-| `bg-tone-blue` + `text-tone-blue-foreground` | `#dbeafe` + `#1d4ed8` | igual | ícone azul |
+| `bg-tone-blue` + `text-tone-blue-foreground` | `#dbeafe` + `#1d4ed8` | igual | ícone azul (padrão) |
 | `bg-tone-teal` + `text-tone-teal-foreground` | `#ccfbf1` + `#0f766e` | igual | ícone verde-água |
 | `bg-tone-pink` + `text-tone-pink-foreground` | `#fce7f3` + `#be185d` | igual | ícone rosa |
 | `bg-tone-amber` + `text-tone-amber-foreground` | `#fef3c7` + `#92400e` | igual | ícone âmbar |
 | `bg-overlay/40` | `#000` a 40% | igual | fundo atrás do menu móvel |
 | `bg-logo-surface` | `#ffffff` | `#ffffff` | fundo das logos |
 | `shadow-surface` | `0 2px 6px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05)` | `0 2px 8px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2)` | cartão, aba e item ativos |
-| `tm-bar tm-bar-strong` / `tm-bar-soft` | degradê `#b50008→#ff2935` / `#eb777d→#ff9da2` | igual | barras de gráfico |
+| `tm-bar tm-bar-strong` / `tm-bar-soft` | degradê `#0842a1→#3b82f6` / `#6f9be6→#94b6f1` | `#3b82f6→#61a6fa` / `#4f78b8→#7aa2dd` | barras de gráfico |
 
 Contraste obrigatório:
 
@@ -629,11 +631,23 @@ Contraste obrigatório:
 Os tokens já cumprem isso. Se o consumidor precisar de uma cor nova, crie um token no **próprio**
 consumidor e confira o contraste.
 
+Equilíbrio de cores (igual em todos os sistemas, sem diferença de cor, fonte, tamanho ou estrutura):
+
+- **Azul é a ação:** botão primário, foco (`ring`), links de ação, `sidebar-primary` e `sidebar-ring`, o item
+  ativo da barra (fundo azul-claro `bg-highlight` com ícone azul), o ícone do título da seção, o tom
+  padrão dos ícones (`"blue"`, sem `tone`), as barras fortes do `BarChart` e as ilustrações de estado vazio que
+  seguem a primária.
+- **Vermelho só com significado:** destrutivo e erro (`--destructive`) e a identidade institucional (logos, o
+  símbolo `tm-brand-mark`, faixas institucionais vermelho-azul). Não pinte ação, realce nem ícone comum de vermelho.
+- Os demais tons de seção (verde, violeta, laranja, verde-água, rosa, âmbar) continuam variados.
+- Quem usava azul com token próprio (por exemplo, o `--accent-blue` do Heimdall) pode passar a usar a primária.
+
 Não faça:
 
-- **`text-primary` sobre `bg-primary/10`** (a pílula comum do shadcn/ui): com a primária `#9f0712`, o par fica
-  abaixo de 7:1 (cerca de 6,7:1 sobre o cartão e 6,9:1 sobre o fundo). Use `text-foreground` sobre o fundo
-  atenuado e deixe a primária no ícone ou na borda. O mesmo vale para qualquer cor sobre a própria versão
+- **`text-primary` sobre `bg-primary/15` ou mais** (a pílula do shadcn/ui, nas opacidades maiores): com a
+  primária `#0842a1`, o par cai abaixo de 7:1 no claro (6,74:1 sobre o cartão). Com `bg-primary/10` passa
+  (`text-primary` sobre `bg-primary/10`: 7,68:1 sobre o fundo, 7,40:1 sobre o cartão e 7,01:1 sobre o muted;
+  no escuro, 6,05:1 sobre o cartão e 4,98:1 sobre o muted). O mesmo vale para qualquer cor sobre a própria versão
   transparente: confira o contraste do par, não só o da cor.
 - **Texto colorido onde o consumidor exige texto preto:** `text-success` e `text-warning` são coloridos (12:1
   sobre superfície neutra, quase pretos no claro). Se o consumidor tem regra de todo texto preto no claro, isso é conflito do diagnóstico (item 12): a
@@ -723,7 +737,7 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.7.0)
+## Interface (tema-mppa 1.8.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

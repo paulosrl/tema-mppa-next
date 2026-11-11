@@ -13,11 +13,14 @@ const tones: Record<NavigationTone, string> = {
 };
 
 function toneClass(tone: string | undefined) {
-  if (!tone) return tones.red;
+  if (!tone) return tones.blue;
   return Object.hasOwn(tones, tone) ? tones[tone as NavigationTone] : tone;
 }
 
-/** Ícone de seção: 28px no menu (`md`), 24px no título do cabeçalho (`sm`); raio 6px, fundo pastel do tom. */
+/**
+ * Ícone de seção: 28px no menu (`md`), 24px no título do cabeçalho (`sm`); raio 6px, fundo pastel do tom.
+ * Sem `tone`, o tom é azul (o vermelho fica reservado ao que tem significado institucional).
+ */
 export function SectionIcon({
   icon: Icon,
   tone,
@@ -35,7 +38,7 @@ export function SectionIcon({
       className={cn(
         "inline-flex shrink-0 items-center justify-center rounded-md",
         size === "sm" ? "size-6" : "size-7",
-        tones.red,
+        tones.blue,
         toneClass(tone),
         className,
       )}

@@ -13,7 +13,8 @@ export type ImageAsset = {
 
 /**
  * Tons do ícone de seção: os quatro do protótipo e mais quatro, para sistemas com mais de quatro itens que
- * precisam de uma cor por item. Uma string fora da lista é tratada como classes, como no primeiro zip.
+ * precisam de uma cor por item. Sem `tone`, o ícone é azul; `"red"` fica para o que tem significado
+ * institucional. Uma string fora da lista é tratada como classes, como no primeiro zip.
  */
 export type NavigationTone = "red" | "green" | "violet" | "orange" | "blue" | "teal" | "pink" | "amber";
 

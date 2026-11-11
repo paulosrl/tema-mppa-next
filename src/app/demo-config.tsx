@@ -25,14 +25,14 @@ export const demoConfig: ShellConfig = {
   platformLabel: "Plataforma",
   administrationLabel: "Administração",
   platformNavigation: [
-    { id: "overview", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "red", description: "Indicadores e atividade recente" },
+    { id: "overview", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "blue", description: "Indicadores e atividade recente" },
     { id: "items", label: "Meus itens", href: "/itens", icon: FileText, tone: "green", description: "Itens criados por você" },
     { id: "shared", label: "Itens compartilhados", href: "/compartilhados", icon: Share2, tone: "violet", description: "Itens que outras pessoas compartilharam" },
     { id: "agents", label: "Automações", href: "/automacoes", icon: Bot, tone: "orange", description: "Rotinas agendadas" },
     { id: "item-detail", label: "Detalhe do item", href: "/itens/detalhe", icon: FileText, tone: "green", hidden: true },
   ],
   administrationNavigation: [
-    { id: "curation", label: "Curadoria", href: "/administracao/curadoria", icon: ShieldCheck, tone: "red", description: "Revisão de itens publicados" },
+    { id: "curation", label: "Curadoria", href: "/administracao/curadoria", icon: ShieldCheck, tone: "blue", description: "Revisão de itens publicados" },
     { id: "users", label: "Usuários", href: "/administracao/usuarios", icon: Users, tone: "green", description: "Contas e perfis" },
   ],
   header: {

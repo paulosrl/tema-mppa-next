@@ -3,14 +3,14 @@ version: alpha
 name: "Tema MPPA · camada visual"
 description: >-
   Camada visual comum dos sistemas do Escritório de Inteligência Artificial do Ministério Público do Estado do
-  Pará (modelo tema-mppa-next): vermelho institucional sobre Zinc, fonte Outfit, raio de 8px, sombras
+  Pará (modelo tema-mppa-next): azul de ação e vermelho institucional sobre Zinc, fonte Outfit, raio de 8px, sombras
   discretas, barra lateral de 260px com abas Plataforma e Administração, cabeçalho de 56px e rodapé padrão.
   Texto sobre superfície neutra com 12:1 nos dois temas (secundário e status inclusive) e texto sobre
   preenchimento colorido com 4,5:1. Os valores
   abaixo são os do tema claro; os do escuro estão em "Colors". A fonte da verdade é styles/tema-mppa.css.
 
 colors:
-  primary: "#9f0712"
+  primary: "#0842a1"
   primary-foreground: "#ffffff"
   background: "#ffffff"
   foreground: "#18181b"
@@ -23,14 +23,14 @@ colors:
   muted-foreground: "#18181b"
   accent: "#f4f4f5"
   accent-foreground: "#18181b"
-  highlight: "#fee2e2"
+  highlight: "#dbeafe"
   highlight-foreground: "#18181b"
   destructive: "#991b1b"
   destructive-foreground: "#ffffff"
   success: "#08351f"
   warning: "#432506"
   border: "#d4d4d8"
-  ring: "#9f0712"
+  ring: "#0842a1"
   overlay: "#000000"
   logo-surface: "#ffffff"
   sidebar: "#fcfcfc"
@@ -53,10 +53,10 @@ colors:
   tone-pink-foreground: "#be185d"
   tone-amber: "#fef3c7"
   tone-amber-foreground: "#92400e"
-  chart-strong-from: "#b50008"
-  chart-strong-to: "#ff2935"
-  chart-soft-from: "#eb777d"
-  chart-soft-to: "#ff9da2"
+  chart-strong-from: "#0842a1"
+  chart-strong-to: "#3b82f6"
+  chart-soft-from: "#6f9be6"
+  chart-soft-to: "#94b6f1"
 
 typography:
   page-title:
@@ -388,8 +388,11 @@ temas, e no claro todo texto é preto.
 
 A identidade vem de três escolhas:
 
-- **Um vermelho institucional** (`{colors.primary}`, `#9f0712`) para a ação principal, o foco e o
-  realce; o resto é Zinc neutro. O protótipo usava `#b91c1c`, escurecido para passar de 7:1 com branco.
+- **Um azul de ação e um vermelho institucional.** O azul (`{colors.primary}`, `#0842a1`, o mesmo do
+  Heimdall) é a cor de tudo o que o usuário aciona: botão primário, foco, realce do item ativo, ícone padrão
+  de seção e gráficos. O vermelho só aparece com significado: erro e ação destrutiva (`{colors.destructive}`)
+  e a identidade institucional (logos, símbolo padrão). O resto é Zinc neutro. Nenhum sistema escolhe outra
+  cor de ação.
 - **Outfit** em todo texto, geométrica e calma, com pesos fortes (650 a 800) nos rótulos e nas métricas.
 - **Raio de 8px e sombra discreta** em cartões, botões, itens e abas ativos: superfícies macias, sem
   exagero.
@@ -400,7 +403,7 @@ A identidade vem de três escolhas:
   Administração, cabeçalho de 56px, conteúdo com padding de 38px e largura máxima de 1500px, rodapé padrão
   fixo no pé da tela, na faixa do "Recolher".
 - Título da página só no cabeçalho, vindo do item marcado no menu; nenhum título repetido no conteúdo.
-- Ícones de seção Lucide, num quadrado de 28px com fundo pastel e traço do mesmo tom (vermelho, verde,
+- Ícones de seção Lucide, num quadrado de 28px com fundo pastel e traço do mesmo tom (azul, verde,
   violeta, laranja, revezados).
 - Busca `Ctrl K` com as páginas que cada usuário pode ver.
 - Tema claro, escuro e sistema; toda entrada abre em claro e a escolha vale só para a aba.
@@ -409,10 +412,13 @@ A identidade vem de três escolhas:
 
 ### Marca e ação
 
-- **Primary** (`{colors.primary}`, `#9f0712`): botão primário, foco (`ring`), barra de gráfico forte.
-  Texto branco sobre ela (8,36:1). No escuro, `#ef4444` com texto `#09090b`.
+- **Primary** (`{colors.primary}`, `#0842a1`): botão primário, foco (`ring`), links de ação, `sidebar-primary`,
+  barra de gráfico forte. Texto branco sobre ela (9,11:1). No escuro, `#61a6fa` com texto `#080c16` (7,76:1).
+- **Equilíbrio:** o azul é a ação; o vermelho só com significado (destrutivo/erro e identidade
+  institucional). Os demais tons de seção continuam variados.
 - **Destructive** (`{colors.destructive}`, `#991b1b`): ação destrutiva, com texto branco.
-- **Highlight** (`{colors.highlight}`, `#fee2e2`): fundo do item e da aba ativos, com texto preto e sombra.
+- **Highlight** (`{colors.highlight}`, `#dbeafe`): fundo azul-claro do item e da aba ativos, com texto preto
+  (14,52:1) e sombra; o ícone do item é azul (`tone-blue`).
 
 ### Superfícies e texto
 
@@ -429,14 +435,16 @@ A identidade vem de três escolhas:
 
 - **Success** (`#08351f`) e **Warning** (`#432506`): status, com 12:1 ou mais sobre toda superfície neutra
   (12,41:1 e 12,69:1 sobre o muted).
-- **Tons dos ícones de seção:** vermelho `#fee2e2` + `#970611`, verde `#d1fae5` + `#047857`, violeta
-  `#ede9fe` + `#7c3aed`, laranja `#ffedd5` + `#a85005`, e mais quatro para menus com mais de quatro itens:
-  azul `#dbeafe` + `#1d4ed8`, verde-água `#ccfbf1` + `#0f766e`, rosa `#fce7f3` + `#be185d` e âmbar
+- **Tons dos ícones de seção:** azul `#dbeafe` + `#1d4ed8` (o padrão, sem `tone`), verde `#d1fae5` +
+  `#047857`, violeta `#ede9fe` + `#7c3aed`, laranja `#ffedd5` + `#a85005`, e mais quatro para menus com
+  mais de quatro itens: vermelho `#fee2e2` + `#970611` (reservado ao que tem significado institucional),
+  verde-água `#ccfbf1` + `#0f766e`, rosa `#fce7f3` + `#be185d` e âmbar
   `#fef3c7` + `#92400e`; todos com 4,5:1 ou mais e iguais nos dois temas.
-- **Gráficos:** degradê forte `#b50008 → #ff2935` e suave `#eb777d → #ff9da2` (`tm-bar-strong`,
-  `tm-bar-soft`); são elementos gráficos, sem texto.
+- **Gráficos:** degradê forte `#0842a1 → #3b82f6` e suave `#6f9be6 → #94b6f1` (`tm-bar-strong`,
+  `tm-bar-soft`); são elementos gráficos, sem texto. No escuro, `#3b82f6 → #61a6fa` e `#4f78b8 → #7aa2dd`.
 - **Símbolo padrão** (`tm-brand-mark`, 32px): degradê `#ef3340 → #7f1d1d` com a inicial em branco, peso 800.
-  É marca, não texto corrido; fica fora dos tokens acima.
+  É identidade institucional, por isso continua vermelho; é marca, não texto corrido, e fica fora dos
+  tokens acima.
 
 ### Tema escuro
 
@@ -449,13 +457,14 @@ texto sobre preenchimento colorido com 4,5:1.
 | card, popover, sidebar | `#18181b` |
 | muted, secondary, accent, sidebar-accent | `#27272a` |
 | muted-foreground | `#f4f4f5` (13,55:1 no muted) |
-| primary / primary-foreground | `#ef4444` / `#09090b` |
+| primary / primary-foreground | `#61a6fa` / `#080c16` |
 | destructive / destructive-foreground | `#f87171` / `#09090b` |
-| highlight / highlight-foreground | `#351518` / `#fafafa` |
+| highlight / highlight-foreground | `#12264a` / `#fafafa` |
 | success / warning (texto sobre eles: `#09090b`) | `#bbf7d0` / `#fef08a` |
 | border | `rgba(255, 255, 255, 0.12)` |
-| ring | `#ef4444` |
-| tons dos ícones, gráficos, logo surface | iguais ao claro |
+| ring, sidebar-ring, sidebar-primary | `#61a6fa` (texto sobre sidebar-primary: `#080c16`) |
+| gráficos | forte `#3b82f6 → #61a6fa`, suave `#4f78b8 → #7aa2dd` |
+| tons dos ícones, logo surface | iguais ao claro |
 
 ## Typography
 
@@ -543,7 +552,7 @@ superfície; métrica com número de 32px peso 800 e nota opcional.
 12px × 16px, cabeçalho em negrito, mensagem de vazio.
 
 **`BarChart`** (`chart-bar-strong-base`/`-top`, `chart-bar-soft-base`/`-top`): 165px de altura, barras
-de até 90px de largura com degradê da base ao topo, variante forte (vermelha) ou suave (rosada), com
+de até 90px de largura com degradê da base ao topo, variante forte (azul) ou suave (azul claro), com
 rótulo para leitor de tela.
 
 **Rodapé padrão** (`page-footer`): "Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de
@@ -563,8 +572,10 @@ nas páginas públicas que têm rodapé.
 - **Do** entre o que é do sistema por configuração (`ShellConfig`, tokens próprios no CSS do sistema).
 - **Don't** edite `components/tema-mppa/` nem `styles/tema-mppa.css`: o `verificar-camada.mjs` reprova.
   Necessidade que a camada não atende volta ao modelo `tema-mppa-next`.
-- **Don't** use `text-primary` sobre `bg-primary/10` em texto: o par fica abaixo de 7:1 (cerca de 6,7:1 sobre
-  o cartão e 6,9:1 sobre o fundo). Use o texto principal e deixe a primária no ícone ou na borda.
+- **Do** use vermelho só com significado (erro, ação destrutiva, identidade institucional); a ação é azul.
+- **Don't** use `text-primary` sobre `bg-primary/15` ou mais: o par cai abaixo de 7:1 no claro (6,74:1 sobre o
+  cartão). Com `bg-primary/10` passa (7,40:1 sobre o cartão, 7,01:1 sobre o muted); nos demais casos use o texto
+  principal e deixe a primária no ícone ou na borda.
 - **Don't** deduza administrador por e-mail, nome ou rótulo de perfil; só o booleano da sessão real.
 - **Don't** importe o `ThemeProvider` para pôr o script de tema: use `<ThemeScript nonce={nonce} />`.
 - **Don't** acrescente raio maior que 8px nem sombra forte em tela nova.

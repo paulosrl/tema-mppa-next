@@ -1,10 +1,62 @@
 # Changelog
 
+## 1.8.0 — 2026-11-11
+
+Primária azul e equilíbrio de cores. Decisão do autor em 11 nov. 2026: todos os sistemas do MPPA passam a usar
+azul como cor de ação, para equilibrar com o vermelho da identidade institucional, sem nenhuma diferença de
+cor, fonte, tamanho ou estrutura entre eles. Os azuis são os que o Heimdall já usava: `#0842a1` no claro
+(texto `#ffffff`) e `#61a6fa` no escuro (texto `#080c16`). A API não muda; muda a aparência.
+
+### Modificado
+
+- **Ação em azul:** `--primary`, `--ring`, `--sidebar-primary` e `--sidebar-ring` passam de vermelho
+  (`#9f0712` no claro, `#ef4444` no escuro) a `#0842a1` (9,11:1 com branco e sobre o fundo) no claro e a `#61a6fa`
+  (7,04:1 sobre o cartão, 7,90:1 sobre o fundo; texto escuro com 7,76:1) no escuro. O botão primário, o foco e
+  os links de ação seguem.
+- **Item ativo da barra:** `--highlight` passa a azul-claro, `#dbeafe` no claro (texto preto com 14,52:1) e
+  `#12264a` no escuro (texto claro com 14,35:1). O ícone do item é azul.
+- **Ícone padrão de seção:** `SectionIcon` sem `tone` e o ícone do título do cabeçalho passam de `"red"` a
+  `"blue"`; a demonstração usa `"blue"` nos dois primeiros itens de cada aba. `"red"` continua aceito, mas
+  fica reservado ao que tem significado institucional.
+- **Gráficos:** as barras do `BarChart` e `--chart-1..5` passam a azul: forte `#0842a1 → #3b82f6`, suave
+  `#6f9be6 → #94b6f1` (no nível do vermelho suave de antes). No escuro, o azul do claro some no cartão (1,7:1);
+  os gráficos têm valores próprios: forte `#3b82f6 → #61a6fa` (4,82:1 a 7,04:1 sobre o cartão) e suave
+  `#4f78b8 → #7aa2dd` (3,97:1 a 6,78:1).
+- **Vermelho só com significado:** `--destructive` (erro e ação destrutiva) e o símbolo padrão `tm-brand-mark`
+  (identidade institucional) continuam vermelhos, como as logos e qualquer faixa institucional vermelho-azul.
+  Os demais tons de seção continuam variados.
+- **`text-primary` sobre `bg-primary/10`:** com o azul, o par passa a ter 7,68:1 sobre o fundo, 7,40:1 sobre o
+  cartão e 7,01:1 sobre o muted no claro, e 6,05:1 sobre o cartão no escuro. O aviso do `REPLICAR.md` (seção 8)
+  passa a valer só de `bg-primary/15` em diante (6,74:1 sobre o cartão).
+- **Protótipo:** `docs/prototipo/index.html` mudou primeiro (botão primário, realce, ícone e barras em azul), e
+  o `tema-mppa.css` o segue. Prévia e comparações regeradas.
+- **Documentos:** `DESIGN.md` (tokens, "Overview", "Colors", tabela do escuro, "Do's and Don'ts"), `REPLICAR.md`
+  (tabela de tokens, `tone`, equilíbrio de cores, aviso de `bg-primary/10`), `DIAGNOSTICO.md` (onde o sistema usa
+  vermelho como ação) e `GUIA.html` (as cores do próprio guia).
+- **`verify-template`:** confere o azul de ação nos quatro tokens e no texto sobre eles, o destrutivo e o símbolo
+  ainda vermelhos, o tom padrão azul, os contrastes dos gráficos e dos seis tons de seção.
+
+### Ao atualizar de 1.7.x
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Rode o `verificar-design.mjs`: `primary`, `ring`, `highlight` e os `chart-*` mudaram; leve os valores ao
+   `DESIGN.md` do sistema.
+3. Confira o que ficou vermelho por ser a antiga cor de ação no código do sistema (não na camada): botão, link,
+   realce, ícone, gráfico, ilustração de estado vazio. Passe a `bg-primary`, `text-primary`, `ring` ou ao tom
+   `"blue"`. O vermelho fica para erro, ação destrutiva e identidade institucional.
+4. Um consumidor que pintava algo de azul com token próprio, como o `--accent-blue` da tela de entrada do
+   Heimdall, pode passar a usar a primária: o valor é o mesmo.
+5. Testes, capturas e comparações visuais que fixam a cor vermelha da primária, do item ativo ou do gráfico
+   precisam ser atualizados.
+6. Itens de menu sem `tone` (ou com `"red"` só por ser o padrão) passam a azul: reveze os tons como na seção 4.5.
+7. Troque a versão na seção "Interface" do `AGENTS.md` para 1.8.0.
+
 ## 1.7.0 — 2026-11-10
 
 Pedidos do HubIA (o segundo consumidor antigo, Fase 1), P1 a P5 do plano dele, e dois ajustes que a adoção
-mostrou. Parte da 1.6.1, que ele não tinha: o tema com o `sessionStorage` bloqueado continua corrigido. A API só ganha propriedades opcionais; nada sai. O que muda na aparência: o texto secundário e o de
-status passam a 12:1 sobre superfície neutra nos dois temas.
+mostrou. A cópia do HubIA, única que existia, partia da 1.6.0; esta entrada foi recuperada dela e leva junto as
+correções da 1.6.1 (tema com o `sessionStorage` bloqueado). A API só ganha propriedades opcionais; nada sai.
+O que muda na aparência: o texto secundário e o de status passam a 12:1 sobre superfície neutra nos dois temas.
 
 - **P1. Mais tons de seção:** `NavigationTone` ganha `"blue"`, `"teal"`, `"pink"` e `"amber"` (tokens
   `--tone-*` e `--tone-*-foreground`, de 4,86:1 a 6,37:1 sobre o próprio fundo), para sistemas com mais de

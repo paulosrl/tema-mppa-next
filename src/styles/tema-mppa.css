@@ -1,6 +1,10 @@
 /*
- * Tema MPPA: vermelho sobre Zinc, Outfit, raio 8px, bordas suaves, sombras discretas e
- * gráficos com degradê, iguais ao protótipo "Template Visual HubIA v1.0" (docs/prototipo/index.html).
+ * Tema MPPA: azul de ação e vermelho institucional sobre Zinc, Outfit, raio 8px, bordas suaves, sombras
+ * discretas e gráficos com degradê, iguais ao protótipo "Template Visual HubIA v1.0" (docs/prototipo/index.html).
+ *
+ * Equilíbrio de cores: a ação é azul (botão primário, foco, links de ação, item ativo da barra, ícone
+ * padrão de seção e gráficos); o vermelho só aparece com significado: destrutivo/erro e identidade
+ * institucional (logos e símbolo). Os azuis são os do Heimdall: #0842a1 no claro e #61a6fa no escuro.
  *
  * Contraste: texto sobre superfície neutra (fundo, cartão, muted) com 12:1 nos dois temas, inclusive o
  * secundário e o de status; texto sobre preenchimento colorido com 4,5:1 (no escuro, texto escuro sobre a
@@ -20,8 +24,8 @@
   --popover: #fafafa;
   --popover-foreground: #18181b;
 
-  /* Protótipo #b91c1c (6,47:1 com branco) escurecido para 8,36:1. */
-  --primary: #9f0712;
+  /* Azul de ação (o mesmo do Heimdall): 9,11:1 com branco e sobre o fundo, 8,73:1 sobre o cartão. */
+  --primary: #0842a1;
   --primary-foreground: #ffffff;
   --secondary: #f4f4f5;
   --secondary-foreground: #18181b;
@@ -30,8 +34,8 @@
   --muted-foreground: #18181b;
   --accent: #f4f4f5;
   --accent-foreground: #18181b;
-  /* Realce do item e da aba ativos. */
-  --highlight: #fee2e2;
+  /* Realce do item e da aba ativos: azul-claro; o texto preto tem 14,52:1 sobre ele. */
+  --highlight: #dbeafe;
   --highlight-foreground: #18181b;
 
   --destructive: #991b1b;
@@ -44,7 +48,7 @@
 
   --border: #d4d4d8;
   --input: #d4d4d8;
-  --ring: #9f0712;
+  --ring: #0842a1; /* 9,11:1 sobre o fundo */
 
   --overlay: #000000;
   --logo-surface: #ffffff;
@@ -53,7 +57,8 @@
   --bar-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   --drawer-shadow: 8px 0 24px rgba(0, 0, 0, 0.2);
 
-  /* Ícones de seção: fundo pastel do protótipo e traço com 4,5:1 ou mais sobre ele. */
+  /* Ícones de seção: fundo pastel do protótipo e traço com 4,5:1 ou mais sobre ele. O azul é o tom padrão
+     (sem `tone`); o vermelho continua disponível, mas é reservado ao que tem significado institucional. */
   --tone-red: #fee2e2;
   --tone-red-foreground: #970611; /* 7,32:1 (protótipo #b91c1c, 5,30:1) */
   --tone-green: #d1fae5;
@@ -72,29 +77,32 @@
   --tone-amber: #fef3c7;
   --tone-amber-foreground: #92400e; /* 6,37:1 */
 
-  /* Gráficos e marca: elementos gráficos, sem texto; cores do protótipo. */
-  --chart-strong-from: #b50008;
-  --chart-strong-to: #ff2935;
-  --chart-soft-from: #eb777d;
-  --chart-soft-to: #ff9da2;
-  --chart-1: #b50008;
-  --chart-2: #ff2935;
-  --chart-3: #eb777d;
-  --chart-4: #ff9da2;
-  --chart-5: #7f1d1d;
+  /* Gráficos: elementos gráficos, sem texto; azuis do protótipo. Barra forte: #0842a1 (9,11:1 sobre o
+     fundo) a #3b82f6 (3,68:1); barra suave: #6f9be6 (2,80:1) a #94b6f1 (2,05:1), no nível do vermelho suave
+     que o protótipo tinha (2,81:1 e 1,98:1). */
+  --chart-strong-from: #0842a1;
+  --chart-strong-to: #3b82f6;
+  --chart-soft-from: #6f9be6;
+  --chart-soft-to: #94b6f1;
+  --chart-1: #0842a1;
+  --chart-2: #3b82f6;
+  --chart-3: #6f9be6;
+  --chart-4: #94b6f1;
+  --chart-5: #0a2a66;
+  /* Marca institucional: continua vermelha, é identidade e não ação. */
   --brand-mark-from: #ef3340;
   --brand-mark-to: #7f1d1d;
   --brand-mark-foreground: #ffffff;
 
   --sidebar: #fcfcfc;
   --sidebar-foreground: #18181b;
-  --sidebar-primary: #9f0712;
+  --sidebar-primary: #0842a1;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f4f4f5;
   --sidebar-accent-foreground: #18181b;
   /* A borda da barra é a borda geral: as faixas da barra e do conteúdo não podem divergir. */
   --sidebar-border: var(--border);
-  --sidebar-ring: #9f0712;
+  --sidebar-ring: #0842a1;
 }
 
 .dark {
@@ -105,9 +113,10 @@
   --popover: #18181b;
   --popover-foreground: #fafafa;
 
-  /* Texto escuro sobre a primária: 5,29:1. */
-  --primary: #ef4444;
-  --primary-foreground: #09090b;
+  /* Azul de ação (o mesmo do Heimdall): 7,04:1 sobre o cartão, 7,90:1 sobre o fundo e 5,92:1 sobre o
+     muted; texto escuro (#080c16) sobre ele com 7,76:1. */
+  --primary: #61a6fa;
+  --primary-foreground: #080c16;
   --secondary: #27272a;
   --secondary-foreground: #fafafa;
   --muted: #27272a;
@@ -115,7 +124,8 @@
   --muted-foreground: #f4f4f5;
   --accent: #27272a;
   --accent-foreground: #fafafa;
-  --highlight: #351518;
+  /* Azul-escuro do realce (protótipo: tom escuro do vermelho #351518): texto claro com 14,35:1. */
+  --highlight: #12264a;
   --highlight-foreground: #fafafa;
 
   --destructive: #f87171;
@@ -127,7 +137,7 @@
 
   --border: rgba(255, 255, 255, 0.12);
   --input: rgba(255, 255, 255, 0.12);
-  --ring: #ef4444;
+  --ring: #61a6fa; /* 7,90:1 sobre o fundo */
 
   --overlay: #000000;
   --logo-surface: #ffffff;
@@ -136,14 +146,27 @@
 
   /* O protótipo mantém os ícones de seção pastéis também no escuro. */
 
+  /* Gráficos no escuro: o azul do claro (#0842a1) some no cartão (1,7:1); aqui as pontas têm 3:1 ou mais
+     sobre o cartão (#18181b): forte #3b82f6 (4,82:1) a #61a6fa (7,04:1); suave #4f78b8 (3,97:1) a #7aa2dd
+     (6,78:1). */
+  --chart-strong-from: #3b82f6;
+  --chart-strong-to: #61a6fa;
+  --chart-soft-from: #4f78b8;
+  --chart-soft-to: #7aa2dd;
+  --chart-1: #3b82f6;
+  --chart-2: #61a6fa;
+  --chart-3: #4f78b8;
+  --chart-4: #7aa2dd;
+  --chart-5: #a9c5f5;
+
   --sidebar: #18181b;
   --sidebar-foreground: #fafafa;
-  --sidebar-primary: #ef4444;
-  --sidebar-primary-foreground: #09090b;
+  --sidebar-primary: #61a6fa;
+  --sidebar-primary-foreground: #080c16;
   --sidebar-accent: #27272a;
   --sidebar-accent-foreground: #fafafa;
   --sidebar-border: var(--border);
-  --sidebar-ring: #ef4444;
+  --sidebar-ring: #61a6fa;
 }
 
 @theme inline {

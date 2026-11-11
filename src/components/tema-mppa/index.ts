@@ -19,7 +19,8 @@
  * 7. `NavigationItem` ganha `description` (mostrada e filtrada pela busca), `matches` (rotas que
  *    marcam o item) e `hidden` (fora do menu e da busca, mas dá o título e a aba). Um só item fica
  *    marcado: o de rota mais longa, o mesmo do título e da aba aberta (`currentNavigationItem`).
- * 8. `tone` aceita `"red" | "green" | "violet" | "orange"`; classes soltas continuam aceitas.
+ * 8. `tone` aceita `"blue"` (padrão, sem valor), `"green"`, `"violet"`, `"orange"`, `"teal"`, `"pink"`, `"amber"`
+ *    e `"red"` (reservado ao que tem significado institucional); classes soltas continuam aceitas.
  * 9. Sobreposição em `bg-overlay` e fundo das logos em `bg-logo-surface`, por token.
  * 10. A barra recolhida fica no `localStorage`; sem armazenamento, só na memória da página.
  * 11. `Esc` fecha o menu móvel; o menu móvel abre sempre expandido, mesmo com a barra recolhida.
@@ -37,6 +38,8 @@
  * 21. `AppShell` aceita `session={null}` (sessão a caminho), `title` (título vindo do conteúdo, sem ícone),
  *     `headerActions` (ações do sistema à esquerda da busca) e `renderSearch` (busca própria do sistema).
  * 22. Texto sobre superfície neutra com 12:1 nos dois temas, inclusive o secundário e o de status.
+ * 23. Azul como cor de ação (primária, foco, item ativo da barra, ícone padrão e gráficos); vermelho só
+ *     para destrutivo/erro e identidade institucional.
  */
 export { AppShell } from "./app-shell";
 export { BarChart, type BarChartDatum } from "./bar-chart";

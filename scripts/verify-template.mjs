@@ -188,8 +188,8 @@ const light = block(":root");
 const dark = { ...light, ...block(".dark") };
 
 const prototype = {
-  light: { radius: "0.5rem", background: "#ffffff", card: "#fafafa", sidebar: "#fcfcfc", muted: "#f4f4f5", border: "#d4d4d8", highlight: "#fee2e2" },
-  dark: { background: "#09090b", card: "#18181b", sidebar: "#18181b", muted: "#27272a", border: "rgba(255, 255, 255, 0.12)", highlight: "#351518" },
+  light: { radius: "0.5rem", background: "#ffffff", card: "#fafafa", sidebar: "#fcfcfc", muted: "#f4f4f5", border: "#d4d4d8", highlight: "#dbeafe" },
+  dark: { background: "#09090b", card: "#18181b", sidebar: "#18181b", muted: "#27272a", border: "rgba(255, 255, 255, 0.12)", highlight: "#12264a" },
 };
 for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
   for (const [name, value] of Object.entries(theme === "claro" ? prototype.light : prototype.dark)) {
@@ -238,7 +238,30 @@ for (const surface of ["background", "card"]) {
 }
 if (luminance(dark["primary-foreground"]) > luminance(dark.primary)) errors.push("escuro: o texto sobre a primária deve ser escuro");
 requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
-for (const tone of ["green", "violet", "orange"]) {
+// Azul de ação: o mesmo do Heimdall, nos dois temas, em todos os tokens de ação (decisão de 11 nov. 2026).
+const actionBlue = { light: ["#0842a1", "#ffffff"], dark: ["#61a6fa", "#080c16"] };
+for (const [theme, tokens, [blue, onBlue]] of [["claro", light, actionBlue.light], ["escuro", dark, actionBlue.dark]]) {
+  for (const name of ["primary", "ring", "sidebar-primary", "sidebar-ring"]) {
+    if (tokens[name]?.toLowerCase() !== blue) errors.push(`azul de ação (${theme}): --${name} deve ser ${blue}, encontrado ${tokens[name] ?? "ausente"}`);
+  }
+  for (const name of ["primary-foreground", "sidebar-primary-foreground"]) {
+    if (tokens[name]?.toLowerCase() !== onBlue) errors.push(`azul de ação (${theme}): --${name} deve ser ${onBlue}, encontrado ${tokens[name] ?? "ausente"}`);
+  }
+  requireContrast(theme, tokens, "ring", "background", 3);
+  requireContrast(theme, tokens, "chart-strong-from", "card", 3);
+  requireContrast(theme, tokens, "chart-strong-to", "card", 3);
+  requireContrast(theme, tokens, "chart-soft-from", "card", theme === "claro" ? 2.5 : 3);
+}
+// Vermelho só com significado: o destrutivo continua vermelho e a marca institucional também.
+for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
+  const hex = tokens.destructive;
+  const [r, g, b] = [1, 3, 5].map((offset) => parseInt(hex.slice(offset, offset + 2), 16));
+  if (!(r > g * 1.5 && r > b * 1.5)) errors.push(`destrutivo (${theme}): --destructive (${hex}) deve continuar vermelho`);
+}
+if (!/--brand-mark-from:\s*#ef3340/i.test(await read("src/styles/tema-mppa.css"))) errors.push("o símbolo padrão (--brand-mark-from) deve continuar vermelho: é identidade institucional");
+const sectionIconSource = await read("src/components/tema-mppa/section-icon.tsx");
+if (/tones\.red/.test(sectionIconSource) || !sectionIconSource.includes("if (!tone) return tones.blue;")) errors.push("section-icon.tsx: o tom padrão do ícone de seção deve ser azul (tones.blue), não vermelho");
+for (const tone of ["blue", "green", "violet", "orange", "teal", "pink", "amber"]) {
   requireContrast("claro", light, `tone-${tone}-foreground`, `tone-${tone}`, 4.5);
   requireContrast("escuro", dark, `tone-${tone}-foreground`, `tone-${tone}`, 4.5);
 }
@@ -418,10 +441,16 @@ const mix = (fg, bg, alpha) => `#${[0, 2, 4].map((offset) => {
   const channel = (hex) => parseInt(hex.replace("#", "").slice(offset, offset + 2), 16);
   return Math.round(alpha * channel(fg) + (1 - alpha) * channel(bg)).toString(16).padStart(2, "0");
 }).join("")}`;
-for (const surface of ["background", "card"]) {
+// Com a primária azul (1.8.0), /10 passa de 7:1 (claro) e de 4,5:1 (escuro); /15 ou mais cai abaixo no cartão, e é isso que o aviso diz.
+for (const surface of ["background", "card", "muted", "sidebar"]) {
   const ratio = contrast(light.primary, mix(light.primary, light[surface], 0.1));
-  if (ratio >= 7) errors.push(`o "não faça" de bg-primary/10 ficou obsoleto: ${ratio.toFixed(2)}:1 sobre --${surface}`);
+  if (ratio < 7) errors.push(`REPLICAR diz que text-primary sobre bg-primary/10 passa de 7:1, mas dá ${ratio.toFixed(2)}:1 sobre --${surface}`);
 }
+for (const surface of ["background", "card", "muted"]) {
+  const ratio = contrast(dark.primary, mix(dark.primary, dark[surface], 0.1));
+  if (ratio < 4.5) errors.push(`escuro: text-primary sobre bg-primary/10 dá ${ratio.toFixed(2)}:1 sobre --${surface}, mínimo 4,5:1`);
+}
+if (contrast(light.primary, mix(light.primary, light.card, 0.15)) >= 7) errors.push('o "não faça" de bg-primary/15 ficou obsoleto: o par chega a 7:1 sobre --card');
 
 // DESIGN.md do modelo preso ao CSS, e DESIGN.md exigido na Fase 1.
 for (const needle of ["DESIGN.md", "verificar-design.mjs"]) {
@@ -494,9 +523,9 @@ try {
   const designVerifier = path.join(reference, "verificar-design.mjs");
   const designOk = run(designVerifier, ["--css", ownCss], { cwd: consumer });
   if (designOk.status !== 0) errors.push(`verificar-design reprova o DESIGN.md do sistema conforme: ${designOk.output}`);
-  await writeFile(path.join(consumer, "DESIGN.md"), consumerDesign.replace('primary: "#9f0712"', 'primary: "#9f0713"'));
+  await writeFile(path.join(consumer, "DESIGN.md"), consumerDesign.replace('primary: "#0842a1"', 'primary: "#0842a2"'));
   if (run(designVerifier, ["--css", ownCss], { cwd: consumer }).status === 0) errors.push("verificar-design aprova cor diferente da camada");
-  await writeFile(path.join(consumer, "DESIGN.md"), consumerDesign.replace(/^ {2}primary: "#9f0712"\n/m, ""));
+  await writeFile(path.join(consumer, "DESIGN.md"), consumerDesign.replace(/^ {2}primary: "#0842a1"\n/m, ""));
   if (run(designVerifier, ["--css", ownCss], { cwd: consumer }).status === 0) errors.push("verificar-design aprova DESIGN.md sem uma cor da camada");
 
   // Build do consumidor com os exemplos do roteiro tais como estão: layout raiz (4.4) e configuração (4.5).
