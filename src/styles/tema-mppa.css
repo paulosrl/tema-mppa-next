@@ -124,6 +124,8 @@
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f1f5f9;
   --sidebar-accent-foreground: #0f172a;
+  /* Fundo azul do item do menu sob o ponteiro: texto com 16,10:1 (9,34:1 no da barra). */
+  --sidebar-hover: #ecf4fe;
   /* A borda da barra é a borda geral: as faixas da barra e do conteúdo não podem divergir. */
   --sidebar-border: var(--border);
   --sidebar-ring: #0842a1;
@@ -219,6 +221,8 @@
   --sidebar-primary-foreground: #080c16;
   --sidebar-accent: #182235;
   --sidebar-accent-foreground: #f8fafc;
+  /* Azul-marinho do item sob o ponteiro: texto com 14,41:1 (10,15:1 no da barra). */
+  --sidebar-hover: #142645;
   --sidebar-border: var(--border);
   --sidebar-ring: #61a6fa;
 }
@@ -287,6 +291,7 @@
   --color-sidebar-accent: var(--sidebar-accent);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-hover: var(--sidebar-hover);
   --color-sidebar-ring: var(--sidebar-ring);
 
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;

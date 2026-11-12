@@ -43,6 +43,8 @@ neutra. Nada muda de lugar: a busca continua na barra lateral e o título contin
   640px; o `<h1>` continua só com o rótulo). Logos em caixas com borda e sombra. Avatar em degradê do vermelho
   ao azul com ponto verde de conectado; nome em negrito. Sair com realce destrutivo. Sol âmbar e lua azul no
   botão de tema (`--theme-icon`).
+- **Item do menu sob o ponteiro:** fundo azul (`--sidebar-hover`: `#ecf4fe` no claro, texto com 16,10:1;
+  `#142645` no escuro, 14,41:1), no lugar do cinza neutro.
 - **Barra lateral:** marca com nome em negrito e versão num selo vermelho em fonte mono; `tagline` em 11px.
   Rótulo do grupo em maiúsculas, 11px, cinza. Itens com raio 12px e 13,5px. "Recolher" com `Ctrl B` em `kbd` e
   ícone de painel. Busca com raio 12px, sombra e `kbd` mono.

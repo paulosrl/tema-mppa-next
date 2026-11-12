@@ -44,6 +44,7 @@ colors:
   sidebar-foreground: "#334155"
   sidebar-accent: "#f1f5f9"
   sidebar-accent-foreground: "#0f172a"
+  sidebar-hover: "#ecf4fe"
   tone-red: "#fee2e2"
   tone-red-foreground: "#970611"
   tone-green: "#d1fae5"
@@ -191,7 +192,7 @@ components:
     rounded: "{rounded.xl}"
     padding: "8px 10px"
   nav-item-hover:
-    backgroundColor: "{colors.sidebar-accent}"
+    backgroundColor: "{colors.sidebar-hover}"
     textColor: "{colors.sidebar-accent-foreground}"
     rounded: "{rounded.xl}"
   nav-item-active:
@@ -486,6 +487,7 @@ com 4,5:1 ou mais; texto sobre preenchimento colorido com 4,5:1.
 | sidebar / sidebar-foreground | `#0c121e` / `#cbd5e1` |
 | card, popover | `#111827` |
 | muted, secondary, accent, sidebar-accent | `#182235` |
+| sidebar-hover (item do menu sob o ponteiro) | `#142645` (texto `#f8fafc` com 14,41:1) |
 | muted-foreground | `#94a3b8` (6,21:1 no muted, 6,92:1 no cartão, 7,69:1 no fundo) |
 | primary / primary-foreground | `#61a6fa` / `#080c16` |
 | destructive / destructive-foreground | `#f87171` / `#070b12` |

@@ -237,6 +237,8 @@ for (const surface of textOn) {
 requireContrast("claro", light, "highlight-foreground", "highlight", 7);
 requireContrast("escuro", dark, "highlight-foreground", "highlight", 7);
 requireContrast("claro", light, "sidebar-foreground", "sidebar", 7);
+requireContrast("claro", light, "foreground", "sidebar-hover", 7);
+requireContrast("escuro", dark, "foreground", "sidebar-hover", 7);
 requireContrast("escuro", dark, "sidebar-foreground", "sidebar", 7);
 for (const tone of ["red", "green", "violet", "orange", "blue", "teal", "pink", "amber"]) {
   requireContrast("claro", light, `tone-${tone}-foreground`, `tone-${tone}`, 4.5);
