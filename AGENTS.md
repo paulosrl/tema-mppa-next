@@ -33,7 +33,7 @@
     "Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de Inteligência Artificial - Nome - V x.y.z - Ano".
 
   Não mude o lado esquerdo (o "Recolher").
-- Contraste fixo, nos dois temas: texto principal com 7:1 ou mais; secundário (`--muted-foreground`, cinza) com 4,5:1 ou mais (WCAG AA) em toda superfície neutra, e não mais igual ao principal; texto sobre preenchimento colorido e ícones de tom com 4,5:1 (no escuro, texto escuro sobre a primária).
+- Contraste fixo, nos dois temas: texto principal com 7:1 ou mais; secundário (`--muted-foreground`, cinza) com 4,5:1 ou mais (WCAG AA) em toda superfície neutra, e não mais igual ao principal; texto de destaque colorido (marca, links, status), texto sobre preenchimento colorido e ícones de tom com 4,5:1 (no escuro, texto escuro sobre a primária).
 - Telas de demonstração usam só os primitivos exportados (`PageFrame`, `Card`, `MetricCard`, `DataTable`, `BarChart`, `Button` e as peças de painel de `dashboard.tsx`). A página inicial da demonstração reproduz a página de referência do Heimdall (12 nov. 2026), com dados fictícios.
 
 <!-- BEGIN:nextjs-agent-rules -->

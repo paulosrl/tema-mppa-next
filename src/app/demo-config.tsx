@@ -23,7 +23,7 @@ const symbol = (
 export const demoConfig: ShellConfig = {
   brand: {
     name: "Template",
-    version: "1.10.0",
+    version: "1.10.1",
     versionYears: "2026",
     tagline: "Portal de Sistemas MPPA",
     homeHref: "/",

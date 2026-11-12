@@ -145,7 +145,7 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 ## 3. Fase 0: Diagnóstico
 
 1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
-   (`unzip tema-mppa-next-v1.10.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
+   (`unzip tema-mppa-next-v1.10.1.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -178,7 +178,8 @@ Use `--components-dir` e `--styles-dir` para outro lugar. Ele também grava em `
 - `verificar-camada.mjs`, que confere a camada contra essa lista (`node docs/tema-mppa/verificar-camada.mjs`,
   da raiz do consumidor). Ligue-o aos testes ou ao `check` do consumidor, se ele tiver um.
 
-Se a camada já existir, ele para; rode de novo com `--force`, que faz backup antes de substituir. A camada só
+Se a camada já existir, ele para; rode de novo com `--force`, que faz backup antes de substituir (na pasta
+temporária do sistema, fora do consumidor, para lint e testes não acharem a camada antiga; o caminho sai no fim). A camada só
 usa imports relativos: não depende do alias `@/`. Os arquivos saem com modo 644, e 755 só os scripts com
 shebang (`verificar-camada.mjs`, `verificar-design.mjs`), seja qual for o modo que o zip trouxe.
 
@@ -602,13 +603,43 @@ Quando nenhuma tela usar mais o visual antigo:
 
 1. `node docs/tema-mppa/verificar-camada.mjs`: se apontar arquivo editado, entenda a edição antes de seguir;
    ela será perdida (vai para o backup).
-2. Descompacte o zip novo e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
-   O script lista os arquivos que estavam editados e grava a lista de conferência da versão nova.
-3. Leia o `docs/tema-mppa/CHANGELOG.md` da versão anterior até a nova e faça o que a seção "Ao atualizar de"
-   de cada versão pede ao consumidor (configuração nova, propriedade que saiu).
-4. Rode o `verificar-design.mjs`: se a camada mudou alguma cor, leve-a ao `DESIGN.md` do sistema.
-5. Rode a verificação de 4.10, atualize a versão na seção "Interface" do `AGENTS.md` e apague a pasta
-   descompactada.
+2. **Antes da cópia, capture as telas** (receita em 7.1), se a versão nova anuncia mudança de aparência.
+3. Descompacte o zip novo e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   O script lista os arquivos que estavam editados, guarda o backup fora do consumidor e grava a lista de
+   conferência da versão nova. O modelo não publica soma de conferência (`.sha256`) do zip: se o processo do
+   consumidor pede uma, calcule-a e registre-a.
+4. Leia o `docs/tema-mppa/CHANGELOG.md` da versão anterior até a nova e faça o que a seção "Ao atualizar de"
+   de cada versão pede ao consumidor (configuração nova, propriedade que saiu). **Saltando várias versões**, a
+   cópia é uma só, com a versão final; os passos de cada "Ao atualizar de" se somam, e os que mandam copiar
+   ou trocar a versão no `AGENTS.md` valem uma vez só.
+5. **Refaça o `DESIGN.md` do sistema a partir do `docs/tema-mppa/DESIGN.md` novo**, com os tokens e o texto
+   próprios do sistema por cima. Reaplicar as diferenças antigas (patch) falha quando a prosa da camada muda.
+   Confira com o `verificar-design.mjs`, que precisa aprovar sem diferença.
+6. Rode a verificação de 4.10, capture as telas de novo e compare (7.1), atualize a versão na seção
+   "Interface" do `AGENTS.md` e apague a pasta descompactada.
+
+### 7.1 Pontos que costumam quebrar numa atualização
+
+- **Capturas antes e depois:** um spec Playwright temporário, fora do commit, com um usuário administrador
+  descartável e dados de exemplo; as telas principais (início, painel, uma lista, uma tela administrativa e o
+  menu móvel), em 1280px e 390px, nos temas claro e escuro (tema gravado em `sessionStorage`, chave
+  `tema-mppa-theme`, antes de abrir a página); cubra com uma faixa o que muda a cada execução (e-mail, hora).
+  Compare pixel a pixel e classifique cada diferença: anunciada pelo CHANGELOG ou defeito.
+- **Testes que leem classes internas da camada** (por exemplo, `desk:hidden` na barra recolhida) quebram
+  quando a camada muda as classes. Teste pelo contrato observável (4.8): `aria-label`, `data-tm-sidebar`,
+  largura e cor medidas.
+- **`bg-background` em componentes shadcn** (`Input`, botão `outline`, seletores, diálogos, alertas): o fundo
+  da página deixa de ser o do cartão desde a 1.9.0. Superfície que precisa parecer cartão usa `bg-card`.
+- **Degradê translúcido:** um degradê que termina transparente (`to-cor/[0.04]`) deixa ver o fundo da página
+  e pode baixar o contraste do texto dentro dele. Ponha `bg-card` por baixo.
+- **Medidor de contraste dos testes:** o fundo da página tem brilho decorativo (`--canvas-glow`, radial e fixo
+  no `body`) e o item selecionado e as caixas de ícone usam `background-image`. Um medidor que lê
+  `background-image` como cor cheia erra; ignore o brilho do `body` e componha as camadas sobre a cor de fundo.
+- **Fonte mono:** a versão da marca, os `kbd` e os números de métrica usam `font-mono`. Teste que exige uma
+  só família em todo texto precisa aceitá-la nesses pontos.
+- **Regras locais de cor:** regra, spec ou teste do consumidor que fixa a cor do texto (por exemplo, "todo texto
+  preto") entra em conflito quando a camada muda a cor. Reescreva a regra local para seguir a camada; não
+  sobreponha o token.
 
 ## 8. Código de cores (tokens)
 
@@ -772,7 +803,7 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.10.0)
+## Interface (tema-mppa 1.10.1)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
@@ -782,8 +813,8 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
   `node docs/tema-mppa/verificar-design.mjs --css <CSS próprio>` a cada mudança de token.
 - Telas só com os primitivos (`PageFrame`, `Card`, `CardGrid`, `MetricCard`, `DataTable`, `BarChart`,
   `Button` e as peças de painel: `PageGreeting`, `PanelCard`, `InfoField`, `SectionTitle`, `LinkCard`); cores só pelos tokens; título só no cabeçalho, vindo do item de navegação.
-- Contraste: texto principal com 7:1; secundário com 4,5:1 nos dois temas; 4,5:1 em texto sobre
-  preenchimento colorido.
+- Contraste: texto principal com 7:1; secundário com 4,5:1 nos dois temas; 4,5:1 em texto de destaque
+  colorido (marca, links, status) e em texto sobre preenchimento colorido.
 - Administração aparece só com `session.is_admin === true`.
 ```
 

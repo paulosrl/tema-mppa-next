@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-import { chmod, cp, mkdir, open, readdir, readFile, rename, stat, writeFile } from "node:fs/promises";
+import { chmod, cp, mkdir, open, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { createHash } from "node:crypto";
+import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -98,16 +99,21 @@ if (existing.length && force && existsSync(manifestPath)) {
   }
 }
 
+// O backup fica fora da raiz do consumidor (pasta temporária do sistema): dentro dela, lint, testes e
+// conferências que leem todo arquivo achariam a camada antiga. Copia e apaga, porque a pasta temporária pode
+// estar em outro disco, onde `rename` falha.
 let backupRoot;
 if (existing.length && force) {
-  backupRoot = path.join(target, `.tema-mppa-backup-${new Date().toISOString().replace(/[:.]/g, "-")}`);
+  backupRoot = path.join(os.tmpdir(), `tema-mppa-backup-${new Date().toISOString().replace(/[:.]/g, "-")}`);
   await mkdir(backupRoot, { recursive: true });
   for (const { to } of existing) {
     const backup = path.join(backupRoot, path.relative(target, to));
     await mkdir(path.dirname(backup), { recursive: true });
-    await rename(to, backup);
+    await cp(to, backup, { recursive: true });
+    await rm(to, { recursive: true, force: true });
   }
 }
+const updating = Boolean(backupRoot);
 
 // Modo fixo, sem herdar o da origem (um zip feito no Windows chega com 0777): 644, e 755 só para script
 // com shebang. Num repositório que confere o modo pelo índice do git, nada vira executável por engano.
@@ -157,8 +163,12 @@ console.log("Camada visual copiada:");
 console.log(`- componentes: ${rel(path.join(componentsDir, "tema-mppa"))}/`);
 console.log(`- cores e tokens: ${rel(path.join(stylesDir, "tema-mppa.css"))}`);
 console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (GUIA.html, REPLICAR.md, DESIGN.md, protótipo, prévia, comparações)`);
-if (backupRoot) console.log(`Backup: ${rel(backupRoot)}`);
+if (backupRoot) console.log(`Backup (fora do consumidor): ${backupRoot}`);
 console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version}); confira com: node ${rel(path.join(referenceDir, "verificar-camada.mjs"))}`);
 console.log(`- conferência do DESIGN.md do sistema: node ${rel(path.join(referenceDir, "verificar-design.mjs"))} --css <CSS com os tokens próprios>`);
-console.log("Próximos passos: REPLICAR.md, Fase 1 (seção 4), a partir de 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).");
+console.log(
+  updating
+    ? "Próximos passos (atualização): REPLICAR.md, seção 7, a partir do passo 4 (CHANGELOG, DESIGN.md, verificação de 4.10)."
+    : "Próximos passos: REPLICAR.md, Fase 1 (seção 4), a partir de 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).",
+);
 console.log("Nenhum arquivo de autenticação, BFF, API, rota ou regra de negócio foi alterado.");

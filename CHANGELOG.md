@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.10.1 — 2026-11-12
+
+Roteiro e cópia, a partir do que o Heimdall relatou ao atualizar para a 1.9.0 e a 1.10.0 (`REPLICAR.md`, seção
+11). A camada não muda: componentes e tokens iguais aos da 1.10.0.
+
+### Modificado
+
+- **`copy-template.mjs`:** o backup do `--force` vai para a pasta temporária do sistema, fora do consumidor
+  (dentro dele, lint, testes e conferências de todo arquivo achavam a camada antiga); numa atualização, a
+  mensagem final aponta a seção 7, e não mais a 4.2.
+- **`REPLICAR.md`, seção 7:** capturas antes e depois; uma cópia só ao saltar várias versões; o `DESIGN.md` do
+  sistema refeito a partir do novo; a soma de conferência do zip, que o modelo não publica; e a 7.1, com os
+  pontos que costumam quebrar (classes internas da camada em testes, `bg-background` em componentes shadcn,
+  degradê translúcido, medidor de contraste com o brilho do fundo, fonte mono, regras locais de cor).
+- **Contraste:** o texto de destaque colorido (marca, links, status) entra na regra, com 4,5:1, no `AGENTS.md`
+  e no bloco "Interface" do `REPLICAR.md`.
+
+### Ao atualizar de 1.10.0
+
+1. Nada a mudar nas telas: a camada é a mesma. Para ter o roteiro novo em `docs/tema-mppa/`, rode
+   `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Se o consumidor fixou no `.gitignore` ou em testes o backup dentro da raiz (`.tema-mppa-backup-*`), a regra
+   pode ficar; ela só deixa de ser necessária.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.10.1 e acrescente à regra de contraste o texto de
+   destaque colorido (marca, links, status) com 4,5:1.
+
 ## 1.10.0 — 2026-11-12
 
 Estética nova, com a mesma estrutura e a mesma API. Pedido do autor em 12 nov. 2026: a camada passa a seguir a
