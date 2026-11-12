@@ -129,6 +129,10 @@ try {
   errors.push(`rodapé: footerText não pôde ser executado: ${error.message}`);
 }
 
+// A prévia recolhe a barra pelo atributo do <html>, como a camada (variante tm-collapsed).
+if (!(await read("docs/preview/index.html")).includes('root.setAttribute("data-tm-sidebar", state.collapsed ? "collapsed" : "expanded")')) {
+  errors.push("docs/preview/index.html: o Recolher não marca data-tm-sidebar no <html> (regere a prévia)");
+}
 // A prévia entregue mostra a versão do pacote.
 const preview = await read("docs/preview/index.html");
 if (!preview.includes(`<title>Template Visual MPPA v${packageJson.version}</title>`)) {

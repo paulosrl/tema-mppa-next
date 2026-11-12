@@ -24,11 +24,6 @@ const exe =
   process.env.CHROMIUM ??
   `${process.env.HOME}/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell`;
 
-const routes = {
-  platform: ["/", "/itens", "/compartilhados", "/automacoes"],
-  administration: ["/administracao/curadoria", "/administracao/usuarios"],
-};
-
 const browser = await chromium.launch({ executablePath: exe });
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
 
@@ -46,8 +41,21 @@ async function open(route, { collapsed = false, theme = "light" } = {}) {
   return page;
 }
 
-// Estados da barra lateral e do cabeçalho, por rota e por barra recolhida.
+// Rotas tiradas do próprio menu da demonstração, aba por aba: a prévia acompanha a configuração sem lista à mão.
+const routes = {};
+{
+  const page = await open("/");
+  const links = () => page.evaluate(() => [...document.querySelectorAll('aside nav[aria-label="Itens da seção"] a[href]')].map((a) => new URL(a.href).pathname));
+  routes.platform = await links();
+  const adminTab = page.locator('aside [role="tab"]').nth(1);
+  routes.administration = (await adminTab.count()) ? (await adminTab.click(), await page.waitForTimeout(300), await links()) : [];
+  await page.close();
+  if (!routes.platform.length) throw new Error("sem itens no menu da demonstração");
+}
+
+// Estados por rota: barra lateral e título (aberta e recolhida) e o conteúdo da página.
 const states = {};
+const pages = {};
 for (const route of [...routes.platform, ...routes.administration]) {
   for (const collapsed of [false, true]) {
     const page = await open(route, { collapsed });
@@ -55,6 +63,7 @@ for (const route of [...routes.platform, ...routes.administration]) {
       aside: document.querySelector("aside").outerHTML,
       title: document.querySelector("header h1").parentElement.outerHTML,
     }));
+    if (!collapsed) pages[route] = await page.evaluate(() => document.querySelector("main").innerHTML);
     await page.close();
   }
 }
@@ -112,10 +121,12 @@ async function inlineImages(text) {
 const offlineHtml = await inlineImages(html);
 // Nos estados da barra, a imagem fica uma vez só (IMAGES), e o script da prévia a põe em cada estado.
 for (const snapshot of Object.values(states)) await inlineImages(snapshot.aside);
+for (const content of Object.values(pages)) await inlineImages(content);
 
 const runtime = `
 (() => {
   const STATES = ${JSON.stringify(states)};
+  const PAGES = ${JSON.stringify(pages)};
   const IMAGES = ${JSON.stringify(Object.fromEntries(imageCache))};
   const withImages = (text) => Object.entries(IMAGES).reduce((out, [src, data]) => out.replaceAll('src="' + src + '"', 'src="' + data + '"'), text);
   const ICONS = ${JSON.stringify(icons)};
@@ -129,7 +140,7 @@ const runtime = `
     collapsed: store.get("tema-mppa-sidebar-collapsed", "0") === "1",
     theme: store.get("tema-mppa-preview-theme", "light"),
     mobileOpen: false,
-    last: { platform: "/", administration: "/administracao/curadoria" },
+    last: { platform: ROUTES.platform[0], administration: ROUTES.administration[0] ?? ROUTES.platform[0] },
   };
   const OVERLAY = '<button type="button" class="fixed inset-0 z-40 bg-overlay/40 desk:hidden" aria-label="Fechar menu lateral" data-preview-overlay></button>';
 
@@ -138,6 +149,12 @@ const runtime = `
     const aside = document.querySelector("aside");
     aside.outerHTML = withImages(snapshot.aside);
     document.querySelector("header h1").parentElement.outerHTML = snapshot.title;
+    const main = document.querySelector("main");
+    if (main.dataset.previewRoute !== state.route) {
+      main.innerHTML = withImages(PAGES[state.route]);
+      main.dataset.previewRoute = state.route;
+      window.scrollTo(0, 0);
+    }
     document.querySelector("[data-preview-overlay]")?.remove();
     const fresh = document.querySelector("aside");
     if (state.mobileOpen) {
@@ -145,6 +162,8 @@ const runtime = `
       fresh.insertAdjacentHTML("beforebegin", OVERLAY);
     }
     const root = document.documentElement;
+    // A barra se recolhe pelo atributo no <html> (variante tm-collapsed), não pelo HTML do estado.
+    root.setAttribute("data-tm-sidebar", state.collapsed ? "collapsed" : "expanded");
     root.classList.remove("light", "dark");
     root.classList.add(state.theme);
     root.style.colorScheme = state.theme;

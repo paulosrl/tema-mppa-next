@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.12.2 — 2026-11-12
+
+Prévia (`docs/preview/index.html`) consertada, a partir do que o autor viu em 12 nov. 2026. A camada não muda:
+componentes, tokens e aparência iguais aos da 1.12.0.
+
+### Corrigido
+
+- **"Recolher menu" na prévia:** não recolhia a barra desde a 1.7.0, quando a camada passou a desenhá-la pelo
+  atributo `data-tm-sidebar` do `<html>`; o script da prévia trocava o HTML da barra, mas não o atributo. Agora
+  marca o atributo, como a aplicação, e o `verify-template.mjs` confere.
+- **Navegação na prévia:** o gerador usava uma lista fixa com as rotas antigas da demonstração (`/itens`,
+  `/automacoes`…), e o clique em "Perfil", "Sessões" ou nos itens de administração voltava ao início. Agora as
+  rotas vêm do próprio menu da demonstração, e cada página da prévia mostra o seu conteúdo, não só o título.
+
+### Ao atualizar de 1.12.1
+
+1. Nada a mudar nas telas. Para ter a prévia nova em `docs/tema-mppa/preview/`, copie a pasta `tema-mppa-next/`
+   e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 1.12.2.
+
 ## 1.12.1 — 2026-11-12
 
 Pedido do autor em 12 nov. 2026: o modelo passa a ser entregue como a pasta `tema-mppa-next/`, que o
