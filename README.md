@@ -1,6 +1,6 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.12.0**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
+Versão **1.12.1**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
 estética de 12 nov. 2026 (ardósia no claro e marinho no escuro, cartões de 16px, sombras em camadas, realce em degradê do vermelho
 institucional ao azul, avatar em degradê) e o cabeçalho padrão dos sistemas:
 
@@ -18,10 +18,10 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 
 ## Usar num codebase
 
-1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.12.0.zip` e a soma
-   `tema-mppa-next-v1.12.0.zip.sha256`, na pasta acima desta.
-2. Entregue o zip e a soma ao desenvolvedor do sistema. Ele os copia para a raiz do repositório, confere a soma,
-   descompacta e abre `tema-mppa-next/GUIA.html` no navegador.
+1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v1.12.1/tema-mppa-next/`, na pasta acima desta.
+2. O desenvolvedor do sistema copia a pasta `tema-mppa-next/` inteira para a raiz do repositório
+   (`cp -r …/tema-mppa-next-v1.12.1/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html` no
+   navegador. A cópia da camada confere a pasta contra o `SHA256SUMS` dela antes de copiar.
 3. No [`GUIA.html`](GUIA.html), ele responde duas perguntas: a situação do sistema (do zero, já existe sem o
    tema, já tem o tema) e se o repositório usa OpenSpec. O guia monta os passos daquele caso, cada um com o
    prompt pronto para colar no Claude Code e o que conferir depois. No sistema do zero, nome, versão, ano e
@@ -43,10 +43,11 @@ pedidos: propor (o agente para e o desenvolvedor revisa), aplicar e arquivar.
 Ele segue o processo do codebase (OpenSpec, padrão de branch, testes). Para levar um codebase a uma versão
 nova do modelo, o mesmo pedido serve: o `REPLICAR.md` tem a seção de atualização.
 
-O zip tem só o que o desenvolvedor e o agente usam:
+A pasta entregue tem só o que o desenvolvedor e o agente usam:
 
 - [`GUIA.html`](GUIA.html), o guia do desenvolvedor, com os prompts;
 - [`REPLICAR.md`](REPLICAR.md), o roteiro dele, e o [`DIAGNOSTICO.md`](DIAGNOSTICO.md), o formulário da Fase 0;
+- o [`CHANGELOG.md`](CHANGELOG.md), com os passos de cada atualização, e a licença;
 - a camada visual (`src/components/tema-mppa/`);
 - as cores (`src/styles/tema-mppa.css`);
 - o [`DESIGN.md`](DESIGN.md) da camada (tokens e intenção do design para agentes de IA, no formato aberto
@@ -69,8 +70,8 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 | `DESIGN.md` | tokens e intenção do design da camada (formato DESIGN.md), conferido contra o CSS |
 | `src/components/tema-mppa/` | camada visual (shell e primitivos) |
 | `src/styles/tema-mppa.css` | tokens: cores, raio, sombra, base |
-| `src/app/` | demonstração que compila e exibe a camada (fica fora do zip) |
-| `public/` | logos padrão do cabeçalho (vão no zip) |
+| `src/app/` | demonstração que compila e exibe a camada (fica fora da pasta entregue) |
+| `public/` | logos padrão do cabeçalho (vão na pasta entregue) |
 | `docs/prototipo/` | protótipo aprovado; manda em todo elemento gráfico |
 | `docs/preview/` | prévia offline gerada da demonstração |
 | `docs/comparacao/` | protótipo e modelo lado a lado, claro e escuro, 1280px e 390px |
@@ -81,8 +82,8 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 ```bash
 npm install
 npm run dev          # demonstração em http://localhost:3000
-npm run check        # verificação (pinos, tokens, contraste, zip e consumidor de teste), typecheck, lint e build
-npm run empacotar    # zip para os consumidores
+npm run check        # verificação (pinos, tokens, contraste, pasta entregue e consumidor de teste), typecheck, lint e build
+npm run empacotar    # pasta tema-mppa-next/ para os consumidores
 ```
 
 Depois de mudar a aparência, regere a prévia e as comparações com a demonstração rodando
@@ -96,12 +97,12 @@ node scripts/capturar-comparacao.mjs "$FONTE" /tmp/capturas
 node scripts/compor-comparacao.mjs /tmp/capturas docs/comparacao
 ```
 
-O zip é reprodutível: o mesmo conteúdo dá a mesma soma. O `npm run empacotar` recusa gerar de novo uma versão
-cuja soma já está na pasta de saída com outro valor: conteúdo novo pede número novo (`--substituir` só para um zip
+A pasta entregue leva `SHA256SUMS`, com a soma de cada arquivo. O `npm run empacotar` recusa gerar de novo uma
+versão que já está na saída com outro conteúdo: conteúdo novo pede número novo (`--substituir` só para uma pasta
 que nunca saiu da máquina).
 
-O `npm run check` gera o zip numa pasta temporária, copia a camada dele para um consumidor descartável e
-compila esse consumidor (requer `zip` e `unzip`; leva cerca de um minuto a mais). Ao mudar uma cor, atualize o
+O `npm run check` gera a pasta entregue numa pasta temporária, copia a camada dela para um consumidor
+descartável e compila esse consumidor (leva cerca de um minuto a mais). Ao mudar uma cor, atualize o
 `DESIGN.md` e, com rede, rode `npx @google/design.md lint DESIGN.md`.
 
 Requer Node 22 ou mais novo. O `npm run check` executa `footerText` de verdade: transpila `utils.ts` com o TypeScript do projeto, sem depender do TypeScript nativo do Node.

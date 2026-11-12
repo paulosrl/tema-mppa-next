@@ -17,7 +17,7 @@ const symbol = (
 export const demoConfig: ShellConfig = {
   brand: {
     name: "Template",
-    version: "1.12.0",
+    version: "1.12.1",
     versionYears: "2026",
     tagline: "Portal de Sistemas MPPA",
     homeHref: "/",
@@ -37,7 +37,7 @@ export const demoConfig: ShellConfig = {
     { id: "audit", label: "Auditoria & Segurança", href: "/administracao/auditoria", icon: ShieldCheck, tone: "violet", description: "Registros de acesso" },
   ],
   header: {
-    /* As três logos padrão dos sistemas (REPLICAR, 4.5), nesta ordem; os arquivos vão no zip, em public/. */
+    /* As três logos padrão dos sistemas (REPLICAR, 4.5), nesta ordem; os arquivos vão na pasta entregue, em public/. */
     logos: [
       { src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 },
       { src: "/ciia.png", alt: "CIIA", width: 244, height: 244 },

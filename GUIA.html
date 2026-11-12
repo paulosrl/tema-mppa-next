@@ -6,7 +6,7 @@
 <title>Guia do Tema MPPA</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
 <style>
-/* Guia do desenvolvedor que recebe o zip: duas escolhas no topo montam o roteiro do caso. Cores do tema MPPA. */
+/* Guia do desenvolvedor que recebe a pasta do modelo: duas escolhas no topo montam o roteiro do caso. Cores do tema MPPA. */
 :root {
   --bg: #f4f7fb;
   --card: #ffffff;
@@ -104,7 +104,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">tema-mppa-next 1.12.0 · guia do desenvolvedor</span>
+    <span class="eyebrow">tema-mppa-next 1.12.1 · guia do desenvolvedor</span>
     <h1>Guia do Tema MPPA</h1>
     <p class="lead">Leva a interface padrão dos sistemas do MPPA ao seu repositório com o Claude Code. Responda as duas perguntas: o guia monta os passos do seu caso, com o prompt pronto de cada um e o que você confere depois.</p>
   </header>
@@ -156,8 +156,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       <table>
         <thead><tr><th>Caminho no sistema</th><th>O que é</th><th>Você mexe?</th></tr></thead>
         <tbody>
-          <tr><td><code>tema-mppa-next-v1.12.0.zip</code> e <code>.zip.sha256</code></td><td>O pacote do modelo e a soma de conferência dele. Ficam fora do git.</td><td>Não</td></tr>
-          <tr><td><code>tema-mppa-next/</code></td><td>O zip descompactado, de onde você abriu este guia. O agente apaga na primeira entrega.</td><td>Não</td></tr>
+          <tr><td><code>tema-mppa-next/</code></td><td>A pasta do modelo, de onde você abriu este guia, copiada para a raiz do repositório. Fica fora do git; a cópia confere os arquivos dela e o agente a apaga na primeira entrega.</td><td>Não</td></tr>
           <tr><td><code>public/mppa-logo.png</code>, <code>public/ciia.png</code> e <code>public/ciia-sigla.svg</code></td><td>As três logos padrão do cabeçalho, gravadas pela cópia quando faltam. Uma que o sistema já tinha fica como está.</td><td>Não</td></tr>
           <tr><td><code>docs/tema-mppa/</code></td><td>Referência que fica no sistema: este guia (<code>docs/tema-mppa/GUIA.html</code>), o roteiro, o protótipo e os verificadores.</td><td>Não</td></tr>
           <tr><td><code>docs/tema-mppa/diagnostico.md</code></td><td>Só no sistema que já existe: o diagnóstico da Fase 0. Com OpenSpec ou outro processo, fica onde ele manda; o agente diz onde.</td><td><strong>Sim, item 12</strong></td></tr>
@@ -172,8 +171,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "1.12.0";
-  var ZIP = "tema-mppa-next-v" + VERSAO + ".zip";
+  var VERSAO = "1.12.1";
 
   // ---- Armazenamento (só neste navegador; a página funciona sem ele) ----
   var KEY = "tema-mppa-guia";
@@ -228,8 +226,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
     if (situacao === "zero") itens.push("Crie o repositório do sistema, ou use o vazio que já existe, com o git iniciado.");
     else itens.push("Confira que a <code>main</code> do sistema está limpa e funcionando.");
     if (situacao === "atualizar") itens.push("Se sobrou uma pasta <code>tema-mppa-next/</code> de uma versão anterior, apague-a.");
-    itens.push("Copie <code>" + ZIP + "</code> e a soma <code>" + ZIP + ".sha256</code> para a raiz do repositório. Confira a soma: <code>sha256sum -c " + ZIP + ".sha256</code> (no Windows, <code>Get-FileHash " + ZIP + "</code> e compare com o arquivo). Soma diferente: o zip não é o publicado; peça o certo.");
-    itens.push("Descompacte na raiz do repositório. Deve ficar a pasta <code>tema-mppa-next/</code>, de onde você abre este guia. O \u201cExtrair tudo\u201d do Windows sugere uma pasta com o nome do zip: tire o <code>tema-mppa-next-v" + VERSAO + "</code> do fim do destino, ou a pasta fica em <code>tema-mppa-next-v" + VERSAO + "/tema-mppa-next/</code>. Não faça commit dela nem do zip.");
+    itens.push("Copie a pasta <code>tema-mppa-next/</code> inteira, de onde você abriu este guia, para a raiz do repositório, sem editar nada nela: <code>cp -r &lt;onde ela está&gt;/tema-mppa-next &lt;raiz do repositório&gt;/</code> (no Windows, copie e cole a pasta). Num monorepo, é a raiz do repositório, não a do frontend. Não faça commit dela.");
     if (processo === "openspec") itens.push(situacao === "zero"
       ? "Confira que a ferramenta do OpenSpec está instalada na máquina (<code>openspec --version</code>). O agente inicializa o OpenSpec no repositório."
       : "Confira que o repositório tem a pasta <code>openspec/</code>.");
@@ -259,7 +256,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       "- trabalhe na branch feat/interface-tema-mppa, a menos que este repositório tenha outro padrão;",
       REGRAS[0], REGRAS[1],
       capturas("cada tela inicial"),
-      "- apague a pasta tema-mppa-next/ como o roteiro manda;",
+      "- apague a pasta tema-mppa-next/ logo depois da cópia, como a 4.1 manda;",
       COMMIT,
       "",
       PARADA,
@@ -316,7 +313,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
     "- crie o DESIGN.md do sistema (4.9);",
     REGRAS[1],
     capturas("as telas principais", "antes (main) e depois (branch)"),
-    "- apague a pasta tema-mppa-next/ como o roteiro manda;",
+    "- apague a pasta tema-mppa-next/ logo depois da cópia, como a 4.1 manda;",
     COMMIT, "", PARADA, "", relatorio()
   );
   var CORPO_FASE2 = linhas(
@@ -403,7 +400,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
   var CORPO_ATUALIZAR = linhas(
     COMO_ATUALIZAR, BRANCH, REGRAS[0], REGRAS[1],
     capturas("as telas principais", "na main e na branch, e compare; se o CHANGELOG não anuncia mudança de aparência, diferença visual é defeito: corrija ou relate"),
-    "- atualize a versão na seção \"Interface\" do AGENTS.md e apague a pasta tema-mppa-next/;",
+    "- apague a pasta tema-mppa-next/ logo depois da cópia, como a seção 7 manda, e atualize a versão na seção \"Interface\" do AGENTS.md;",
     COMMIT, "", PARADA, "", relatorio("quais contornos locais saíram, se houve diferença nas capturas")
   );
   var casoAtualizar = function (processo) {

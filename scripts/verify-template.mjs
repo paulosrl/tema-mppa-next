@@ -320,10 +320,10 @@ for (const tone of ["blue", "green", "violet", "orange", "teal", "pink", "amber"
   requireContrast("escuro", dark, `tone-${tone}-foreground`, `tone-${tone}`, 4.5);
 }
 
-// Roteiro do consumidor: versão em dia, fases, diagnóstico e verificadores no zip.
+// Roteiro do consumidor: versão em dia, fases, diagnóstico e verificadores na pasta entregue.
 const replicar = await read("REPLICAR.md");
 const diagnostico = await read("DIAGNOSTICO.md");
-for (const needle of [`tema-mppa-next-v${packageJson.version}.zip`, `## Interface (tema-mppa ${packageJson.version})`, "## 3. Fase 0: Diagnóstico", "verificar-camada.mjs", "verificar-design.mjs"]) {
+for (const needle of ["SHA256SUMS", `## Interface (tema-mppa ${packageJson.version})`, "## 3. Fase 0: Diagnóstico", "verificar-camada.mjs", "verificar-design.mjs"]) {
   if (!replicar.includes(needle)) errors.push(`REPLICAR.md sem "${needle}"`);
 }
 // Guia do desenvolvedor: na versão do modelo (nenhuma outra versão escrita) e com o prompt de cada fase.
@@ -331,7 +331,7 @@ const guia = await read("GUIA.html");
 for (const found of guia.replace(/placeholder="[^"]*"/g, "").match(/(?<![\w.#-])\d+\.\d+\.\d+(?![\w.])/g) ?? []) {
   if (found !== packageJson.version) errors.push(`GUIA.html cita a versão ${found}, esperado ${packageJson.version}`);
 }
-for (const needle of [`var VERSAO = "${packageJson.version}";`, `tema-mppa-next-v${packageJson.version}.zip`, 'value="zero"', 'value="existente"', 'value="atualizar"', 'value="openspec"', "Fase 0", "Fase 1", "Fase 2", "Fase 3", "seção 7", "seção 2.1", "Propor", "docs/tema-mppa/GUIA.html"]) {
+for (const needle of [`var VERSAO = "${packageJson.version}";`, "cp -r", 'value="zero"', 'value="existente"', 'value="atualizar"', 'value="openspec"', "Fase 0", "Fase 1", "Fase 2", "Fase 3", "seção 7", "seção 2.1", "Propor", "docs/tema-mppa/GUIA.html"]) {
   if (!guia.includes(needle)) errors.push(`GUIA.html sem "${needle}"`);
 }
 for (const heading of ["### 1.2 ", "### 2.1 ", "## 3. Fase 0: Diagnóstico", "### 4.9 ", "### 4.10 ", "## 7. Atualizar", "## 11. Registro"]) {
@@ -347,9 +347,9 @@ for (const needle of ["**Propor:**", "**Aplicar:**", "**Arquivar:**"]) {
   if (!section(replicar, "### 1.2 ").includes(needle)) errors.push(`REPLICAR 1.2 sem o passo ${needle}`);
 }
 const empacotar = await read("scripts/empacotar.mjs");
-const zipFiles = ["GUIA.html", "DIAGNOSTICO.md", "DESIGN.md", "CHANGELOG.md", "scripts/verificar-camada.mjs", "scripts/verificar-design.mjs", "scripts/copy-template.mjs", "public/mppa-logo.png", "public/ciia.png", "public/ciia-sigla.svg"];
-for (const file of zipFiles) {
-  if (!empacotar.includes(`"${file}"`)) errors.push(`empacotar.mjs não leva ${file} ao zip`);
+const packageFiles = ["GUIA.html", "DIAGNOSTICO.md", "DESIGN.md", "CHANGELOG.md", "scripts/verificar-camada.mjs", "scripts/verificar-design.mjs", "scripts/copy-template.mjs", "public/mppa-logo.png", "public/ciia.png", "public/ciia-sigla.svg"];
+for (const file of packageFiles) {
+  if (!empacotar.includes(`"${file}"`)) errors.push(`empacotar.mjs não leva ${file} à pasta entregue`);
 }
 
 /** Trecho de um .md da linha do título até o próximo título de mesmo nível ou acima. */
@@ -364,7 +364,7 @@ function section(markdown, heading) {
 /** Primeiro bloco ```tsx de um trecho. */
 const tsxBlock = (text) => text.match(/```tsx\n([\s\S]*?)\n```/)?.[1] ?? "";
 
-// A versão que o copy-template grava vem do primeiro título do CHANGELOG (o zip não leva o package.json).
+// A versão que o copy-template grava vem do primeiro título do CHANGELOG (a pasta entregue não leva o package.json).
 const firstRelease = changelog.match(/^## (\d+\.\d+\.\d+) /m)?.[1];
 if (firstRelease !== packageJson.version) errors.push(`CHANGELOG: o primeiro título é ${firstRelease ?? "ausente"}, esperado ${packageJson.version} (o copy-template lê a versão dali)`);
 if (!changelog.includes(`### Ao atualizar de `)) errors.push("CHANGELOG sem a seção \"Ao atualizar de\"");
@@ -530,8 +530,8 @@ try {
   }
 }
 
-// O zip de verdade: gerado numa pasta temporária, descompactado e copiado DE LÁ para um consumidor
-// descartável, que é compilado e servido.
+// A pasta entregue de verdade: gerada numa pasta temporária e copiada DE LÁ para um consumidor descartável,
+// que é compilado e servido.
 const work = await mkdtemp(path.join(os.tmpdir(), "tema-mppa-verify-"));
 const run = (file, args, options = {}) => {
   try {
@@ -545,46 +545,55 @@ const modeOf = async (file) => (await stat(file)).mode & 0o777;
 const hasShebang = async (file) => (await readFile(file)).subarray(0, 2).toString("utf8") === "#!";
 let server;
 try {
-  const zipDir = path.join(work, "zip");
-  await mkdir(zipDir);
-  execFileSync(process.execPath, [path.join(root, "scripts/empacotar.mjs"), zipDir], { stdio: "pipe" });
-  const zipPath = path.join(zipDir, `tema-mppa-next-v${packageJson.version}.zip`);
-  const zipOutput = (await readdir(zipDir)).sort();
-  const expectedOutput = [path.basename(zipPath), `${path.basename(zipPath)}.sha256`];
-  if (zipOutput.join() !== expectedOutput.join()) errors.push(`empacotar deve gerar o zip e a soma; gerou: ${zipOutput.join(", ")}`);
-  // Soma publicada igual à do zip; zip reprodutível; a mesma versão com outro conteúdo é recusada.
-  const { createHash } = await import("node:crypto");
-  const zipSum = () => readFile(zipPath).then((buffer) => createHash("sha256").update(buffer).digest("hex"));
-  const firstSum = await zipSum();
-  const sumLine = await readFile(`${zipPath}.sha256`, "utf8");
-  if (sumLine !== `${firstSum}  ${path.basename(zipPath)}\n`) errors.push(`soma publicada diferente da do zip: ${sumLine.trim()}`);
-  const again = run(path.join(root, "scripts/empacotar.mjs"), [zipDir]);
-  if (again.status !== 0 || (await zipSum()) !== firstSum) errors.push(`empacotar não é reprodutível: o mesmo conteúdo deu outro zip ${again.output ?? ""}`);
-  await writeFile(`${zipPath}.sha256`, `${"0".repeat(64)}  ${path.basename(zipPath)}\n`);
-  if (run(path.join(root, "scripts/empacotar.mjs"), [zipDir]).status === 0) errors.push("empacotar aceita a mesma versão com outra soma já publicada");
-  if (run(path.join(root, "scripts/empacotar.mjs"), [zipDir, "--substituir"]).status !== 0 || (await readFile(`${zipPath}.sha256`, "utf8")) !== sumLine) errors.push("empacotar --substituir não regravou a soma");
-
-  // Modo de cada entrada: 644, e 755 só para script com shebang.
-  const listing = execFileSync("unzip", ["-Z", zipPath], { encoding: "utf8" }).split("\n").filter((line) => /^[-d]r/.test(line));
-  const entries = new Map(listing.map((line) => [line.split(/\s+/).at(-1), line.split(/\s+/)[0]]));
-  for (const file of zipFiles) if (!entries.has(`tema-mppa-next/${file}`)) errors.push(`zip sem ${file}`);
-  if (entries.has("tema-mppa-next/package.json")) errors.push("zip não deve levar o package.json do modelo");
-  for (const [entry, mode] of entries) {
-    if (entry.endsWith("/")) continue;
-    const expectedMode = (await hasShebang(path.join(root, entry.replace(/^tema-mppa-next\//, "")))) ? "-rwxr-xr-x" : "-rw-r--r--";
-    if (mode !== expectedMode) errors.push(`zip: ${entry} com modo ${mode}, esperado ${expectedMode}`);
+  const outDir = path.join(work, "saida");
+  await mkdir(outDir);
+  const pack = run(path.join(root, "scripts/empacotar.mjs"), [outDir]);
+  if (pack.status !== 0) throw new Error(`empacotar falhou: ${pack.output}`);
+  const releaseName = `tema-mppa-next-v${packageJson.version}`;
+  const delivered = path.join(outDir, releaseName, "tema-mppa-next");
+  if ((await readdir(outDir)).join() !== releaseName || (await readdir(path.join(outDir, releaseName))).join() !== "tema-mppa-next") {
+    errors.push(`empacotar deve gerar só ${releaseName}/tema-mppa-next/`);
   }
+  // Conteúdo e modos: os arquivos do pacote, sem package.json, 644 e 755 só para script com shebang.
+  for (const file of packageFiles) if (!existsSync(path.join(delivered, file))) errors.push(`pasta entregue sem ${file}`);
+  if (existsSync(path.join(delivered, "package.json"))) errors.push("a pasta entregue não deve levar o package.json do modelo");
+  for (const file of await walk(delivered)) {
+    const expectedMode = (await hasShebang(file)) ? 0o755 : 0o644;
+    if ((await modeOf(file)) !== expectedMode) errors.push(`pasta entregue: ${path.relative(delivered, file)} com modo ${(await modeOf(file)).toString(8)}, esperado ${expectedMode.toString(8)}`);
+  }
+  // SHA256SUMS confere com cada arquivo e cobre todos.
+  const { createHash } = await import("node:crypto");
+  const sumsText = await readFile(path.join(delivered, "SHA256SUMS"), "utf8");
+  const listed = new Set();
+  for (const line of sumsText.split("\n").filter(Boolean)) {
+    const [sum, file] = [line.slice(0, 64), line.slice(66)];
+    listed.add(file);
+    if (createHash("sha256").update(await readFile(path.join(delivered, file))).digest("hex") !== sum) errors.push(`SHA256SUMS: soma errada de ${file}`);
+  }
+  for (const file of await walk(delivered)) {
+    const relative = path.relative(delivered, file).split(path.sep).join("/");
+    if (relative !== "SHA256SUMS" && !listed.has(relative)) errors.push(`SHA256SUMS sem ${relative}`);
+  }
+  // Mesma versão: mesmo conteúdo passa; outro conteúdo é recusado; --substituir regrava.
+  if (run(path.join(root, "scripts/empacotar.mjs"), [outDir]).status !== 0) errors.push("empacotar recusa gerar de novo a mesma versão com o mesmo conteúdo");
+  await writeFile(path.join(delivered, "SHA256SUMS"), sumsText.replace(/^[0-9a-f]{64}/, "0".repeat(64)));
+  if (run(path.join(root, "scripts/empacotar.mjs"), [outDir]).status === 0) errors.push("empacotar aceita a mesma versão com outro conteúdo");
+  if (run(path.join(root, "scripts/empacotar.mjs"), [outDir, "--substituir"]).status !== 0 || (await readFile(path.join(delivered, "SHA256SUMS"), "utf8")) !== sumsText) errors.push("empacotar --substituir não regravou a pasta");
 
-  const unzipped = path.join(work, "descompactado");
-  execFileSync("unzip", ["-q", zipPath, "-d", unzipped]);
   const consumer = path.join(work, "consumidor");
   await mkdir(consumer);
   await writeFile(path.join(consumer, "package.json"), '{ "name": "consumidor", "private": true }\n');
+  // Pasta editada no caminho: o copy-template para sem copiar nada.
+  const guide = path.join(delivered, "GUIA.html");
+  const guideText = await readFile(guide, "utf8");
+  await appendFile(guide, "<!-- editado -->\n");
+  if (run(path.join(delivered, "scripts/copy-template.mjs"), [consumer]).status === 0 || existsSync(path.join(consumer, "docs"))) errors.push("copy-template copia de uma pasta que não confere com o SHA256SUMS");
+  await writeFile(guide, guideText);
   // Uma logo do sistema com o nome de uma das padrão: o copy-template não pode substituí-la.
   await mkdir(path.join(consumer, "public"));
   await writeFile(path.join(consumer, "public/ciia.png"), "logo do sistema");
-  const copy = run(path.join(unzipped, "tema-mppa-next/scripts/copy-template.mjs"), [consumer]);
-  if (copy.status !== 0) throw new Error(`copy-template a partir do zip falhou: ${copy.output}`);
+  const copy = run(path.join(delivered, "scripts/copy-template.mjs"), [consumer]);
+  if (copy.status !== 0) throw new Error(`copy-template a partir da pasta entregue falhou: ${copy.output}`);
   if ((await readFile(path.join(consumer, "public/ciia.png"), "utf8")) !== "logo do sistema") errors.push("copy-template substituiu uma logo que o consumidor já tinha em public/");
   for (const name of ["mppa-logo.png", "ciia-sigla.svg"]) {
     const copied = path.join(consumer, "public", name);
@@ -687,7 +696,7 @@ try {
   await appendFile(path.join(consumer, "components/tema-mppa/utils.ts"), "// editado\n");
   if (run(verifier, []).status === 0) errors.push("verificar-camada aprova a camada editada");
 } catch (error) {
-  errors.push(`consumidor de teste a partir do zip: ${error.message}`);
+  errors.push(`consumidor de teste a partir da pasta entregue: ${error.message}`);
 } finally {
   server?.kill();
   await rm(work, { recursive: true, force: true });
@@ -715,11 +724,11 @@ console.log("- DIAGNOSTICO.md com lint, regras visuais, pares de cor antigos e c
 console.log("- camada sem versão escrita; script de tema em módulo sem \"use client\"; DESIGN.md do modelo igual ao CSS");
 console.log("- tema com o sessionStorage bloqueado ou cheio (executado): setTheme troca o tema; o script de tema deixa só \"light\"");
 console.log("- GUIA.html na versão: do zero, existente e atualização, com e sem OpenSpec");
-console.log("- empacotar: zip e .sha256, reprodutível, recusa a mesma versão com outro conteúdo");
+console.log("- empacotar: pasta tema-mppa-next/ com SHA256SUMS; recusa a mesma versão com outro conteúdo");
 console.log("- cabeçalho: logos a partir de 1024px (ou com a barra recolhida), título com prioridade, sigla CIIA decorativa");
 console.log("- copy-template: logos padrão gravadas em public/ sem substituir as do consumidor");
 console.log("- REPLICAR 2.1 (sistema do zero) nas versões do modelo; OpenSpec em propor, aplicar e arquivar (1.2)");
-console.log("- zip gerado, descompactado e copiado DE LÁ: sem package.json, modos 644/755, versão lida do CHANGELOG");
+console.log("- pasta gerada e copiada DE LÁ: sem package.json, modos 644/755, versão lida do CHANGELOG; pasta editada recusada");
 console.log("- consumidor de teste compilado com os exemplos da 4.4 e da 4.5: script de tema no HTML servido, texto no servidor, contrato no HTML");
 console.log("- verificar-design: DESIGN.md do sistema aprovado, cor trocada ou ausente reprovada");
 console.log("- verificar-camada: camada intacta aprovada, editada reprovada");

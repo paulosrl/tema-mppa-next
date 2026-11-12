@@ -9,7 +9,7 @@
 - Imagens opcionais devem desaparecer quando ausentes ou inválidas.
 - Mantenha tokens claro/escuro em `src/styles/tema-mppa.css` e não espalhe cores fixas no shell.
 - Garanta 390 px sem rolagem horizontal da página.
-- Antes de publicar: `npm run check`; se a aparência mudou, regere a prévia e as comparações (README, "Manter o modelo"); depois `npm run empacotar`, e entregue o zip com o `.sha256` ao lado. Conteúdo novo pede número novo: nunca dois zips diferentes com a mesma versão.
+- Antes de publicar: `npm run check`; se a aparência mudou, regere a prévia e as comparações (README, "Manter o modelo"); depois `npm run empacotar`, que gera a pasta `tema-mppa-next-v<versão>/tema-mppa-next/` (com `SHA256SUMS`) para o consumidor copiar. Conteúdo novo pede número novo: nunca duas entregas diferentes com a mesma versão.
 - `REPLICAR.md` é o roteiro do agente no consumidor, em fases (diagnóstico, casca, telas, limpeza, atualização, sistema do zero; com OpenSpec ou sem), `DIAGNOSTICO.md` é o formulário da Fase 0 e `GUIA.html` é o guia do desenvolvedor, com o prompt de cada fase: mantenha os três em dia com a API da camada, os tokens e os scripts de cópia e de conferência (`copy-template.mjs`, `verificar-camada.mjs`).
 - O que um consumidor relatar que o roteiro não previu (REPLICAR.md, seção 11) entra no modelo na versão seguinte.
 - O protótipo `docs/prototipo/index.html` manda em todo elemento gráfico, e a estética de 12 nov. 2026 (1.10.0) prevalece sobre ele em raio, sombra, cores e medidas: título só no cabeçalho.
@@ -23,7 +23,7 @@
   - botão de sair.
 
   Não volte ao avatar sozinho do protótipo.
-- Logos do cabeçalho, definidas em 12 nov. 2026 (1.12.0): três, nesta ordem, MPPA (132×76), CIIA (244×244) e a sigla CIIA (132×76, `alt=""`), em `public/` e no zip. O título tem prioridade de espaço (bloco de 128px no mínimo; a seção à frente só com 288px): as logos ficam no cabeçalho a partir de 1024px, ou desde 801px com a barra recolhida, e fora disso sob a marca (barra lateral ou menu móvel).
+- Logos do cabeçalho, definidas em 12 nov. 2026 (1.12.0): três, nesta ordem, MPPA (132×76), CIIA (244×244) e a sigla CIIA (132×76, `alt=""`), em `public/` e na pasta entregue. O título tem prioridade de espaço (bloco de 128px no mínimo; a seção à frente só com 288px): as logos ficam no cabeçalho a partir de 1024px, ou desde 801px com a barra recolhida, e fora disso sob a marca (barra lateral ou menu móvel).
 - Busca "Buscar na página", definida em 2026-11-11: fixa na barra lateral, logo acima do "Recolher", na largura da barra (só a lupa com a barra recolhida; no celular, no menu móvel). O diálogo vai para o `<body>` por portal. Não volte a busca para o cabeçalho.
 - Sem etiquetas de atalho na interface (pedido de 12 nov. 2026): nada de `Ctrl K`, `Ctrl B` ou outro `<kbd>` ao lado da lupa, do "Recolher" ou em qualquer ponto. Os atalhos `Ctrl+K` e `Ctrl+B` continuam funcionando e ficam só em `aria-keyshortcuts`.
 - Rodapé padrão dos sistemas, definido em 2026-11-10. O protótipo não tem rodapé; ele segue a página de exemplo do Heimdall e usa só tokens:

@@ -56,12 +56,32 @@ const logoFiles = ["mppa-logo.png", "ciia.png", "ciia-sigla.svg"];
 const manifestPath = path.join(referenceDir, "camada.json");
 const sha256 = async (file) => createHash("sha256").update(await readFile(file)).digest("hex");
 const toPosix = (file) => file.split(path.sep).join("/");
-// A versão vem do primeiro título do CHANGELOG ("## 1.6.0 — data"), que vai no zip; o package.json do
-// modelo não vai.
+// A versão vem do primeiro título do CHANGELOG ("## 1.6.0 — data"), que vai na pasta entregue; o
+// package.json do modelo não vai.
 const version = (await readFile(path.join(root, "CHANGELOG.md"), "utf8")).match(/^## (\d+\.\d+\.\d+) /m)?.[1];
 if (!version) {
   console.error(`Sem versão no CHANGELOG.md do modelo (${path.join(root, "CHANGELOG.md")}).`);
   process.exit(1);
+}
+
+// A pasta entregue traz SHA256SUMS (gerado pelo empacotar): antes de copiar, cada arquivo listado tem de existir
+// e ter a mesma soma. Pasta incompleta ou editada no caminho para; rodando do próprio modelo, sem SHA256SUMS,
+// não há o que conferir.
+const sumsPath = path.join(root, "SHA256SUMS");
+if (existsSync(sumsPath)) {
+  const wrong = [];
+  for (const line of (await readFile(sumsPath, "utf8")).split("\n").filter(Boolean)) {
+    const [expected, relative] = [line.slice(0, 64), line.slice(66)];
+    const file = path.join(root, relative);
+    if (!existsSync(file)) wrong.push(`${relative}: ausente`);
+    else if ((await sha256(file)) !== expected) wrong.push(`${relative}: difere do entregue`);
+  }
+  if (wrong.length) {
+    console.error(`A pasta ${root} não confere com o SHA256SUMS dela (versão ${version}); nada foi copiado:`);
+    for (const item of wrong) console.error(`- ${item}`);
+    console.error("Copie de novo a pasta tema-mppa-next/ inteira, sem editar, e rode outra vez.");
+    process.exit(3);
+  }
 }
 
 const comparisons = (await readdir(path.join(root, "docs/comparacao"))).filter((name) => name.endsWith(".png"));
@@ -120,7 +140,7 @@ if (existing.length && force) {
 }
 const updating = Boolean(backupRoot);
 
-// Modo fixo, sem herdar o da origem (um zip feito no Windows chega com 0777): 644, e 755 só para script
+// Modo fixo, sem herdar o da origem (uma pasta copiada do Windows chega com 0777): 644, e 755 só para script
 // com shebang. Num repositório que confere o modo pelo índice do git, nada vira executável por engano.
 async function startsWithShebang(file) {
   const handle = await open(file, "r");
@@ -154,7 +174,7 @@ for (const name of logoFiles) {
   const from = path.join(root, "public", name);
   const to = path.join(publicDir, name);
   if (!existsSync(from)) {
-    logoReport.push(`${name}: ausente do modelo (zip incompleto?)`);
+    logoReport.push(`${name}: ausente do modelo (pasta incompleta?)`);
   } else if (!existsSync(to)) {
     await cp(from, to);
     await chmod(to, 0o644);
@@ -195,7 +215,7 @@ console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version});
 console.log(`- conferência do DESIGN.md do sistema: node ${rel(path.join(referenceDir, "verificar-design.mjs"))} --css <CSS com os tokens próprios>`);
 console.log(
   updating
-    ? "Próximos passos (atualização): REPLICAR.md, seção 7, a partir do passo 4 (CHANGELOG, DESIGN.md, verificação de 4.10)."
-    : "Próximos passos: REPLICAR.md, Fase 1 (seção 4), a partir de 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).",
+    ? "Próximos passos (atualização): apague a pasta tema-mppa-next/ e siga o REPLICAR.md, seção 7, a partir do passo 4 (CHANGELOG, DESIGN.md, verificação de 4.10)."
+    : "Próximos passos: apague a pasta tema-mppa-next/ e siga o REPLICAR.md, Fase 1, a partir do fim da 4.1 (conferências do consumidor que a cópia aciona) e depois 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).",
 );
 console.log("Nenhum arquivo de autenticação, BFF, API, rota ou regra de negócio foi alterado.");

@@ -1,5 +1,44 @@
 # Changelog
 
+## 1.12.1 — 2026-11-12
+
+Pedido do autor em 12 nov. 2026: o modelo passa a ser entregue como a pasta `tema-mppa-next/`, que o
+desenvolvedor copia para a raiz do repositório, sem zip. A camada não muda: componentes, tokens e aparência iguais
+aos da 1.12.0. É correção de entrega e de documentação, por isso 1.12.1.
+
+### Modificado
+
+- **Entrega em pasta:** o `npm run empacotar` gera `tema-mppa-next-v<versão>/tema-mppa-next/` no lugar do zip.
+  Some o passo de descompactar, e com ele a pasta extra que o "Extrair tudo" do Windows criava.
+- **Conferência automática:** a pasta leva `SHA256SUMS`, com a soma de cada arquivo (formato do `sha256sum`), no
+  lugar do `.zip.sha256`. O `copy-template.mjs` confere a pasta contra ela antes de copiar e não copia nada se um
+  arquivo falta ou foi editado. O `empacotar` continua recusando gerar de novo uma versão com outro conteúdo.
+- **`REPLICAR.md`:**
+  - 1.3: a pasta do modelo, a conferência e onde ficam os caminhos citados;
+  - 2.1, 4.1 e 7: a pasta é apagada logo depois da cópia, antes da verificação (se ficasse, o `tsconfig` e o
+    ESLint compilariam uma segunda cópia da camada); numa atualização, a pasta antiga é apagada antes, e não
+    sobrescrita;
+  - 3: a pasta já copiada pelo desenvolvedor, fora do git desde a Fase 0;
+  - 4.1: `.gitignore` com `tema-mppa-next/` (a regra do backup, que vai para a pasta temporária desde a 1.10.1,
+    sai);
+  - 4.5 e 7: sem zip nem soma manual;
+  - 4.8: a seção à frente do título é decorativa;
+  - 10 (Caminho B): a referência levada à mão para `docs/tema-mppa/`.
+- **`copy-template.mjs`:** a mensagem final manda apagar a pasta e aponta o fim da 4.1 (conferências do
+  consumidor), que antes era pulado.
+- **`GUIA.html`:** o passo "Preparar" manda copiar a pasta inteira (`cp -r`), sem zip nem soma; os prompts
+  mandam apagar a pasta logo depois da cópia.
+- **`README.md` e `AGENTS.md`:** a entrega em pasta; o README lista o CHANGELOG e a licença no conteúdo dela.
+
+### Ao atualizar de 1.12.0
+
+1. Nada a mudar nas telas: a camada é a mesma. Para ter o roteiro novo em `docs/tema-mppa/`, copie a pasta
+   `tema-mppa-next/` para a raiz do repositório e rode
+   `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. As regras `tema-mppa-next-*.zip*` e `tema-mppa-next-v*/` do `.gitignore` podem ficar; só deixam de ser
+   necessárias.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.12.1.
+
 ## 1.12.0 — 2026-11-12
 
 O que o Heimdall relatou ao aplicar a 1.11.0 (`REPLICAR.md`, seção 11): passos que faltavam no roteiro e no
@@ -68,12 +107,14 @@ novo encerra a confusão das duas compilações da 1.11.0 (nota na 1.11.0): a 1.
 
 ### Ao atualizar de 1.11.0
 
-1. Confira a soma do zip (`sha256sum -c tema-mppa-next-v1.12.0.zip.sha256`; no Windows, `Get-FileHash`) e
-   capture as telas antes da cópia, em 640px, 801px, 900px, 1024px e 1280px, nos dois temas, com a barra aberta e
+A 1.12.0 não chegou a ser entregue: vá direto para a 1.12.1, que tem a mesma camada e chega como pasta, sem zip.
+Os passos abaixo valem com a pasta da 1.12.1.
+
+1. Capture as telas antes da cópia, em 640px, 801px, 900px, 1024px e 1280px, nos dois temas, com a barra aberta e
    recolhida (`REPLICAR.md`, 7.1).
-2. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
-   Se o zip foi descompactado com o "Extrair tudo" do Windows, o script está em
-   `tema-mppa-next-v1.12.0/tema-mppa-next/scripts/` (seção 1.3). A cópia grava em `public/` as logos que faltam. Se
+2. Copie a pasta `tema-mppa-next/` para a raiz do repositório e rode
+   `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7). A cópia
+   confere a pasta antes e grava em `public/` as logos que faltam. Se
    o sistema já criou a sua `public/ciia-sigla.svg` (como o Heimdall), ela fica: confira o aviso da cópia e, se
    ele disser que difere, troque-a pela do modelo.
 3. **Logos:** `header.logos` passa a ter três itens, nesta ordem (`REPLICAR.md`, 4.5): MPPA
@@ -97,8 +138,7 @@ novo encerra a confusão das duas compilações da 1.11.0 (nota na 1.11.0): a 1.
    e do cabeçalho) e confira com o `verificar-design.mjs`, que agora reprova sem `colors.card-border`.
 7. Se ao aplicar a 1.11.0 ficou alguma `className` que sobrepõe a borda do cartão, ou algum painel que imita o
    cartão com a borda antiga, faça os passos 3 e 4 revistos da 1.11.0.
-8. Acrescente `tema-mppa-next-v*/` ao `.gitignore` e troque a versão na seção "Interface" do `AGENTS.md` para
-   1.12.0.
+8. Troque a versão na seção "Interface" do `AGENTS.md` para 1.12.0 (ou direto para a 1.12.1).
 
 ## 1.11.0 — 2026-11-12
 
@@ -133,8 +173,7 @@ na demonstração.
 ### Ao atualizar de 1.10.2
 
 1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
-   O zip descompacta numa pasta `tema-mppa-next/`; o "Extrair tudo" do Windows a põe dentro de
-   `tema-mppa-next-v<versão>/` (`REPLICAR.md`, 1.3): use o caminho real.
+   A pasta `tema-mppa-next/` fica na raiz do repositório (`REPLICAR.md`, 1.3).
 2. Refaça o `DESIGN.md` do sistema a partir do novo e confira com o `verificar-design.mjs`.
 3. Testes:
    - teste que meça 268px na barra lateral passa a 304px;
@@ -151,7 +190,7 @@ na demonstração.
      `border-border` nas `className` passadas a `Card`, `PanelCard`, `LinkCard`, `InfoField` e `DataTable`
      (`grep -rn "border-border" <pasta das telas>`) e tire a sobreposição.
 5. **Logos:** `header.logos` passa a ter três itens, nesta ordem (`REPLICAR.md`, 4.5): MPPA (132×76), CIIA
-   (244×244) e a sigla CIIA (132×76, `alt=""`). Os arquivos vêm no zip a partir da 1.12.0.
+   (244×244) e a sigla CIIA (132×76, `alt=""`). Os arquivos vêm na pasta do modelo a partir da 1.12.0.
 6. Os outros nomes da demonstração ("Minha Página", "Meus acessos") são só exemplo: o sistema mantém o seu
    `platformLabel` e os seus itens.
 7. Troque a versão na seção "Interface" do `AGENTS.md` para 1.11.0.

@@ -94,13 +94,18 @@ Em conflito sobre **o padrão visual**, não decida: leve ao desenvolvedor no di
 
 A **raiz do consumidor** é a pasta do `package.json` do frontend. Num monorepo, é a subpasta do frontend (por
 exemplo, `apps/meu-app/frontend`). Todo caminho deste guia sem prefixo (`components/`, `styles/`,
-`docs/tema-mppa/`, `app/`) é relativo a ela. O zip e a pasta descompactada ficam na raiz do repositório.
+`docs/tema-mppa/`, `app/`) é relativo a ela.
 
-**Nome da pasta descompactada.** O zip traz uma pasta só, `tema-mppa-next/`, e este guia a chama assim:
-`unzip tema-mppa-next-v1.12.0.zip` na raiz do repositório cria `tema-mppa-next/`. O "Extrair tudo" do Windows
-cria antes uma pasta com o nome do zip, e o modelo fica em `tema-mppa-next-v1.12.0/tema-mppa-next/`. Nesse caso,
-mova a pasta de dentro para a raiz do repositório ou troque `tema-mppa-next/` pelo caminho real em cada comando.
-Na dúvida, é a pasta que tem `scripts/copy-template.mjs`.
+**A pasta do modelo.** O modelo chega como a pasta `tema-mppa-next/`, que o desenvolvedor copia inteira para a
+raiz do repositório (não para a do frontend, num monorepo). Este guia a chama assim; se ela estiver em outro
+lugar, troque `tema-mppa-next/` pelo caminho real em cada comando (é a pasta que tem `scripts/copy-template.mjs`).
+Dentro dela, `SHA256SUMS` lista a soma de cada arquivo: o `copy-template.mjs` confere a pasta antes de copiar e
+para se ela veio incompleta ou editada.
+
+Caminhos do modelo citados sem prefixo (`src/…`, `scripts/…`, `docs/prototipo/`, `docs/preview/`,
+`docs/comparacao/`) são os de dentro de `tema-mppa-next/`. Depois da cópia (4.1), a referência fica no consumidor
+em `docs/tema-mppa/` (`docs/tema-mppa/prototipo/index.html`, `docs/tema-mppa/preview/index.html`,
+`docs/tema-mppa/comparacao/`).
 
 ## 2. Conferir a stack
 
@@ -145,15 +150,14 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
    comentário dizendo que ela sai quando o sistema tiver autenticação. O botão de sair não faz nada até lá.
 5. **Telas iniciais:** uma rota por tela, cada uma com `PageFrame` e uma frase que diga para que ela serve,
    só com os primitivos (seção 5). Sem dados inventados, sem API e sem regra de negócio.
-6. **Verificação e registro:** rode a 4.10 (o item 7 não se aplica), registre no `AGENTS.md` (seção 11),
-   apague a pasta descompactada e faça o commit.
+6. **Verificação e registro:** confira que a pasta `tema-mppa-next/` já foi apagada (4.1), rode a 4.10 (o item 7
+   não se aplica), registre no `AGENTS.md` (seção 11) e faça o commit.
 
 ## 3. Fase 0: Diagnóstico
 
-1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
-   (`unzip tema-mppa-next-v1.12.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`;
-   se ele usou o "Extrair tudo" do Windows, a pasta está em `tema-mppa-next-v1.12.0/tema-mppa-next/` (seção 1.3).
-   Não faça commit dela.
+1. Confira que a pasta `tema-mppa-next/` está na raiz do repositório (seção 1.3); o desenvolvedor a copia antes,
+   para abrir o `GUIA.html`. Se ela não estiver lá, pare e peça-a. Ela nunca vai ao git: não use `git add -A`
+   nem `git add .` enquanto ela existir (o `.gitignore` só a exclui a partir da 4.1).
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
 3. Entregue ao desenvolvedor um resumo curto: o caminho (A ou B), o que a Fase 1 muda e, um por um, os
@@ -163,9 +167,8 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 
 ### 4.1 Preparar e copiar
 
-Acrescente ao `.gitignore` do repositório `tema-mppa-next/`, `tema-mppa-next-v*/` (a pasta que o "Extrair tudo"
-do Windows cria), `tema-mppa-next-*.zip*`, `.tema-mppa-backup-*/` e, se não estiver lá, `*.tsbuildinfo`. Da raiz
-do repositório (com o caminho real da pasta, se ela não for `tema-mppa-next/`; seção 1.3):
+Acrescente ao `.gitignore` do repositório a linha `tema-mppa-next/` e, se não estiver lá, `*.tsbuildinfo`. Da
+raiz do repositório:
 
 ```bash
 node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor>   # "." se o frontend estiver na raiz
@@ -194,13 +197,15 @@ sistema difere da do modelo. Faça o commit delas com a Fase 1.
 Se a camada já existir, ele para; rode de novo com `--force`, que faz backup antes de substituir (na pasta
 temporária do sistema, fora do consumidor, para lint e testes não acharem a camada antiga; o caminho sai no fim). A camada só
 usa imports relativos: não depende do alias `@/`. Os arquivos saem com modo 644, e 755 só os scripts com
-shebang (`verificar-camada.mjs`, `verificar-design.mjs`), seja qual for o modo que o zip trouxe.
+shebang (`verificar-camada.mjs`, `verificar-design.mjs`), seja qual for o modo que a pasta trouxe.
 
-Logo depois da cópia, **apague a pasta descompactada `tema-mppa-next/`** (e a `tema-mppa-next-v*/` em volta
-dela, se o Windows a criou): tudo o que o consumidor precisa já está em `components/`, `styles/`, `public/` e
-`docs/tema-mppa/`. Se ela ficar, o `tsconfig` e o ESLint do consumidor
-compilam uma segunda cópia da camada. O zip é do usuário: deixe-o (o `.gitignore` já o exclui) e diga que
-pode ser apagado. O comentário do `index.ts` copiado cita `docs/prototipo/index.html`; no consumidor, o
+Antes de copiar, o script confere a pasta `tema-mppa-next/` contra o `SHA256SUMS` dela. Se apontar arquivo
+ausente ou diferente, ele não copia nada: a pasta veio incompleta ou editada. Pare e peça ao desenvolvedor que a
+copie de novo, inteira.
+
+Logo depois da cópia, **apague a pasta `tema-mppa-next/`**: tudo o que o consumidor precisa já está em
+`components/`, `styles/`, `public/` e `docs/tema-mppa/`. Se ela ficar, o `tsconfig` e o ESLint do consumidor
+compilam uma segunda cópia da camada. O comentário do `index.ts` copiado cita `docs/prototipo/index.html`; no consumidor, o
 arquivo está em `docs/tema-mppa/prototipo/index.html`.
 
 **Não edite os arquivos copiados.** O que é de cada sistema entra por configuração e propriedades. Se a
@@ -351,7 +356,7 @@ Regras para preencher:
   2. CIIA: `{ src: "/ciia.png", alt: "CIIA", width: 244, height: 244 }`;
   3. a sigla "CIIA", num espaço do tamanho da primeira: `{ src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 }`.
 
-  Os arquivos vêm no zip, em `tema-mppa-next/public/`, e o `copy-template.mjs` os grava no `public/` do
+  Os arquivos vêm na pasta do modelo, em `tema-mppa-next/public/`, e o `copy-template.mjs` os grava no `public/` do
   consumidor (4.1). A sigla tem `alt=""` (decorativa): com `alt="CIIA"`, o leitor de tela leria "CIIA, CIIA". A
   sigla é um SVG de 132×76: fundo `#fff`, texto "CIIA" em `#1a237e`, Arial 46px, negrito, centralizado em
   `y=55`. Se o sistema já tinha outras logos, é conflito do diagnóstico (item 12): o desenvolvedor decide. Na
@@ -482,7 +487,7 @@ casca antiga típica:
 | Barra recolhida | atributo `data-tm-sidebar="collapsed"` (ou `"expanded"`) no `<html>`; botão "Recolher menu lateral" / "Expandir menu lateral" com `aria-expanded` | teste que lia `data-state` da barra antiga |
 | Alternador de tema | botão com aria-label "Tema: Claro. Alterar para Escuro"; ciclo claro → escuro → sistema | teste que procurava "Ativar tema escuro" ou alternava só entre claro e escuro |
 | Barra lateral | `aside` com aria-label "Navegação principal"; abas com aria-label "Seções do menu" | seletor da `nav` ou da `aside` antigas |
-| Título | um `h1` dentro do `header` (papel `banner`), sem trilha (breadcrumb) | teste que procurava o título no conteúdo ou a trilha |
+| Título | um `h1` dentro do `header` (papel `banner`), sem trilha navegável; a seção à frente dele é decorativa (`aria-hidden`) | teste que procurava o título no conteúdo ou a trilha |
 | Abas | na aba Plataforma, os links administrativos não ficam no DOM | teste que clicava num link administrativo a partir do dashboard: abra antes a aba Administração |
 | Menu móvel | é a própria `aside`, fechada por translação (`-translate-x-full`); botão "Abrir menu lateral" | o Playwright a considera "visível" mesmo fechada: confira a posição (`boundingBox`) ou a classe, não `toBeVisible` |
 | Busca | botão "Abrir busca" e diálogo "Busca e navegação" | seletor da busca antiga |
@@ -638,13 +643,13 @@ Quando nenhuma tela usar mais o visual antigo:
 1. `node docs/tema-mppa/verificar-camada.mjs`: se apontar arquivo editado, entenda a edição antes de seguir;
    ela será perdida (vai para o backup).
 2. **Antes da cópia, capture as telas** (receita em 7.1), se a versão nova anuncia mudança de aparência.
-3. Confira a soma do zip com a publicada ao lado dele, em `tema-mppa-next-v<versão>.zip.sha256`
-   (`sha256sum -c tema-mppa-next-v<versão>.zip.sha256`; no Windows, `Get-FileHash` e compare). Soma diferente: o
-   zip não é o publicado; pare e peça o certo. Sem o `.sha256`, calcule a soma, registre-a e diga ao usuário que
-   não houve com o que comparar. Descompacte o zip (nome da pasta: seção 1.3) e rode
-   `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`. O script lista os arquivos que
-   estavam editados, guarda o backup fora do consumidor, grava as logos que faltam em `public/` e a lista de
-   conferência da versão nova.
+3. Com a pasta nova `tema-mppa-next/` na raiz do repositório (seção 1.3; se sobrou uma de versão anterior, ela
+   precisa ter sido apagada antes, e não sobrescrita: arquivos velhos ficariam misturados), rode
+   `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`. O script confere a pasta contra
+   o `SHA256SUMS` dela e para se ela veio incompleta ou editada; depois lista os arquivos da camada que estavam
+   editados, guarda o backup fora do consumidor, grava as logos que faltam em `public/` e a lista de conferência
+   da versão nova. **Logo em seguida, apague a pasta `tema-mppa-next/`** (4.1): daqui em diante, tudo é lido em
+   `docs/tema-mppa/`.
 4. Leia o `docs/tema-mppa/CHANGELOG.md` da versão anterior até a nova e faça o que a seção "Ao atualizar de"
    de cada versão pede ao consumidor (configuração nova, propriedade que saiu). **Saltando várias versões**, a
    cópia é uma só, com a versão final; os passos de cada "Ao atualizar de" se somam, e os que mandam copiar
@@ -653,7 +658,7 @@ Quando nenhuma tela usar mais o visual antigo:
    próprios do sistema por cima. Reaplicar as diferenças antigas (patch) falha quando a prosa da camada muda.
    Confira com o `verificar-design.mjs`, que precisa aprovar sem diferença.
 6. Rode a verificação de 4.10, capture as telas de novo e compare (7.1), atualize a versão na seção
-   "Interface" do `AGENTS.md` e apague a pasta descompactada.
+   "Interface" do `AGENTS.md`.
 
 ### 7.1 Pontos que costumam quebrar numa atualização
 
@@ -828,7 +833,10 @@ Medidas:
 ## 10. Caminho B: portar para outra stack
 
 Os valores não mudam; só a forma. As fases são as mesmas; muda só a Fase 1, em que você recria a camada em
-vez de copiá-la (e não há `verificar-camada.mjs`).
+vez de copiá-la (e não há `verificar-camada.mjs`). Sem a cópia, a referência não chega a `docs/tema-mppa/`: copie
+para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `CHANGELOG.md`, este guia e os
+`docs/prototipo/`, `docs/preview/` e `docs/comparacao/` da pasta `tema-mppa-next/`, antes de apagá-la; a 4.9 e a
+4.10 os usam. O `verificar-design.mjs` precisa de `--css` com o CSS dos tokens, porque não há `camada.json`.
 
 - **Cores:** copie os blocos `:root` e `.dark` de `src/styles/tema-mppa.css` como estão.
   - Tailwind 4: copie também o `@theme inline`.
@@ -843,14 +851,14 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
 
 ## 11. Registro e retorno ao modelo
 
-1. Confira que a pasta descompactada `tema-mppa-next/` já foi apagada (seção 4.1). A referência fica em
+1. Confira que a pasta `tema-mppa-next/` já foi apagada (seção 4.1). A referência fica em
    `docs/tema-mppa/`.
 2. Na Fase 1, acrescente ao `AGENTS.md` do consumidor; se ele não existir, crie-o. Se houver `CLAUDE.md` que
    não aponte para o `AGENTS.md`, ponha lá também. Troque `<pasta>` pelos caminhos reais (por exemplo,
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.12.0)
+## Interface (tema-mppa 1.12.1)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

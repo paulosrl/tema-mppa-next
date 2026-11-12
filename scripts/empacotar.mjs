@@ -1,24 +1,22 @@
 #!/usr/bin/env node
 /*
- * Gera o zip entregue aos codebases consumidores, só com o que o desenvolvedor e o agente de lá usam:
+ * Gera a pasta entregue aos codebases consumidores, só com o que o desenvolvedor e o agente de lá usam:
  * o guia do desenvolvedor (GUIA.html), o roteiro do agente (REPLICAR.md), o formulário do diagnóstico, o
- * DESIGN.md da camada, a camada visual, as cores, os scripts de cópia e de conferência (da camada e do
- * DESIGN.md) e a referência visual.
- * Cada entrada sai com modo fixo: 644, e 755 só para script com shebang, seja qual for o modo na pasta.
+ * DESIGN.md da camada, a camada visual, as cores, as logos padrão, os scripts de cópia e de conferência (da
+ * camada e do DESIGN.md) e a referência visual.
+ * Cada arquivo sai com modo fixo: 644, e 755 só para script com shebang, seja qual for o modo no modelo.
  * A demonstração Next.js e as ferramentas de manutenção ficam fora.
  *
  * Uso: npm run empacotar [-- pasta-de-saida] [-- --substituir]   (padrão: a pasta acima do modelo)
- * Gera tema-mppa-next-v<versão>.zip e, ao lado, a soma tema-mppa-next-v<versão>.zip.sha256 (formato do
- * `sha256sum`). Requer o comando `zip`.
+ * Gera <saída>/tema-mppa-next-v<versão>/tema-mppa-next/, a pasta que o desenvolvedor copia para a raiz do
+ * repositório. Dentro dela, SHA256SUMS (formato do `sha256sum`) lista a soma de cada arquivo; o
+ * copy-template.mjs confere a pasta contra ela antes de copiar.
  *
- * O zip é reprodutível: mesmo conteúdo, mesma soma (data fixa em cada entrada, a do título da versão no
- * CHANGELOG, e ordem fixa). Uma versão não sai duas vezes com conteúdo diferente: se a pasta de saída já tem a
- * soma desta versão e o zip novo difere, o script para; suba a versão, ou passe --substituir se aquele zip
- * nunca saiu desta máquina.
+ * Uma versão não sai duas vezes com conteúdo diferente: se a saída já tem a pasta desta versão e as somas
+ * diferem, o script para; suba a versão, ou passe --substituir se aquela pasta nunca saiu desta máquina.
  */
-import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, utimesSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,15 +26,13 @@ const { version } = JSON.parse(readFileSync(path.join(root, "package.json"), "ut
 const args = process.argv.slice(2);
 const replace = args.includes("--substituir");
 const outputDir = path.resolve(args.find((arg) => !arg.startsWith("--")) ?? path.dirname(root));
-const zipName = `tema-mppa-next-v${version}.zip`;
-const zipPath = path.join(outputDir, zipName);
-const sumPath = `${zipPath}.sha256`;
+const releaseDir = path.join(outputDir, `tema-mppa-next-v${version}`);
+const packageDir = path.join(releaseDir, "tema-mppa-next");
 
-// Data de cada entrada: meio-dia (UTC) do dia da versão, tirado do primeiro título do CHANGELOG.
 const changelog = readFileSync(path.join(root, "CHANGELOG.md"), "utf8");
-const release = changelog.match(/^## (\d+\.\d+\.\d+) — (\d{4}-\d{2}-\d{2})/m);
-if (release?.[1] !== version) throw new Error(`O primeiro título do CHANGELOG deve ser "## ${version} — AAAA-MM-DD".`);
-const entryDate = new Date(`${release[2]}T12:00:00Z`);
+if (changelog.match(/^## (\d+\.\d+\.\d+) /m)?.[1] !== version) {
+  throw new Error(`O primeiro título do CHANGELOG deve ser "## ${version} — AAAA-MM-DD" (o copy-template lê a versão dali).`);
+}
 
 const files = [
   "GUIA.html",
@@ -66,39 +62,37 @@ for (const file of files) {
   if (!existsSync(path.join(root, file))) throw new Error(`Arquivo ausente: ${file}`);
 }
 
-// Preparo numa pasta temporária com a pasta raiz "tema-mppa-next/", o modo e a data de cada arquivo fixados.
-// O zip nasce na pasta temporária e só vai para a saída depois de conferido contra a soma já publicada.
-const staging = mkdtempSync(path.join(os.tmpdir(), "tema-mppa-zip-"));
-let sum;
+const sha256 = (file) => createHash("sha256").update(readFileSync(file)).digest("hex");
+const sums = `${files.map((file) => `${sha256(path.join(root, file))}  ${file}`).join("\n")}\n`;
+
+// Mesma versão já gerada: só segue se o conteúdo for o mesmo (ou com --substituir).
+const previousSums = path.join(packageDir, "SHA256SUMS");
+if (existsSync(releaseDir) && !replace) {
+  if (!existsSync(previousSums) || readFileSync(previousSums, "utf8") !== sums) {
+    throw new Error(
+      `${releaseDir} já existe com outro conteúdo: a versão ${version} já foi gerada diferente. ` +
+        "Suba a versão (package.json, CHANGELOG e documentos) ou, se aquela pasta nunca saiu desta máquina, rode de novo com --substituir.",
+    );
+  }
+}
+
+// Monta numa pasta temporária, com o modo de cada arquivo fixado, e só então troca a da saída.
+const staging = mkdtempSync(path.join(os.tmpdir(), "tema-mppa-pasta-"));
 try {
+  const draft = path.join(staging, "tema-mppa-next");
   for (const file of files) {
-    const to = path.join(staging, "tema-mppa-next", file);
+    const to = path.join(draft, file);
     mkdirSync(path.dirname(to), { recursive: true });
     copyFileSync(path.join(root, file), to);
     chmodSync(to, readFileSync(to).subarray(0, 2).toString("utf8") === "#!" ? 0o755 : 0o644);
-    utimesSync(to, entryDate, entryDate);
   }
-  const draft = path.join(staging, zipName);
-  execFileSync("zip", ["-q", "-X", "-D", draft, ...files.map((file) => path.join("tema-mppa-next", file))], {
-    cwd: staging,
-    env: { ...process.env, TZ: "UTC" },
-  });
-  sum = createHash("sha256").update(readFileSync(draft)).digest("hex");
-  const published = existsSync(sumPath) ? readFileSync(sumPath, "utf8").split(/\s+/)[0] : null;
-  if (published && published !== sum && !replace) {
-    throw new Error(
-      `${path.basename(sumPath)} já existe com outra soma (${published}): a versão ${version} já foi empacotada com outro conteúdo. ` +
-        "Suba a versão (package.json, CHANGELOG e documentos) ou, se aquele zip nunca saiu desta máquina, rode de novo com --substituir.",
-    );
-  }
-  mkdirSync(outputDir, { recursive: true });
-  rmSync(zipPath, { force: true });
-  copyFileSync(draft, `${zipPath}.tmp`);
-  renameSync(`${zipPath}.tmp`, zipPath);
-  writeFileSync(sumPath, `${sum}  ${zipName}\n`);
+  writeFileSync(path.join(draft, "SHA256SUMS"), sums, { mode: 0o644 });
+  rmSync(releaseDir, { recursive: true, force: true });
+  mkdirSync(releaseDir, { recursive: true });
+  cpSync(draft, packageDir, { recursive: true });
 } finally {
   rmSync(staging, { recursive: true, force: true });
 }
 
-console.log(`${zipPath} (${files.length} arquivos)`);
-console.log(`SHA-256 ${sum} (em ${path.basename(sumPath)})`);
+console.log(`${packageDir}/ (${files.length} arquivos e SHA256SUMS)`);
+console.log("Copie a pasta tema-mppa-next/ para a raiz do repositório consumidor.");
