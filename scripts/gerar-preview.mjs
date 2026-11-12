@@ -10,7 +10,7 @@
  *   PLAYWRIGHT_CORE=/caminho/node_modules/playwright-core/index.mjs node scripts/gerar-preview.mjs [saida.html]
  * Variáveis: BASE_URL (padrão http://localhost:3123) e CHROMIUM (executável do Chromium).
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 // playwright-core não é dependência do modelo: instale-o fora e aponte PLAYWRIGHT_CORE para ele.
@@ -20,9 +20,15 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const { version } = JSON.parse(readFileSync(path.join(here, "../package.json"), "utf8"));
 const output = process.argv[2] ?? path.join(here, "../docs/preview/index.html");
 const base = process.env.BASE_URL ?? "http://localhost:3123";
-const exe =
-  process.env.CHROMIUM ??
-  `${process.env.HOME}/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell`;
+// Chromium: CHROMIUM, ou o headless shell mais novo que o Playwright instalou em ~/.cache/ms-playwright.
+function newestHeadlessShell() {
+  const cache = `${process.env.HOME}/.cache/ms-playwright`;
+  const revision = (name) => Number(name.split("-").at(-1));
+  const latest = (existsSync(cache) ? readdirSync(cache) : []).filter((name) => /^chromium_headless_shell-\d+$/.test(name)).sort((a, b) => revision(b) - revision(a))[0];
+  if (!latest) throw new Error("Sem Chromium do Playwright: rode `npx playwright install chromium` ou aponte CHROMIUM para um executável.");
+  return `${cache}/${latest}/chrome-headless-shell-linux64/chrome-headless-shell`;
+}
+const exe = process.env.CHROMIUM ?? newestHeadlessShell();
 
 const browser = await chromium.launch({ executablePath: exe });
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
