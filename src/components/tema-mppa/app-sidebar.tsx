@@ -6,10 +6,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isValidElement, Suspense, useState } from "react";
 import { Button } from "./button";
+import { CommandPalette } from "./command-palette";
 import { ImageSlot } from "./image-slot";
 import { SectionIcon } from "./section-icon";
 import { useCollapsedAttribute, useSidebar } from "./sidebar-context";
-import type { ImageAsset, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
+import type { AppShellProps, ImageAsset, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
 import { canSeeAdministration, cn, currentNavigationItem, visibleNavigation } from "./utils";
 
 function isImageAsset(value: ShellConfig["brand"]["symbol"]): value is ImageAsset {
@@ -74,7 +75,7 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
             title={collapsed ? item.label : undefined}
             onClick={() => setMobileOpen(false)}
             className={cn(
-              "flex items-center gap-2.5 rounded-lg px-2 py-[7px] text-[13px] font-semibold text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring desk:tm-collapsed:justify-center desk:tm-collapsed:px-0",
+              "group flex items-center gap-2.5 rounded-lg px-2 py-[7px] text-[13px] font-semibold text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring desk:tm-collapsed:justify-center desk:tm-collapsed:px-0",
               active && "bg-highlight text-highlight-foreground shadow-surface hover:bg-highlight",
             )}
           >
@@ -88,7 +89,7 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
 }
 
 const tabClass =
-  "flex h-8 items-center justify-center rounded-md px-2 text-[13px] font-[650] text-sidebar-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[active]:bg-highlight data-[active]:text-highlight-foreground data-[active]:shadow-surface";
+  "flex h-8 items-center justify-center rounded-md px-2 text-[13px] font-[650] text-sidebar-foreground outline-none transition-[color,background-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[active]:bg-highlight data-[active]:text-highlight-foreground data-[active]:shadow-surface data-[active]:ring-1 data-[active]:ring-border/50";
 
 function SidebarBody({ config, session }: { config: ShellConfig; session: ShellSession | null }) {
   const pathname = usePathname();
@@ -148,7 +149,15 @@ function SidebarBodyFallback({ config }: { config: ShellConfig }) {
   );
 }
 
-export function AppSidebar({ config, session }: { config: ShellConfig; session: ShellSession | null }) {
+export function AppSidebar({
+  config,
+  session,
+  renderSearch,
+}: {
+  config: ShellConfig;
+  session: ShellSession | null;
+  renderSearch?: AppShellProps["renderSearch"];
+}) {
   const { collapsed, mobileOpen, toggleCollapsed, setMobileOpen } = useSidebar();
   return (
     <>
@@ -172,6 +181,10 @@ export function AppSidebar({ config, session }: { config: ShellConfig; session: 
         <Suspense fallback={<SidebarBodyFallback config={config} />}>
           <SidebarBody config={config} session={session} />
         </Suspense>
+        {/* Busca fixa acima do "Recolher": não rola com o menu. */}
+        <div className="flex shrink-0 justify-center border-t border-sidebar-border p-2.5">
+          <CommandPalette config={config} session={session} renderSearch={renderSearch} />
+        </div>
         <div className="flex h-(--shell-bar) shrink-0 items-center justify-between gap-2 border-t border-sidebar-border px-2.5 desk:tm-collapsed:justify-center">
           <span className={cn("truncate text-sm font-bold text-sidebar-foreground", hideWhenCollapsed)}>
             {config.sidebarShortcutLabel ?? "Recolher"}

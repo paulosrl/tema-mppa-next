@@ -18,8 +18,8 @@ function toneClass(tone: string | undefined) {
 }
 
 /**
- * Ícone de seção: 28px no menu (`md`), 24px no título do cabeçalho (`sm`); raio 6px, fundo pastel do tom.
- * Sem `tone`, o tom é azul (o vermelho fica reservado ao que tem significado institucional).
+ * Ícone de seção: 28px no menu (`md`), 24px no título do cabeçalho (`sm`); raio 6px (`rounded-md`),
+ * acabamento duotone vetorial e anel interno sutil para máximo contraste nos temas claro e escuro.
  */
 export function SectionIcon({
   icon: Icon,
@@ -36,7 +36,7 @@ export function SectionIcon({
     <span
       aria-hidden="true"
       className={cn(
-        "inline-flex shrink-0 items-center justify-center rounded-md",
+        "inline-flex shrink-0 items-center justify-center rounded-md ring-1 ring-inset ring-current/15 transition-transform duration-200 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100 [&_svg]:fill-current/15",
         size === "sm" ? "size-6" : "size-7",
         tones.blue,
         toneClass(tone),

@@ -8,15 +8,15 @@
 <style>
 /* Guia do desenvolvedor que recebe o zip: duas escolhas no topo montam o roteiro do caso. Cores do tema MPPA. */
 :root {
-  --bg: #ffffff;
-  --card: #fafafa;
-  --fg: #18181b;
-  --muted: #f4f4f5;
-  --border: #d4d4d8;
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --fg: #0f172a;
+  --muted: #f1f5f9;
+  --border: #e2e8f0;
   --primary: #0842a1;
   --primary-fg: #ffffff;
-  --highlight: #dbeafe;
-  --shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+  --highlight: #ecf4fe;
+  --shadow: 0 1px 3px rgba(9, 9, 11, 0.06), 0 4px 12px -2px rgba(9, 9, 11, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
   --font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, monospace;
   --radius: 8px;
@@ -31,8 +31,8 @@
     --border: rgba(255, 255, 255, 0.12);
     --primary: #61a6fa;
     --primary-fg: #080c16;
-    --highlight: #12264a;
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+    --highlight: #1c3b73;
+    --shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
     color-scheme: dark;
   }
 }
@@ -104,7 +104,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">tema-mppa-next 1.8.0 · guia do desenvolvedor</span>
+    <span class="eyebrow">tema-mppa-next 1.9.0 · guia do desenvolvedor</span>
     <h1>Guia do Tema MPPA</h1>
     <p class="lead">Leva a interface padrão dos sistemas do MPPA ao seu repositório com o Claude Code. Responda as duas perguntas: o guia monta os passos do seu caso, com o prompt pronto de cada um e o que você confere depois.</p>
   </header>
@@ -156,7 +156,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       <table>
         <thead><tr><th>Caminho no sistema</th><th>O que é</th><th>Você mexe?</th></tr></thead>
         <tbody>
-          <tr><td><code>tema-mppa-next-v1.8.0.zip</code></td><td>O pacote do modelo. Fica fora do git.</td><td>Não</td></tr>
+          <tr><td><code>tema-mppa-next-v1.9.0.zip</code></td><td>O pacote do modelo. Fica fora do git.</td><td>Não</td></tr>
           <tr><td><code>tema-mppa-next/</code></td><td>O zip descompactado, de onde você abriu este guia. O agente apaga na primeira entrega.</td><td>Não</td></tr>
           <tr><td><code>docs/tema-mppa/</code></td><td>Referência que fica no sistema: este guia (<code>docs/tema-mppa/GUIA.html</code>), o roteiro, o protótipo e os verificadores.</td><td>Não</td></tr>
           <tr><td><code>docs/tema-mppa/diagnostico.md</code></td><td>Só no sistema que já existe: o diagnóstico da Fase 0. Com OpenSpec ou outro processo, fica onde ele manda; o agente diz onde.</td><td><strong>Sim, item 12</strong></td></tr>
@@ -171,7 +171,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "1.8.0";
+  var VERSAO = "1.9.0";
   var ZIP = "tema-mppa-next-v" + VERSAO + ".zip";
 
   // ---- Armazenamento (só neste navegador; a página funciona sem ele) ----

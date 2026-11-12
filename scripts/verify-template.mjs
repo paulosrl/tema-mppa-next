@@ -188,16 +188,17 @@ const light = block(":root");
 const dark = { ...light, ...block(".dark") };
 
 const prototype = {
-  light: { radius: "0.5rem", background: "#ffffff", card: "#fafafa", sidebar: "#fcfcfc", muted: "#f4f4f5", border: "#d4d4d8", highlight: "#dbeafe" },
-  dark: { background: "#09090b", card: "#18181b", sidebar: "#18181b", muted: "#27272a", border: "rgba(255, 255, 255, 0.12)", highlight: "#12264a" },
+  light: { radius: "0.5rem", background: "#f4f7fb", card: "#ffffff", sidebar: "#ffffff", muted: "#f1f5f9", border: "#e2e8f0", highlight: "#ecf4fe" },
+  dark: { background: "#09090b", card: "#18181b", sidebar: "#18181b", muted: "#27272a", border: "rgba(255, 255, 255, 0.12)", highlight: "#1c3b73" },
 };
 for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
   for (const [name, value] of Object.entries(theme === "claro" ? prototype.light : prototype.dark)) {
     if (tokens[name]?.toLowerCase() !== value) errors.push(`token --${name} (${theme}): esperado ${value}, encontrado ${tokens[name] ?? "ausente"}`);
   }
 }
-if (!light.shadow?.startsWith("0 2px 6px")) errors.push("token --shadow (claro) diferente do protótipo");
-if (!dark.shadow?.startsWith("0 2px 8px")) errors.push("token --shadow (escuro) diferente do protótipo");
+// Sombra adotada em 1.9.0 no lugar da do protótipo: camadas e um brilho interno de 1px no topo.
+if (!light.shadow?.startsWith("0 1px 3px rgba(9, 9, 11, 0.06)") || !light.shadow.includes("inset 0 1px 0 0")) errors.push("token --shadow (claro) diferente do padrão 1.9.0");
+if (!dark.shadow?.startsWith("0 4px 16px -2px rgba(0, 0, 0, 0.5)") || !dark.shadow.includes("inset 0 1px 0 0")) errors.push("token --shadow (escuro) diferente do padrão 1.9.0");
 
 function luminance(hex) {
   const value = hex.replace("#", "");
@@ -441,7 +442,7 @@ const mix = (fg, bg, alpha) => `#${[0, 2, 4].map((offset) => {
   const channel = (hex) => parseInt(hex.replace("#", "").slice(offset, offset + 2), 16);
   return Math.round(alpha * channel(fg) + (1 - alpha) * channel(bg)).toString(16).padStart(2, "0");
 }).join("")}`;
-// Com a primária azul (1.8.0), /10 passa de 7:1 (claro) e de 4,5:1 (escuro); /15 ou mais cai abaixo no cartão, e é isso que o aviso diz.
+// Com a primária azul, /10 passa de 7:1 (claro) e de 4,5:1 (escuro); /15 ou mais cai abaixo no fundo e no muted, e é isso que o aviso diz.
 for (const surface of ["background", "card", "muted", "sidebar"]) {
   const ratio = contrast(light.primary, mix(light.primary, light[surface], 0.1));
   if (ratio < 7) errors.push(`REPLICAR diz que text-primary sobre bg-primary/10 passa de 7:1, mas dá ${ratio.toFixed(2)}:1 sobre --${surface}`);
@@ -450,7 +451,7 @@ for (const surface of ["background", "card", "muted"]) {
   const ratio = contrast(dark.primary, mix(dark.primary, dark[surface], 0.1));
   if (ratio < 4.5) errors.push(`escuro: text-primary sobre bg-primary/10 dá ${ratio.toFixed(2)}:1 sobre --${surface}, mínimo 4,5:1`);
 }
-if (contrast(light.primary, mix(light.primary, light.card, 0.15)) >= 7) errors.push('o "não faça" de bg-primary/15 ficou obsoleto: o par chega a 7:1 sobre --card');
+if (["background", "muted"].every((surface) => contrast(light.primary, mix(light.primary, light[surface], 0.15)) >= 7)) errors.push('o "não faça" de bg-primary/15 ficou obsoleto: o par chega a 7:1 sobre o fundo e o muted');
 
 // DESIGN.md do modelo preso ao CSS, e DESIGN.md exigido na Fase 1.
 for (const needle of ["DESIGN.md", "verificar-design.mjs"]) {
@@ -617,7 +618,7 @@ console.log("- shadcn/ui base-nova + Base UI + Lucide, sem @radix-ui");
 console.log("- Administração condicionada a is_admin === true e a item administrativo visível, também na busca");
 console.log("- imagens opcionais desaparecem sem ícone quebrado");
 console.log("- shell sem chamadas de API/BFF/autenticação");
-console.log("- tokens iguais ao protótipo (raio, sombra, fundos, borda, realce), claro e escuro");
+console.log("- tokens do padrão (raio, sombra, fundos, borda, realce), claro e escuro");
 console.log("- contraste: 7:1 no claro, 4,5:1 no escuro, ícones de tom com 4,5:1");
 console.log("- componentes sem cor fixa nem canto reto; título só no cabeçalho");
 console.log("- rodapé padrão: texto de brand (5 casos executados), fixo na faixa do Recolher (--shell-bar), sem corte e sem substituição");

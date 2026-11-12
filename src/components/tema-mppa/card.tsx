@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "./utils";
 
-/** Cartão do protótipo: borda, raio 8px, fundo do cartão, sombra e padding 20px. */
+/** Cartão do protótipo: borda, raio 8px (`rounded-lg`), fundo do cartão, sombra e padding 20px. */
 export function Card({
   title,
   description,
@@ -19,14 +19,18 @@ export function Card({
 }) {
   return (
     <article
-      className={cn("min-w-0 rounded-lg border bg-card text-card-foreground shadow-surface", padded && "p-5", className)}
+      className={cn(
+        "min-w-0 rounded-lg border bg-card text-card-foreground shadow-surface transition-all duration-200",
+        padded && "p-5",
+        className,
+      )}
       {...props}
     >
       {title || description || actions ? (
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            {title ? <h2 className="m-0 text-base font-bold">{title}</h2> : null}
-            {description ? <p className="m-0 text-muted-foreground">{description}</p> : null}
+            {title ? <h2 className="m-0 text-base font-bold tracking-tight">{title}</h2> : null}
+            {description ? <p className="m-0 mt-0.5 text-muted-foreground">{description}</p> : null}
           </div>
           {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
         </div>

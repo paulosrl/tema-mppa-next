@@ -17,45 +17,48 @@
   /* Altura única das faixas do shell: cabeçalho, marca, "Recolher" e rodapé ficam alinhados por ela. */
   --shell-bar: 3.5rem;
 
-  --background: #ffffff;
-  --foreground: #18181b;
-  --card: #fafafa;
-  --card-foreground: #18181b;
-  --popover: #fafafa;
-  --popover-foreground: #18181b;
+  /* Ardósia: fundo #f4f7fb destaca cartão e barra brancos; cinzas e bordas azulados. */
+  --background: #f4f7fb;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
 
-  /* Azul de ação (o mesmo do Heimdall): 9,11:1 com branco e sobre o fundo, 8,73:1 sobre o cartão. */
+  /* Azul de ação (o mesmo do Heimdall): 9,11:1 com branco e sobre o cartão, 8,48:1 sobre o fundo. */
   --primary: #0842a1;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
-  /* Protótipo #71717a (4,83:1): o secundário é o preto do texto. */
-  --muted-foreground: #18181b;
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
-  /* Realce do item e da aba ativos: azul-claro; o texto preto tem 14,52:1 sobre ele. */
-  --highlight: #dbeafe;
-  --highlight-foreground: #18181b;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  /* Protótipo #71717a (4,83:1) e o cinza-ardósia #64748b (4,4:1): o secundário é o texto. */
+  --muted-foreground: #0f172a;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  /* Realce do item e da aba ativos: azul-claro (#dbeafe com 3,5 pontos a mais de luz; 10 pontos dariam
+     branco); o texto tem 16,10:1 sobre ele. */
+  --highlight: #ecf4fe;
+  --highlight-foreground: #0f172a;
 
   --destructive: #991b1b;
   --destructive-foreground: #ffffff;
   /* Status como texto sobre superfície neutra: 12:1 ou mais sobre o muted (#f4f4f5). */
-  --success: #08351f; /* 12,41:1 no muted */
+  --success: #08351f; /* 12,45:1 no muted */
   --success-foreground: #ffffff;
-  --warning: #432506; /* 12,69:1 no muted */
+  --warning: #432506; /* 12,73:1 no muted */
   --warning-foreground: #ffffff;
 
-  --border: #d4d4d8;
-  --input: #d4d4d8;
-  --ring: #0842a1; /* 9,11:1 sobre o fundo */
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0842a1; /* 8,48:1 sobre o fundo */
 
   --overlay: #000000;
-  --logo-surface: #ffffff;
+  --logo-surface: #f8fafc;
 
-  --shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+  /* Sombra em camadas com um brilho interno no topo (1px branco a 80%), no lugar da do protótipo. */
+  --shadow: 0 1px 3px rgba(9, 9, 11, 0.06), 0 4px 12px -2px rgba(9, 9, 11, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
   --bar-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  --drawer-shadow: 8px 0 24px rgba(0, 0, 0, 0.2);
+  --drawer-shadow: 8px 0 24px rgba(0, 0, 0, 0.22);
 
   /* Ícones de seção: fundo pastel do protótipo e traço com 4,5:1 ou mais sobre ele. O azul é o tom padrão
      (sem `tone`); o vermelho continua disponível, mas é reservado ao que tem significado institucional. */
@@ -78,7 +81,7 @@
   --tone-amber-foreground: #92400e; /* 6,37:1 */
 
   /* Gráficos: elementos gráficos, sem texto; azuis do protótipo. Barra forte: #0842a1 (9,11:1 sobre o
-     fundo) a #3b82f6 (3,68:1); barra suave: #6f9be6 (2,80:1) a #94b6f1 (2,05:1), no nível do vermelho suave
+     cartão) a #3b82f6 (3,68:1); barra suave: #6f9be6 (2,80:1) a #94b6f1 (2,05:1), no nível do vermelho suave
      que o protótipo tinha (2,81:1 e 1,98:1). */
   --chart-strong-from: #0842a1;
   --chart-strong-to: #3b82f6;
@@ -94,12 +97,12 @@
   --brand-mark-to: #7f1d1d;
   --brand-mark-foreground: #ffffff;
 
-  --sidebar: #fcfcfc;
-  --sidebar-foreground: #18181b;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #334155;
   --sidebar-primary: #0842a1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f4f4f5;
-  --sidebar-accent-foreground: #18181b;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
   /* A borda da barra é a borda geral: as faixas da barra e do conteúdo não podem divergir. */
   --sidebar-border: var(--border);
   --sidebar-ring: #0842a1;
@@ -124,8 +127,9 @@
   --muted-foreground: #f4f4f5;
   --accent: #27272a;
   --accent-foreground: #fafafa;
-  /* Azul-escuro do realce (protótipo: tom escuro do vermelho #351518): texto claro com 14,35:1. */
-  --highlight: #12264a;
+  /* Azul do realce: #12264a com 10 pontos a mais de luz (protótipo: tom escuro do vermelho #351518); texto
+     claro com 10,47:1. */
+  --highlight: #1c3b73;
   --highlight-foreground: #fafafa;
 
   --destructive: #f87171;
@@ -142,9 +146,27 @@
   --overlay: #000000;
   --logo-surface: #ffffff;
 
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* Sombra mais funda e brilho interno no topo (1px branco a 7%), para destacar cartões e item ativo no escuro. */
+  --shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
 
-  /* O protótipo mantém os ícones de seção pastéis também no escuro. */
+  /* Ícones de seção no escuro: o tom translúcido (18 a 20% da cor sobre a barra #18181b) gravado em hex, para
+     o contraste ser medido; traço pastel com 9,69:1 ou mais. */
+  --tone-red: #401f27; /* rgba(244, 63, 94, 0.18); #fecdd3 com 10,31:1 */
+  --tone-red-foreground: #fecdd3;
+  --tone-green: #17352d; /* rgba(16, 185, 129, 0.18); 10,34:1 */
+  --tone-green-foreground: #a7f3d0;
+  --tone-violet: #2f2647; /* rgba(139, 92, 246, 0.2); 10,16:1 */
+  --tone-violet-foreground: #ddd6fe;
+  --tone-orange: #41281a; /* rgba(249, 115, 22, 0.18); 10,05:1 */
+  --tone-orange-foreground: #fed7aa;
+  --tone-blue: #1f2d47; /* rgba(59, 130, 246, 0.2); 9,69:1 */
+  --tone-blue-foreground: #bfdbfe;
+  --tone-teal: #173534; /* rgba(20, 184, 166, 0.18); 10,44:1 */
+  --tone-teal-foreground: #99f6e4;
+  --tone-pink: #3e2132; /* rgba(236, 72, 153, 0.18); 10,35:1 */
+  --tone-pink-foreground: #fbcfe8;
+  --tone-amber: #403018; /* rgba(245, 158, 11, 0.18); 10,20:1 */
+  --tone-amber-foreground: #fde68a;
 
   /* Gráficos no escuro: o azul do claro (#0842a1) some no cartão (1,7:1); aqui as pontas têm 3:1 ou mais
      sobre o cartão (#18181b): forte #3b82f6 (4,82:1) a #61a6fa (7,04:1); suave #4f78b8 (3,97:1) a #7aa2dd

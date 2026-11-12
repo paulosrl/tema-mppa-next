@@ -1,5 +1,57 @@
 # Changelog
 
+## 1.9.0 — 2026-11-11
+
+Superfícies em ardósia no claro, sombra com brilho interno, ícones de seção duotone, busca na barra lateral e
+realce mais claro. Pedido do autor em 11 nov. 2026, aplicado dentro das regras de contraste (7:1 no claro, secundário igual ao texto, ícones com
+4,5:1). A API não muda; mudam a aparência e o lugar da busca. O escuro continua em Zinc.
+
+### Modificado
+
+- **Claro em ardósia:** fundo `#ffffff` → `#f4f7fb`; cartão e popover `#fafafa` → `#ffffff`; barra `#fcfcfc` →
+  `#ffffff`; muted, secondary, accent e sidebar-accent `#f4f4f5` → `#f1f5f9`; borda e input `#d4d4d8` →
+  `#e2e8f0`; texto e secundário `#18181b` → `#0f172a` (16,61:1 no fundo); texto da barra `#334155` (10,35:1);
+  logo surface `#f8fafc`. A primária fica `#0842a1` (8,48:1 sobre o fundo). O pedido trazia secundário `#64748b` (4,4:1), item ativo escuro e tons a 12% (3,3:1), que
+  ficaram de fora por contraste.
+- **Busca na barra lateral:** a caixa "Abrir busca" sai do cabeçalho e fica fixa na barra lateral, logo acima
+  do "Recolher", na largura da barra, com lupa, texto e `Ctrl K`; com a barra recolhida, só a lupa; no celular,
+  no menu móvel (antes, só a lupa no cabeçalho). O texto padrão de `header.searchPlaceholder` passa de
+  "Buscar ou executar…" a "Buscar na página". O diálogo (o do modelo e o de `renderSearch`) vai para o `<body>`
+  por portal, porque a barra tem `transform`. Escolher um resultado fecha também o menu móvel. `headerActions`
+  fica à esquerda do tema.
+- **Realce do item e da aba ativos mais claro:** `--highlight` passa de `#dbeafe` a `#ecf4fe` no claro (texto com
+  16,10:1; 10 pontos de luz dariam branco, então sobe 3,5) e de `#12264a` a `#1c3b73` no escuro (10 pontos a mais
+  de luz; texto com 10,47:1).
+- **Sombra (`--shadow`):** deixa a do protótipo e passa a camadas com brilho interno de 1px no topo:
+  `0 1px 3px rgba(9,9,11,.06), 0 4px 12px -2px rgba(9,9,11,.05), inset 0 1px 0 0 rgba(255,255,255,.8)` no
+  claro e `0 4px 16px -2px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 0 rgba(255,255,255,.07)` no
+  escuro. `--drawer-shadow` a 22%.
+- **Tons do escuro:** deixam de repetir os pastéis do claro. Fundo translúcido (18 a 20% da cor sobre a barra
+  `#18181b`), gravado em hex, com traço pastel de 9,69:1 a 10,44:1 (azul `#1f2d47` + `#bfdbfe`, verde `#17352d` +
+  `#a7f3d0`, e os demais na tabela do `REPLICAR.md`, seção 8).
+- **`SectionIcon` duotone:** o miolo do ícone recebe 15% da cor do traço (`[&_svg]:fill-current/15`); anel
+  interno de 1px a 15%; cresce 5% sob o mouse no menu (os links ganham `group`), sem movimento com
+  `prefers-reduced-motion`.
+- **Abas Plataforma/Administração:** a ativa ganha anel de 1px na borda a 50% e transição de cor e sombra.
+- **`Card`:** transição de 200ms, título com `tracking-tight` e descrição com 2px acima.
+- **`text-primary` sobre `bg-primary/15`:** o aviso continua, agora pelo fundo (6,59:1) e pelo muted (6,45:1);
+  `bg-primary/10` passa (7,18:1, 7,68:1 e 7,04:1).
+- **Documentos e verificador:** `AGENTS.md` (exceção ao protótipo), `DESIGN.md`, `REPLICAR.md` (seção 8),
+  `GUIA.html` e `verify-template.mjs` com os valores novos. Prévia e comparações regeradas.
+
+### Ao atualizar de 1.8.x
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Rode o `verificar-design.mjs`: fundos, texto, borda, sombra e os tons do escuro mudaram; leve os valores ao
+   `DESIGN.md` do sistema.
+3. Telas do sistema que pintavam algo com `bg-background` para parecer cartão passam a ardósia: use `bg-card`.
+4. A busca saiu do cabeçalho: testes e seletores que a procuravam no `<header>` passam a procurá-la na barra
+   lateral (`aria-label="Abrir busca"` não mudou). Um `renderSearch` que dependia de ficar dentro do cabeçalho
+   agora é renderizado no `<body>`.
+5. Testes, capturas e comparações visuais que fixam o fundo branco, o realce `#dbeafe`/`#12264a`, a borda `#d4d4d8` ou a sombra antiga
+   precisam ser atualizados.
+6. Troque a versão na seção "Interface" do `AGENTS.md` para 1.9.0.
+
 ## 1.8.0 — 2026-11-11
 
 Primária azul e equilíbrio de cores. Decisão do autor em 11 nov. 2026: todos os sistemas do MPPA passam a usar

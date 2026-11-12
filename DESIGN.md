@@ -3,7 +3,7 @@ version: alpha
 name: "Tema MPPA · camada visual"
 description: >-
   Camada visual comum dos sistemas do Escritório de Inteligência Artificial do Ministério Público do Estado do
-  Pará (modelo tema-mppa-next): azul de ação e vermelho institucional sobre Zinc, fonte Outfit, raio de 8px, sombras
+  Pará (modelo tema-mppa-next): azul de ação e vermelho institucional sobre ardósia (claro) e Zinc (escuro), fonte Outfit, raio de 8px, sombras
   discretas, barra lateral de 260px com abas Plataforma e Administração, cabeçalho de 56px e rodapé padrão.
   Texto sobre superfície neutra com 12:1 nos dois temas (secundário e status inclusive) e texto sobre
   preenchimento colorido com 4,5:1. Os valores
@@ -12,31 +12,31 @@ description: >-
 colors:
   primary: "#0842a1"
   primary-foreground: "#ffffff"
-  background: "#ffffff"
-  foreground: "#18181b"
-  card: "#fafafa"
-  card-foreground: "#18181b"
-  popover: "#fafafa"
-  popover-foreground: "#18181b"
-  secondary: "#f4f4f5"
-  muted: "#f4f4f5"
-  muted-foreground: "#18181b"
-  accent: "#f4f4f5"
-  accent-foreground: "#18181b"
-  highlight: "#dbeafe"
-  highlight-foreground: "#18181b"
+  background: "#f4f7fb"
+  foreground: "#0f172a"
+  card: "#ffffff"
+  card-foreground: "#0f172a"
+  popover: "#ffffff"
+  popover-foreground: "#0f172a"
+  secondary: "#f1f5f9"
+  muted: "#f1f5f9"
+  muted-foreground: "#0f172a"
+  accent: "#f1f5f9"
+  accent-foreground: "#0f172a"
+  highlight: "#ecf4fe"
+  highlight-foreground: "#0f172a"
   destructive: "#991b1b"
   destructive-foreground: "#ffffff"
   success: "#08351f"
   warning: "#432506"
-  border: "#d4d4d8"
+  border: "#e2e8f0"
   ring: "#0842a1"
   overlay: "#000000"
-  logo-surface: "#ffffff"
-  sidebar: "#fcfcfc"
-  sidebar-foreground: "#18181b"
-  sidebar-accent: "#f4f4f5"
-  sidebar-accent-foreground: "#18181b"
+  logo-surface: "#f8fafc"
+  sidebar: "#ffffff"
+  sidebar-foreground: "#334155"
+  sidebar-accent: "#f1f5f9"
+  sidebar-accent-foreground: "#0f172a"
   tone-red: "#fee2e2"
   tone-red-foreground: "#970611"
   tone-green: "#d1fae5"
@@ -148,7 +148,7 @@ spacing:
   section-icon: 28px
   title-icon: 24px
   avatar: 32px
-  search-width: 224px
+  search-width: 240px
   logo-height: 28px
   chart-height: 165px
   chart-bar-max: 90px
@@ -251,7 +251,7 @@ components:
     typography: "{typography.caption}"
     rounded: "{rounded.lg}"
     height: 32px
-    width: 224px
+    width: 240px
   command-palette:
     backgroundColor: "{colors.popover}"
     textColor: "{colors.popover-foreground}"
@@ -403,8 +403,10 @@ A identidade vem de três escolhas:
   Administração, cabeçalho de 56px, conteúdo com padding de 38px e largura máxima de 1500px, rodapé padrão
   fixo no pé da tela, na faixa do "Recolher".
 - Título da página só no cabeçalho, vindo do item marcado no menu; nenhum título repetido no conteúdo.
-- Ícones de seção Lucide, num quadrado de 28px com fundo pastel e traço do mesmo tom (azul, verde,
-  violeta, laranja, revezados).
+- Ícones de seção Lucide, num quadrado de 28px com fundo pastel (no escuro, translúcido) e traço do mesmo
+  tom (azul, verde, violeta, laranja, revezados), duotone: o miolo do ícone recebe 15% da cor do traço, e um
+  anel interno de 1px a 15% contorna o quadrado. No menu, o ícone cresce 5% sob o mouse (sem movimento com
+  `prefers-reduced-motion`).
 - Busca `Ctrl K` com as páginas que cada usuário pode ver.
 - Tema claro, escuro e sistema; toda entrada abre em claro e a escolha vale só para a aba.
 
@@ -413,28 +415,29 @@ A identidade vem de três escolhas:
 ### Marca e ação
 
 - **Primary** (`{colors.primary}`, `#0842a1`): botão primário, foco (`ring`), links de ação, `sidebar-primary`,
-  barra de gráfico forte. Texto branco sobre ela (9,11:1). No escuro, `#61a6fa` com texto `#080c16` (7,76:1).
+  barra de gráfico forte. Texto branco sobre ela (9,11:1; 8,48:1 dela sobre o fundo). No escuro, `#61a6fa` com texto `#080c16` (7,76:1).
 - **Equilíbrio:** o azul é a ação; o vermelho só com significado (destrutivo/erro e identidade
   institucional). Os demais tons de seção continuam variados.
 - **Destructive** (`{colors.destructive}`, `#991b1b`): ação destrutiva, com texto branco.
-- **Highlight** (`{colors.highlight}`, `#dbeafe`): fundo azul-claro do item e da aba ativos, com texto preto
-  (14,52:1) e sombra; o ícone do item é azul (`tone-blue`).
+- **Highlight** (`{colors.highlight}`, `#ecf4fe`): fundo azul-claro do item e da aba ativos, com texto `#0f172a`
+  (16,10:1), sombra e, na aba, anel de 1px na borda a 50%; o ícone do item é azul (`tone-blue`).
 
 ### Superfícies e texto
 
-- **Background** (`#ffffff`): página e cabeçalho. **Card** (`#fafafa`): cartões, botão secundário, caixa de
-  busca. **Sidebar** (`#fcfcfc`): barra lateral. **Muted** (`#f4f4f5`): trilho das abas, avatar, áreas
-  neutras.
-- **Foreground** (`#18181b`): todo texto. **Muted foreground** é o mesmo `#18181b` no claro: o texto
-  secundário (menus, descrições, rótulos, rodapé, cabeçalhos de tabela) é preto, sem cinza.
-- **Border** (`#d4d4d8`): toda borda, inclusive a da barra lateral, para as linhas da barra e do conteúdo
+- **Background** (`#f4f7fb`, ardósia): página e cabeçalho; destaca cartões e barra brancos. **Card**
+  (`#ffffff`): cartões, botão secundário, caixa de busca. **Sidebar** (`#ffffff`): barra lateral. **Muted**
+  (`#f1f5f9`): trilho das abas, avatar, áreas neutras.
+- **Foreground** (`#0f172a`): todo texto (16,61:1 no fundo). **Muted foreground** é o mesmo `#0f172a` no claro:
+  o texto secundário (descrições, rótulos, rodapé, cabeçalhos de tabela) não fica cinza. O texto da barra
+  (`sidebar-foreground`) é `#334155` (10,35:1 no branco, 9,45:1 no muted).
+- **Border** (`#e2e8f0`): toda borda, inclusive a da barra lateral, para as linhas da barra e do conteúdo
   coincidirem.
-- **Logo surface** (`#ffffff` nos dois temas): fundo das logos institucionais.
+- **Logo surface** (`#f8fafc` no claro, `#ffffff` no escuro): fundo das logos institucionais.
 
 ### Status e tons
 
 - **Success** (`#08351f`) e **Warning** (`#432506`): status, com 12:1 ou mais sobre toda superfície neutra
-  (12,41:1 e 12,69:1 sobre o muted).
+  (12,45:1 e 12,73:1 sobre o muted).
 - **Tons dos ícones de seção:** azul `#dbeafe` + `#1d4ed8` (o padrão, sem `tone`), verde `#d1fae5` +
   `#047857`, violeta `#ede9fe` + `#7c3aed`, laranja `#ffedd5` + `#a85005`, e mais quatro para menus com
   mais de quatro itens: vermelho `#fee2e2` + `#970611` (reservado ao que tem significado institucional),
@@ -459,12 +462,13 @@ texto sobre preenchimento colorido com 4,5:1.
 | muted-foreground | `#f4f4f5` (13,55:1 no muted) |
 | primary / primary-foreground | `#61a6fa` / `#080c16` |
 | destructive / destructive-foreground | `#f87171` / `#09090b` |
-| highlight / highlight-foreground | `#12264a` / `#fafafa` |
+| highlight / highlight-foreground | `#1c3b73` / `#fafafa` (10,47:1) |
 | success / warning (texto sobre eles: `#09090b`) | `#bbf7d0` / `#fef08a` |
 | border | `rgba(255, 255, 255, 0.12)` |
 | ring, sidebar-ring, sidebar-primary | `#61a6fa` (texto sobre sidebar-primary: `#080c16`) |
 | gráficos | forte `#3b82f6 → #61a6fa`, suave `#4f78b8 → #7aa2dd` |
-| tons dos ícones, logo surface | iguais ao claro |
+| tons dos ícones | translúcidos (18 a 20% da cor sobre `#18181b`) em hex, traço pastel com 9,69:1 ou mais: azul `#1f2d47` + `#bfdbfe`, verde `#17352d` + `#a7f3d0`, violeta `#2f2647` + `#ddd6fe`, laranja `#41281a` + `#fed7aa`, vermelho `#401f27` + `#fecdd3`, verde-água `#173534` + `#99f6e4`, rosa `#3e2132` + `#fbcfe8`, âmbar `#403018` + `#fde68a` |
+| logo surface | `#ffffff` |
 
 ## Typography
 
@@ -501,18 +505,17 @@ camada. A altura de linha da casca é `normal`.
   801px; as ações ocupam a largura toda no celular.
 - **Menu:** item com padding 7px × 8px, 10px entre ícone e texto, 5px entre itens; abas de 32px num trilho
   com padding de 3px.
-- **Cabeçalho, da esquerda para a direita:** ícone de seção de 24px e título; busca de 224px × 32px (só a
-  lupa abaixo de 640px); tema (34px); divisória; logos com 28px de altura (a partir de 640px); divisória;
+- **Cabeçalho, da esquerda para a direita:** ícone de seção de 24px e título; tema (34px); divisória; logos com 28px de altura (a partir de 640px); divisória;
   avatar de 32px, nome e perfil (a partir de 1280px), botão de sair (34px).
 
 ## Elevation & Depth
 
-Hierarquia por superfície e por uma sombra única, discreta:
+Hierarquia por superfície e por uma sombra única, em camadas, com um brilho interno de 1px no topo:
 
-- `shadow-surface`: `0 2px 6px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05)` no claro e
-  `0 2px 8px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2)` no escuro, em cartões, item e aba ativos e na busca
-  aberta.
-- `shadow-drawer` (`8px 0 24px rgba(0,0,0,.2)`): só no menu móvel aberto; `bg-overlay` a 40% atrás dele e a
+- `shadow-surface`: `0 1px 3px rgba(9,9,11,.06), 0 4px 12px -2px rgba(9,9,11,.05), inset 0 1px 0 0 rgba(255,255,255,.8)`
+  no claro e `0 4px 16px -2px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 0 rgba(255,255,255,.07)`
+  no escuro, em cartões, item e aba ativos e na busca aberta.
+- `shadow-drawer` (`8px 0 24px rgba(0,0,0,.22)`): só no menu móvel aberto; `bg-overlay` a 40% atrás dele e a
   60% atrás da busca.
 - As barras da casca não têm sombra: separam-se por borda de 1px.
 - Barras de gráfico com sombra leve (`0 1px 2px rgba(0,0,0,.08)`) e topo arredondado.
@@ -537,10 +540,12 @@ abas e os itens de administração só aparecem com `session.is_admin === true`.
 
 **Menu** (`nav-item`, `nav-item-active`, `tab-active`): ícone de seção de 28px e rótulo; um só item
 marcado, o de rota mais longa, que dá também o título e a aba aberta. Recolhido, só ícones com o rótulo
-no `title`.
+no `title`. Cartões com transição de 200ms e título com `tracking-tight`.
 
-**Busca** (`search-box`, `command-palette`): `Ctrl K` abre a lista das páginas do menu, com nome e
-descrição; o filtro aceita o nome ou a descrição, sem acento.
+**Busca** (`search-box`, `command-palette`): caixa de 32px com lupa, "Buscar na página" e `Ctrl K`, fixa
+na barra lateral logo acima do "Recolher", na largura da barra (padding de 10px); com a barra recolhida, só
+a lupa; no celular, no menu móvel. `Ctrl K` abre a lista das páginas do menu, com nome e descrição; o filtro
+aceita o nome ou a descrição, sem acento. O diálogo vai para o `<body>` por portal.
 
 **`Button`** (`button-primary`, `button-secondary`, `button-ghost`, `button-destructive`): 36px de altura,
 peso 700, raio de 8px; ícone de 34px. Link com cara de botão: `buttonVariants`.
@@ -573,8 +578,9 @@ nas páginas públicas que têm rodapé.
 - **Don't** edite `components/tema-mppa/` nem `styles/tema-mppa.css`: o `verificar-camada.mjs` reprova.
   Necessidade que a camada não atende volta ao modelo `tema-mppa-next`.
 - **Do** use vermelho só com significado (erro, ação destrutiva, identidade institucional); a ação é azul.
-- **Don't** use `text-primary` sobre `bg-primary/15` ou mais: o par cai abaixo de 7:1 no claro (6,74:1 sobre o
-  cartão). Com `bg-primary/10` passa (7,40:1 sobre o cartão, 7,01:1 sobre o muted); nos demais casos use o texto
+- **Don't** use `text-primary` sobre `bg-primary/15` ou mais: o par cai abaixo de 7:1 no claro (6,59:1 sobre o
+  fundo, 6,45:1 sobre o muted). Com `bg-primary/10` passa (7,18:1 sobre o fundo, 7,68:1 sobre o cartão,
+  7,04:1 sobre o muted); nos demais casos use o texto
   principal e deixe a primária no ícone ou na borda.
 - **Don't** deduza administrador por e-mail, nome ou rótulo de perfil; só o booleano da sessão real.
 - **Don't** importe o `ThemeProvider` para pôr o script de tema: use `<ThemeScript nonce={nonce} />`.
