@@ -121,10 +121,6 @@ typography:
     fontSize: 32px
     fontWeight: 800
     lineHeight: 1.2
-  kbd:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
-    fontSize: 10px
-    fontWeight: 600
 
 rounded:
   xs: 2px
@@ -519,7 +515,6 @@ camada. A altura de linha da casca é `normal`.
 | `{typography.caption}` | 12px | 400 | Rodapé, perfil do usuário, texto da busca |
 | `{typography.caption-strong}` | 12px | 600 | Nome do usuário, iniciais do avatar |
 | `{typography.metric}` | 32px | 800 | Número do cartão de métrica (algarismos tabulares) |
-| `{typography.kbd}` | 10px | 600 | "Ctrl K" na busca e "Ctrl B" no "Recolher", em fonte mono |
 
 ## Layout
 
@@ -562,7 +557,7 @@ Tudo preso a `--radius` (8px):
 - `{rounded.2xl}` 16px: cartões, tabelas, diálogo da busca.
 - `{rounded.xl}` 12px: botões, itens do menu, busca, trilho das abas, selos de caixa.
 - `{rounded.lg}` 8px: abas internas, ícones de seção, caixas das logos.
-- `{rounded.md}` 6px: selo da versão, `kbd`, topo das barras de gráfico. `{rounded.xs}` 2px: base das barras de gráfico.
+- `{rounded.md}` 6px: selo da versão, topo das barras de gráfico. `{rounded.xs}` 2px: base das barras de gráfico.
 - `{rounded.full}`: avatar.
 - Raio maior que 16px: não use em tela nova.
 
@@ -578,9 +573,9 @@ abas e os itens de administração só aparecem com `session.is_admin === true`.
 marcado, o de rota mais longa, que dá também o título e a aba aberta. Recolhido, só ícones com o rótulo
 no `title`. Cartões com transição de 200ms e título com `tracking-tight`.
 
-**Busca** (`search-box`, `command-palette`): caixa de 36px (raio de 12px) com lupa, "Buscar na página" e `Ctrl K` em `kbd` mono, fixa
+**Busca** (`search-box`, `command-palette`): caixa de 36px (raio de 12px) com lupa e "Buscar na página", sem etiqueta de atalho, fixa
 na barra lateral logo acima do "Recolher", na largura da barra (padding de 10px); com a barra recolhida, só
-a lupa; no celular, no menu móvel. `Ctrl K` abre a lista das páginas do menu, com nome e descrição; o filtro
+a lupa; no celular, no menu móvel. O atalho `Ctrl+K`, que não aparece na tela, abre a lista das páginas do menu, com nome e descrição; o filtro
 aceita o nome ou a descrição, sem acento. O diálogo vai para o `<body>` por portal.
 
 **`Button`** (`button-primary`, `button-secondary`, `button-ghost`, `button-chrome`, `button-destructive`): 36px de altura,

@@ -203,9 +203,8 @@ export function AppSidebar({
           <CommandPalette config={config} session={session} renderSearch={renderSearch} />
         </div>
         <div className="flex h-(--shell-bar) shrink-0 items-center justify-between gap-2 border-t border-sidebar-border px-3.5 desk:tm-collapsed:justify-center">
-          <span className={cn("flex min-w-0 items-center gap-2", hideWhenCollapsed)}>
-            <span className="truncate text-xs font-semibold text-muted-foreground">{config.sidebarShortcutLabel ?? "Recolher"}</span>
-            <kbd className="hidden rounded-md border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-medium text-muted-foreground desk:inline">Ctrl B</kbd>
+          <span className={cn("min-w-0 truncate text-xs font-semibold text-muted-foreground", hideWhenCollapsed)}>
+            {config.sidebarShortcutLabel ?? "Recolher"}
           </span>
           <Button
             variant="ghost"

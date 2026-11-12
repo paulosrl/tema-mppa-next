@@ -41,7 +41,7 @@ Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "
   Heimdall), e o realce, o ícone padrão e os gráficos o seguem (seção 8, "Equilíbrio de cores").
 - **Tons escurecidos para o contraste:** texto secundário e ícones verde e laranja (tabela de cores na seção 8).
 - **Ícones:** Lucide no lugar dos caracteres do protótipo.
-- **Busca:** fica na barra lateral, fixa acima do "Recolher", com lupa, "Buscar na página" e `Ctrl K`.
+- **Busca:** fica na barra lateral, fixa acima do "Recolher", com lupa e "Buscar na página"; o atalho `Ctrl+K` funciona, mas não aparece na tela.
 - **Cabeçalho:** segue o padrão dos sistemas, não o do protótipo:
   - marca com nome e versão na mesma linha;
   - logos institucionais;
@@ -145,7 +145,7 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 ## 3. Fase 0: Diagnóstico
 
 1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
-   (`unzip tema-mppa-next-v1.10.1.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
+   (`unzip tema-mppa-next-v1.10.2.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -352,7 +352,7 @@ Campos de cada item de navegação:
 | `hidden` | fora do menu e da busca, mas dá o título e a aba quando a rota é dele |
 
 Um só item fica marcado: o de rota mais longa. Atalhos extras da busca entram em `searchItems: [{ id, label,
-href, icon?, description?, keywords? }]`. A barra recolhe por botão ou `Ctrl+B` e lembra a escolha.
+href, icon?, description?, keywords? }]`. A barra recolhe por botão ou `Ctrl+B` (atalho sem etiqueta na tela) e lembra a escolha.
 
 ### 4.6 Sessão e layout autenticado
 
@@ -635,7 +635,7 @@ Quando nenhuma tela usar mais o visual antigo:
 - **Medidor de contraste dos testes:** o fundo da página tem brilho decorativo (`--canvas-glow`, radial e fixo
   no `body`) e o item selecionado e as caixas de ícone usam `background-image`. Um medidor que lê
   `background-image` como cor cheia erra; ignore o brilho do `body` e componha as camadas sobre a cor de fundo.
-- **Fonte mono:** a versão da marca, os `kbd` e os números de métrica usam `font-mono`. Teste que exige uma
+- **Fonte mono:** a versão da marca e os números de métrica usam `font-mono`. Teste que exige uma
   só família em todo texto precisa aceitá-la nesses pontos.
 - **Regras locais de cor:** regra, spec ou teste do consumidor que fixa a cor do texto (por exemplo, "todo texto
   preto") entra em conflito quando a camada muda a cor. Reescreva a regra local para seguir a camada; não
@@ -714,7 +714,7 @@ Fonte: Outfit (`font-sans`).
 
 Raios, presos a `--radius` (8px; estética de 12 nov. 2026):
 
-- `rounded-md` (6px): selo da versão e `kbd`;
+- `rounded-md` (6px): selo da versão;
 - `rounded-lg` (8px): abas internas, ícones de seção e caixas das logos;
 - `rounded-xl` (12px): botões, itens do menu, busca e trilho das abas;
 - `rounded-2xl` (16px): cartões, tabelas e diálogo da busca;
@@ -756,7 +756,7 @@ Cabeçalho (igual em todos os sistemas):
   - botão de sair de 36px, com realce destrutivo ao passar o mouse.
 - **Fundo do cabeçalho:** `bg-header`, translúcido com desfoque.
 
-Busca (igual em todos os sistemas): caixa de 36px (raio 12px) com lupa, "Buscar na página" e `Ctrl K` em `kbd` mono, fixa na barra lateral
+Busca (igual em todos os sistemas): caixa de 36px (raio 12px) com lupa e "Buscar na página", sem etiqueta de atalho, fixa na barra lateral
 logo acima do "Recolher" (não rola com o menu), na largura da barra. Com a barra recolhida, só a lupa; no
 celular, no menu móvel.
 
@@ -803,7 +803,7 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.10.1)
+## Interface (tema-mppa 1.10.2)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

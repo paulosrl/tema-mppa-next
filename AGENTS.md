@@ -23,7 +23,8 @@
   - botão de sair.
 
   Não volte ao avatar sozinho do protótipo.
-- Busca "Buscar na página" com `Ctrl K`, definida em 2026-11-11: fixa na barra lateral, logo acima do "Recolher", na largura da barra (só a lupa com a barra recolhida; no celular, no menu móvel). O diálogo vai para o `<body>` por portal. Não volte a busca para o cabeçalho.
+- Busca "Buscar na página", definida em 2026-11-11: fixa na barra lateral, logo acima do "Recolher", na largura da barra (só a lupa com a barra recolhida; no celular, no menu móvel). O diálogo vai para o `<body>` por portal. Não volte a busca para o cabeçalho.
+- Sem etiquetas de atalho na interface (pedido de 12 nov. 2026): nada de `Ctrl K`, `Ctrl B` ou outro `<kbd>` ao lado da lupa, do "Recolher" ou em qualquer ponto. Os atalhos `Ctrl+K` e `Ctrl+B` continuam funcionando e ficam só em `aria-keyshortcuts`.
 - Rodapé padrão dos sistemas, definido em 2026-11-10. O protótipo não tem rodapé; ele segue a página de exemplo do Heimdall e usa só tokens:
   - a partir de 801px, fixo no pé da tela (`sticky`), na faixa do "Recolher": altura `--shell-bar` (62px), a mesma de cabeçalho, marca e "Recolher", e borda `--sidebar-border` (= `--border`);
   - o texto institucional nunca é cortado (sem `line-clamp`): além de 62px, cresce;

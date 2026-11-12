@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.10.2 — 2026-11-12
+
+Pedido do autor em 12 nov. 2026: a interface não mostra mais etiquetas de atalho.
+
+### Removido
+
+- **Etiquetas de atalho:** saem o `Ctrl K` da busca e o `Ctrl B` do "Recolher". Os atalhos `Ctrl+K` (busca) e
+  `Ctrl+B` (recolher a barra) continuam funcionando e seguem anunciados por `aria-keyshortcuts`.
+- **`DESIGN.md`:** sai o token `typography.kbd`.
+
+### Ao atualizar de 1.10.1
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Teste ou captura que procure o texto `Ctrl K` ou `Ctrl B`, ou um `<kbd>` na barra lateral, precisa sair.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.10.2.
+
 ## 1.10.1 — 2026-11-12
 
 Roteiro e cópia, a partir do que o Heimdall relatou ao atualizar para a 1.9.0 e a 1.10.0 (`REPLICAR.md`, seção

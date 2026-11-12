@@ -31,7 +31,7 @@ const subscribeNothing = () => () => {};
 
 /**
  * Botão "Abrir busca" e atalho `Ctrl+K`, fixos na barra lateral, logo acima do "Recolher": caixa da largura
- * da barra com lupa, texto e `Ctrl K`; com a barra recolhida, só a lupa. O diálogo é a paleta do modelo
+ * da barra com lupa e texto, sem etiqueta de atalho; com a barra recolhida, só a lupa. O diálogo é a paleta do modelo
  * (itens da configuração) ou, com `renderSearch`, a busca própria do sistema, controlada por `open`/`setOpen`.
  * O diálogo vai para o `<body>` (portal): a barra lateral tem `transform`, que prenderia um `fixed` dentro dela.
  */
@@ -100,7 +100,6 @@ export function CommandPalette({
       >
         <Search className="size-4 shrink-0 transition-colors group-hover:text-primary" aria-hidden />
         <span className="flex-1 truncate text-left desk:tm-collapsed:hidden">{placeholder}</span>
-        <kbd className="rounded-md border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-semibold desk:tm-collapsed:hidden">Ctrl K</kbd>
       </button>
       {renderSearch && mounted ? createPortal(renderSearch({ open, setOpen }), document.body) : null}
       {open && !renderSearch && mounted ? createPortal(

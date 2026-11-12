@@ -26,7 +26,7 @@
  * 11. `Esc` fecha o menu móvel; o menu móvel abre sempre expandido, mesmo com a barra recolhida.
  * 12. Abas só com `is_admin === true` e algum item administrativo visível; a busca segue a regra.
  * 13. Abaixo de 640px, as logos do cabeçalho aparecem no menu móvel, abaixo da marca.
- * 14. `--font-mono` sem Geist; o `<kbd>` da busca usa `font-sans`.
+ * 14. `--font-mono` sem Geist; nenhuma etiqueta de atalho (`<kbd>`) na interface.
  * 15. `ImageSlot` compila com `strict` sem asserção não nula.
  * 16. Escala de raio `xs` a `4xl` presa a `--radius`.
  * 17. Ponto de quebra do protótipo (801px) na variante `desk:`.
