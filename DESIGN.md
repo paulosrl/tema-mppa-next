@@ -23,8 +23,8 @@ colors:
   muted-foreground: "#5f6f86"
   accent: "#f1f5f9"
   accent-foreground: "#0f172a"
-  highlight: "#0842a1"
-  highlight-foreground: "#ffffff"
+  highlight: "#bfdbfe"
+  highlight-foreground: "#0a2a66"
   destructive: "#991b1b"
   destructive-foreground: "#ffffff"
   success: "#08351f"
@@ -438,8 +438,8 @@ A identidade vem de três escolhas:
 - **Equilíbrio:** o azul é a ação; o vermelho só com significado (destrutivo/erro e identidade
   institucional). Os demais tons de seção continuam variados.
 - **Destructive** (`{colors.destructive}`, `#991b1b`): ação destrutiva, com texto branco.
-- **Highlight** (`{colors.highlight}`, `#0842a1`): item selecionado do menu em azul escuro, degradê `#0842a1` →
-  `#0b4fc0`, texto e ícone brancos (9,11:1 a 7,26:1), barra de 3,5px em azul-claro à esquerda e brilho azul. O item
+- **Highlight** (`{colors.highlight}`, `#bfdbfe`): item selecionado do menu em azul médio, degradê `#bfdbfe` →
+  `#93c5fd`, texto e ícone azul-marinho `#0a2a66` (9,62:1 a 7,58:1), barra de 3,5px em azul forte à esquerda e brilho azul. O item
   sob o ponteiro usa o azul sutil `{colors.sidebar-hover}`. A aba ativa não usa o realce: fica em `bg-card`.
 - **Institutional** (`{colors.institutional}`, `#e11d48`; texto `{colors.institutional-foreground}`,
   `#be123c`, 5,52:1 sobre o selo): selo da versão na marca, ícone da aba Plataforma e nome do sistema no

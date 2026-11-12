@@ -188,7 +188,7 @@ const light = block(":root");
 const dark = { ...light, ...block(".dark") };
 
 const prototype = {
-  light: { radius: "0.5rem", "shell-bar": "3.875rem", background: "#f4f7fb", card: "#ffffff", sidebar: "#ffffff", muted: "#f1f5f9", border: "#e2e8f0", highlight: "#0842a1", "muted-foreground": "#5f6f86" },
+  light: { radius: "0.5rem", "shell-bar": "3.875rem", background: "#f4f7fb", card: "#ffffff", sidebar: "#ffffff", muted: "#f1f5f9", border: "#e2e8f0", highlight: "#bfdbfe", "muted-foreground": "#5f6f86" },
   dark: { background: "#070b12", card: "#111827", sidebar: "#0c121e", muted: "#182235", border: "rgba(255, 255, 255, 0.08)", highlight: "#1e3a8a", "muted-foreground": "#94a3b8" },
 };
 for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
