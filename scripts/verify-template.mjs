@@ -188,8 +188,8 @@ const light = block(":root");
 const dark = { ...light, ...block(".dark") };
 
 const prototype = {
-  light: { radius: "0.5rem", "shell-bar": "3.875rem", background: "#f4f7fb", card: "#ffffff", sidebar: "#ffffff", muted: "#f1f5f9", border: "#e2e8f0", highlight: "#f6eaee", "muted-foreground": "#5f6f86" },
-  dark: { background: "#070b12", card: "#111827", sidebar: "#0c121e", muted: "#182235", border: "rgba(255, 255, 255, 0.08)", highlight: "#321426", "muted-foreground": "#94a3b8" },
+  light: { radius: "0.5rem", "shell-bar": "3.875rem", background: "#f4f7fb", card: "#ffffff", sidebar: "#ffffff", muted: "#f1f5f9", border: "#e2e8f0", highlight: "#0842a1", "muted-foreground": "#5f6f86" },
+  dark: { background: "#070b12", card: "#111827", sidebar: "#0c121e", muted: "#182235", border: "rgba(255, 255, 255, 0.08)", highlight: "#1e3a8a", "muted-foreground": "#94a3b8" },
 };
 for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
   for (const [name, value] of Object.entries(theme === "claro" ? prototype.light : prototype.dark)) {
@@ -228,9 +228,9 @@ function requireContrast(theme, tokens, foreground, background, minimum) {
 const textOn = ["background", "card", "muted", "sidebar", "highlight", "popover"];
 // Texto principal com 7:1 nos dois temas; secundário cinza com 4,5:1 (WCAG AA) em toda superfície neutra.
 for (const surface of textOn) {
+  if (surface === "highlight") continue; // no item selecionado só há o rótulo, em --highlight-foreground
   requireContrast("claro", light, "foreground", surface, 7);
   requireContrast("escuro", dark, "foreground", surface, 7);
-  if (surface === "highlight") continue; // no item ativo só há o rótulo, em --highlight-foreground
   requireContrast("claro", light, "muted-foreground", surface, 4.5);
   requireContrast("escuro", dark, "muted-foreground", surface, 4.5);
 }

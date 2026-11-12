@@ -25,10 +25,12 @@ neutra. Nada muda de lugar: a busca continua na barra lateral e o título contin
 - **Escuro marinho:** deixa o Zinc. Fundo `#070b12`, barra `#0c121e`, cartão e popover `#111827`, muted,
   secondary, accent e sidebar-accent `#182235`, texto `#f8fafc`, texto da barra `#cbd5e1`, borda branca a 8%.
   Tons dos ícones a 18% da cor sobre a barra, com os traços da referência (de 5,93:1 a 9,59:1).
-- **Item ativo do menu:** degradê do vermelho institucional (9%) ao azul (6%), barra de 3,5px à esquerda
-  (`--highlight-bar`) e texto vinho `#881337` (no escuro, rosa `#fda4af`); utilitário `tm-nav-active`.
-  `--highlight` passa a `#f6eaee` (escuro `#321426`). As abas deixam o realce: a ativa fica em `bg-card` com
-  sombra, e os ícones das abas aparecem sempre (Plataforma no vermelho institucional, Administração na primária).
+- **Item selecionado do menu:** azul escuro em degradê (`#0842a1` → `#0b4fc0` no claro; `#1e3a8a` → `#2547a8` no
+  escuro), texto e ícone brancos (7,26:1 ou mais), barra de 3,5px em azul-claro à esquerda e brilho azul
+  (`--highlight-shadow`); utilitário `tm-nav-active`. `--highlight` passa a `#0842a1` (escuro `#1e3a8a`) e
+  `--highlight-foreground` a `#ffffff`. Sob o ponteiro, o item fica num azul sutil (`--sidebar-hover`). As abas
+  deixam o realce: a ativa fica em `bg-card` com sombra, e os ícones das abas aparecem sempre (Plataforma no
+  vermelho institucional, Administração na primária).
 - **Ícones de seção:** caixa de 32px no menu e 28px no título (eram 28 e 24), raio 8px, tom com brilho em degradê
   e borda de 1px na cor do traço (utilitário `tm-tone`), miolo a 20%.
 - **Medidas:** faixas (`--shell-bar`) de 62px (eram 56px); barra lateral de 268px, 76px recolhida (eram 260 e
@@ -64,7 +66,8 @@ neutra. Nada muda de lugar: a busca continua na barra lateral e o título contin
 3. Regras, specs e testes locais que exigem o secundário igual ao principal ou 12:1 em todo texto passam a
    exigir 7:1 no texto principal e 4,5:1 no secundário; reescreva-os (a regra é da camada).
 4. Testes que leem o fundo do item ativo (`background-color`) passam a ler o degradê (`background-image`) ou a
-   cor do texto; os que medem 56px, 260px, 64px, 34px ou o realce da aba ativa precisam dos valores novos.
+   cor do texto (branca); testes que exigem o texto principal sobre `--highlight` passam a exigir
+   `--highlight-foreground`; os que medem 56px, 260px, 64px, 34px ou o realce da aba ativa precisam dos valores novos.
 5. Telas do sistema que imitavam a estética nova com classes locais (`rounded-xl`/`rounded-2xl`, `shadow-xs`,
    borda superior colorida em `Card`, cinza fixo no texto secundário) podem voltar ao primitivo: o `Card` já tem
    raio 16px, padding 24px e sombra em camadas. Mantenha só o que for do sistema.

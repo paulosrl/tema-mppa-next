@@ -87,7 +87,11 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
               active && "tm-nav-active font-semibold text-highlight-foreground hover:bg-transparent hover:text-highlight-foreground",
             )}
           >
-            <SectionIcon icon={item.icon} tone={item.tone} />
+            <SectionIcon
+              icon={item.icon}
+              tone={item.tone}
+              className={active ? "bg-highlight-foreground/15 text-highlight-foreground" : undefined}
+            />
             <span className={cn("truncate", hideWhenCollapsed)}>{item.label}</span>
             {item.badge ? (
               <span className={cn("ml-auto shrink-0 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold", toneClass(item.tone), hideWhenCollapsed)}>

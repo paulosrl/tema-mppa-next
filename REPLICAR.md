@@ -621,7 +621,7 @@ Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 | `bg-sidebar` / `text-sidebar-foreground` | `#ffffff` / `#334155` | `#0c121e` / `#cbd5e1` | barra lateral |
 | `bg-muted` | `#f1f5f9` | `#182235` | trilho das abas, áreas neutras |
 | `bg-header` | `rgba(255,255,255,.85)` | `rgba(12,18,30,.82)` | cabeçalho e rodapé translúcidos, com desfoque |
-| `bg-highlight` / `text-highlight-foreground` | `#f6eaee` / `#881337` | `#321426` / `#fda4af` | tom sólido do item ativo (8,16:1 e 8,79:1); o item usa o degradê `--highlight-gradient` (vermelho 9% ao azul 6%) e a barra `--highlight-bar` de 3,5px (`tm-nav-active`) |
+| `bg-highlight` / `text-highlight-foreground` | `#0842a1` / `#ffffff` | `#1e3a8a` / `#ffffff` | item selecionado do menu (azul escuro em degradê, texto branco com 7,26:1 ou mais); sob o ponteiro, `bg-sidebar-hover` (`#ecf4fe` / `#142645`) |
 | `text-foreground` | `#0f172a` | `#f8fafc` | texto principal |
 | `text-muted-foreground` | `#5f6f86` | `#94a3b8` | texto secundário, cinza (4,67:1 no muted no claro; 6,21:1 no escuro) |
 | `border` (`border-border`) | `#e2e8f0` | `rgba(255,255,255,.08)` | bordas |

@@ -23,8 +23,8 @@ colors:
   muted-foreground: "#5f6f86"
   accent: "#f1f5f9"
   accent-foreground: "#0f172a"
-  highlight: "#f6eaee"
-  highlight-foreground: "#881337"
+  highlight: "#0842a1"
+  highlight-foreground: "#ffffff"
   destructive: "#991b1b"
   destructive-foreground: "#ffffff"
   success: "#08351f"
@@ -438,10 +438,9 @@ A identidade vem de três escolhas:
 - **Equilíbrio:** o azul é a ação; o vermelho só com significado (destrutivo/erro e identidade
   institucional). Os demais tons de seção continuam variados.
 - **Destructive** (`{colors.destructive}`, `#991b1b`): ação destrutiva, com texto branco.
-- **Highlight** (`{colors.highlight}`, `#f6eaee`): tom sólido do início do degradê do item ativo (vermelho
-  institucional a 9% ao azul a 6%, `--highlight-gradient`), com barra de 3,5px à esquerda (`--highlight-bar`,
-  `#e11d48` → `#2563eb`) e texto `#881337` (8,16:1) e sombra. A aba ativa não usa o realce: fica em `bg-card`
-  com sombra.
+- **Highlight** (`{colors.highlight}`, `#0842a1`): item selecionado do menu em azul escuro, degradê `#0842a1` →
+  `#0b4fc0`, texto e ícone brancos (9,11:1 a 7,26:1), barra de 3,5px em azul-claro à esquerda e brilho azul. O item
+  sob o ponteiro usa o azul sutil `{colors.sidebar-hover}`. A aba ativa não usa o realce: fica em `bg-card`.
 - **Institutional** (`{colors.institutional}`, `#e11d48`; texto `{colors.institutional-foreground}`,
   `#be123c`, 5,52:1 sobre o selo): selo da versão na marca, ícone da aba Plataforma e nome do sistema no
   rodapé. **Avatar:** degradê `#e11d48` → `#2563eb` com texto branco e ponto verde de conectado
@@ -491,7 +490,7 @@ com 4,5:1 ou mais; texto sobre preenchimento colorido com 4,5:1.
 | muted-foreground | `#94a3b8` (6,21:1 no muted, 6,92:1 no cartão, 7,69:1 no fundo) |
 | primary / primary-foreground | `#61a6fa` / `#080c16` |
 | destructive / destructive-foreground | `#f87171` / `#070b12` |
-| highlight / highlight-foreground | `#321426` / `#fda4af` (8,79:1); degradê vermelho a 18% e azul a 12%, barra `#fb7185` → `#60a5fa` |
+| highlight / highlight-foreground | `#1e3a8a` / `#ffffff` (10,36:1); degradê `#1e3a8a` → `#2547a8` (8,25:1), barra `#bfdbfe` → `#60a5fa` |
 | institutional, avatar, online, theme-icon | `#fb7185` (selo e texto, 6,40:1), degradê do avatar igual ao do claro, `#10b981`, lua `#60a5fa` |
 | success / warning (texto sobre eles: `#070b12`) | `#bbf7d0` / `#fef08a` |
 | border | `rgba(255, 255, 255, 0.08)` |

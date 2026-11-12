@@ -35,12 +35,14 @@
   --muted-foreground: #5f6f86;
   --accent: #f1f5f9;
   --accent-foreground: #0f172a;
-  /* Realce do item ativo: degradê do vermelho institucional (9%) ao azul (6%), com barra de 3,5px à esquerda;
-     `--highlight` é o tom sólido do início do degradê. Texto vinho com 8,16:1 sobre ele. */
-  --highlight: #f6eaee;
-  --highlight-foreground: #881337;
-  --highlight-gradient: linear-gradient(135deg, rgba(158, 27, 70, 0.09) 0%, rgba(37, 99, 235, 0.06) 100%);
-  --highlight-bar: linear-gradient(180deg, #e11d48 0%, #2563eb 100%);
+  /* Item selecionado do menu: azul escuro em degradê (#0842a1 a #0b4fc0), texto branco (9,11:1 a 7,26:1),
+     barra de 3,5px em azul-claro à esquerda e brilho azul. `--highlight` é o tom sólido do início. O item sob o
+     ponteiro usa o azul sutil de `--sidebar-hover`. */
+  --highlight: #0842a1;
+  --highlight-foreground: #ffffff;
+  --highlight-gradient: linear-gradient(135deg, #0842a1 0%, #0b4fc0 100%);
+  --highlight-bar: linear-gradient(180deg, #bfdbfe 0%, #93c5fd 100%);
+  --highlight-shadow: 0 6px 16px -6px rgba(8, 66, 161, 0.45);
 
   --destructive: #991b1b;
   --destructive-foreground: #ffffff;
@@ -151,11 +153,12 @@
   --muted-foreground: #94a3b8;
   --accent: #182235;
   --accent-foreground: #f8fafc;
-  /* Realce: vermelho a 18% e azul a 12% sobre a barra; texto rosa com 8,79:1 sobre o tom sólido. */
-  --highlight: #321426;
-  --highlight-foreground: #fda4af;
-  --highlight-gradient: linear-gradient(135deg, rgba(225, 29, 72, 0.18) 0%, rgba(59, 130, 246, 0.12) 100%);
-  --highlight-bar: linear-gradient(180deg, #fb7185 0%, #60a5fa 100%);
+  /* Item selecionado: azul escuro em degradê (#1e3a8a a #2547a8), texto branco (10,36:1 a 8,25:1). */
+  --highlight: #1e3a8a;
+  --highlight-foreground: #ffffff;
+  --highlight-gradient: linear-gradient(135deg, #1e3a8a 0%, #2547a8 100%);
+  --highlight-bar: linear-gradient(180deg, #bfdbfe 0%, #60a5fa 100%);
+  --highlight-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.45);
 
   --destructive: #f87171;
   --destructive-foreground: #070b12;
@@ -390,12 +393,12 @@
   font-weight: 800;
 }
 
-/* Item ativo do menu: degradê do vermelho institucional ao azul e barra de 3,5px à esquerda. */
+/* Item selecionado do menu: azul escuro em degradê, texto claro, brilho azul e barra de 3,5px à esquerda. */
 @utility tm-nav-active {
   position: relative;
   background-image: var(--highlight-gradient);
   color: var(--highlight-foreground);
-  box-shadow: var(--shadow);
+  box-shadow: var(--highlight-shadow);
 
   &::before {
     content: "";
