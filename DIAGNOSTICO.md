@@ -86,10 +86,11 @@ ou somem por condição (consulta, permissão) e como a condição chega.
 - `DESIGN.md` existente (ou outro documento de design para agentes) e o que ele diz.
 - **Regras visuais próprias** (spec, `AGENTS.md`, testes): por exemplo, "todo texto preto no tema claro",
   contraste mínimo, cores proibidas. Compare com a camada: `text-success` e `text-warning` são coloridos; a
-  primária é `#9f0712`.
+  primária é o azul `#0842a1` (no escuro, `#61a6fa`). Anote também onde o sistema usa vermelho como ação ou
+  realce (botão, link, item ativo, gráfico): passa a azul; o vermelho fica só para erro e identidade.
 - **Pares de cor antigos** que mudam de contraste com os tokens novos. Procure ao menos texto sobre a
-  própria cor atenuada, como `text-primary` sobre `bg-primary/10` (pílula comum do shadcn/ui), que fica
-  abaixo de 7:1 com a primária nova. Tabela com o par, onde aparece, o contraste com os tokens novos e a
+  própria cor atenuada, como `text-primary` sobre `bg-primary/10` (pílula comum do shadcn/ui; com a primária
+  azul passa de 7:1 em /10 e fica abaixo dele a partir de /15). Tabela com o par, onde aparece, o contraste com os tokens novos e a
   proposta:
 
 | Par (texto / fundo) | Onde | Contraste com os tokens novos | Proposta |

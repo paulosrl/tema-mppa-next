@@ -4,40 +4,34 @@ import { Tabs } from "@base-ui/react/tabs";
 import { ChevronLeft, ChevronRight, LayoutDashboard, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { isValidElement, useState } from "react";
+import { isValidElement, Suspense, useState } from "react";
 import { Button } from "./button";
+import { CommandPalette } from "./command-palette";
 import { ImageSlot } from "./image-slot";
 import { SectionIcon } from "./section-icon";
-import { useSidebar } from "./sidebar-context";
-import type { ImageAsset, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
+import { useCollapsedAttribute, useSidebar } from "./sidebar-context";
+import type { AppShellProps, ImageAsset, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
 import { canSeeAdministration, cn, currentNavigationItem, visibleNavigation } from "./utils";
 
 function isImageAsset(value: ShellConfig["brand"]["symbol"]): value is ImageAsset {
   return Boolean(value && typeof value === "object" && !isValidElement(value) && "alt" in value);
 }
 
-/* Recolhida só vale a partir de 801px: abaixo disso o menu móvel abre sempre expandido. */
-function useCompact() {
-  const { collapsed } = useSidebar();
-  return {
-    collapsed,
-    hideWhenCollapsed: collapsed ? "desk:hidden" : undefined,
-  };
-}
+/*
+ * Recolhida só vale a partir de 801px: abaixo disso o menu móvel abre sempre expandido. A aparência vem da
+ * variante `tm-collapsed` (atributo no <html>, posto antes da hidratação), não do estado do React.
+ */
+const hideWhenCollapsed = "desk:tm-collapsed:hidden";
 
 function Brand({ config }: { config: ShellConfig }) {
   const { setMobileOpen } = useSidebar();
-  const { collapsed, hideWhenCollapsed } = useCompact();
   const { brand } = config;
   return (
-    <div className={cn("flex h-(--shell-bar) shrink-0 items-center border-b border-sidebar-border px-2", collapsed && "desk:justify-center")}>
+    <div className="flex h-(--shell-bar) shrink-0 items-center border-b border-sidebar-border px-2 desk:tm-collapsed:justify-center">
       <Link
         href={brand.homeHref}
         onClick={() => setMobileOpen(false)}
-        className={cn(
-          "flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg px-2 outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring",
-          collapsed && "desk:flex-none desk:justify-center desk:px-1",
-        )}
+        className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg px-2 outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring desk:tm-collapsed:flex-none desk:tm-collapsed:justify-center desk:tm-collapsed:px-1"
         title={`${brand.name}${brand.version ? ` v${brand.version}` : ""}`}
       >
         {isImageAsset(brand.symbol) ? <ImageSlot asset={brand.symbol} className="size-8 shrink-0" /> : brand.symbol ?? null}
@@ -68,7 +62,7 @@ function MobileLogos({ config }: { config: ShellConfig }) {
 
 function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId?: string }) {
   const { setMobileOpen } = useSidebar();
-  const { collapsed, hideWhenCollapsed } = useCompact();
+  const collapsed = useCollapsedAttribute();
   return (
     <nav className="grid gap-[5px]" aria-label="Itens da seção">
       {items.map((item) => {
@@ -81,9 +75,8 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
             title={collapsed ? item.label : undefined}
             onClick={() => setMobileOpen(false)}
             className={cn(
-              "flex items-center gap-2.5 rounded-lg px-2 py-[7px] text-[13px] font-semibold text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+              "group flex items-center gap-2.5 rounded-lg px-2 py-[7px] text-[13px] font-semibold text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring desk:tm-collapsed:justify-center desk:tm-collapsed:px-0",
               active && "bg-highlight text-highlight-foreground shadow-surface hover:bg-highlight",
-              collapsed && "desk:justify-center desk:px-0",
             )}
           >
             <SectionIcon icon={item.icon} tone={item.tone} />
@@ -96,11 +89,10 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
 }
 
 const tabClass =
-  "flex h-8 items-center justify-center rounded-md px-2 text-[13px] font-[650] text-sidebar-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[active]:bg-highlight data-[active]:text-highlight-foreground data-[active]:shadow-surface";
+  "flex h-8 items-center justify-center rounded-md px-2 text-[13px] font-[650] text-sidebar-foreground outline-none transition-[color,background-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[active]:bg-highlight data-[active]:text-highlight-foreground data-[active]:shadow-surface data-[active]:ring-1 data-[active]:ring-border/50";
 
-function SidebarBody({ config, session }: { config: ShellConfig; session: ShellSession }) {
+function SidebarBody({ config, session }: { config: ShellConfig; session: ShellSession | null }) {
   const pathname = usePathname();
-  const { collapsed, hideWhenCollapsed } = useCompact();
   const current = currentNavigationItem(pathname, config, session);
   const [manualSelection, setManualSelection] = useState<{ pathname: string; tab: NavigationSection } | null>(null);
   const manualTab = manualSelection?.pathname === pathname ? manualSelection.tab : null;
@@ -119,32 +111,54 @@ function SidebarBody({ config, session }: { config: ShellConfig; session: ShellS
           onValueChange={(value) => setManualSelection({ pathname, tab: value as NavigationSection })}
           className="mx-2.5 mt-2.5"
         >
-          <Tabs.List
-            className={cn("grid grid-cols-2 gap-1 rounded-lg bg-muted p-[3px]", collapsed && "desk:grid-cols-1")}
-            aria-label="Seções do menu"
-          >
+          <Tabs.List className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-[3px] desk:tm-collapsed:grid-cols-1" aria-label="Seções do menu">
             <Tabs.Tab value="platform" className={tabClass} title={platformLabel}>
-              <LayoutDashboard className={cn("hidden size-4", collapsed && "desk:block")} aria-hidden />
+              <LayoutDashboard className="hidden size-4 desk:tm-collapsed:block" aria-hidden />
               <span className={cn("truncate", hideWhenCollapsed)}>{platformLabel}</span>
             </Tabs.Tab>
             <Tabs.Tab value="administration" className={tabClass} title={administrationLabel}>
-              <ShieldCheck className={cn("hidden size-4", collapsed && "desk:block")} aria-hidden />
+              <ShieldCheck className="hidden size-4 desk:tm-collapsed:block" aria-hidden />
               <span className={cn("truncate", hideWhenCollapsed)}>{administrationLabel}</span>
             </Tabs.Tab>
           </Tabs.List>
         </Tabs.Root>
       ) : null}
       <section className="min-h-0 flex-1 overflow-y-auto p-2.5">
-        <p className={cn("mx-2 mt-0.5 mb-2 text-[13px] font-bold text-sidebar-foreground", collapsed && "desk:sr-only")}>{groupLabel}</p>
+        <p className="mx-2 mt-0.5 mb-2 text-[13px] font-bold text-sidebar-foreground desk:tm-collapsed:sr-only">{groupLabel}</p>
         <NavigationList items={items} activeId={current?.section === activeTab ? current.item.id : undefined} />
       </section>
     </div>
   );
 }
 
-export function AppSidebar({ config, session }: { config: ShellConfig; session: ShellSession }) {
-  const { mobileOpen, toggleCollapsed, setMobileOpen } = useSidebar();
-  const { collapsed, hideWhenCollapsed } = useCompact();
+/*
+ * A rota só existe em tempo de execução nas rotas dinâmicas: com Cache Components (Next 16), ler
+ * `usePathname()` fora de `<Suspense>` bloqueia o prerender. Enquanto a rota não chega, a barra mostra os
+ * itens de plataforma sem item marcado e sem abas; o resto da casca continua estático.
+ */
+function SidebarBodyFallback({ config }: { config: ShellConfig }) {
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <section className="min-h-0 flex-1 overflow-y-auto p-2.5">
+        <p className="mx-2 mt-0.5 mb-2 text-[13px] font-bold text-sidebar-foreground desk:tm-collapsed:sr-only">
+          {config.platformLabel ?? "Plataforma"}
+        </p>
+        <NavigationList items={visibleNavigation(config.platformNavigation)} />
+      </section>
+    </div>
+  );
+}
+
+export function AppSidebar({
+  config,
+  session,
+  renderSearch,
+}: {
+  config: ShellConfig;
+  session: ShellSession | null;
+  renderSearch?: AppShellProps["renderSearch"];
+}) {
+  const { collapsed, mobileOpen, toggleCollapsed, setMobileOpen } = useSidebar();
   return (
     <>
       {mobileOpen ? (
@@ -158,15 +172,20 @@ export function AppSidebar({ config, session }: { config: ShellConfig; session: 
       <aside
         aria-label="Navegação principal"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[260px] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-drawer transition-[width,transform] duration-200 desk:sticky desk:top-0 desk:z-30 desk:translate-x-0 desk:shadow-none",
-          collapsed && "desk:w-16",
+          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[260px] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-drawer transition-[width,transform] duration-200 desk:sticky desk:top-0 desk:z-30 desk:translate-x-0 desk:shadow-none desk:tm-collapsed:w-16",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <Brand config={config} />
         <MobileLogos config={config} />
-        <SidebarBody config={config} session={session} />
-        <div className={cn("flex h-(--shell-bar) shrink-0 items-center justify-between gap-2 border-t border-sidebar-border px-2.5", collapsed && "desk:justify-center")}>
+        <Suspense fallback={<SidebarBodyFallback config={config} />}>
+          <SidebarBody config={config} session={session} />
+        </Suspense>
+        {/* Busca fixa acima do "Recolher": não rola com o menu. */}
+        <div className="flex shrink-0 justify-center border-t border-sidebar-border p-2.5">
+          <CommandPalette config={config} session={session} renderSearch={renderSearch} />
+        </div>
+        <div className="flex h-(--shell-bar) shrink-0 items-center justify-between gap-2 border-t border-sidebar-border px-2.5 desk:tm-collapsed:justify-center">
           <span className={cn("truncate text-sm font-bold text-sidebar-foreground", hideWhenCollapsed)}>
             {config.sidebarShortcutLabel ?? "Recolher"}
           </span>
@@ -179,7 +198,8 @@ export function AppSidebar({ config, session }: { config: ShellConfig; session: 
             aria-expanded={!collapsed}
             aria-keyshortcuts="Control+B Meta+B"
           >
-            {collapsed ? <ChevronRight /> : <ChevronLeft />}
+            <ChevronLeft className="tm-collapsed:hidden" />
+            <ChevronRight className="hidden tm-collapsed:block" />
           </Button>
           <Button
             variant="ghost"

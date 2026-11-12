@@ -2,9 +2,13 @@
 // string do script, e não uma referência de cliente. O ThemeProvider lê a chave daqui.
 
 export const THEME_STORAGE_KEY = "tema-mppa-theme";
+export const SIDEBAR_STORAGE_KEY = "tema-mppa-sidebar-collapsed";
 
-/** Aplica o tema guardado na aba antes da hidratação: toda entrada abre em claro. */
-export const THEME_BOOT_SCRIPT = `(function(){try{var t=sessionStorage.getItem('${THEME_STORAGE_KEY}')||'light';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.remove('light','dark');document.documentElement.classList.add(d?'dark':'light');}catch(e){document.documentElement.classList.remove('dark');document.documentElement.classList.add('light')}})();`;
+/**
+ * Script de boot, antes da hidratação: aplica o tema guardado na aba (toda entrada abre em claro) e marca a
+ * barra recolhida no <html> (`data-tm-sidebar`), para a casca não piscar em nenhum dos dois.
+ */
+export const THEME_BOOT_SCRIPT = `(function(){var h=document.documentElement;try{var t=sessionStorage.getItem('${THEME_STORAGE_KEY}')||'light';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);h.classList.remove('light','dark');h.classList.add(d?'dark':'light');}catch(e){h.classList.remove('dark');h.classList.add('light')}try{h.setAttribute('data-tm-sidebar',localStorage.getItem('${SIDEBAR_STORAGE_KEY}')==='1'?'collapsed':'expanded');}catch(e){}})();`;
 
 /**
  * Script de tema para o `<head>` do layout raiz. Com CSP, passe o mesmo `nonce` do consumidor; o

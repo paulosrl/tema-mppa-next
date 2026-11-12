@@ -17,7 +17,7 @@ const logoSetor = svg(
 export const demoConfig: ShellConfig = {
   brand: {
     name: "Template",
-    version: "1.5.0",
+    version: "1.9.0",
     versionYears: "2026",
     homeHref: "/",
     symbol: <span className="tm-brand-mark" aria-hidden>T</span>,
@@ -25,14 +25,14 @@ export const demoConfig: ShellConfig = {
   platformLabel: "Plataforma",
   administrationLabel: "Administração",
   platformNavigation: [
-    { id: "overview", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "red", description: "Indicadores e atividade recente" },
+    { id: "overview", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "blue", description: "Indicadores e atividade recente" },
     { id: "items", label: "Meus itens", href: "/itens", icon: FileText, tone: "green", description: "Itens criados por você" },
     { id: "shared", label: "Itens compartilhados", href: "/compartilhados", icon: Share2, tone: "violet", description: "Itens que outras pessoas compartilharam" },
     { id: "agents", label: "Automações", href: "/automacoes", icon: Bot, tone: "orange", description: "Rotinas agendadas" },
     { id: "item-detail", label: "Detalhe do item", href: "/itens/detalhe", icon: FileText, tone: "green", hidden: true },
   ],
   administrationNavigation: [
-    { id: "curation", label: "Curadoria", href: "/administracao/curadoria", icon: ShieldCheck, tone: "red", description: "Revisão de itens publicados" },
+    { id: "curation", label: "Curadoria", href: "/administracao/curadoria", icon: ShieldCheck, tone: "blue", description: "Revisão de itens publicados" },
     { id: "users", label: "Usuários", href: "/administracao/usuarios", icon: Users, tone: "green", description: "Contas e perfis" },
   ],
   header: {
@@ -40,7 +40,7 @@ export const demoConfig: ShellConfig = {
       { src: logoOrgao, alt: "Órgão (exemplo)", width: 132, height: 76 },
       { src: logoSetor, alt: "Setor (exemplo)", width: 76, height: 76 },
     ],
-    searchPlaceholder: "Buscar ou executar…",
+    searchPlaceholder: "Buscar na página",
     signOutLabel: "Sair",
   },
   sidebarShortcutLabel: "Recolher",

@@ -1,5 +1,159 @@
 # Changelog
 
+## 1.9.0 — 2026-11-11
+
+Superfícies em ardósia no claro, sombra com brilho interno, ícones de seção duotone, busca na barra lateral e
+realce mais claro. Pedido do autor em 11 nov. 2026, aplicado dentro das regras de contraste (7:1 no claro, secundário igual ao texto, ícones com
+4,5:1). A API não muda; mudam a aparência e o lugar da busca. O escuro continua em Zinc.
+
+### Modificado
+
+- **Claro em ardósia:** fundo `#ffffff` → `#f4f7fb`; cartão e popover `#fafafa` → `#ffffff`; barra `#fcfcfc` →
+  `#ffffff`; muted, secondary, accent e sidebar-accent `#f4f4f5` → `#f1f5f9`; borda e input `#d4d4d8` →
+  `#e2e8f0`; texto e secundário `#18181b` → `#0f172a` (16,61:1 no fundo); texto da barra `#334155` (10,35:1);
+  logo surface `#f8fafc`. A primária fica `#0842a1` (8,48:1 sobre o fundo). O pedido trazia secundário `#64748b` (4,4:1), item ativo escuro e tons a 12% (3,3:1), que
+  ficaram de fora por contraste.
+- **Busca na barra lateral:** a caixa "Abrir busca" sai do cabeçalho e fica fixa na barra lateral, logo acima
+  do "Recolher", na largura da barra, com lupa, texto e `Ctrl K`; com a barra recolhida, só a lupa; no celular,
+  no menu móvel (antes, só a lupa no cabeçalho). O texto padrão de `header.searchPlaceholder` passa de
+  "Buscar ou executar…" a "Buscar na página". O diálogo (o do modelo e o de `renderSearch`) vai para o `<body>`
+  por portal, porque a barra tem `transform`. Escolher um resultado fecha também o menu móvel. `headerActions`
+  fica à esquerda do tema.
+- **Realce do item e da aba ativos mais claro:** `--highlight` passa de `#dbeafe` a `#ecf4fe` no claro (texto com
+  16,10:1; 10 pontos de luz dariam branco, então sobe 3,5) e de `#12264a` a `#1c3b73` no escuro (10 pontos a mais
+  de luz; texto com 10,47:1).
+- **Sombra (`--shadow`):** deixa a do protótipo e passa a camadas com brilho interno de 1px no topo:
+  `0 1px 3px rgba(9,9,11,.06), 0 4px 12px -2px rgba(9,9,11,.05), inset 0 1px 0 0 rgba(255,255,255,.8)` no
+  claro e `0 4px 16px -2px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 0 rgba(255,255,255,.07)` no
+  escuro. `--drawer-shadow` a 22%.
+- **Tons do escuro:** deixam de repetir os pastéis do claro. Fundo translúcido (18 a 20% da cor sobre a barra
+  `#18181b`), gravado em hex, com traço pastel de 9,69:1 a 10,44:1 (azul `#1f2d47` + `#bfdbfe`, verde `#17352d` +
+  `#a7f3d0`, e os demais na tabela do `REPLICAR.md`, seção 8).
+- **`SectionIcon` duotone:** o miolo do ícone recebe 15% da cor do traço (`[&_svg]:fill-current/15`); anel
+  interno de 1px a 15%; cresce 5% sob o mouse no menu (os links ganham `group`), sem movimento com
+  `prefers-reduced-motion`.
+- **Abas Plataforma/Administração:** a ativa ganha anel de 1px na borda a 50% e transição de cor e sombra.
+- **`Card`:** transição de 200ms, título com `tracking-tight` e descrição com 2px acima.
+- **`text-primary` sobre `bg-primary/15`:** o aviso continua, agora pelo fundo (6,59:1) e pelo muted (6,45:1);
+  `bg-primary/10` passa (7,18:1, 7,68:1 e 7,04:1).
+- **Documentos e verificador:** `AGENTS.md` (exceção ao protótipo), `DESIGN.md`, `REPLICAR.md` (seção 8),
+  `GUIA.html` e `verify-template.mjs` com os valores novos. Prévia e comparações regeradas.
+
+### Ao atualizar de 1.8.x
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Rode o `verificar-design.mjs`: fundos, texto, borda, sombra e os tons do escuro mudaram; leve os valores ao
+   `DESIGN.md` do sistema.
+3. Telas do sistema que pintavam algo com `bg-background` para parecer cartão passam a ardósia: use `bg-card`.
+4. A busca saiu do cabeçalho: testes e seletores que a procuravam no `<header>` passam a procurá-la na barra
+   lateral (`aria-label="Abrir busca"` não mudou). Um `renderSearch` que dependia de ficar dentro do cabeçalho
+   agora é renderizado no `<body>`.
+5. Testes, capturas e comparações visuais que fixam o fundo branco, o realce `#dbeafe`/`#12264a`, a borda `#d4d4d8` ou a sombra antiga
+   precisam ser atualizados.
+6. Troque a versão na seção "Interface" do `AGENTS.md` para 1.9.0.
+
+## 1.8.0 — 2026-11-11
+
+Primária azul e equilíbrio de cores. Decisão do autor em 11 nov. 2026: todos os sistemas do MPPA passam a usar
+azul como cor de ação, para equilibrar com o vermelho da identidade institucional, sem nenhuma diferença de
+cor, fonte, tamanho ou estrutura entre eles. Os azuis são os que o Heimdall já usava: `#0842a1` no claro
+(texto `#ffffff`) e `#61a6fa` no escuro (texto `#080c16`). A API não muda; muda a aparência.
+
+### Modificado
+
+- **Ação em azul:** `--primary`, `--ring`, `--sidebar-primary` e `--sidebar-ring` passam de vermelho
+  (`#9f0712` no claro, `#ef4444` no escuro) a `#0842a1` (9,11:1 com branco e sobre o fundo) no claro e a `#61a6fa`
+  (7,04:1 sobre o cartão, 7,90:1 sobre o fundo; texto escuro com 7,76:1) no escuro. O botão primário, o foco e
+  os links de ação seguem.
+- **Item ativo da barra:** `--highlight` passa a azul-claro, `#dbeafe` no claro (texto preto com 14,52:1) e
+  `#12264a` no escuro (texto claro com 14,35:1). O ícone do item é azul.
+- **Ícone padrão de seção:** `SectionIcon` sem `tone` e o ícone do título do cabeçalho passam de `"red"` a
+  `"blue"`; a demonstração usa `"blue"` nos dois primeiros itens de cada aba. `"red"` continua aceito, mas
+  fica reservado ao que tem significado institucional.
+- **Gráficos:** as barras do `BarChart` e `--chart-1..5` passam a azul: forte `#0842a1 → #3b82f6`, suave
+  `#6f9be6 → #94b6f1` (no nível do vermelho suave de antes). No escuro, o azul do claro some no cartão (1,7:1);
+  os gráficos têm valores próprios: forte `#3b82f6 → #61a6fa` (4,82:1 a 7,04:1 sobre o cartão) e suave
+  `#4f78b8 → #7aa2dd` (3,97:1 a 6,78:1).
+- **Vermelho só com significado:** `--destructive` (erro e ação destrutiva) e o símbolo padrão `tm-brand-mark`
+  (identidade institucional) continuam vermelhos, como as logos e qualquer faixa institucional vermelho-azul.
+  Os demais tons de seção continuam variados.
+- **`text-primary` sobre `bg-primary/10`:** com o azul, o par passa a ter 7,68:1 sobre o fundo, 7,40:1 sobre o
+  cartão e 7,01:1 sobre o muted no claro, e 6,05:1 sobre o cartão no escuro. O aviso do `REPLICAR.md` (seção 8)
+  passa a valer só de `bg-primary/15` em diante (6,74:1 sobre o cartão).
+- **Protótipo:** `docs/prototipo/index.html` mudou primeiro (botão primário, realce, ícone e barras em azul), e
+  o `tema-mppa.css` o segue. Prévia e comparações regeradas.
+- **Documentos:** `DESIGN.md` (tokens, "Overview", "Colors", tabela do escuro, "Do's and Don'ts"), `REPLICAR.md`
+  (tabela de tokens, `tone`, equilíbrio de cores, aviso de `bg-primary/10`), `DIAGNOSTICO.md` (onde o sistema usa
+  vermelho como ação) e `GUIA.html` (as cores do próprio guia).
+- **`verify-template`:** confere o azul de ação nos quatro tokens e no texto sobre eles, o destrutivo e o símbolo
+  ainda vermelhos, o tom padrão azul, os contrastes dos gráficos e dos seis tons de seção.
+
+### Ao atualizar de 1.7.x
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Rode o `verificar-design.mjs`: `primary`, `ring`, `highlight` e os `chart-*` mudaram; leve os valores ao
+   `DESIGN.md` do sistema.
+3. Confira o que ficou vermelho por ser a antiga cor de ação no código do sistema (não na camada): botão, link,
+   realce, ícone, gráfico, ilustração de estado vazio. Passe a `bg-primary`, `text-primary`, `ring` ou ao tom
+   `"blue"`. O vermelho fica para erro, ação destrutiva e identidade institucional.
+4. Um consumidor que pintava algo de azul com token próprio, como o `--accent-blue` da tela de entrada do
+   Heimdall, pode passar a usar a primária: o valor é o mesmo.
+5. Testes, capturas e comparações visuais que fixam a cor vermelha da primária, do item ativo ou do gráfico
+   precisam ser atualizados.
+6. Itens de menu sem `tone` (ou com `"red"` só por ser o padrão) passam a azul: reveze os tons como na seção 4.5.
+7. Troque a versão na seção "Interface" do `AGENTS.md` para 1.8.0.
+
+## 1.7.0 — 2026-11-10
+
+Pedidos do HubIA (o segundo consumidor antigo, Fase 1), P1 a P5 do plano dele, e dois ajustes que a adoção
+mostrou. A cópia do HubIA, única que existia, partia da 1.6.0; esta entrada foi recuperada dela e leva junto as
+correções da 1.6.1 (tema com o `sessionStorage` bloqueado). A API só ganha propriedades opcionais; nada sai.
+O que muda na aparência: o texto secundário e o de status passam a 12:1 sobre superfície neutra nos dois temas.
+
+- **P1. Mais tons de seção:** `NavigationTone` ganha `"blue"`, `"teal"`, `"pink"` e `"amber"` (tokens
+  `--tone-*` e `--tone-*-foreground`, de 4,86:1 a 6,37:1 sobre o próprio fundo), para sistemas com mais de
+  quatro itens que pedem uma cor por item.
+- **P2. Barra recolhida sem piscar em layout estático:** o script de boot (`<ThemeScript>`) passa a marcar
+  `data-tm-sidebar="collapsed"` no `<html>` a partir do `localStorage`, e a barra se desenha pela variante
+  `tm-collapsed` do `tema-mppa.css`, não pelo estado do React. Antes, numa casca hidratada, a barra recolhida
+  nascia expandida e fechava depois. O pedido era um cookie opcional; o atributo resolve o mesmo sem obrigar
+  o layout a ler cookie (que o tornaria dinâmico). `SIDEBAR_STORAGE_KEY` passa a vir de `theme-script.tsx`.
+- **P3. Busca do sistema (`renderSearch`):** o `AppShell` aceita `renderSearch({ open, setOpen })`, que troca
+  a paleta do modelo pelo diálogo do sistema (por exemplo, uma busca no servidor). O botão "Abrir busca" e o
+  `Ctrl+K` continuam do modelo.
+- **P4. Ações do sistema no cabeçalho (`headerActions`):** nó renderizado à esquerda da busca, para um botão
+  que depende de estado do sistema (por exemplo, "Voltar ao Heimdall" só para quem veio de lá). O
+  `header.backLink` fixo continua.
+- **P5. Contraste de 12:1 em superfície neutra:** `--muted-foreground` escuro vai de `#a1a1aa` (5,81:1 no
+  muted) a `#f4f4f5` (13,55:1); `--success`/`--warning` vão a `#08351f`/`#432506` no claro (12,41:1 e
+  12,69:1 no muted) e a `#bbf7d0`/`#fef08a` no escuro (12,29:1 e 12,80:1). Texto sobre preenchimento
+  colorido continua em 4,5:1.
+- **Sessão a caminho (`session={null}`):** a casca aparece sem esperar a sessão (sem salto de layout), sem
+  dado de usuário nem administração, com o espaço do avatar reservado e o botão de sair disponível.
+- **Título vindo do conteúdo (`title`):** numa rota de detalhe, o nome do registro substitui o rótulo do item
+  no cabeçalho e sai sem ícone de seção; o item continua marcado na barra.
+- **Rota sob `<Suspense>`:** a barra lateral e o título do cabeçalho leem `usePathname()` dentro de
+  `<Suspense>`. Com Cache Components (Next 16), ler a rota fora dele reprovava o `next build` nas rotas
+  dinâmicas ("URL data `usePathname()` in a Client Component outside of `<Suspense>`"). Enquanto a rota não
+  chega, a barra mostra os itens de plataforma sem item marcado, e o título fica vazio. Os itens leem a barra
+  recolhida pela loja externa (`useCollapsedAttribute`), não pelo contexto: a fronteira hidrata depois do resto,
+  e o `title` do item em modo ícone divergiria do HTML servido e ficaria ausente.
+- **Iniciais próprias (`session.initials`):** opcional; sem ele, a regra da camada continua.
+- **`REPLICAR.md`:** 4.4 (o script também marca a barra), 4.5 (tons novos), 4.6 (tabela das propriedades
+  novas), 4.8 (atributo `data-tm-sidebar`), seção 8 (tons novos e contraste de 12:1) e seção 11.
+- **`DESIGN.md`:** tons novos, status e secundário do escuro com os valores novos, e a regra de 12:1.
+
+### Ao atualizar de 1.6.x
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (seção 7).
+2. Rode o `verificar-design.mjs`: `success`, `warning` e os tons novos mudaram; leve os valores ao `DESIGN.md`
+   do sistema.
+3. Testes que leem o estado da barra recolhida passam a ler `data-tm-sidebar` no `<html>` (ou o
+   `aria-expanded` do botão "Recolher menu lateral").
+4. Opcional: troque a busca, o botão de volta e o título de detalhe locais por `renderSearch`, `headerActions`
+   e `title`.
+5. Troque a versão na seção "Interface" do `AGENTS.md`.
+
 ## 1.6.1 — 2026-11-10
 
 Duas correções do tema com o `sessionStorage` bloqueado, achadas na revisão de código do Heimdall. A

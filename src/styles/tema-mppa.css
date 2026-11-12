@@ -1,10 +1,14 @@
 /*
- * Tema MPPA: vermelho sobre Zinc, Outfit, raio 8px, bordas suaves, sombras discretas e
- * gráficos com degradê, iguais ao protótipo "Template Visual HubIA v1.0" (docs/prototipo/index.html).
+ * Tema MPPA: azul de ação e vermelho institucional sobre Zinc, Outfit, raio 8px, bordas suaves, sombras
+ * discretas e gráficos com degradê, iguais ao protótipo "Template Visual HubIA v1.0" (docs/prototipo/index.html).
  *
- * Contraste: no claro, todo texto tem 7:1 sobre o próprio fundo e o texto secundário é o preto do
- * texto principal; no escuro, 4,5:1 e texto escuro sobre a primária. Onde o protótipo fica abaixo
- * disso, o tom foi escurecido sem mudar a aparência (CHANGELOG do modelo).
+ * Equilíbrio de cores: a ação é azul (botão primário, foco, links de ação, item ativo da barra, ícone
+ * padrão de seção e gráficos); o vermelho só aparece com significado: destrutivo/erro e identidade
+ * institucional (logos e símbolo). Os azuis são os do Heimdall: #0842a1 no claro e #61a6fa no escuro.
+ *
+ * Contraste: texto sobre superfície neutra (fundo, cartão, muted) com 12:1 nos dois temas, inclusive o
+ * secundário e o de status; texto sobre preenchimento colorido com 4,5:1 (no escuro, texto escuro sobre a
+ * primária). Onde o protótipo fica abaixo disso, o tom foi ajustado sem mudar a aparência (CHANGELOG).
  *
  * Única fonte de cor da camada visual: os componentes usam só estes tokens.
  */
@@ -13,46 +17,51 @@
   /* Altura única das faixas do shell: cabeçalho, marca, "Recolher" e rodapé ficam alinhados por ela. */
   --shell-bar: 3.5rem;
 
-  --background: #ffffff;
-  --foreground: #18181b;
-  --card: #fafafa;
-  --card-foreground: #18181b;
-  --popover: #fafafa;
-  --popover-foreground: #18181b;
+  /* Ardósia: fundo #f4f7fb destaca cartão e barra brancos; cinzas e bordas azulados. */
+  --background: #f4f7fb;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
 
-  /* Protótipo #b91c1c (6,47:1 com branco) escurecido para 8,36:1. */
-  --primary: #9f0712;
+  /* Azul de ação (o mesmo do Heimdall): 9,11:1 com branco e sobre o cartão, 8,48:1 sobre o fundo. */
+  --primary: #0842a1;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
-  /* Protótipo #71717a (4,83:1): o secundário é o preto do texto. */
-  --muted-foreground: #18181b;
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
-  /* Realce do item e da aba ativos. */
-  --highlight: #fee2e2;
-  --highlight-foreground: #18181b;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  /* Protótipo #71717a (4,83:1) e o cinza-ardósia #64748b (4,4:1): o secundário é o texto. */
+  --muted-foreground: #0f172a;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  /* Realce do item e da aba ativos: azul-claro (#dbeafe com 3,5 pontos a mais de luz; 10 pontos dariam
+     branco); o texto tem 16,10:1 sobre ele. */
+  --highlight: #ecf4fe;
+  --highlight-foreground: #0f172a;
 
   --destructive: #991b1b;
   --destructive-foreground: #ffffff;
-  --success: #15603a;
+  /* Status como texto sobre superfície neutra: 12:1 ou mais sobre o muted (#f4f4f5). */
+  --success: #08351f; /* 12,45:1 no muted */
   --success-foreground: #ffffff;
-  --warning: #7a4510;
+  --warning: #432506; /* 12,73:1 no muted */
   --warning-foreground: #ffffff;
 
-  --border: #d4d4d8;
-  --input: #d4d4d8;
-  --ring: #9f0712;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0842a1; /* 8,48:1 sobre o fundo */
 
   --overlay: #000000;
-  --logo-surface: #ffffff;
+  --logo-surface: #f8fafc;
 
-  --shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+  /* Sombra em camadas com um brilho interno no topo (1px branco a 80%), no lugar da do protótipo. */
+  --shadow: 0 1px 3px rgba(9, 9, 11, 0.06), 0 4px 12px -2px rgba(9, 9, 11, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
   --bar-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  --drawer-shadow: 8px 0 24px rgba(0, 0, 0, 0.2);
+  --drawer-shadow: 8px 0 24px rgba(0, 0, 0, 0.22);
 
-  /* Ícones de seção: fundo pastel do protótipo e traço com 4,5:1 ou mais sobre ele. */
+  /* Ícones de seção: fundo pastel do protótipo e traço com 4,5:1 ou mais sobre ele. O azul é o tom padrão
+     (sem `tone`); o vermelho continua disponível, mas é reservado ao que tem significado institucional. */
   --tone-red: #fee2e2;
   --tone-red-foreground: #970611; /* 7,32:1 (protótipo #b91c1c, 5,30:1) */
   --tone-green: #d1fae5;
@@ -61,30 +70,42 @@
   --tone-violet-foreground: #7c3aed; /* 4,80:1, igual ao protótipo */
   --tone-orange: #ffedd5;
   --tone-orange-foreground: #a85005; /* 4,80:1 (protótipo #d97706, 2,78:1) */
+  /* Tons a mais, para uma cor por item em menus com mais de quatro itens. */
+  --tone-blue: #dbeafe;
+  --tone-blue-foreground: #1d4ed8; /* 5,49:1 */
+  --tone-teal: #ccfbf1;
+  --tone-teal-foreground: #0f766e; /* 4,86:1 */
+  --tone-pink: #fce7f3;
+  --tone-pink-foreground: #be185d; /* 5,14:1 */
+  --tone-amber: #fef3c7;
+  --tone-amber-foreground: #92400e; /* 6,37:1 */
 
-  /* Gráficos e marca: elementos gráficos, sem texto; cores do protótipo. */
-  --chart-strong-from: #b50008;
-  --chart-strong-to: #ff2935;
-  --chart-soft-from: #eb777d;
-  --chart-soft-to: #ff9da2;
-  --chart-1: #b50008;
-  --chart-2: #ff2935;
-  --chart-3: #eb777d;
-  --chart-4: #ff9da2;
-  --chart-5: #7f1d1d;
+  /* Gráficos: elementos gráficos, sem texto; azuis do protótipo. Barra forte: #0842a1 (9,11:1 sobre o
+     cartão) a #3b82f6 (3,68:1); barra suave: #6f9be6 (2,80:1) a #94b6f1 (2,05:1), no nível do vermelho suave
+     que o protótipo tinha (2,81:1 e 1,98:1). */
+  --chart-strong-from: #0842a1;
+  --chart-strong-to: #3b82f6;
+  --chart-soft-from: #6f9be6;
+  --chart-soft-to: #94b6f1;
+  --chart-1: #0842a1;
+  --chart-2: #3b82f6;
+  --chart-3: #6f9be6;
+  --chart-4: #94b6f1;
+  --chart-5: #0a2a66;
+  /* Marca institucional: continua vermelha, é identidade e não ação. */
   --brand-mark-from: #ef3340;
   --brand-mark-to: #7f1d1d;
   --brand-mark-foreground: #ffffff;
 
-  --sidebar: #fcfcfc;
-  --sidebar-foreground: #18181b;
-  --sidebar-primary: #9f0712;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #334155;
+  --sidebar-primary: #0842a1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f4f4f5;
-  --sidebar-accent-foreground: #18181b;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
   /* A borda da barra é a borda geral: as faixas da barra e do conteúdo não podem divergir. */
   --sidebar-border: var(--border);
-  --sidebar-ring: #9f0712;
+  --sidebar-ring: #0842a1;
 }
 
 .dark {
@@ -95,44 +116,79 @@
   --popover: #18181b;
   --popover-foreground: #fafafa;
 
-  /* Texto escuro sobre a primária: 5,29:1. */
-  --primary: #ef4444;
-  --primary-foreground: #09090b;
+  /* Azul de ação (o mesmo do Heimdall): 7,04:1 sobre o cartão, 7,90:1 sobre o fundo e 5,92:1 sobre o
+     muted; texto escuro (#080c16) sobre ele com 7,76:1. */
+  --primary: #61a6fa;
+  --primary-foreground: #080c16;
   --secondary: #27272a;
   --secondary-foreground: #fafafa;
   --muted: #27272a;
-  --muted-foreground: #a1a1aa; /* 6,91:1 no cartão, 5,81:1 no muted */
+  /* Secundário com 12:1 ou mais em toda superfície neutra: 13,55:1 no muted, 16,12:1 no cartão. */
+  --muted-foreground: #f4f4f5;
   --accent: #27272a;
   --accent-foreground: #fafafa;
-  --highlight: #351518;
+  /* Azul do realce: #12264a com 10 pontos a mais de luz (protótipo: tom escuro do vermelho #351518); texto
+     claro com 10,47:1. */
+  --highlight: #1c3b73;
   --highlight-foreground: #fafafa;
 
   --destructive: #f87171;
   --destructive-foreground: #09090b;
-  --success: #4ade80;
+  --success: #bbf7d0; /* 12,29:1 no muted, 14,62:1 no cartão */
   --success-foreground: #09090b;
-  --warning: #facc15;
+  --warning: #fef08a; /* 12,80:1 no muted, 15,22:1 no cartão */
   --warning-foreground: #09090b;
 
   --border: rgba(255, 255, 255, 0.12);
   --input: rgba(255, 255, 255, 0.12);
-  --ring: #ef4444;
+  --ring: #61a6fa; /* 7,90:1 sobre o fundo */
 
   --overlay: #000000;
   --logo-surface: #ffffff;
 
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* Sombra mais funda e brilho interno no topo (1px branco a 7%), para destacar cartões e item ativo no escuro. */
+  --shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
 
-  /* O protótipo mantém os ícones de seção pastéis também no escuro. */
+  /* Ícones de seção no escuro: o tom translúcido (18 a 20% da cor sobre a barra #18181b) gravado em hex, para
+     o contraste ser medido; traço pastel com 9,69:1 ou mais. */
+  --tone-red: #401f27; /* rgba(244, 63, 94, 0.18); #fecdd3 com 10,31:1 */
+  --tone-red-foreground: #fecdd3;
+  --tone-green: #17352d; /* rgba(16, 185, 129, 0.18); 10,34:1 */
+  --tone-green-foreground: #a7f3d0;
+  --tone-violet: #2f2647; /* rgba(139, 92, 246, 0.2); 10,16:1 */
+  --tone-violet-foreground: #ddd6fe;
+  --tone-orange: #41281a; /* rgba(249, 115, 22, 0.18); 10,05:1 */
+  --tone-orange-foreground: #fed7aa;
+  --tone-blue: #1f2d47; /* rgba(59, 130, 246, 0.2); 9,69:1 */
+  --tone-blue-foreground: #bfdbfe;
+  --tone-teal: #173534; /* rgba(20, 184, 166, 0.18); 10,44:1 */
+  --tone-teal-foreground: #99f6e4;
+  --tone-pink: #3e2132; /* rgba(236, 72, 153, 0.18); 10,35:1 */
+  --tone-pink-foreground: #fbcfe8;
+  --tone-amber: #403018; /* rgba(245, 158, 11, 0.18); 10,20:1 */
+  --tone-amber-foreground: #fde68a;
+
+  /* Gráficos no escuro: o azul do claro (#0842a1) some no cartão (1,7:1); aqui as pontas têm 3:1 ou mais
+     sobre o cartão (#18181b): forte #3b82f6 (4,82:1) a #61a6fa (7,04:1); suave #4f78b8 (3,97:1) a #7aa2dd
+     (6,78:1). */
+  --chart-strong-from: #3b82f6;
+  --chart-strong-to: #61a6fa;
+  --chart-soft-from: #4f78b8;
+  --chart-soft-to: #7aa2dd;
+  --chart-1: #3b82f6;
+  --chart-2: #61a6fa;
+  --chart-3: #4f78b8;
+  --chart-4: #7aa2dd;
+  --chart-5: #a9c5f5;
 
   --sidebar: #18181b;
   --sidebar-foreground: #fafafa;
-  --sidebar-primary: #ef4444;
-  --sidebar-primary-foreground: #09090b;
+  --sidebar-primary: #61a6fa;
+  --sidebar-primary-foreground: #080c16;
   --sidebar-accent: #27272a;
   --sidebar-accent-foreground: #fafafa;
   --sidebar-border: var(--border);
-  --sidebar-ring: #ef4444;
+  --sidebar-ring: #61a6fa;
 }
 
 @theme inline {
@@ -171,6 +227,14 @@
   --color-tone-violet-foreground: var(--tone-violet-foreground);
   --color-tone-orange: var(--tone-orange);
   --color-tone-orange-foreground: var(--tone-orange-foreground);
+  --color-tone-blue: var(--tone-blue);
+  --color-tone-blue-foreground: var(--tone-blue-foreground);
+  --color-tone-teal: var(--tone-teal);
+  --color-tone-teal-foreground: var(--tone-teal-foreground);
+  --color-tone-pink: var(--tone-pink);
+  --color-tone-pink-foreground: var(--tone-pink-foreground);
+  --color-tone-amber: var(--tone-amber);
+  --color-tone-amber-foreground: var(--tone-amber-foreground);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -241,6 +305,13 @@
 
 /* Ponto de quebra do protótipo: barra lateral fixa a partir de 801px; abaixo, menu móvel. */
 @custom-variant desk (@media (width >= 801px));
+
+/*
+ * Barra recolhida: o script de boot (`ThemeScript`) marca `data-tm-sidebar="collapsed"` no <html> antes da
+ * primeira pintura, e a barra se desenha por esta variante, não pelo estado do React. Assim a casca nasce
+ * recolhida já no HTML servido, sem piscar, mesmo num layout estático que não lê cookie.
+ */
+@custom-variant tm-collapsed (&:where([data-tm-sidebar="collapsed"], [data-tm-sidebar="collapsed"] *));
 
 /* Barras de gráfico com degradê e topo arredondado (6px em cima, 2px embaixo). */
 @utility tm-bar {

@@ -28,10 +28,11 @@ export function isNavigationActive(pathname: string, item: NavigationItem) {
 
 /**
  * Abas e itens administrativos aparecem só com `session.is_admin === true` e pelo menos um item
- * administrativo visível. A mesma regra vale para a barra lateral, a busca e o título.
+ * administrativo visível. A mesma regra vale para a barra lateral, a busca e o título. Sem sessão
+ * (`null`, ainda a caminho), nada administrativo aparece.
  */
-export function canSeeAdministration(config: ShellConfig, session: ShellSession) {
-  return session.is_admin === true && (config.administrationNavigation ?? []).some((item) => !item.hidden);
+export function canSeeAdministration(config: ShellConfig, session: ShellSession | null) {
+  return session?.is_admin === true && (config.administrationNavigation ?? []).some((item) => !item.hidden);
 }
 
 export function visibleNavigation(items: NavigationItem[] | undefined) {
@@ -45,7 +46,7 @@ export function visibleNavigation(items: NavigationItem[] | undefined) {
 export function currentNavigationItem(
   pathname: string,
   config: ShellConfig,
-  session: ShellSession,
+  session: ShellSession | null,
 ): CurrentNavigation | null {
   const sections: [NavigationSection, NavigationItem[]][] = [["platform", config.platformNavigation]];
   if (canSeeAdministration(config, session)) sections.push(["administration", config.administrationNavigation ?? []]);
@@ -72,6 +73,8 @@ export function displayName(session: ShellSession) {
 }
 
 export function initials(session: ShellSession) {
+  const own = session.initials?.trim();
+  if (own) return own;
   const source = session.name?.trim() || session.email.split("@")[0] || "?";
   const parts = source.split(/[\s._-]+/).filter(Boolean);
   return `${parts[0]?.[0] ?? "?"}${parts.length > 1 ? parts.at(-1)?.[0] ?? "" : ""}`.toUpperCase();

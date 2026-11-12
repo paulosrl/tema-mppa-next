@@ -19,7 +19,8 @@
  * 7. `NavigationItem` ganha `description` (mostrada e filtrada pela busca), `matches` (rotas que
  *    marcam o item) e `hidden` (fora do menu e da busca, mas dá o título e a aba). Um só item fica
  *    marcado: o de rota mais longa, o mesmo do título e da aba aberta (`currentNavigationItem`).
- * 8. `tone` aceita `"red" | "green" | "violet" | "orange"`; classes soltas continuam aceitas.
+ * 8. `tone` aceita `"blue"` (padrão, sem valor), `"green"`, `"violet"`, `"orange"`, `"teal"`, `"pink"`, `"amber"`
+ *    e `"red"` (reservado ao que tem significado institucional); classes soltas continuam aceitas.
  * 9. Sobreposição em `bg-overlay` e fundo das logos em `bg-logo-surface`, por token.
  * 10. A barra recolhida fica no `localStorage`; sem armazenamento, só na memória da página.
  * 11. `Esc` fecha o menu móvel; o menu móvel abre sempre expandido, mesmo com a barra recolhida.
@@ -31,6 +32,14 @@
  * 17. Ponto de quebra do protótipo (801px) na variante `desk:`.
  * 18. `<ThemeScript nonce />` (de `theme-script.tsx`, sem `"use client"`) põe o script de tema no layout
  *     raiz; `THEME_BOOT_SCRIPT` e `THEME_STORAGE_KEY` vêm do mesmo módulo e chegam ao servidor como texto.
+ * 19. Mais quatro tons de seção (`blue`, `teal`, `pink`, `amber`), para uma cor por item em menus maiores.
+ * 20. A barra recolhida se desenha pela variante `tm-collapsed` (atributo `data-tm-sidebar` no <html>, posto
+ *     pelo script de boot): nasce recolhida no HTML, sem piscar, mesmo em layout estático.
+ * 21. `AppShell` aceita `session={null}` (sessão a caminho), `title` (título vindo do conteúdo, sem ícone),
+ *     `headerActions` (ações do sistema à esquerda da busca) e `renderSearch` (busca própria do sistema).
+ * 22. Texto sobre superfície neutra com 12:1 nos dois temas, inclusive o secundário e o de status.
+ * 23. Azul como cor de ação (primária, foco, item ativo da barra, ícone padrão e gráficos); vermelho só
+ *     para destrutivo/erro e identidade institucional.
  */
 export { AppShell } from "./app-shell";
 export { BarChart, type BarChartDatum } from "./bar-chart";
@@ -41,9 +50,8 @@ export { ImageSlot } from "./image-slot";
 export { PageFrame } from "./page-frame";
 export { TemaMppaProvider } from "./providers";
 export { SectionIcon } from "./section-icon";
-export { SIDEBAR_STORAGE_KEY } from "./sidebar-context";
 export { ThemeProvider, useTheme, type Theme } from "./theme-provider";
-export { THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript } from "./theme-script";
+export { SIDEBAR_STORAGE_KEY, THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript } from "./theme-script";
 export { ThemeToggle } from "./theme-toggle";
 export { canSeeAdministration, cn, currentNavigationItem, FOOTER_CREDIT, footerText, isNavigationActive } from "./utils";
 export type {
@@ -55,6 +63,7 @@ export type {
   NavigationItem,
   NavigationSection,
   NavigationTone,
+  SearchControls,
   SearchItem,
   ShellConfig,
   ShellSession,

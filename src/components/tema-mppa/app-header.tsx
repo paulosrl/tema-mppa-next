@@ -4,27 +4,31 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumbs } from "./breadcrumbs";
 import { buttonVariants } from "./button";
-import { CommandPalette } from "./command-palette";
 import { ImageSlot } from "./image-slot";
 import { useSidebar } from "./sidebar-context";
 import { ThemeToggle } from "./theme-toggle";
+import { Suspense, type ReactNode } from "react";
 import type { ShellConfig, ShellSession } from "./types";
 import { UserIdentity } from "./user-identity";
 import { cn } from "./utils";
 
 /**
  * Cabeçalho padrão dos sistemas: 56px, fundo sólido, borda inferior. À esquerda, o título da página
- * (só aqui); à direita, busca, tema, logos institucionais e identidade com saída, separados por
- * divisórias.
+ * (só aqui); à direita, tema, logos institucionais e identidade com saída, separados por divisórias. As
+ * ações do sistema (`headerActions`) vêm antes do tema. A busca fica na barra lateral, acima do "Recolher".
  */
 export function AppHeader({
   config,
   session,
   onSignOut,
+  title,
+  headerActions,
 }: {
   config: ShellConfig;
-  session: ShellSession;
+  session: ShellSession | null;
   onSignOut?: () => void;
+  title?: string | null;
+  headerActions?: ReactNode;
 }) {
   const { setMobileOpen } = useSidebar();
   const logos = (config.header?.logos ?? []).filter((logo) => Boolean(logo.src));
@@ -41,7 +45,11 @@ export function AppHeader({
         <Menu />
       </button>
       <span className="hidden h-4 w-px bg-border sm:block desk:hidden" aria-hidden />
-      <Breadcrumbs config={config} session={session} />
+      {/* A rota (`usePathname`) só chega em tempo de execução nas rotas dinâmicas: sob Suspense, o resto do
+          cabeçalho continua no prerender (Cache Components, Next 16). */}
+      <Suspense fallback={<div className="min-w-0 flex-1" />}>
+        <Breadcrumbs config={config} session={session} title={title} />
+      </Suspense>
       <div className="ml-auto flex shrink-0 items-center gap-1">
         {config.header?.backLink ? (
           <Link
@@ -53,7 +61,7 @@ export function AppHeader({
             {BackIcon ? <BackIcon /> : null}
           </Link>
         ) : null}
-        <CommandPalette config={config} session={session} />
+        {headerActions}
         <ThemeToggle />
         {logos.length ? (
           <>

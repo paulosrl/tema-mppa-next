@@ -4,7 +4,7 @@ export type BarChartDatum = { label: string; value: number };
 
 /**
  * Gráfico de barras do protótipo: 165px de altura, barras com degradê, topo arredondado (6px),
- * no máximo 90px de largura e 18px de altura mínima. `strong` é o vermelho; `soft`, o rosado.
+ * no máximo 90px de largura e 18px de altura mínima. `strong` é o azul de ação; `soft`, o azul claro.
  */
 export function BarChart({
   data,

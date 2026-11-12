@@ -2,12 +2,14 @@
 
 import { Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "./button";
-import type { SearchItem, ShellConfig, ShellSession } from "./types";
+import { useSidebar } from "./sidebar-context";
+import type { AppShellProps, SearchItem, ShellConfig, ShellSession } from "./types";
 import { canSeeAdministration, cn, normalizeSearch, visibleNavigation } from "./utils";
 
-function configuredItems(config: ShellConfig, session: ShellSession): SearchItem[] {
+function configuredItems(config: ShellConfig, session: ShellSession | null): SearchItem[] {
   const navigation = [
     ...visibleNavigation(config.platformNavigation),
     ...(canSeeAdministration(config, session) ? visibleNavigation(config.administrationNavigation) : []),
@@ -25,12 +27,32 @@ function configuredItems(config: ShellConfig, session: ShellSession): SearchItem
   ];
 }
 
-export function CommandPalette({ config, session }: { config: ShellConfig; session: ShellSession }) {
+const subscribeNothing = () => () => {};
+
+/**
+ * Botão "Abrir busca" e atalho `Ctrl+K`, fixos na barra lateral, logo acima do "Recolher": caixa da largura
+ * da barra com lupa, texto e `Ctrl K`; com a barra recolhida, só a lupa. O diálogo é a paleta do modelo
+ * (itens da configuração) ou, com `renderSearch`, a busca própria do sistema, controlada por `open`/`setOpen`.
+ * O diálogo vai para o `<body>` (portal): a barra lateral tem `transform`, que prenderia um `fixed` dentro dela.
+ */
+export function CommandPalette({
+  config,
+  session,
+  renderSearch,
+}: {
+  config: ShellConfig;
+  session: ShellSession | null;
+  renderSearch?: AppShellProps["renderSearch"];
+}) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  // Verdadeiro só no navegador (o portal precisa do document), sem efeito nem segunda renderização no servidor.
+  const mounted = useSyncExternalStore(subscribeNothing, () => true, () => false);
   const router = useRouter();
-  const placeholder = config.header?.searchPlaceholder ?? "Buscar ou executar…";
+  const { setMobileOpen } = useSidebar();
+  const placeholder = config.header?.searchPlaceholder ?? "Buscar na página";
+  const customSearch = Boolean(renderSearch);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -38,15 +60,15 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
         event.preventDefault();
         setOpen((value) => !value);
       }
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape" && !customSearch) setOpen(false);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [customSearch]);
 
   useEffect(() => {
-    if (open) requestAnimationFrame(() => inputRef.current?.focus());
-  }, [open]);
+    if (open && !customSearch) requestAnimationFrame(() => inputRef.current?.focus());
+  }, [open, customSearch]);
 
   const items = useMemo(() => configuredItems(config, session), [config, session]);
   const filtered = useMemo(() => {
@@ -59,6 +81,7 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
 
   function navigate(item: SearchItem) {
     setOpen(false);
+    setMobileOpen(false);
     router.push(item.href);
   }
 
@@ -67,18 +90,20 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
       <button
         type="button"
         className={cn(
-          "inline-flex size-[34px] shrink-0 items-center justify-center gap-2 rounded-lg text-xs text-muted-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring",
-          "sm:h-8 sm:w-56 sm:justify-start sm:border sm:bg-card sm:px-3",
+          "flex h-8 w-full items-center gap-2 rounded-lg border bg-card px-3 text-xs text-muted-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+          "desk:tm-collapsed:size-[34px] desk:tm-collapsed:justify-center desk:tm-collapsed:border-0 desk:tm-collapsed:bg-transparent desk:tm-collapsed:px-0",
         )}
+        title={placeholder}
         onClick={() => setOpen(true)}
         aria-label="Abrir busca"
         aria-keyshortcuts="Control+K Meta+K"
       >
         <Search className="size-4 shrink-0" aria-hidden />
-        <span className="hidden flex-1 truncate text-left sm:inline">{placeholder}</span>
-        <kbd className="hidden rounded-xs border bg-muted px-1.5 py-0.5 font-sans text-[10px] font-semibold sm:inline">Ctrl K</kbd>
+        <span className="flex-1 truncate text-left desk:tm-collapsed:hidden">{placeholder}</span>
+        <kbd className="rounded-xs border bg-muted px-1.5 py-0.5 font-sans text-[10px] font-semibold desk:tm-collapsed:hidden">Ctrl K</kbd>
       </button>
-      {open ? (
+      {renderSearch && mounted ? createPortal(renderSearch({ open, setOpen }), document.body) : null}
+      {open && !renderSearch && mounted ? createPortal(
         <div
           className="fixed inset-0 z-[80] flex items-start justify-center bg-overlay/60 px-4 pt-[12vh]"
           role="presentation"
@@ -127,7 +152,8 @@ export function CommandPalette({ config, session }: { config: ShellConfig; sessi
               )}
             </div>
           </section>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </>
   );

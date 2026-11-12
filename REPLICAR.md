@@ -20,7 +20,7 @@ Replicar:
 - **Estrutura:**
   - abas Plataforma e Administração;
   - menu com ícones de seção coloridos;
-  - busca `Ctrl+K`;
+  - busca `Ctrl+K` na barra lateral, acima do "Recolher";
   - tema claro, escuro e sistema;
   - identidade do usuário (avatar, nome e perfil) e botão de sair no cabeçalho;
   - cartões, métricas, tabelas e gráficos de barras.
@@ -37,10 +37,11 @@ Referência visual, nesta ordem de autoridade:
 
 Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "corrigidas":
 
-- **Tons escurecidos para o contraste:** primária, texto secundário, vermelho sobre o realce e ícones verde
-  e laranja (tabela de cores na seção 8).
+- **Primária azul:** o protótipo era vermelho; todos os sistemas do MPPA usam azul como cor de ação (a mesma do
+  Heimdall), e o realce, o ícone padrão e os gráficos o seguem (seção 8, "Equilíbrio de cores").
+- **Tons escurecidos para o contraste:** texto secundário e ícones verde e laranja (tabela de cores na seção 8).
 - **Ícones:** Lucide no lugar dos caracteres do protótipo.
-- **Busca:** mostra `Ctrl K` e uma lupa.
+- **Busca:** fica na barra lateral, fixa acima do "Recolher", com lupa, "Buscar na página" e `Ctrl K`.
 - **Cabeçalho:** segue o padrão dos sistemas, não o do protótipo:
   - marca com nome e versão na mesma linha;
   - logos institucionais;
@@ -144,7 +145,7 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 ## 3. Fase 0: Diagnóstico
 
 1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
-   (`unzip tema-mppa-next-v1.6.1.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
+   (`unzip tema-mppa-next-v1.9.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -266,7 +267,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 ```
 
-- **Script de tema:** use o `<ThemeScript>`. Ele aplica o tema antes da hidratação, sem piscar. Ele e o
+- **Script de tema:** use o `<ThemeScript>`. Ele aplica o tema e marca a barra recolhida
+  (`data-tm-sidebar` no `<html>`) antes da hidratação, sem piscar nenhum dos dois. Ele e o
   `THEME_BOOT_SCRIPT` vêm de `theme-script.tsx`, módulo sem `"use client"`, e chegam ao layout raiz como texto.
   Não importe nada de `theme-provider.tsx` no servidor: ali tudo é `"use client"` e vira referência de cliente.
 - **CSP:** se o consumidor tem `Content-Security-Policy` com `nonce`, passe o mesmo nonce que ele já usa (o
@@ -298,14 +300,14 @@ export const shellConfig: ShellConfig = {
     symbol: <span className="tm-brand-mark" aria-hidden>N</span>, // ou { src: "/marca.svg", alt: "Nome" }
   },
   platformNavigation: [
-    { id: "inicio", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "red" },
+    { id: "inicio", label: "Visão geral", href: "/", icon: Gauge, exact: true, tone: "blue" },
     { id: "docs", label: "Documentos", href: "/documentos", icon: FileText, tone: "green" },
     { id: "doc", label: "Documento", href: "/documentos/detalhe", icon: FileText, tone: "green", hidden: true },
   ],
   administrationNavigation: [
     { id: "config", label: "Configurações", href: "/admin/config", icon: Settings, tone: "violet" },
   ],
-  header: { logos: [], searchPlaceholder: "Buscar ou executar…", signOutLabel: "Sair" },
+  header: { logos: [], searchPlaceholder: "Buscar na página", signOutLabel: "Sair" },
 };
 ```
 
@@ -322,13 +324,15 @@ Regras para preencher:
   com a inicial do sistema (quadrado de 32px com degradê vermelho, definido no `tema-mppa.css`).
 - `header.logos: []` é válido; logos institucionais entram como `{ src, alt, width, height }` e aparecem
   no cabeçalho a partir de 640px (abaixo disso, no menu móvel).
-- `header.searchPlaceholder` é o texto da caixa de busca (por exemplo, "Ir para…"); `header.signOutLabel`, o
+- `header.searchPlaceholder` é o texto da caixa de busca da barra lateral (padrão: "Buscar na página"); `header.signOutLabel`, o
   rótulo do botão de sair.
 - `description` e `keywords` dos itens são opcionais: preencha só com texto real do consumidor (por exemplo,
   as descrições de uma busca antiga).
 
 - Migre **todos** os itens do menu atual do consumidor, com as mesmas rotas.
-- Reveze os tons `"red"`, `"green"`, `"violet"` e `"orange"`, como no protótipo.
+- Reveze os tons `"blue"` (o primeiro item e o padrão), `"green"`, `"violet"` e `"orange"`. Se o sistema precisa
+  de uma cor por item e tem mais de quatro, use também `"teal"`, `"pink"` e `"amber"`. Não use `"red"` em item
+  de menu: o vermelho é reservado ao que tem significado (seção 8).
 - Rotas de detalhe ou fora do menu: crie itens com `hidden: true`, para darem o título certo.
 - Item que some por condição (uma consulta, uma função desligada): monte a configuração numa função que
   recebe a condição e devolve o item com `hidden: true`; ele continua dando o título na própria rota.
@@ -341,7 +345,7 @@ Campos de cada item de navegação:
 | --- | --- |
 | `id`, `label`, `href`, `icon` | obrigatórios; `icon` é um ícone do `lucide-react` |
 | `exact` | só a rota exata marca o item; sem ele, as sub-rotas também marcam |
-| `tone` | cor do ícone: `"red"` (padrão), `"green"`, `"violet"`, `"orange"` |
+| `tone` | cor do ícone: `"blue"` (padrão), `"green"`, `"violet"`, `"orange"`, `"teal"`, `"pink"`, `"amber"`, `"red"` (reservado) |
 | `description`, `keywords` | aparecem e entram no filtro da busca `Ctrl+K` |
 | `matches` | outras rotas (e sub-rotas) que marcam o item |
 | `hidden` | fora do menu e da busca, mas dá o título e a aba quando a rota é dele |
@@ -391,10 +395,19 @@ export function LayoutAutenticado({ children }: { children: React.ReactNode }) {
 }
 ```
 
+Outras propriedades do `AppShell`, todas opcionais:
+
+| Propriedade | Efeito |
+| --- | --- |
+| `session={null}` | sessão ainda a caminho: a casca aparece (layout estático, sem salto), sem dado de usuário nem administração, com o botão de sair. Passe a sessão quando ela chegar. |
+| `title` | título vindo do conteúdo, como o nome do registro numa rota de detalhe; substitui o rótulo do item no cabeçalho e sai sem ícone de seção |
+| `headerActions` | ações do sistema no cabeçalho, à esquerda do tema (por exemplo, um botão de volta a outro sistema que só aparece em certa condição) |
+| `renderSearch` | busca própria do sistema no lugar da paleta do modelo: recebe `{ open, setOpen }` e devolve o diálogo; o botão "Abrir busca" e o `Ctrl+K` continuam do modelo, e o diálogo é posto no `<body>` por portal |
+
 `is_admin` tem de ser o booleano estrito vindo da sessão real (por exemplo, `sessao.role === "admin"`). Não
 deduza administrador por e-mail, nome ou texto de perfil. A camada só esconde a administração; a proteção
 das rotas administrativas continua no consumidor, como estava. `avatar` é opcional: sem foto, passe `null` e
-o avatar mostra as iniciais. `profileLabel` também; sem ele, aparece "Administrador" ou "Usuário". O nome e
+o avatar mostra as iniciais (ou as de `initials`, se o sistema tem regra própria). `profileLabel` também; sem ele, aparece "Administrador" ou "Usuário". O nome e
 o perfil aparecem ao lado do avatar a partir de 1280px; o e-mail, ao passar o mouse. Sem `onSignOut`, o
 botão de sair não aparece. Remova o shell antigo (sidebar, header, navbar, busca) que o `AppShell` substitui.
 
@@ -430,7 +443,8 @@ casca antiga típica:
 
 | O quê | Na camada | Costuma quebrar |
 | --- | --- | --- |
-| Chaves de armazenamento | tema em `tema-mppa-theme` (`sessionStorage`); barra recolhida em `tema-mppa-sidebar-collapsed` (`localStorage`) | teste que gravava a chave antiga ou o tema no `localStorage` |
+| Chaves de armazenamento | tema em `tema-mppa-theme` (`sessionStorage`); barra recolhida em `tema-mppa-sidebar-collapsed` (`localStorage`, `"1"` ou `"0"`) | teste que gravava a chave antiga ou o tema no `localStorage` |
+| Barra recolhida | atributo `data-tm-sidebar="collapsed"` (ou `"expanded"`) no `<html>`; botão "Recolher menu lateral" / "Expandir menu lateral" com `aria-expanded` | teste que lia `data-state` da barra antiga |
 | Alternador de tema | botão com aria-label "Tema: Claro. Alterar para Escuro"; ciclo claro → escuro → sistema | teste que procurava "Ativar tema escuro" ou alternava só entre claro e escuro |
 | Barra lateral | `aside` com aria-label "Navegação principal"; abas com aria-label "Seções do menu" | seletor da `nav` ou da `aside` antigas |
 | Título | um `h1` dentro do `header` (papel `banner`), sem trilha (breadcrumb) | teste que procurava o título no conteúdo ou a trilha |
@@ -549,7 +563,7 @@ const colunas: DataTableColumn<Linha>[] = [
 | `CardGrid` | `columns?`: `1`, `2` (padrão), `3` ou `4`; uma coluna abaixo de 801px; 20px entre cartões |
 | `MetricCard` | `label`, `value`, `note?` |
 | `DataTable<Row>` | `title?`, `actions?`, `columns: { key, header, cell(row), align? }[]`, `rows`, `rowKey(row, i)`, `emptyMessage?`, `caption?` |
-| `BarChart` | `data: { label, value }[]`, `label` (leitor de tela), `max?`, `variant?`: `"strong"` (vermelho) ou `"soft"` (rosado) |
+| `BarChart` | `data: { label, value }[]`, `label` (leitor de tela), `max?`, `variant?`: `"strong"` (azul) ou `"soft"` (azul claro) |
 | `Button` | `variant?`: `"default"` (primário), `"secondary"`, `"ghost"`, `"destructive"`; `size?`: `"default"`, `"sm"`, `"icon"` (34px); atributos de `<button>` |
 | `SectionIcon` | `icon` (Lucide), `tone?` |
 
@@ -583,43 +597,60 @@ Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 
 | Classe | Claro | Escuro | Uso |
 | --- | --- | --- | --- |
-| `bg-background` | `#ffffff` | `#09090b` | fundo da página e do cabeçalho |
-| `bg-card` | `#fafafa` | `#18181b` | cartões, botão secundário, busca |
-| `bg-sidebar` | `#fcfcfc` | `#18181b` | barra lateral |
-| `bg-muted` | `#f4f4f5` | `#27272a` | trilho das abas, avatar, áreas neutras |
-| `bg-highlight` | `#fee2e2` | `#351518` | item e aba ativos |
-| `text-foreground` | `#18181b` | `#fafafa` | texto |
-| `text-muted-foreground` | `#18181b` | `#a1a1aa` | texto secundário (no claro, igual ao texto) |
-| `border` (`border-border`) | `#d4d4d8` | `rgba(255,255,255,.12)` | bordas |
-| `bg-primary` / `text-primary-foreground` | `#9f0712` / `#ffffff` | `#ef4444` / `#09090b` | ação principal, foco |
+| `bg-background` | `#f4f7fb` | `#09090b` | fundo da página e do cabeçalho (ardósia no claro) |
+| `bg-card` | `#ffffff` | `#18181b` | cartões, botão secundário, busca |
+| `bg-sidebar` / `text-sidebar-foreground` | `#ffffff` / `#334155` | `#18181b` / `#fafafa` | barra lateral |
+| `bg-muted` | `#f1f5f9` | `#27272a` | trilho das abas, avatar, áreas neutras |
+| `bg-highlight` | `#ecf4fe` | `#1c3b73` | item e aba ativos (azul-claro) |
+| `text-foreground` | `#0f172a` | `#fafafa` | texto |
+| `text-muted-foreground` | `#0f172a` | `#f4f4f5` | texto secundário (no claro, igual ao texto) |
+| `border` (`border-border`) | `#e2e8f0` | `rgba(255,255,255,.12)` | bordas |
+| `bg-primary` / `text-primary-foreground` | `#0842a1` / `#ffffff` | `#61a6fa` / `#080c16` | ação principal, foco, links de ação |
 | `bg-destructive` | `#991b1b` | `#f87171` | ação destrutiva |
-| `text-success` / `text-warning` | `#15603a` / `#7a4510` | `#4ade80` / `#facc15` | status |
-| `bg-tone-red` + `text-tone-red-foreground` | `#fee2e2` + `#970611` | igual | ícone de seção vermelho |
-| `bg-tone-green` + `text-tone-green-foreground` | `#d1fae5` + `#047857` | igual | ícone verde |
-| `bg-tone-violet` + `text-tone-violet-foreground` | `#ede9fe` + `#7c3aed` | igual | ícone violeta |
-| `bg-tone-orange` + `text-tone-orange-foreground` | `#ffedd5` + `#a85005` | igual | ícone laranja |
+| `text-success` / `text-warning` | `#08351f` / `#432506` | `#bbf7d0` / `#fef08a` | status |
+| `bg-tone-red` + `text-tone-red-foreground` | `#fee2e2` + `#970611` | `#401f27` + `#fecdd3` | ícone vermelho (reservado) |
+| `bg-tone-green` + `text-tone-green-foreground` | `#d1fae5` + `#047857` | `#17352d` + `#a7f3d0` | ícone verde |
+| `bg-tone-violet` + `text-tone-violet-foreground` | `#ede9fe` + `#7c3aed` | `#2f2647` + `#ddd6fe` | ícone violeta |
+| `bg-tone-orange` + `text-tone-orange-foreground` | `#ffedd5` + `#a85005` | `#41281a` + `#fed7aa` | ícone laranja |
+| `bg-tone-blue` + `text-tone-blue-foreground` | `#dbeafe` + `#1d4ed8` | `#1f2d47` + `#bfdbfe` | ícone azul (padrão) |
+| `bg-tone-teal` + `text-tone-teal-foreground` | `#ccfbf1` + `#0f766e` | `#173534` + `#99f6e4` | ícone verde-água |
+| `bg-tone-pink` + `text-tone-pink-foreground` | `#fce7f3` + `#be185d` | `#3e2132` + `#fbcfe8` | ícone rosa |
+| `bg-tone-amber` + `text-tone-amber-foreground` | `#fef3c7` + `#92400e` | `#403018` + `#fde68a` | ícone âmbar |
 | `bg-overlay/40` | `#000` a 40% | igual | fundo atrás do menu móvel |
-| `bg-logo-surface` | `#ffffff` | `#ffffff` | fundo das logos |
-| `shadow-surface` | `0 2px 6px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05)` | `0 2px 8px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2)` | cartão, aba e item ativos |
-| `tm-bar tm-bar-strong` / `tm-bar-soft` | degradê `#b50008→#ff2935` / `#eb777d→#ff9da2` | igual | barras de gráfico |
+| `bg-logo-surface` | `#f8fafc` | `#ffffff` | fundo das logos |
+| `shadow-surface` | `0 1px 3px rgba(9,9,11,.06), 0 4px 12px -2px rgba(9,9,11,.05), inset 0 1px 0 0 rgba(255,255,255,.8)` | `0 4px 16px -2px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 0 rgba(255,255,255,.07)` | cartão, aba e item ativos |
+| `tm-bar tm-bar-strong` / `tm-bar-soft` | degradê `#0842a1→#3b82f6` / `#6f9be6→#94b6f1` | `#3b82f6→#61a6fa` / `#4f78b8→#7aa2dd` | barras de gráfico |
 
 Contraste obrigatório:
 
-- **Claro:** todo texto com 7:1 sobre o próprio fundo, e o texto secundário igual ao principal.
-- **Escuro:** 4,5:1, com texto escuro sobre a primária.
+- **Texto sobre superfície neutra** (fundo, cartão, muted, barra), nos dois temas: 12:1, inclusive o
+  secundário e o de status. No claro, o secundário é igual ao principal.
+- **Texto sobre preenchimento colorido** (botão primário, pílula): 4,5:1; no escuro, texto escuro sobre a primária.
 - **Ícones de tom:** 4,5:1.
 
 Os tokens já cumprem isso. Se o consumidor precisar de uma cor nova, crie um token no **próprio**
 consumidor e confira o contraste.
 
+Equilíbrio de cores (igual em todos os sistemas, sem diferença de cor, fonte, tamanho ou estrutura):
+
+- **Azul é a ação:** botão primário, foco (`ring`), links de ação, `sidebar-primary` e `sidebar-ring`, o item
+  ativo da barra (fundo azul-claro `bg-highlight` com ícone azul), o ícone do título da seção, o tom
+  padrão dos ícones (`"blue"`, sem `tone`), as barras fortes do `BarChart` e as ilustrações de estado vazio que
+  seguem a primária.
+- **Vermelho só com significado:** destrutivo e erro (`--destructive`) e a identidade institucional (logos, o
+  símbolo `tm-brand-mark`, faixas institucionais vermelho-azul). Não pinte ação, realce nem ícone comum de vermelho.
+- Os demais tons de seção (verde, violeta, laranja, verde-água, rosa, âmbar) continuam variados.
+- Quem usava azul com token próprio (por exemplo, o `--accent-blue` do Heimdall) pode passar a usar a primária.
+
 Não faça:
 
-- **`text-primary` sobre `bg-primary/10`** (a pílula comum do shadcn/ui): com a primária `#9f0712`, o par fica
-  abaixo de 7:1 (cerca de 6,7:1 sobre o cartão e 6,9:1 sobre o fundo). Use `text-foreground` sobre o fundo
-  atenuado e deixe a primária no ícone ou na borda. O mesmo vale para qualquer cor sobre a própria versão
+- **`text-primary` sobre `bg-primary/15` ou mais** (a pílula do shadcn/ui, nas opacidades maiores): com a
+  primária `#0842a1`, o par cai abaixo de 7:1 no claro (6,59:1 sobre o fundo, 6,45:1 sobre o muted). Com
+  `bg-primary/10` passa (`text-primary` sobre `bg-primary/10`: 7,18:1 sobre o fundo, 7,68:1 sobre o cartão e 7,04:1 sobre o muted;
+  no escuro, 6,05:1 sobre o cartão e 4,98:1 sobre o muted). O mesmo vale para qualquer cor sobre a própria versão
   transparente: confira o contraste do par, não só o da cor.
-- **Texto colorido onde o consumidor exige texto preto:** `text-success` e `text-warning` são coloridos (7:1 no
-  claro). Se o consumidor tem regra de todo texto preto no claro, isso é conflito do diagnóstico (item 12): a
+- **Texto colorido onde o consumidor exige texto preto:** `text-success` e `text-warning` são coloridos (12:1
+  sobre superfície neutra, quase pretos no claro). Se o consumidor tem regra de todo texto preto no claro, isso é conflito do diagnóstico (item 12): a
   cor fica no ícone ou no ponto de status, com o texto em `text-foreground`.
 
 Fonte: Outfit (`font-sans`).
@@ -634,7 +665,7 @@ Raios, presos a `--radius` (8px):
 
 ```text
 ┌──────────────┬──────────────────────────────────────────────────────────────┐
-│ [▣] Nome v1.0│ [ícone] Título    [⌕ Buscar… Ctrl K] [☼] │ [logos] │ (PL) Nome / Perfil [⇥] │ 56px
+│ [▣] Nome v1.0│ [ícone] Título                     [☼] │ [logos] │ (PL) Nome / Perfil [⇥] │ 56px
 ├──────────────┼──────────────────────────────────────────────────────────────┤
 │[Plataf.|Adm.]│  padding 38px (22/14 no celular), máx. 1500px                │
 │ Plataforma   │  Descrição da página ............ [Ação] [Secundária]        │
@@ -644,6 +675,7 @@ Raios, presos a `--radius` (8px):
 │              │  ↕ 20px                                                      │
 │              │  ┌ Tabela ─────────────────────────────────────┐             │
 │              │  └─────────────────────────────────────────────┘             │
+│[⌕ Buscar… ⌃K]│                                                              │
 ├──────────────┼──────────────────────────────────────────────────────────────┤
 │ Recolher  ‹  │  Desenvolvido pelo MPPA - EIA - Nome - V 1.0.0 - 2026 (56px)  │
 └──────────────┴──────────────────────────────────────────────────────────────┘
@@ -655,13 +687,16 @@ Cabeçalho (igual em todos os sistemas):
 - **Marca, no topo da barra lateral:** símbolo de 32px, com nome (semibold) e versão (`text-xs`, cor
   secundária) na mesma linha.
 - **Título:** ícone de seção de 24px, 10px até o título (`text-sm`, peso 500).
-- **Busca:** caixa de 224px × 32px com lupa, texto e `Ctrl K`. Abaixo de 640px, só a lupa.
 - **Tema:** botão de ícone de 34px.
 - **Logos:** 28px de altura sobre `bg-logo-surface`, com divisórias de 24px antes e depois.
 - **Identidade:**
   - avatar redondo de 32px com as iniciais (ou a foto);
   - nome (`text-xs` semibold) e perfil (`text-xs`, cor secundária) a partir de 1280px;
   - botão de sair de 34px.
+
+Busca (igual em todos os sistemas): caixa de 32px com lupa, "Buscar na página" e `Ctrl K`, fixa na barra lateral
+logo acima do "Recolher" (não rola com o menu), na largura da barra. Com a barra recolhida, só a lupa; no
+celular, no menu móvel.
 
 Rodapé (igual em todos os sistemas), montado pela camada a partir de `brand` (seção 4.5):
 
@@ -706,7 +741,7 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.6.1)
+## Interface (tema-mppa 1.9.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
@@ -716,7 +751,8 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
   `node docs/tema-mppa/verificar-design.mjs --css <CSS próprio>` a cada mudança de token.
 - Telas só com os primitivos (`PageFrame`, `Card`, `CardGrid`, `MetricCard`, `DataTable`, `BarChart`,
   `Button`); cores só pelos tokens; título só no cabeçalho, vindo do item de navegação.
-- Contraste: 7:1 no claro (secundário igual ao principal), 4,5:1 no escuro.
+- Contraste: 12:1 em texto sobre superfície neutra nos dois temas (secundário igual ao principal no claro);
+  4,5:1 em texto sobre preenchimento colorido.
 - Administração aparece só com `session.is_admin === true`.
 ```
 
