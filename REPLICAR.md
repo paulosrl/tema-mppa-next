@@ -728,16 +728,16 @@ Raios, presos a `--radius` (8px; estética de 12 nov. 2026):
 │ [▣] Nome [v1.0]│ [ícone] Plataforma / Título        [☼] │ [logos] │ (PL) Nome / Perfil [⇥] │ 62px
 ├──────────────┼──────────────────────────────────────────────────────────────┤
 │[Plataf.|Adm.]│  padding 40×36px (24 no tablet, 16 no celular), máx. 1380px  │
-│ Plataforma   │  Descrição da página ............ [Ação] [Secundária]        │
+│ ──────────── │  Descrição da página ............ [Ação] [Secundária]        │
 │ ▣ Item ativo │  ↕ 32px                                                      │
 │ ▣ Item       │  ┌ Cartão ──────────┐ 16px ┌ Cartão ──────────┐              │
 │ ▣ Item       │  └──────────────────┘      └──────────────────┘              │
 │              │  ↕ 16px                                                      │
 │              │  ┌ Tabela ─────────────────────────────────────┐             │
 │              │  └─────────────────────────────────────────────┘             │
-│[⌕ Buscar… ⌃K]│                                                              │
+│[⌕ Buscar…   ]│                                                              │
 ├──────────────┼──────────────────────────────────────────────────────────────┤
-│ Recolher ⌃B ◧│  Desenvolvido pelo MPPA - EIA - Nome - V 1.0.0 - 2026 (62px)  │
+│ Recolher    ◧│  Desenvolvido pelo MPPA - EIA - Nome - V 1.0.0 - 2026 (62px)  │
 └──────────────┴──────────────────────────────────────────────────────────────┘
   304px (76px recolhida); abaixo de 801px vira menu móvel
 ```
@@ -746,7 +746,7 @@ Cabeçalho (igual em todos os sistemas):
 
 - **Marca, no topo da barra lateral:** símbolo de 36px, com o nome em negrito e a versão num selo vermelho
   (fonte mono, 10px, `text-institutional-foreground`) na mesma linha.
-- **Título:** ícone de seção de 28px, a seção à frente ("Plataforma / Dashboard", a seção a partir de 640px) e o
+- **Título:** ícone de seção de 28px, a seção à frente ("Minha Página / Meus acessos" na demonstração, a seção a partir de 640px) e o
   rótulo do item (`text-sm`, peso 600).
 - **Tema:** botão `chrome` de ícone de 36px (borda, fundo do cartão, sombra leve), sol `text-theme-icon`.
 - **Logos:** 32px de altura em caixas com borda e sombra sobre `bg-logo-surface`, com divisórias antes e depois.

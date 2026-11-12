@@ -1,7 +1,8 @@
 import { FileText, LayoutDashboard, Monitor, ShieldAlert, ShieldCheck, ShieldHalf, User, Users } from "lucide-react";
 import type { ShellConfig, ShellSession } from "@/components/tema-mppa";
 
-/* Logos de exemplo: MPPA e CIIA (em public/) e a palavra CIIA em SVG embutido; o consumidor passa as dele. */
+/* Logos de exemplo: MPPA e CIIA (em public/) e a palavra CIIA em SVG embutido, decorativa (alt vazio: repete a CIIA);
+   o consumidor passa as dele. */
 const svg = (markup: string) => `data:image/svg+xml;utf8,${encodeURIComponent(markup)}`;
 const logoCiia = svg(
   '<svg xmlns="http://www.w3.org/2000/svg" width="132" height="76" viewBox="0 0 132 76"><rect width="132" height="76" fill="#fff"/><text x="66" y="55" font-family="Arial" font-size="46" font-weight="700" fill="#1a237e" text-anchor="middle">CIIA</text></svg>',
@@ -46,7 +47,7 @@ export const demoConfig: ShellConfig = {
     logos: [
       { src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 },
       { src: "/ciia.png", alt: "CIIA", width: 244, height: 244 },
-      { src: logoCiia, alt: "CIIA", width: 132, height: 76 },
+      { src: logoCiia, alt: "", width: 132, height: 76 },
     ],
     searchPlaceholder: "Ir para…",
     signOutLabel: "Sair",

@@ -200,6 +200,16 @@ for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
 if (!light.shadow?.startsWith("0 1px 3px rgba(15, 23, 42, 0.06)")) errors.push("token --shadow (claro) diferente do padrão");
 if (!light["card-shadow"]?.startsWith("0 2px 8px -2px rgba(15, 23, 42, 0.05)")) errors.push("token --card-shadow (claro) diferente do padrão");
 if (!dark.shadow?.includes("inset 0 1px 0") || !dark["card-shadow"]?.includes("inset 0 1px 0")) errors.push("sombras do escuro sem o brilho interno de 1px");
+// Contorno dos quadros e largura da barra lateral (1.11.0).
+if (light["card-border"]?.toLowerCase() !== "#b5bac0") errors.push(`token --card-border (claro): esperado #b5bac0, encontrado ${light["card-border"] ?? "ausente"}`);
+if (dark["card-border"]?.toLowerCase() !== "#3f6396") errors.push(`token --card-border (escuro): esperado #3f6396, encontrado ${dark["card-border"] ?? "ausente"}`);
+{
+  const sidebarSource = await readFile(path.join(root, "src/components/tema-mppa/app-sidebar.tsx"), "utf8");
+  if (!sidebarSource.includes("w-[304px]") || !sidebarSource.includes("desk:tm-collapsed:w-[76px]")) errors.push("barra lateral: largura deve ser 304px (76px recolhida)");
+  for (const file of ["card.tsx", "dashboard.tsx", "data-table.tsx"]) {
+    if (!(await readFile(path.join(root, "src/components/tema-mppa", file), "utf8")).includes("border-card-border")) errors.push(`${file}: quadros sem border-card-border`);
+  }
+}
 for (const name of ["highlight-bar", "header", "canvas-glow", "institutional", "institutional-foreground", "card-shadow-hover", "tone-sheen"]) {
   if (!light[name] || !dark[name]) errors.push(`token --${name} ausente em um dos temas`);
 }

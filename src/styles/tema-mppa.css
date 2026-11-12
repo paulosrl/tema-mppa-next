@@ -51,7 +51,8 @@
   --warning-foreground: #ffffff;
 
   --border: #e2e8f0;
-  /* Contorno dos quadros (cartões, painéis, campos e linhas internas). */
+  /* Contorno dos quadros: Card, PanelCard, LinkCard, InfoField, caixa do PageGreeting e linhas do DataTable.
+     Cabeçalho, rodapé, barra lateral e diálogos seguem com a --border. */
   --card-border: #b5bac0; /* #e2e8f0 (a --border) escurecido 20% */
   --input: #e2e8f0;
   --ring: #0842a1; /* 8,48:1 sobre o fundo */

@@ -61,8 +61,8 @@ function MobileLogos({ config }: { config: ShellConfig }) {
   if (!logos.length) return null;
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 border-b border-sidebar-border px-3 py-2.5 sm:hidden">
-      {logos.map((logo, index) => (
-        <ImageSlot key={`${index}-${logo.src}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
+      {logos.map((logo) => (
+        <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
       ))}
     </div>
   );

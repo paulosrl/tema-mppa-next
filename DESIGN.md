@@ -422,7 +422,7 @@ A identidade vem de três escolhas:
   revezados), duotone: o miolo do ícone recebe 20% da cor do traço, e uma borda de 1px na cor do traço contorna a
   caixa. No menu, o ícone cresce 5% sob o mouse (sem movimento com
   `prefers-reduced-motion`).
-- Busca `Ctrl K` com as páginas que cada usuário pode ver.
+- Busca (atalho `Ctrl+K`, sem etiqueta na tela) com as páginas que cada usuário pode ver.
 - Tema claro, escuro e sistema; toda entrada abre em claro e a escolha vale só para a aba.
 
 ## Colors
@@ -533,7 +533,7 @@ camada. A altura de linha da casca é `normal`.
   borda, num trilho com padding de 4px; ícones sempre visíveis (Plataforma no vermelho institucional,
   Administração na primária).
 - **Cabeçalho, da esquerda para a direita:** ícone de seção de 28px e título com a seção à frente
-  ("Plataforma / Dashboard", a seção a partir de 640px); tema (botão `chrome` de 36px); divisória; logos com 32px
+  ("Minha Página / Meus acessos" na demonstração, a seção a partir de 640px); tema (botão `chrome` de 36px); divisória; logos com 32px
   de altura, em caixas com borda e sombra (a partir de 640px); divisória; avatar de 32px em degradê com ponto
   verde, nome e perfil (a partir de 1280px), botão de sair (36px, com realce destrutivo).
 
