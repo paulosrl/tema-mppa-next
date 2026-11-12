@@ -399,6 +399,8 @@
   background-image: var(--highlight-gradient);
   color: var(--highlight-foreground);
   box-shadow: var(--highlight-shadow);
+  /* O brilho da caixa do ícone quase some no azul escuro, para o ícone branco manter o contraste. */
+  --tone-sheen: rgba(255, 255, 255, 0.08);
 
   &::before {
     content: "";
