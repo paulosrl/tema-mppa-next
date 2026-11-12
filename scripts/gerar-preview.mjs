@@ -94,9 +94,30 @@ const html = await page.evaluate(() => {
 await page.close();
 await browser.close();
 
+// Imagens servidas pelo próprio app (src="/logo.png", de public/) entram embutidas: offline, um caminho
+// relativo não carregaria e o ImageSlot esconderia a imagem.
+const imageCache = new Map();
+async function inlineImages(text) {
+  for (const [, src] of [...text.matchAll(/src="(\/[^"]+\.(?:png|jpe?g|webp|gif|svg))"/g)]) {
+    if (!imageCache.has(src)) {
+      const response = await fetch(base + src);
+      if (!response.ok) throw new Error(`imagem ${src} não carregou (${response.status})`);
+      const type = response.headers.get("content-type")?.split(";")[0] ?? "application/octet-stream";
+      imageCache.set(src, `data:${type};base64,${Buffer.from(await response.arrayBuffer()).toString("base64")}`);
+    }
+    text = text.replaceAll(`src="${src}"`, `src="${imageCache.get(src)}"`);
+  }
+  return text;
+}
+const offlineHtml = await inlineImages(html);
+// Nos estados da barra, a imagem fica uma vez só (IMAGES), e o script da prévia a põe em cada estado.
+for (const snapshot of Object.values(states)) await inlineImages(snapshot.aside);
+
 const runtime = `
 (() => {
   const STATES = ${JSON.stringify(states)};
+  const IMAGES = ${JSON.stringify(Object.fromEntries(imageCache))};
+  const withImages = (text) => Object.entries(IMAGES).reduce((out, [src, data]) => out.replaceAll('src="' + src + '"', 'src="' + data + '"'), text);
   const ICONS = ${JSON.stringify(icons)};
   const ROUTES = ${JSON.stringify(routes)};
   const store = {
@@ -115,7 +136,7 @@ const runtime = `
   function render() {
     const snapshot = STATES[state.route + "|" + (state.collapsed ? 1 : 0)];
     const aside = document.querySelector("aside");
-    aside.outerHTML = snapshot.aside;
+    aside.outerHTML = withImages(snapshot.aside);
     document.querySelector("header h1").parentElement.outerHTML = snapshot.title;
     document.querySelector("[data-preview-overlay]")?.remove();
     const fresh = document.querySelector("aside");
@@ -191,7 +212,7 @@ const runtime = `
 })();
 `;
 
-const finalHtml = html
+const finalHtml = offlineHtml
   .replace(/<title>[^<]*<\/title>/, `<title>Template Visual MPPA v${version}</title>`)
   .replace("</head>", `<style>${css}</style></head>`)
   .replace("</body>", `<script>${runtime}</script></body>`);

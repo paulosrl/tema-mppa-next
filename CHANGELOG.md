@@ -36,6 +36,8 @@ realce mais claro. Pedido do autor em 11 nov. 2026, aplicado dentro das regras d
 - **`Card`:** transição de 200ms, título com `tracking-tight` e descrição com 2px acima.
 - **`text-primary` sobre `bg-primary/15`:** o aviso continua, agora pelo fundo (6,59:1) e pelo muted (6,45:1);
   `bg-primary/10` passa (7,18:1, 7,68:1 e 7,04:1).
+- **Demonstração:** a segunda logo do cabeçalho passa a ser a do CIIA (`public/ciia.png`, a mesma do Heimdall);
+  a primeira continua a de exemplo. A prévia offline embute as imagens de `public/`, uma vez só.
 - **Documentos e verificador:** `AGENTS.md` (exceção ao protótipo), `DESIGN.md`, `REPLICAR.md` (seção 8),
   `GUIA.html` e `verify-template.mjs` com os valores novos. Prévia e comparações regeradas.
 
