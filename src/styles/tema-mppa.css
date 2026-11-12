@@ -35,13 +35,11 @@
   --muted-foreground: #5f6f86;
   --accent: #f1f5f9;
   --accent-foreground: #0f172a;
-  /* Item selecionado do menu: azul médio em degradê (#bfdbfe a #93c5fd), texto azul-marinho #0a2a66 (9,62:1 a
-     7,58:1), barra de 3,5px em azul forte à esquerda e brilho azul. `--highlight` é o tom sólido do início. O item
-     sob o ponteiro usa o azul sutil de `--sidebar-hover`. */
+  /* Item selecionado do menu: azul sólido #bfdbfe, sem degradê, texto azul-marinho #0a2a66 (9,62:1), barra de
+     3,5px em azul forte à esquerda e brilho azul. O item sob o ponteiro usa o azul sutil de `--sidebar-hover`. */
   --highlight: #bfdbfe;
   --highlight-foreground: #0a2a66;
-  --highlight-gradient: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
-  --highlight-bar: linear-gradient(180deg, #0842a1 0%, #2563eb 100%);
+  --highlight-bar: #0842a1;
   --highlight-shadow: 0 6px 16px -8px rgba(37, 99, 235, 0.45);
 
   --destructive: #991b1b;
@@ -153,11 +151,10 @@
   --muted-foreground: #94a3b8;
   --accent: #182235;
   --accent-foreground: #f8fafc;
-  /* Item selecionado: azul escuro em degradê (#1e3a8a a #2547a8), texto branco (10,36:1 a 8,25:1). */
-  --highlight: #1e3a8a;
+  /* Item selecionado: azul sólido #2547a8, sem degradê, texto branco (8,25:1); barra azul-clara. */
+  --highlight: #2547a8;
   --highlight-foreground: #ffffff;
-  --highlight-gradient: linear-gradient(135deg, #1e3a8a 0%, #2547a8 100%);
-  --highlight-bar: linear-gradient(180deg, #bfdbfe 0%, #60a5fa 100%);
+  --highlight-bar: #93c5fd;
   --highlight-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.45);
 
   --destructive: #f87171;
@@ -393,10 +390,10 @@
   font-weight: 800;
 }
 
-/* Item selecionado do menu: azul escuro em degradê, texto claro, brilho azul e barra de 3,5px à esquerda. */
+/* Item selecionado do menu: azul sólido (`--highlight`), brilho azul e barra de 3,5px à esquerda. */
 @utility tm-nav-active {
   position: relative;
-  background-image: var(--highlight-gradient);
+  background-color: var(--highlight);
   color: var(--highlight-foreground);
   box-shadow: var(--highlight-shadow);
   /* O brilho da caixa do ícone quase some no item selecionado, para o ícone manter o contraste. */

@@ -438,9 +438,10 @@ A identidade vem de três escolhas:
 - **Equilíbrio:** o azul é a ação; o vermelho só com significado (destrutivo/erro e identidade
   institucional). Os demais tons de seção continuam variados.
 - **Destructive** (`{colors.destructive}`, `#991b1b`): ação destrutiva, com texto branco.
-- **Highlight** (`{colors.highlight}`, `#bfdbfe`): item selecionado do menu em azul médio, degradê `#bfdbfe` →
-  `#93c5fd`, texto e ícone azul-marinho `#0a2a66` (9,62:1 a 7,58:1), barra de 3,5px em azul forte à esquerda e brilho azul. O item
-  sob o ponteiro usa o azul sutil `{colors.sidebar-hover}`. A aba ativa não usa o realce: fica em `bg-card`.
+- **Highlight** (`{colors.highlight}`, `#bfdbfe`): item selecionado do menu em azul sólido, sem degradê, com texto
+  e ícone azul-marinho `#0a2a66` (9,62:1), barra de 3,5px em azul forte à esquerda e brilho azul; no escuro, `#2547a8`
+  com texto branco (8,25:1). O item sob o ponteiro usa o azul sutil `{colors.sidebar-hover}`. A aba ativa não usa
+  o realce: fica em `bg-card`.
 - **Institutional** (`{colors.institutional}`, `#e11d48`; texto `{colors.institutional-foreground}`,
   `#be123c`, 5,52:1 sobre o selo): selo da versão na marca, ícone da aba Plataforma e nome do sistema no
   rodapé. **Avatar:** degradê `#e11d48` → `#2563eb` com texto branco e ponto verde de conectado
@@ -490,7 +491,7 @@ com 4,5:1 ou mais; texto sobre preenchimento colorido com 4,5:1.
 | muted-foreground | `#94a3b8` (6,21:1 no muted, 6,92:1 no cartão, 7,69:1 no fundo) |
 | primary / primary-foreground | `#61a6fa` / `#080c16` |
 | destructive / destructive-foreground | `#f87171` / `#070b12` |
-| highlight / highlight-foreground | `#1e3a8a` / `#ffffff` (10,36:1); degradê `#1e3a8a` → `#2547a8` (8,25:1), barra `#bfdbfe` → `#60a5fa` |
+| highlight / highlight-foreground | `#2547a8` / `#ffffff` (8,25:1), sólido, barra `#93c5fd` |
 | institutional, avatar, online, theme-icon | `#fb7185` (selo e texto, 6,40:1), degradê do avatar igual ao do claro, `#10b981`, lua `#60a5fa` |
 | success / warning (texto sobre eles: `#070b12`) | `#bbf7d0` / `#fef08a` |
 | border | `rgba(255, 255, 255, 0.08)` |

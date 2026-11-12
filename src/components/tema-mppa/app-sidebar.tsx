@@ -84,7 +84,7 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
             onClick={() => setMobileOpen(false)}
             className={cn(
               "group flex items-center gap-3 rounded-xl px-2.5 py-2 text-[13.5px] font-medium text-sidebar-foreground outline-none transition-all hover:bg-sidebar-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring desk:tm-collapsed:justify-center desk:tm-collapsed:px-0",
-              active && "tm-nav-active font-semibold text-highlight-foreground hover:bg-transparent hover:text-highlight-foreground",
+              active && "tm-nav-active font-semibold text-highlight-foreground hover:bg-highlight hover:text-highlight-foreground",
             )}
           >
             <SectionIcon

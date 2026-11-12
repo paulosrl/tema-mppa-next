@@ -189,7 +189,7 @@ const dark = { ...light, ...block(".dark") };
 
 const prototype = {
   light: { radius: "0.5rem", "shell-bar": "3.875rem", background: "#f4f7fb", card: "#ffffff", sidebar: "#ffffff", muted: "#f1f5f9", border: "#e2e8f0", highlight: "#bfdbfe", "muted-foreground": "#5f6f86" },
-  dark: { background: "#070b12", card: "#111827", sidebar: "#0c121e", muted: "#182235", border: "rgba(255, 255, 255, 0.08)", highlight: "#1e3a8a", "muted-foreground": "#94a3b8" },
+  dark: { background: "#070b12", card: "#111827", sidebar: "#0c121e", muted: "#182235", border: "rgba(255, 255, 255, 0.08)", highlight: "#2547a8", "muted-foreground": "#94a3b8" },
 };
 for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
   for (const [name, value] of Object.entries(theme === "claro" ? prototype.light : prototype.dark)) {
@@ -200,7 +200,7 @@ for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
 if (!light.shadow?.startsWith("0 1px 3px rgba(15, 23, 42, 0.06)")) errors.push("token --shadow (claro) diferente do padrão");
 if (!light["card-shadow"]?.startsWith("0 2px 8px -2px rgba(15, 23, 42, 0.05)")) errors.push("token --card-shadow (claro) diferente do padrão");
 if (!dark.shadow?.includes("inset 0 1px 0") || !dark["card-shadow"]?.includes("inset 0 1px 0")) errors.push("sombras do escuro sem o brilho interno de 1px");
-for (const name of ["highlight-gradient", "highlight-bar", "header", "canvas-glow", "institutional", "institutional-foreground", "card-shadow-hover", "tone-sheen"]) {
+for (const name of ["highlight-bar", "header", "canvas-glow", "institutional", "institutional-foreground", "card-shadow-hover", "tone-sheen"]) {
   if (!light[name] || !dark[name]) errors.push(`token --${name} ausente em um dos temas`);
 }
 

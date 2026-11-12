@@ -621,7 +621,7 @@ Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 | `bg-sidebar` / `text-sidebar-foreground` | `#ffffff` / `#334155` | `#0c121e` / `#cbd5e1` | barra lateral |
 | `bg-muted` | `#f1f5f9` | `#182235` | trilho das abas, áreas neutras |
 | `bg-header` | `rgba(255,255,255,.85)` | `rgba(12,18,30,.82)` | cabeçalho e rodapé translúcidos, com desfoque |
-| `bg-highlight` / `text-highlight-foreground` | `#bfdbfe` / `#0a2a66` | `#1e3a8a` / `#ffffff` | item selecionado do menu (azul em degradê; no claro, `#bfdbfe` → `#93c5fd` com texto azul-marinho a 7,58:1 ou mais; no escuro, `#1e3a8a` → `#2547a8` com texto branco a 8,25:1 ou mais); sob o ponteiro, `bg-sidebar-hover` (`#ecf4fe` / `#142645`) |
+| `bg-highlight` / `text-highlight-foreground` | `#bfdbfe` / `#0a2a66` | `#2547a8` / `#ffffff` | item selecionado do menu, azul sólido sem degradê (9,62:1 e 8,25:1); sob o ponteiro, `bg-sidebar-hover` (`#ecf4fe` / `#142645`) |
 | `text-foreground` | `#0f172a` | `#f8fafc` | texto principal |
 | `text-muted-foreground` | `#5f6f86` | `#94a3b8` | texto secundário, cinza (4,67:1 no muted no claro; 6,21:1 no escuro) |
 | `border` (`border-border`) | `#e2e8f0` | `rgba(255,255,255,.08)` | bordas |

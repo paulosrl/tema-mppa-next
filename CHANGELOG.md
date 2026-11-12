@@ -25,10 +25,10 @@ neutra. Nada muda de lugar: a busca continua na barra lateral e o título contin
 - **Escuro marinho:** deixa o Zinc. Fundo `#070b12`, barra `#0c121e`, cartão e popover `#111827`, muted,
   secondary, accent e sidebar-accent `#182235`, texto `#f8fafc`, texto da barra `#cbd5e1`, borda branca a 8%.
   Tons dos ícones a 18% da cor sobre a barra, com os traços da referência (de 5,93:1 a 9,59:1).
-- **Item selecionado do menu:** azul em degradê, no claro `#bfdbfe` → `#93c5fd` com texto e ícone azul-marinho
-  `#0a2a66` (7,58:1 ou mais) e barra em azul forte; no escuro `#1e3a8a` → `#2547a8` com texto e ícone brancos
-  (8,25:1 ou mais); brilho azul (`--highlight-shadow`); utilitário `tm-nav-active`. `--highlight` passa a
-  `#bfdbfe` (escuro `#1e3a8a`) e `--highlight-foreground` a `#0a2a66` (escuro `#ffffff`). Sob o ponteiro, o item fica num azul sutil (`--sidebar-hover`). As abas
+- **Item selecionado do menu:** azul sólido, sem degradê, nos dois temas: `#bfdbfe` no claro, com texto e ícone
+  azul-marinho `#0a2a66` (9,62:1) e barra em azul forte; `#2547a8` no escuro, com texto e ícone brancos (8,25:1)
+  e barra azul-clara; brilho azul (`--highlight-shadow`); utilitário `tm-nav-active`. `--highlight` passa a
+  `#bfdbfe` (escuro `#2547a8`) e `--highlight-foreground` a `#0a2a66` (escuro `#ffffff`). Sob o ponteiro, o item fica num azul sutil (`--sidebar-hover`). As abas
   deixam o realce: a ativa fica em `bg-card` com sombra, e os ícones das abas aparecem sempre (Plataforma no
   vermelho institucional, Administração na primária).
 - **Ícones de seção:** caixa de 32px no menu e 28px no título (eram 28 e 24), raio 8px, tom com brilho em degradê
@@ -54,7 +54,7 @@ neutra. Nada muda de lugar: a busca continua na barra lateral e o título contin
   o texto continua o de `footerText`.
 - **Tokens novos:** `--institutional`, `--institutional-foreground`, `--header`, `--canvas-glow`,
   `--avatar-from`, `--avatar-to`, `--avatar-foreground`, `--online`, `--theme-icon`, `--tone-sheen`,
-  `--highlight-gradient`, `--highlight-bar`, `--card-shadow` e `--card-shadow-hover`.
+  `--highlight-bar`, `--highlight-shadow`, `--card-shadow` e `--card-shadow-hover`.
 - **Documentos e verificador:** `AGENTS.md`, `DESIGN.md`, `REPLICAR.md`, `GUIA.html`, `README.md` e
   `verify-template.mjs` com os valores e as regras novas. Prévia e comparações regeradas.
 
@@ -65,8 +65,7 @@ neutra. Nada muda de lugar: a busca continua na barra lateral e o título contin
    realce, logo surface, violeta e as medidas).
 3. Regras, specs e testes locais que exigem o secundário igual ao principal ou 12:1 em todo texto passam a
    exigir 7:1 no texto principal e 4,5:1 no secundário; reescreva-os (a regra é da camada).
-4. Testes que leem o fundo do item ativo (`background-color`) passam a ler o degradê (`background-image`) ou a
-   cor do texto; testes que exigem o texto principal sobre `--highlight` passam a exigir
+4. Testes que leem o fundo do item ativo (`background-color`) passam a esperar o azul de `--highlight`; testes que exigem o texto principal sobre `--highlight` passam a exigir
    `--highlight-foreground`; os que medem 56px, 260px, 64px, 34px ou o realce da aba ativa precisam dos valores novos.
 5. Telas do sistema que imitavam a estética nova com classes locais (`rounded-xl`/`rounded-2xl`, `shadow-xs`,
    borda superior colorida em `Card`, cinza fixo no texto secundário) podem voltar ao primitivo: o `Card` já tem
