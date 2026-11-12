@@ -2,7 +2,8 @@
 /*
  * Confere um DESIGN.md (formato aberto do Google Labs, versão alpha) contra os tokens reais do CSS. O
  * DESIGN.md descreve a interface para agentes de IA, mas não é a fonte da verdade: este script reprova
- * - cor do grupo `colors` diferente do token de mesmo nome no `:root` dos CSS (ou ausente deles);
+ * - cor do grupo `colors` diferente do token de mesmo nome no `:root` dos CSS (ou ausente deles), e falta de
+ *   `colors.primary` ou `colors.card-border` (contorno dos quadros, desde a 1.11.0);
  * - `rounded` fora da escala presa a `--radius`, e `spacing.shell-bar` diferente de `--shell-bar`;
  * - referência `{grupo.token}` que não existe no próprio arquivo;
  * - seção do formato fora de ordem, repetida ou ausente;
@@ -122,7 +123,10 @@ if (!tokens) {
   const css = rootTokens(cssFiles);
 
   const colors = tokens.colors ?? {};
-  if (!colors.primary) problems.push(`${relative}: falta colors.primary`);
+  // Cores que todo DESIGN.md da camada tem de declarar, mesmo sem o da camada ao lado para comparar.
+  for (const name of ["primary", "card-border"]) {
+    if (!colors[name]) problems.push(`${relative}: falta colors.${name}`);
+  }
   for (const [name, value] of Object.entries(colors)) {
     const real = css[name];
     if (!real) problems.push(`colors.${name}: não há --${name} no :root dos CSS`);

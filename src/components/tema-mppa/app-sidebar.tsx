@@ -55,14 +55,18 @@ function Brand({ config }: { config: ShellConfig }) {
   );
 }
 
-/* Abaixo de 640px as logos saem do cabeçalho e aparecem aqui, sob a marca. */
+/*
+ * Logos sob a marca sempre que o cabeçalho não as mostra: no menu móvel (abaixo de 801px) e na barra aberta
+ * entre 801px e 1023px, onde no cabeçalho elas apertariam o título. A partir de 1024px, ou com a barra
+ * recolhida, ficam no cabeçalho.
+ */
 function MobileLogos({ config }: { config: ShellConfig }) {
   const logos = (config.header?.logos ?? []).filter((logo) => Boolean(logo.src));
   if (!logos.length) return null;
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2 border-b border-sidebar-border px-3 py-2.5 sm:hidden">
-      {logos.map((logo) => (
-        <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
+    <div className="flex flex-wrap items-center justify-center gap-2 border-b border-sidebar-border px-3 py-2.5 lg:hidden desk:tm-collapsed:hidden">
+      {logos.map((logo, index) => (
+        <ImageSlot key={`${index}-${logo.src}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
       ))}
     </div>
   );

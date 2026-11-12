@@ -1,13 +1,6 @@
 import { FileText, LayoutDashboard, Monitor, ShieldAlert, ShieldCheck, ShieldHalf, User, Users } from "lucide-react";
 import type { ShellConfig, ShellSession } from "@/components/tema-mppa";
 
-/* Logos de exemplo: MPPA e CIIA (em public/) e a palavra CIIA em SVG embutido, decorativa (alt vazio: repete a CIIA);
-   o consumidor passa as dele. */
-const svg = (markup: string) => `data:image/svg+xml;utf8,${encodeURIComponent(markup)}`;
-const logoCiia = svg(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="132" height="76" viewBox="0 0 132 76"><rect width="132" height="76" fill="#fff"/><text x="66" y="55" font-family="Arial" font-size="46" font-weight="700" fill="#1a237e" text-anchor="middle">CIIA</text></svg>',
-);
-
 /* Símbolo de exemplo: escudo em moldura com degradê, só com tokens. O consumidor passa a imagem dele. */
 const symbol = (
   <span className="relative flex size-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-institutional to-primary p-px shadow-md" aria-hidden>
@@ -24,7 +17,7 @@ const symbol = (
 export const demoConfig: ShellConfig = {
   brand: {
     name: "Template",
-    version: "1.11.0",
+    version: "1.12.0",
     versionYears: "2026",
     tagline: "Portal de Sistemas MPPA",
     homeHref: "/",
@@ -44,10 +37,12 @@ export const demoConfig: ShellConfig = {
     { id: "audit", label: "Auditoria & Segurança", href: "/administracao/auditoria", icon: ShieldCheck, tone: "violet", description: "Registros de acesso" },
   ],
   header: {
+    /* As três logos padrão dos sistemas (REPLICAR, 4.5), nesta ordem; os arquivos vão no zip, em public/. */
     logos: [
       { src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 },
       { src: "/ciia.png", alt: "CIIA", width: 244, height: 244 },
-      { src: logoCiia, alt: "", width: 132, height: 76 },
+      // A sigla repete a CIIA: decorativa, com alt vazio, para o leitor de tela não ler "CIIA, CIIA".
+      { src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 },
     ],
     searchPlaceholder: "Ir para…",
     signOutLabel: "Sair",

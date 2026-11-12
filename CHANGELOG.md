@@ -1,9 +1,115 @@
 # Changelog
 
+## 1.12.0 — 2026-11-12
+
+O que o Heimdall relatou ao aplicar a 1.11.0 (`REPLICAR.md`, seção 11): passos que faltavam no roteiro e no
+CHANGELOG, documentação desatualizada e o título do cabeçalho espremido pelas logos em larguras intermediárias.
+
+**Por que 1.12.0, e não 1.11.1.** Quase tudo aqui é correção, que sairia como 1.11.1. Mas o cabeçalho muda de
+aparência entre 640px e 1023px: as logos saem dele e vão para baixo da marca, e a seção à frente do título passa a
+depender do espaço. É mudança de aparência anunciada, com capturas antes e depois e testes do consumidor a rever,
+e por isso sobe o número do meio. O zip também passa a levar as logos, que a cópia grava no sistema. E o número
+novo encerra a confusão das duas compilações da 1.11.0 (nota na 1.11.0): a 1.12.0 junta o melhor das duas.
+
+### Adicionado
+
+- **Logos padrão no zip**, em `public/`: `mppa-logo.png` (132×76), `ciia.png` (244×244) e `ciia-sigla.svg`
+  (132×76: fundo `#fff`, "CIIA" em `#1a237e`, Arial 46px, negrito, centralizado em `y=55`). Até a 1.11.0, a sigla
+  só existia como data URL dentro da prévia. O `copy-template.mjs` grava as três no `public/` do consumidor
+  (`--public-dir` para outro lugar) só quando faltam. Ele nunca substitui uma que já existe, nem com `--force`, e
+  avisa quando a do sistema difere da do modelo.
+- **Soma SHA-256 do zip:** o `npm run empacotar` grava `tema-mppa-next-v<versão>.zip.sha256` (formato do
+  `sha256sum`) ao lado do zip. O zip é reprodutível (data e ordem das entradas fixas): o mesmo conteúdo dá a mesma
+  soma. O script recusa empacotar de novo uma versão cuja soma já publicada difere: conteúdo diferente não sai
+  mais com o mesmo número.
+- **`verificar-design.mjs`:** reprova o `DESIGN.md` sem `colors.card-border`.
+
+### Modificado
+
+- **Cabeçalho (aparência, de 640px a 1023px):** o título tem prioridade de espaço.
+  - As logos ficam no cabeçalho a partir de 1024px, ou a partir de 801px com a barra recolhida. Fora disso,
+    aparecem sob a marca: na barra lateral aberta (801px a 1023px) ou no menu móvel (abaixo de 801px, antes só
+    abaixo de 640px).
+  - O bloco do título ocupa o que sobra e nunca fica com menos de 128px.
+  - A seção à frente ("Minha Página /") aparece quando o bloco tem 288px ou mais (consulta de contêiner), e não
+    mais a partir de 640px fixos; ela encolhe antes do título.
+
+  Medido com o título "Acessos por Sistema" (142px) e a barra aberta, nos dois temas:
+
+  | Largura | 1.11.0 (medida do Heimdall) | 1.12.0 |
+  | --- | --- | --- |
+  | 640px a 700px | cortado com 3 logos | inteiro (142px), logos no menu móvel |
+  | 768px | inteiro | inteiro, logos no menu móvel |
+  | 801px | 33px com 2 logos; 0px com 3 | inteiro, logos sob a marca |
+  | 900px | 132px com 2 logos; 68px com 3 | inteiro, logos sob a marca |
+  | 1024px e 1280px | inteiro | inteiro, logos no cabeçalho |
+
+  Com a barra recolhida, de 801px em diante: inteiro, com as logos no cabeçalho. Sem rolagem horizontal nem
+  sobreposição de 390px a 1280px.
+- **Chave das logos:** volta a usar o índice (`${index}-${logo.src}`), no cabeçalho e sob a marca: duas logos
+  podem repetir o `src` ou o `alt`.
+- **Demonstração:** a sigla vem do arquivo `/ciia-sigla.svg`, com `alt=""` (decorativa). Com `alt="CIIA"` na logo
+  e na sigla, o leitor de tela lia "CIIA, CIIA".
+- **`DESIGN.md`:**
+  - `card-border` (`#b5bac0`) entra no bloco `colors`, e o texto separa a borda da casca do contorno dos quadros;
+  - o token `{typography.nav-group}` descreve o nome do grupo só para leitores de tela, com a linha em degradê na
+    tela; o componente `nav-group-label` dá lugar a `nav-group-rule`;
+  - entram a prioridade do título e as logos (componente `logo-chip`).
+- **`REPLICAR.md`:**
+  - 1.3: o nome da pasta descompactada, inclusive a que o "Extrair tudo" do Windows cria;
+  - 4.1: `.gitignore` com `tema-mppa-next-v*/` e as logos gravadas em `public/`;
+  - 4.5: `header.logos` com os três itens, na ordem;
+  - 7: conferir a soma do zip;
+  - 7.1: classes passadas na `className` que sobrepõem a camada;
+  - 9: as regras novas do cabeçalho.
+- **`GUIA.html`:** conferir a soma e descompactar sem a pasta extra do Windows.
+- **CHANGELOG 1.11.0:** passos do "Ao atualizar de 1.10.2" completados (logos, contorno sobreposto na
+  `className`, testes da borda) e nota sobre as duas compilações.
+
+### Ao atualizar de 1.11.0
+
+1. Confira a soma do zip (`sha256sum -c tema-mppa-next-v1.12.0.zip.sha256`; no Windows, `Get-FileHash`) e
+   capture as telas antes da cópia, em 640px, 801px, 900px, 1024px e 1280px, nos dois temas, com a barra aberta e
+   recolhida (`REPLICAR.md`, 7.1).
+2. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+   Se o zip foi descompactado com o "Extrair tudo" do Windows, o script está em
+   `tema-mppa-next-v1.12.0/tema-mppa-next/scripts/` (seção 1.3). A cópia grava em `public/` as logos que faltam. Se
+   o sistema já criou a sua `public/ciia-sigla.svg` (como o Heimdall), ela fica: confira o aviso da cópia e, se
+   ele disser que difere, troque-a pela do modelo.
+3. **Logos:** `header.logos` passa a ter três itens, nesta ordem (`REPLICAR.md`, 4.5): MPPA
+   (`/mppa-logo.png`, 132×76, `alt: "MPPA"`), CIIA (`/ciia.png`, 244×244, `alt: "CIIA"`) e a sigla CIIA
+   (`/ciia-sigla.svg`, 132×76, `alt: ""`, decorativa).
+4. **Cabeçalho:** capture de novo e compare. É esperado, com a barra aberta:
+   - entre 640px e 1023px, as logos saem do cabeçalho: abaixo de 801px ficam no menu móvel; de 801px a 1023px,
+     sob a marca, na barra lateral;
+   - o título não é mais cortado;
+   - a seção à frente do título aparece conforme o espaço, e não a partir de 640px fixos.
+
+   Com a barra recolhida, as logos ficam no cabeçalho desde 801px. Qualquer outra diferença é defeito.
+5. **Testes afetados:**
+   - teste que procure as logos no cabeçalho abaixo de 1024px (barra aberta) passa a procurá-las na barra
+     lateral (`aside`), e teste que as espere no menu móvel só abaixo de 640px passa a esperá-las abaixo de 801px;
+   - as logos estão no HTML duas vezes (cabeçalho e barra) e o CSS esconde uma: conte só as visíveis;
+   - teste que conte imagens com `alt="CIIA"` passa a esperar uma (a sigla tem `alt` vazio);
+   - teste que espere a seção à frente do título a partir de 640px exatos passa a medi-la pelo espaço do título;
+   - teste que meça o título no cabeçalho passa a esperar ao menos 128px no bloco, em toda largura.
+6. Refaça o `DESIGN.md` do sistema a partir do novo (`card-border` no `colors`, `nav-group-rule`, texto do grupo
+   e do cabeçalho) e confira com o `verificar-design.mjs`, que agora reprova sem `colors.card-border`.
+7. Se ao aplicar a 1.11.0 ficou alguma `className` que sobrepõe a borda do cartão, ou algum painel que imita o
+   cartão com a borda antiga, faça os passos 3 e 4 revistos da 1.11.0.
+8. Acrescente `tema-mppa-next-v*/` ao `.gitignore` e troque a versão na seção "Interface" do `AGENTS.md` para
+   1.12.0.
+
 ## 1.11.0 — 2026-11-12
 
 Pedidos do autor em 12 nov. 2026: quadros que não somem no escuro, barra lateral mais larga e nomes novos
 na demonstração.
+
+> **Duas compilações com este número.** Saíram dois zips 1.11.0 diferentes. Um tem a chave das logos com o
+> índice e o comentário curto do `--card-border`. O outro tem a chave `${logo.src}-${logo.alt}`, o comentário
+> longo, a sigla com `alt` vazio e o desenho do `REPLICAR.md` (seção 9) já sem "Plataforma", ⌃K e ⌃B. Os dois
+> funcionam. A 1.12.0 junta o melhor das duas e publica a soma SHA-256 do zip; quem tem qualquer uma atualiza
+> para ela.
 
 ### Adicionado
 
@@ -18,19 +124,37 @@ na demonstração.
   inclusive "Administração" em negrito na aba ativa.
 - **Rótulo do grupo do menu:** o texto em maiúsculas abaixo das abas ("PLATAFORMA") dá lugar a uma linha de
   1px em degradê do vermelho institucional ao azul. O nome continua num `h2` só para leitores de tela.
-- **Demonstração:** a aba "Plataforma" passa a "Minha Página" e o item "Dashboard" a "Meus acessos"; no cabeçalho, três logos:
-  a do MPPA (a mesma da página de referência do Heimdall, em `public/mppa-logo.png`) no lugar da "ÓRGÃO",
-  a do CIIA e a palavra "CIIA" num terceiro espaço do mesmo tamanho da primeira.
+- **Logos do cabeçalho (padrão dos sistemas, não só demonstração):** três, nesta ordem: a do MPPA (a mesma da
+  página de referência do Heimdall, `public/mppa-logo.png`, 132×76) no lugar da "ÓRGÃO", a do CIIA
+  (`public/ciia.png`, 244×244) e a sigla "CIIA" num terceiro espaço do mesmo tamanho da primeira (132×76; arquivo
+  `public/ciia-sigla.svg` desde a 1.12.0).
+- **Demonstração:** a aba "Plataforma" passa a "Minha Página" e o item "Dashboard" a "Meus acessos".
 
 ### Ao atualizar de 1.10.2
 
 1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+   O zip descompacta numa pasta `tema-mppa-next/`; o "Extrair tudo" do Windows a põe dentro de
+   `tema-mppa-next-v<versão>/` (`REPLICAR.md`, 1.3): use o caminho real.
 2. Refaça o `DESIGN.md` do sistema a partir do novo e confira com o `verificar-design.mjs`.
-3. Teste que meça 268px na barra lateral passa a 304px. Teste que procure o rótulo do grupo como texto
-   visível passa a procurá-lo pelo papel (`heading`), que continua acessível.
-4. Quadro próprio do sistema que imite o cartão da camada usa `border-card-border` no lugar de `border`.
-5. Os nomes da demonstração são só exemplo: o sistema mantém o seu `platformLabel` e os seus itens.
-6. Troque a versão na seção "Interface" do `AGENTS.md` para 1.11.0.
+3. Testes:
+   - teste que meça 268px na barra lateral passa a 304px;
+   - teste que procure o rótulo do grupo como texto visível passa a procurá-lo pelo papel (`heading`), que
+     continua acessível;
+   - teste que compare a borda do cartão (ou de `PanelCard`, `LinkCard`, `InfoField`, da caixa do
+     `PageGreeting` e das linhas do `DataTable`) com `--border` passa a compará-la com `--card-border`.
+4. **Contorno:**
+   - quadro próprio do sistema que imite o cartão da camada usa `border-card-border` no lugar de `border`;
+     painéis vizinhos que imitam o cartão (raio 16px, fundo de cartão, sombra), mesmo sem usar o componente,
+     entram neste passo, para não ficarem dois contornos diferentes lado a lado no escuro;
+   - uma tela pode sobrepor a cor da borda na `className` passada ao cartão (no Heimdall, `border-border/70` e
+     `border-border/60` no cartão do login), e segue com o contorno antigo mesmo depois da cópia. Procure
+     `border-border` nas `className` passadas a `Card`, `PanelCard`, `LinkCard`, `InfoField` e `DataTable`
+     (`grep -rn "border-border" <pasta das telas>`) e tire a sobreposição.
+5. **Logos:** `header.logos` passa a ter três itens, nesta ordem (`REPLICAR.md`, 4.5): MPPA (132×76), CIIA
+   (244×244) e a sigla CIIA (132×76, `alt=""`). Os arquivos vêm no zip a partir da 1.12.0.
+6. Os outros nomes da demonstração ("Minha Página", "Meus acessos") são só exemplo: o sistema mantém o seu
+   `platformLabel` e os seus itens.
+7. Troque a versão na seção "Interface" do `AGENTS.md` para 1.11.0.
 
 ## 1.10.2 — 2026-11-12
 

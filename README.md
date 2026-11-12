@@ -1,6 +1,6 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.11.0**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
+Versão **1.12.0**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
 estética de 12 nov. 2026 (ardósia no claro e marinho no escuro, cartões de 16px, sombras em camadas, realce em degradê do vermelho
 institucional ao azul, avatar em degradê) e o cabeçalho padrão dos sistemas:
 
@@ -18,9 +18,10 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 
 ## Usar num codebase
 
-1. Gere o zip: `npm run empacotar`. Ele grava só `tema-mppa-next-v1.11.0.zip`, na pasta acima desta.
-2. Entregue o zip ao desenvolvedor do sistema. Ele o copia para a raiz do repositório, descompacta e abre
-   `tema-mppa-next/GUIA.html` no navegador.
+1. Gere o zip: `npm run empacotar`. Ele grava `tema-mppa-next-v1.12.0.zip` e a soma
+   `tema-mppa-next-v1.12.0.zip.sha256`, na pasta acima desta.
+2. Entregue o zip e a soma ao desenvolvedor do sistema. Ele os copia para a raiz do repositório, confere a soma,
+   descompacta e abre `tema-mppa-next/GUIA.html` no navegador.
 3. No [`GUIA.html`](GUIA.html), ele responde duas perguntas: a situação do sistema (do zero, já existe sem o
    tema, já tem o tema) e se o repositório usa OpenSpec. O guia monta os passos daquele caso, cada um com o
    prompt pronto para colar no Claude Code e o que conferir depois. No sistema do zero, nome, versão, ano e
@@ -52,6 +53,8 @@ O zip tem só o que o desenvolvedor e o agente usam:
   DESIGN.md), base do `DESIGN.md` de cada sistema;
 - o script de cópia, o `verificar-camada.mjs`, que confere no codebase que ninguém editou a camada, e o
   `verificar-design.mjs`, que prende o `DESIGN.md` do sistema às cores do CSS;
+- as três logos padrão do cabeçalho (`public/`: MPPA, CIIA e a sigla CIIA), que a cópia grava no `public/` do
+  sistema quando faltam;
 - o protótipo, a prévia e as comparações.
 
 Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
@@ -67,6 +70,7 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 | `src/components/tema-mppa/` | camada visual (shell e primitivos) |
 | `src/styles/tema-mppa.css` | tokens: cores, raio, sombra, base |
 | `src/app/` | demonstração que compila e exibe a camada (fica fora do zip) |
+| `public/` | logos padrão do cabeçalho (vão no zip) |
 | `docs/prototipo/` | protótipo aprovado; manda em todo elemento gráfico |
 | `docs/preview/` | prévia offline gerada da demonstração |
 | `docs/comparacao/` | protótipo e modelo lado a lado, claro e escuro, 1280px e 390px |
@@ -91,6 +95,10 @@ FONTE=$(curl -s http://localhost:3123/ | grep -o '/_next/static/media/[^")]*woff
 node scripts/capturar-comparacao.mjs "$FONTE" /tmp/capturas
 node scripts/compor-comparacao.mjs /tmp/capturas docs/comparacao
 ```
+
+O zip é reprodutível: o mesmo conteúdo dá a mesma soma. O `npm run empacotar` recusa gerar de novo uma versão
+cuja soma já está na pasta de saída com outro valor: conteúdo novo pede número novo (`--substituir` só para um zip
+que nunca saiu da máquina).
 
 O `npm run check` gera o zip numa pasta temporária, copia a camada dele para um consumidor descartável e
 compila esse consumidor (requer `zip` e `unzip`; leva cerca de um minuto a mais). Ao mudar uma cor, atualize o

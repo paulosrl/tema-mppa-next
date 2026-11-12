@@ -96,6 +96,12 @@ A **raiz do consumidor** é a pasta do `package.json` do frontend. Num monorepo,
 exemplo, `apps/meu-app/frontend`). Todo caminho deste guia sem prefixo (`components/`, `styles/`,
 `docs/tema-mppa/`, `app/`) é relativo a ela. O zip e a pasta descompactada ficam na raiz do repositório.
 
+**Nome da pasta descompactada.** O zip traz uma pasta só, `tema-mppa-next/`, e este guia a chama assim:
+`unzip tema-mppa-next-v1.12.0.zip` na raiz do repositório cria `tema-mppa-next/`. O "Extrair tudo" do Windows
+cria antes uma pasta com o nome do zip, e o modelo fica em `tema-mppa-next-v1.12.0/tema-mppa-next/`. Nesse caso,
+mova a pasta de dentro para a raiz do repositório ou troque `tema-mppa-next/` pelo caminho real em cada comando.
+Na dúvida, é a pasta que tem `scripts/copy-template.mjs`.
+
 ## 2. Conferir a stack
 
 Leia o `package.json` e a estrutura de pastas do consumidor.
@@ -145,7 +151,8 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 ## 3. Fase 0: Diagnóstico
 
 1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
-   (`unzip tema-mppa-next-v1.11.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
+   (`unzip tema-mppa-next-v1.12.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`;
+   se ele usou o "Extrair tudo" do Windows, a pasta está em `tema-mppa-next-v1.12.0/tema-mppa-next/` (seção 1.3).
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -156,8 +163,9 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 
 ### 4.1 Preparar e copiar
 
-Acrescente ao `.gitignore` do repositório `tema-mppa-next/`, `tema-mppa-next-*.zip*`, `.tema-mppa-backup-*/` e,
-se não estiver lá, `*.tsbuildinfo`. Da raiz do repositório:
+Acrescente ao `.gitignore` do repositório `tema-mppa-next/`, `tema-mppa-next-v*/` (a pasta que o "Extrair tudo"
+do Windows cria), `tema-mppa-next-*.zip*`, `.tema-mppa-backup-*/` e, se não estiver lá, `*.tsbuildinfo`. Da raiz
+do repositório (com o caminho real da pasta, se ela não for `tema-mppa-next/`; seção 1.3):
 
 ```bash
 node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor>   # "." se o frontend estiver na raiz
@@ -178,13 +186,19 @@ Use `--components-dir` e `--styles-dir` para outro lugar. Ele também grava em `
 - `verificar-camada.mjs`, que confere a camada contra essa lista (`node docs/tema-mppa/verificar-camada.mjs`,
   da raiz do consumidor). Ligue-o aos testes ou ao `check` do consumidor, se ele tiver um.
 
+E grava em `public/` (na raiz do consumidor, com ou sem `src/`; `--public-dir` para outro lugar) as três logos
+padrão do cabeçalho: `mppa-logo.png`, `ciia.png` e `ciia-sigla.svg` (seção 4.5). Elas são do sistema, não da
+camada: o script só as grava se faltam, nunca substitui uma que já existe (nem com `--force`) e avisa quando a do
+sistema difere da do modelo. Faça o commit delas com a Fase 1.
+
 Se a camada já existir, ele para; rode de novo com `--force`, que faz backup antes de substituir (na pasta
 temporária do sistema, fora do consumidor, para lint e testes não acharem a camada antiga; o caminho sai no fim). A camada só
 usa imports relativos: não depende do alias `@/`. Os arquivos saem com modo 644, e 755 só os scripts com
 shebang (`verificar-camada.mjs`, `verificar-design.mjs`), seja qual for o modo que o zip trouxe.
 
-Logo depois da cópia, **apague a pasta descompactada `tema-mppa-next/`**: tudo o que o consumidor precisa já
-está em `components/`, `styles/` e `docs/tema-mppa/`. Se ela ficar, o `tsconfig` e o ESLint do consumidor
+Logo depois da cópia, **apague a pasta descompactada `tema-mppa-next/`** (e a `tema-mppa-next-v*/` em volta
+dela, se o Windows a criou): tudo o que o consumidor precisa já está em `components/`, `styles/`, `public/` e
+`docs/tema-mppa/`. Se ela ficar, o `tsconfig` e o ESLint do consumidor
 compilam uma segunda cópia da camada. O zip é do usuário: deixe-o (o `.gitignore` já o exclui) e diga que
 pode ser apagado. O comentário do `index.ts` copiado cita `docs/prototipo/index.html`; no consumidor, o
 arquivo está em `docs/tema-mppa/prototipo/index.html`.
@@ -308,7 +322,15 @@ export const shellConfig: ShellConfig = {
   administrationNavigation: [
     { id: "config", label: "Configurações", href: "/admin/config", icon: Settings, tone: "violet" },
   ],
-  header: { logos: [], searchPlaceholder: "Buscar na página", signOutLabel: "Sair" },
+  header: {
+    logos: [
+      { src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 },
+      { src: "/ciia.png", alt: "CIIA", width: 244, height: 244 },
+      { src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 }, // sigla decorativa: repete a CIIA
+    ],
+    searchPlaceholder: "Buscar na página",
+    signOutLabel: "Sair",
+  },
 };
 ```
 
@@ -323,8 +345,20 @@ Regras para preencher:
   barra lateral e do rodapé; se o consumidor tinha regra diferente para os dois, é um conflito do diagnóstico.
 - `symbol`: a logo do sistema (`{ src, alt }`) ou, sem imagem, `<span className="tm-brand-mark">X</span>`
   com a inicial do sistema (quadrado de 32px com degradê vermelho, definido no `tema-mppa.css`).
-- `header.logos: []` é válido; logos institucionais entram como `{ src, alt, width, height }` e aparecem
-  no cabeçalho a partir de 640px (abaixo disso, no menu móvel).
+- `header.logos`: **três itens, nesta ordem**, como no modelo acima. É o padrão dos sistemas, não exemplo da
+  demonstração:
+  1. MPPA: `{ src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 }`;
+  2. CIIA: `{ src: "/ciia.png", alt: "CIIA", width: 244, height: 244 }`;
+  3. a sigla "CIIA", num espaço do tamanho da primeira: `{ src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 }`.
+
+  Os arquivos vêm no zip, em `tema-mppa-next/public/`, e o `copy-template.mjs` os grava no `public/` do
+  consumidor (4.1). A sigla tem `alt=""` (decorativa): com `alt="CIIA"`, o leitor de tela leria "CIIA, CIIA". A
+  sigla é um SVG de 132×76: fundo `#fff`, texto "CIIA" em `#1a237e`, Arial 46px, negrito, centralizado em
+  `y=55`. Se o sistema já tinha outras logos, é conflito do diagnóstico (item 12): o desenvolvedor decide. Na
+  API, `logos: []` continua válido (sem logos, sem divisória). Cada logo é `{ src, alt, width, height }`; imagem ausente ou inválida some.
+- Onde as logos aparecem: no cabeçalho a partir de 1024px, ou a partir de 801px com a barra recolhida; fora disso,
+  sob a marca, na barra lateral aberta (801px a 1023px) ou no menu móvel (abaixo de 801px). Assim o título nunca
+  fica espremido (seção 9).
 - `header.searchPlaceholder` é o texto da caixa de busca da barra lateral (padrão: "Buscar na página"); `header.signOutLabel`, o
   rótulo do botão de sair.
 - `description` e `keywords` dos itens são opcionais: preencha só com texto real do consumidor (por exemplo,
@@ -604,10 +638,13 @@ Quando nenhuma tela usar mais o visual antigo:
 1. `node docs/tema-mppa/verificar-camada.mjs`: se apontar arquivo editado, entenda a edição antes de seguir;
    ela será perdida (vai para o backup).
 2. **Antes da cópia, capture as telas** (receita em 7.1), se a versão nova anuncia mudança de aparência.
-3. Descompacte o zip novo e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
-   O script lista os arquivos que estavam editados, guarda o backup fora do consumidor e grava a lista de
-   conferência da versão nova. O modelo não publica soma de conferência (`.sha256`) do zip: se o processo do
-   consumidor pede uma, calcule-a e registre-a.
+3. Confira a soma do zip com a publicada ao lado dele, em `tema-mppa-next-v<versão>.zip.sha256`
+   (`sha256sum -c tema-mppa-next-v<versão>.zip.sha256`; no Windows, `Get-FileHash` e compare). Soma diferente: o
+   zip não é o publicado; pare e peça o certo. Sem o `.sha256`, calcule a soma, registre-a e diga ao usuário que
+   não houve com o que comparar. Descompacte o zip (nome da pasta: seção 1.3) e rode
+   `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`. O script lista os arquivos que
+   estavam editados, guarda o backup fora do consumidor, grava as logos que faltam em `public/` e a lista de
+   conferência da versão nova.
 4. Leia o `docs/tema-mppa/CHANGELOG.md` da versão anterior até a nova e faça o que a seção "Ao atualizar de"
    de cada versão pede ao consumidor (configuração nova, propriedade que saiu). **Saltando várias versões**, a
    cópia é uma só, com a versão final; os passos de cada "Ao atualizar de" se somam, e os que mandam copiar
@@ -628,6 +665,11 @@ Quando nenhuma tela usar mais o visual antigo:
 - **Testes que leem classes internas da camada** (por exemplo, `desk:hidden` na barra recolhida) quebram
   quando a camada muda as classes. Teste pelo contrato observável (4.8): `aria-label`, `data-tm-sidebar`,
   largura e cor medidas.
+- **Classes que sobrepõem a camada:** uma tela que passa cor ou borda na `className` de um primitivo (por
+  exemplo, `border-border/70` num `Card`) continua com o visual antigo quando a camada muda o padrão. Procure
+  essas classes (`grep -rn "border-border" <pasta das telas>` e semelhantes) e tire as que repetem ou contrariam
+  a camada. Painel próprio que imita o cartão (raio 16px, fundo de cartão, sombra) segue o mesmo token do
+  cartão, para não ficarem dois contornos diferentes lado a lado.
 - **`bg-background` em componentes shadcn** (`Input`, botão `outline`, seletores, diálogos, alertas): o fundo
   da página deixa de ser o do cartão desde a 1.9.0. Superfície que precisa parecer cartão usa `bg-card`.
 - **Degradê translúcido:** um degradê que termina transparente (`to-cor/[0.04]`) deixa ver o fundo da página
@@ -746,10 +788,14 @@ Cabeçalho (igual em todos os sistemas):
 
 - **Marca, no topo da barra lateral:** símbolo de 36px, com o nome em negrito e a versão num selo vermelho
   (fonte mono, 10px, `text-institutional-foreground`) na mesma linha.
-- **Título:** ícone de seção de 28px, a seção à frente ("Minha Página / Meus acessos" na demonstração, a seção a partir de 640px) e o
-  rótulo do item (`text-sm`, peso 600).
+- **Título:** ícone de seção de 28px, a seção à frente ("Minha Página / Meus acessos" na demonstração) e o
+  rótulo do item (`text-sm`, peso 600). Tem prioridade de espaço: ocupa o que sobra e nunca fica com menos de
+  128px; a seção só aparece quando o bloco do título tem 288px ou mais (consulta de contêiner) e encolhe antes
+  do rótulo.
 - **Tema:** botão `chrome` de ícone de 36px (borda, fundo do cartão, sombra leve), sol `text-theme-icon`.
-- **Logos:** 32px de altura em caixas com borda e sombra sobre `bg-logo-surface`, com divisórias antes e depois.
+- **Logos:** 32px de altura em caixas com borda e sombra sobre `bg-logo-surface`, com divisórias antes e depois;
+  no cabeçalho a partir de 1024px, ou a partir de 801px com a barra recolhida. Fora disso, sob a marca (barra
+  lateral aberta ou menu móvel). Padrão: MPPA, CIIA e a sigla CIIA (4.5).
 - **Identidade:**
   - avatar redondo de 32px em degradê (`avatar-from` → `avatar-to`) com as iniciais (ou a foto) e o ponto
     verde de conectado;
@@ -804,7 +850,7 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.11.0)
+## Interface (tema-mppa 1.12.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

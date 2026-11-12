@@ -16,6 +16,8 @@ import { cn } from "./utils";
  * Cabeçalho padrão dos sistemas: 62px, translúcido com desfoque, borda inferior. À esquerda, o título da página
  * (só aqui); à direita, tema, logos institucionais e identidade com saída, separados por divisórias. As
  * ações do sistema (`headerActions`) vêm antes do tema. A busca fica na barra lateral, acima do "Recolher".
+ * O título tem prioridade de espaço: as logos só entram aqui quando cabem ao lado dele, a partir de 1024px, ou
+ * a partir de 801px com a barra recolhida; fora disso, aparecem sob a marca, na barra lateral ou no menu móvel.
  */
 export function AppHeader({
   config,
@@ -47,7 +49,7 @@ export function AppHeader({
       <span className="hidden h-4 w-px bg-border sm:block desk:hidden" aria-hidden />
       {/* A rota (`usePathname`) só chega em tempo de execução nas rotas dinâmicas: sob Suspense, o resto do
           cabeçalho continua no prerender (Cache Components, Next 16). */}
-      <Suspense fallback={<div className="min-w-0 flex-1" />}>
+      <Suspense fallback={<div className="min-w-32 flex-1" />}>
         <Breadcrumbs config={config} session={session} title={title} />
       </Suspense>
       <div className="ml-auto flex shrink-0 items-center gap-2">
@@ -65,10 +67,11 @@ export function AppHeader({
         <ThemeToggle />
         {logos.length ? (
           <>
-            <span className="mx-0.5 hidden h-5 w-px bg-border sm:block" aria-hidden />
-            <span className="hidden items-center gap-2 sm:flex">
-              {logos.map((logo) => (
-                <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
+            <span className="mx-0.5 hidden h-5 w-px bg-border lg:block desk:tm-collapsed:block" aria-hidden />
+            <span className="hidden items-center gap-2 lg:flex desk:tm-collapsed:flex">
+              {/* Índice na chave: duas logos podem repetir o src ou o alt (a sigla CIIA tem alt vazio). */}
+              {logos.map((logo, index) => (
+                <ImageSlot key={`${index}-${logo.src}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
               ))}
             </span>
           </>

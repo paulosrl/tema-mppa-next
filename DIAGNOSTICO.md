@@ -67,7 +67,9 @@ ou somem por condição (consulta, permissão) e como a condição chega.
 
 - Nome e versão para a marca e o rodapé; anos da versão (`versionYears`).
 - Símbolo: imagem existente ou inicial (`tm-brand-mark`).
-- Logos institucionais (arquivos, largura e altura).
+- Logos institucionais (arquivos, largura e altura). O padrão são três, nesta ordem: MPPA, CIIA e a sigla CIIA
+  (`REPLICAR.md`, 4.5); a cópia grava as que faltam em `public/`. Logo diferente, ou arquivo com o mesmo nome e
+  outro conteúdo em `public/`, é conflito do item 12.
 - Regras de hoje sobre onde o nome do sistema aparece.
 
 ## 9. Tema e segurança

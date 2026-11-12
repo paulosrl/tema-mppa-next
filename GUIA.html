@@ -104,7 +104,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">tema-mppa-next 1.11.0 · guia do desenvolvedor</span>
+    <span class="eyebrow">tema-mppa-next 1.12.0 · guia do desenvolvedor</span>
     <h1>Guia do Tema MPPA</h1>
     <p class="lead">Leva a interface padrão dos sistemas do MPPA ao seu repositório com o Claude Code. Responda as duas perguntas: o guia monta os passos do seu caso, com o prompt pronto de cada um e o que você confere depois.</p>
   </header>
@@ -156,8 +156,9 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       <table>
         <thead><tr><th>Caminho no sistema</th><th>O que é</th><th>Você mexe?</th></tr></thead>
         <tbody>
-          <tr><td><code>tema-mppa-next-v1.11.0.zip</code></td><td>O pacote do modelo. Fica fora do git.</td><td>Não</td></tr>
+          <tr><td><code>tema-mppa-next-v1.12.0.zip</code> e <code>.zip.sha256</code></td><td>O pacote do modelo e a soma de conferência dele. Ficam fora do git.</td><td>Não</td></tr>
           <tr><td><code>tema-mppa-next/</code></td><td>O zip descompactado, de onde você abriu este guia. O agente apaga na primeira entrega.</td><td>Não</td></tr>
+          <tr><td><code>public/mppa-logo.png</code>, <code>public/ciia.png</code> e <code>public/ciia-sigla.svg</code></td><td>As três logos padrão do cabeçalho, gravadas pela cópia quando faltam. Uma que o sistema já tinha fica como está.</td><td>Não</td></tr>
           <tr><td><code>docs/tema-mppa/</code></td><td>Referência que fica no sistema: este guia (<code>docs/tema-mppa/GUIA.html</code>), o roteiro, o protótipo e os verificadores.</td><td>Não</td></tr>
           <tr><td><code>docs/tema-mppa/diagnostico.md</code></td><td>Só no sistema que já existe: o diagnóstico da Fase 0. Com OpenSpec ou outro processo, fica onde ele manda; o agente diz onde.</td><td><strong>Sim, item 12</strong></td></tr>
           <tr><td><code>openspec/changes/</code></td><td>Só com OpenSpec: a change de cada fase, que você revisa antes de aplicar.</td><td>Revisa</td></tr>
@@ -171,7 +172,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "1.11.0";
+  var VERSAO = "1.12.0";
   var ZIP = "tema-mppa-next-v" + VERSAO + ".zip";
 
   // ---- Armazenamento (só neste navegador; a página funciona sem ele) ----
@@ -227,7 +228,8 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
     if (situacao === "zero") itens.push("Crie o repositório do sistema, ou use o vazio que já existe, com o git iniciado.");
     else itens.push("Confira que a <code>main</code> do sistema está limpa e funcionando.");
     if (situacao === "atualizar") itens.push("Se sobrou uma pasta <code>tema-mppa-next/</code> de uma versão anterior, apague-a.");
-    itens.push("Copie <code>" + ZIP + "</code> para a raiz do repositório e descompacte. Ele cria a pasta <code>tema-mppa-next/</code>, de onde você abriu este guia. Não faça commit dela nem do zip.");
+    itens.push("Copie <code>" + ZIP + "</code> e a soma <code>" + ZIP + ".sha256</code> para a raiz do repositório. Confira a soma: <code>sha256sum -c " + ZIP + ".sha256</code> (no Windows, <code>Get-FileHash " + ZIP + "</code> e compare com o arquivo). Soma diferente: o zip não é o publicado; peça o certo.");
+    itens.push("Descompacte na raiz do repositório. Deve ficar a pasta <code>tema-mppa-next/</code>, de onde você abre este guia. O \u201cExtrair tudo\u201d do Windows sugere uma pasta com o nome do zip: tire o <code>tema-mppa-next-v" + VERSAO + "</code> do fim do destino, ou a pasta fica em <code>tema-mppa-next-v" + VERSAO + "/tema-mppa-next/</code>. Não faça commit dela nem do zip.");
     if (processo === "openspec") itens.push(situacao === "zero"
       ? "Confira que a ferramenta do OpenSpec está instalada na máquina (<code>openspec --version</code>). O agente inicializa o OpenSpec no repositório."
       : "Confira que o repositório tem a pasta <code>openspec/</code>.");

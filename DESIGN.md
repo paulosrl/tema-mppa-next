@@ -30,6 +30,7 @@ colors:
   success: "#08351f"
   warning: "#432506"
   border: "#e2e8f0"
+  card-border: "#b5bac0"
   ring: "#0842a1"
   overlay: "#000000"
   logo-surface: "#ffffff"
@@ -197,10 +198,9 @@ components:
     typography: "{typography.nav-item}"
     rounded: "{rounded.xl}"
     padding: "8px 10px"
-  nav-group-label:
-    backgroundColor: "{colors.sidebar}"
-    textColor: "{colors.muted-foreground}"
-    typography: "{typography.nav-group}"
+  nav-group-rule:
+    backgroundColor: "{colors.institutional}"
+    height: 1px
   tab-rail:
     backgroundColor: "{colors.muted}"
     textColor: "{colors.muted-foreground}"
@@ -453,8 +453,11 @@ A identidade vem de três escolhas:
   secundário (descrições, rótulos, rodapé, cabeçalhos de tabela) em cinza-ardósia, com 4,67:1 sobre o muted,
   4,76:1 sobre o fundo e 5,12:1 sobre o cartão. O texto da barra (`sidebar-foreground`) é `#334155` (10,35:1
   no branco, 9,45:1 no muted).
-- **Border** (`#e2e8f0`): toda borda, inclusive a da barra lateral, para as linhas da barra e do conteúdo
-  coincidirem.
+- **Border** (`#e2e8f0`): bordas da casca (cabeçalho, rodapé, barra lateral, diálogos), para as linhas da barra e
+  do conteúdo coincidirem.
+- **Card border** (`{colors.card-border}`, `#b5bac0`, a `--border` escurecida 20%; no escuro `#3f6396`): contorno
+  dos quadros e das linhas de dentro deles (`Card`, `PanelCard`, `LinkCard`, `InfoField`, a caixa do
+  `PageGreeting` e as linhas do `DataTable`), utilitário `border-card-border`.
 - **Logo surface** (`#ffffff` nos dois temas): fundo das logos institucionais, em caixas com borda e sombra.
 
 ### Status e tons
@@ -507,7 +510,7 @@ camada. A altura de linha da casca é `normal`.
 | `{typography.page-title}` | 14px | 600 | Título da página no cabeçalho |
 | `{typography.brand-name}` | 16px | 700 | Nome do sistema no topo da barra lateral, em negrito; a versão ao lado, em selo vermelho de fonte mono (10px) |
 | `{typography.nav-item}` | 13.5px | 500 (ativo 600) | Itens do menu |
-| `{typography.nav-group}` | 11px | 700 | Rótulo do grupo ("Plataforma", "Administração"), em maiúsculas e cinza |
+| `{typography.nav-group}` | 11px | 700 | Nome do grupo ("Plataforma", "Administração"), só para leitores de tela; na tela, uma linha de 1px em degradê do vermelho institucional ao azul |
 | `{typography.tab}` | 13px | 500 | Abas da barra lateral |
 | `{typography.button}` | 13px | 700 | Botões |
 | `{typography.card-title}` | 16px | 700 | Título de cartão e de tabela |
@@ -521,7 +524,8 @@ camada. A altura de linha da casca é `normal`.
 
 - **Casca:** barra lateral de 304px (`{spacing.sidebar}`), recolhida em 76px por botão ou `Ctrl+B`,
   lembrada no navegador. Abaixo de 801px (`{spacing.breakpoint-desk}`) vira menu móvel sobreposto, sempre
-  expandido, com as logos sob a marca; `Esc` fecha.
+  expandido, com as logos sob a marca; `Esc` fecha. Entre 801px e 1023px, com a barra aberta, as logos também
+  ficam sob a marca, na barra lateral.
 - **Faixas de 62px** (`{spacing.shell-bar}`): topo da barra lateral (marca), cabeçalho, faixa "Recolher" e
   rodapé têm a mesma altura e a mesma borda, alinhadas sem diferença de pixel.
 - **Conteúdo:** padding de 40px × 36px (24px no tablet, 16px no celular), largura máxima de 1380px; sem rolagem horizontal
@@ -533,9 +537,13 @@ camada. A altura de linha da casca é `normal`.
   borda, num trilho com padding de 4px; ícones sempre visíveis (Plataforma no vermelho institucional,
   Administração na primária).
 - **Cabeçalho, da esquerda para a direita:** ícone de seção de 28px e título com a seção à frente
-  ("Minha Página / Meus acessos" na demonstração, a seção a partir de 640px); tema (botão `chrome` de 36px); divisória; logos com 32px
-  de altura, em caixas com borda e sombra (a partir de 640px); divisória; avatar de 32px em degradê com ponto
-  verde, nome e perfil (a partir de 1280px), botão de sair (36px, com realce destrutivo).
+  ("Minha Página / Meus acessos" na demonstração); tema (botão `chrome` de 36px); divisória; logos com 32px de
+  altura, em caixas com borda e sombra; divisória; avatar de 32px em degradê com ponto verde, nome e perfil (a
+  partir de 1280px), botão de sair (36px, com realce destrutivo).
+- **Prioridade do título:** o título ocupa o que sobra e nunca fica com menos de 128px (ícone e cerca de 90px de
+  texto). A seção à frente só aparece quando o bloco do título tem 288px ou mais, e encolhe antes dele. As logos
+  ficam no cabeçalho a partir de 1024px, ou a partir de 801px com a barra recolhida; fora disso, sob a marca.
+  Padrão dos sistemas: três logos, MPPA, CIIA e a sigla CIIA (decorativa, `alt` vazio).
 
 ## Elevation & Depth
 
@@ -570,9 +578,16 @@ Os primitivos vêm de `components/tema-mppa` (`index.ts`); nunca recrie um nem e
 `ShellConfig` do sistema. Recebe a sessão e o logout por propriedade; não chama API nem decide acesso. As
 abas e os itens de administração só aparecem com `session.is_admin === true`.
 
-**Menu** (`nav-item`, `nav-item-active`, `tab-active`): ícone de seção em caixa de 32px e rótulo; um só item
-marcado, o de rota mais longa, que dá também o título e a aba aberta. Recolhido, só ícones com o rótulo
-no `title`. Cartões com transição de 200ms e título com `tracking-tight`.
+**Menu** (`nav-item`, `nav-item-active`, `tab-active`, `nav-group-rule`): ícone de seção em caixa de 32px e rótulo; um só item
+marcado, o de rota mais longa, que dá também o título e a aba aberta. Abaixo das abas, no lugar do nome do grupo,
+uma linha de 1px em degradê do vermelho institucional ao azul, sumindo à direita; o nome fica num `h2` só para
+leitores de tela. Recolhido, só ícones com o rótulo no `title`. Cartões com transição de 200ms e título com
+`tracking-tight`.
+
+**Logos** (`logo-chip`): caixas de 32px de altura com borda e sombra sobre `bg-logo-surface`, vindas de
+`header.logos`. Padrão dos sistemas, nesta ordem: MPPA (132×76), CIIA (244×244) e a sigla CIIA (132×76,
+decorativa, `alt=""`). No cabeçalho a partir de 1024px (ou de 801px com a barra recolhida); fora disso, sob a
+marca, na barra lateral ou no menu móvel.
 
 **Busca** (`search-box`, `command-palette`): caixa de 36px (raio de 12px) com lupa e "Buscar na página", sem etiqueta de atalho, fixa
 na barra lateral logo acima do "Recolher", na largura da barra (padding de 10px); com a barra recolhida, só
@@ -582,8 +597,8 @@ aceita o nome ou a descrição, sem acento. O diálogo vai para o `<body>` por p
 **`Button`** (`button-primary`, `button-secondary`, `button-ghost`, `button-chrome`, `button-destructive`): 36px de altura,
 peso 700, raio de 12px; ícone de 36px (`size-9`), mais a variante `chrome` (borda, fundo do cartão, sombra leve), usada no tema e no menu móvel. Link com cara de botão: `buttonVariants`.
 
-**`Card` / `MetricCard` / `CardGrid`** (`card`, `metric-card`): raio de 16px, padding de 24px, borda e sombra
-`shadow-card`; métrica com número de 32px peso 800 e nota opcional.
+**`Card` / `MetricCard` / `CardGrid`** (`card`, `metric-card`): raio de 16px, padding de 24px, borda
+`border-card-border` e sombra `shadow-card`; métrica com número de 32px peso 800 e nota opcional.
 
 **`DataTable`** (`data-table`, `data-table-header`): título opcional com ações, células de 13px com padding
 12px × 16px, cabeçalho em negrito, mensagem de vazio.

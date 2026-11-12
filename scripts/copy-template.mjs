@@ -17,13 +17,14 @@ function option(name) {
   return index >= 0 ? args[index + 1] : undefined;
 }
 
-const valued = new Set(["--components-dir", "--styles-dir"]);
+const valued = new Set(["--components-dir", "--styles-dir", "--public-dir"]);
 const targetArg = args.find((arg, index) => !arg.startsWith("--") && !valued.has(args[index - 1]));
 
 if (!targetArg) {
-  console.error("Uso: node scripts/copy-template.mjs /caminho/do/consumidor [--force] [--components-dir dir] [--styles-dir dir]");
+  console.error("Uso: node scripts/copy-template.mjs /caminho/do/consumidor [--force] [--components-dir dir] [--styles-dir dir] [--public-dir dir]");
   console.error("O consumidor é a pasta do package.json do frontend (num monorepo, a subpasta do frontend).");
   console.error("Sem --components-dir/--styles-dir, usa src/components e src/styles se o consumidor tiver src/; senão, components e styles.");
+  console.error("As logos padrão do cabeçalho vão para public/ (ou --public-dir), sem substituir arquivo que já exista.");
   process.exit(1);
 }
 
@@ -47,6 +48,10 @@ const base = existsSync(path.join(target, "src")) ? "src" : "";
 const componentsDir = path.resolve(target, option("--components-dir") ?? path.join(base, "components"));
 const stylesDir = path.resolve(target, option("--styles-dir") ?? path.join(base, "styles"));
 const referenceDir = path.join(target, "docs/tema-mppa");
+// O public/ do Next fica na raiz do consumidor, com ou sem src/.
+const publicDir = path.resolve(target, option("--public-dir") ?? "public");
+// Logos padrão do cabeçalho, na ordem de `header.logos` (REPLICAR, 4.5).
+const logoFiles = ["mppa-logo.png", "ciia.png", "ciia-sigla.svg"];
 
 const manifestPath = path.join(referenceDir, "camada.json");
 const sha256 = async (file) => createHash("sha256").update(await readFile(file)).digest("hex");
@@ -141,6 +146,26 @@ for (const { from, to } of sources) {
   await normalizeModes(to);
 }
 
+// Logos: são arquivos do sistema, não da camada. Entram só se faltam; um arquivo com o mesmo nome fica como
+// está (sem backup nem --force), com aviso se difere do modelo.
+const logoReport = [];
+await mkdir(publicDir, { recursive: true });
+for (const name of logoFiles) {
+  const from = path.join(root, "public", name);
+  const to = path.join(publicDir, name);
+  if (!existsSync(from)) {
+    logoReport.push(`${name}: ausente do modelo (zip incompleto?)`);
+  } else if (!existsSync(to)) {
+    await cp(from, to);
+    await chmod(to, 0o644);
+    logoReport.push(`${name}: copiada`);
+  } else if ((await sha256(to)) === (await sha256(from))) {
+    logoReport.push(`${name}: já existia, igual à do modelo`);
+  } else {
+    logoReport.push(`${name}: já existia e difere da do modelo; mantida a do sistema (confira se é a logo certa)`);
+  }
+}
+
 // Lista de conferência: versão e SHA-256 de cada arquivo da camada, lida pelo verificar-camada.mjs.
 const layerFiles = [
   ...(await readdir(path.join(componentsDir, "tema-mppa"))).sort().map((name) => path.join(componentsDir, "tema-mppa", name)),
@@ -163,6 +188,8 @@ console.log("Camada visual copiada:");
 console.log(`- componentes: ${rel(path.join(componentsDir, "tema-mppa"))}/`);
 console.log(`- cores e tokens: ${rel(path.join(stylesDir, "tema-mppa.css"))}`);
 console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (GUIA.html, REPLICAR.md, DESIGN.md, protótipo, prévia, comparações)`);
+console.log(`- logos do cabeçalho em ${rel(publicDir)}/ (header.logos, REPLICAR.md 4.5):`);
+for (const line of logoReport) console.log(`  - ${line}`);
 if (backupRoot) console.log(`Backup (fora do consumidor): ${backupRoot}`);
 console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version}); confira com: node ${rel(path.join(referenceDir, "verificar-camada.mjs"))}`);
 console.log(`- conferência do DESIGN.md do sistema: node ${rel(path.join(referenceDir, "verificar-design.mjs"))} --css <CSS com os tokens próprios>`);

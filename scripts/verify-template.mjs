@@ -140,6 +140,34 @@ const identity = await read("src/components/tema-mppa/user-identity.tsx");
 if (!header.includes("<UserIdentity") || !header.includes("bg-logo-surface")) errors.push("cabeçalho sem identidade ou logos");
 if (!identity.includes("onSignOut ?") || !identity.includes("xl:flex")) errors.push("cabeçalho padrão: nome/perfil (xl) e botão de sair visíveis");
 if (/popover/i.test(identity)) errors.push("cabeçalho padrão não usa painel no avatar");
+// Cabeçalho que não aperta o título (1.12.0): logos no cabeçalho a partir de 1024px ou com a barra recolhida
+// (desde 801px); fora disso, sob a marca. Título com no mínimo 128px; a seção só com 288px no bloco.
+{
+  const sidebar = await read("src/components/tema-mppa/app-sidebar.tsx");
+  const breadcrumbs = await read("src/components/tema-mppa/breadcrumbs.tsx");
+  if (!header.includes('"hidden items-center gap-2 lg:flex desk:tm-collapsed:flex"')) errors.push("cabeçalho: logos só a partir de 1024px (lg:flex) ou com a barra recolhida (desk:tm-collapsed:flex)");
+  if (/\bsm:(flex|block)\b/.test(header.slice(header.indexOf("logos.length ?"), header.indexOf(") : null}", header.indexOf("logos.length ?"))))) errors.push("cabeçalho: logos e divisória não podem voltar a aparecer a partir de 640px (sm:)");
+  if (!sidebar.includes("lg:hidden desk:tm-collapsed:hidden")) errors.push("barra lateral: logos sob a marca até 1023px com a barra aberta (lg:hidden desk:tm-collapsed:hidden)");
+  for (const [file, source] of [["app-header.tsx", header], ["app-sidebar.tsx", sidebar]]) {
+    if (!source.includes("key={`${index}-${logo.src}`}")) errors.push(`${file}: chave das logos com o índice (duas logos podem repetir src ou alt)`);
+  }
+  if (!breadcrumbs.includes("@container flex min-w-32 flex-1") || !breadcrumbs.includes("@[18rem]:flex")) errors.push("título: bloco com @container, min-w-32 e flex-1; seção só com @[18rem]");
+}
+// Logos padrão (REPLICAR 4.5): os três arquivos, a sigla com o desenho combinado e alt vazio na demonstração.
+{
+  const sigla = await read("public/ciia-sigla.svg");
+  for (const needle of ['width="132" height="76"', 'fill="#fff"', 'fill="#1a237e"', 'font-family="Arial"', 'font-size="46"', 'font-weight="700"', 'y="55"', 'text-anchor="middle"', ">CIIA<"]) {
+    if (!sigla.includes(needle)) errors.push(`public/ciia-sigla.svg sem ${needle}`);
+  }
+  const demo = await read("src/app/demo-config.tsx");
+  const logoLines = [
+    '{ src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 }',
+    '{ src: "/ciia.png", alt: "CIIA", width: 244, height: 244 }',
+    '{ src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 }',
+  ];
+  const at = logoLines.map((line) => demo.indexOf(line));
+  if (at.some((index) => index < 0) || at[0] > at[1] || at[1] > at[2]) errors.push("demonstração: header.logos deve ter MPPA, CIIA e a sigla (alt vazio), nesta ordem");
+}
 
 const pageFrame = await read("src/components/tema-mppa/page-frame.tsx");
 if (/<h1/.test(pageFrame)) errors.push("PageFrame não pode repetir o título (ele fica só no cabeçalho)");
@@ -319,7 +347,7 @@ for (const needle of ["**Propor:**", "**Aplicar:**", "**Arquivar:**"]) {
   if (!section(replicar, "### 1.2 ").includes(needle)) errors.push(`REPLICAR 1.2 sem o passo ${needle}`);
 }
 const empacotar = await read("scripts/empacotar.mjs");
-const zipFiles = ["GUIA.html", "DIAGNOSTICO.md", "DESIGN.md", "CHANGELOG.md", "scripts/verificar-camada.mjs", "scripts/verificar-design.mjs", "scripts/copy-template.mjs"];
+const zipFiles = ["GUIA.html", "DIAGNOSTICO.md", "DESIGN.md", "CHANGELOG.md", "scripts/verificar-camada.mjs", "scripts/verificar-design.mjs", "scripts/copy-template.mjs", "public/mppa-logo.png", "public/ciia.png", "public/ciia-sigla.svg"];
 for (const file of zipFiles) {
   if (!empacotar.includes(`"${file}"`)) errors.push(`empacotar.mjs não leva ${file} ao zip`);
 }
@@ -487,6 +515,20 @@ try {
 } catch (error) {
   errors.push(`DESIGN.md do modelo difere do CSS:\n${error.stderr?.toString().trim()}`);
 }
+// card-border é obrigatório no DESIGN.md (1.11.0): sem ele, o verificar-design reprova.
+{
+  const scratch = await mkdtemp(path.join(os.tmpdir(), "tema-mppa-design-"));
+  try {
+    const withoutCardBorder = (await read("DESIGN.md")).replace(/^ {2}card-border: "#b5bac0"\n/m, "");
+    await writeFile(path.join(scratch, "DESIGN.md"), withoutCardBorder);
+    execFileSync(process.execPath, [path.join(root, "scripts/verificar-design.mjs"), path.join(scratch, "DESIGN.md"), "--css", path.join(root, "src/styles/tema-mppa.css")], { stdio: "pipe" });
+    errors.push("verificar-design aprova DESIGN.md sem colors.card-border");
+  } catch {
+    // reprovado, como deve
+  } finally {
+    await rm(scratch, { recursive: true, force: true });
+  }
+}
 
 // O zip de verdade: gerado numa pasta temporária, descompactado e copiado DE LÁ para um consumidor
 // descartável, que é compilado e servido.
@@ -507,8 +549,20 @@ try {
   await mkdir(zipDir);
   execFileSync(process.execPath, [path.join(root, "scripts/empacotar.mjs"), zipDir], { stdio: "pipe" });
   const zipPath = path.join(zipDir, `tema-mppa-next-v${packageJson.version}.zip`);
-  const zipOutput = await readdir(zipDir);
-  if (zipOutput.join() !== path.basename(zipPath)) errors.push(`empacotar deve gerar só o zip; gerou: ${zipOutput.join(", ")}`);
+  const zipOutput = (await readdir(zipDir)).sort();
+  const expectedOutput = [path.basename(zipPath), `${path.basename(zipPath)}.sha256`];
+  if (zipOutput.join() !== expectedOutput.join()) errors.push(`empacotar deve gerar o zip e a soma; gerou: ${zipOutput.join(", ")}`);
+  // Soma publicada igual à do zip; zip reprodutível; a mesma versão com outro conteúdo é recusada.
+  const { createHash } = await import("node:crypto");
+  const zipSum = () => readFile(zipPath).then((buffer) => createHash("sha256").update(buffer).digest("hex"));
+  const firstSum = await zipSum();
+  const sumLine = await readFile(`${zipPath}.sha256`, "utf8");
+  if (sumLine !== `${firstSum}  ${path.basename(zipPath)}\n`) errors.push(`soma publicada diferente da do zip: ${sumLine.trim()}`);
+  const again = run(path.join(root, "scripts/empacotar.mjs"), [zipDir]);
+  if (again.status !== 0 || (await zipSum()) !== firstSum) errors.push(`empacotar não é reprodutível: o mesmo conteúdo deu outro zip ${again.output ?? ""}`);
+  await writeFile(`${zipPath}.sha256`, `${"0".repeat(64)}  ${path.basename(zipPath)}\n`);
+  if (run(path.join(root, "scripts/empacotar.mjs"), [zipDir]).status === 0) errors.push("empacotar aceita a mesma versão com outra soma já publicada");
+  if (run(path.join(root, "scripts/empacotar.mjs"), [zipDir, "--substituir"]).status !== 0 || (await readFile(`${zipPath}.sha256`, "utf8")) !== sumLine) errors.push("empacotar --substituir não regravou a soma");
 
   // Modo de cada entrada: 644, e 755 só para script com shebang.
   const listing = execFileSync("unzip", ["-Z", zipPath], { encoding: "utf8" }).split("\n").filter((line) => /^[-d]r/.test(line));
@@ -526,8 +580,16 @@ try {
   const consumer = path.join(work, "consumidor");
   await mkdir(consumer);
   await writeFile(path.join(consumer, "package.json"), '{ "name": "consumidor", "private": true }\n');
+  // Uma logo do sistema com o nome de uma das padrão: o copy-template não pode substituí-la.
+  await mkdir(path.join(consumer, "public"));
+  await writeFile(path.join(consumer, "public/ciia.png"), "logo do sistema");
   const copy = run(path.join(unzipped, "tema-mppa-next/scripts/copy-template.mjs"), [consumer]);
   if (copy.status !== 0) throw new Error(`copy-template a partir do zip falhou: ${copy.output}`);
+  if ((await readFile(path.join(consumer, "public/ciia.png"), "utf8")) !== "logo do sistema") errors.push("copy-template substituiu uma logo que o consumidor já tinha em public/");
+  for (const name of ["mppa-logo.png", "ciia-sigla.svg"]) {
+    const copied = path.join(consumer, "public", name);
+    if (!existsSync(copied) || !(await readFile(copied)).equals(await readFile(path.join(root, "public", name)))) errors.push(`copy-template não gravou public/${name} no consumidor`);
+  }
 
   const reference = path.join(consumer, "docs/tema-mppa");
   const manifest = JSON.parse(await readFile(path.join(reference, "camada.json"), "utf8"));
@@ -652,7 +714,10 @@ console.log("- REPLICAR.md na versão, com fases, diagnóstico, contrato observ�
 console.log("- DIAGNOSTICO.md com lint, regras visuais, pares de cor antigos e conferências de todo arquivo rastreado");
 console.log("- camada sem versão escrita; script de tema em módulo sem \"use client\"; DESIGN.md do modelo igual ao CSS");
 console.log("- tema com o sessionStorage bloqueado ou cheio (executado): setTheme troca o tema; o script de tema deixa só \"light\"");
-console.log("- GUIA.html na versão: do zero, existente e atualização, com e sem OpenSpec; zip sozinho, sem .sha256");
+console.log("- GUIA.html na versão: do zero, existente e atualização, com e sem OpenSpec");
+console.log("- empacotar: zip e .sha256, reprodutível, recusa a mesma versão com outro conteúdo");
+console.log("- cabeçalho: logos a partir de 1024px (ou com a barra recolhida), título com prioridade, sigla CIIA decorativa");
+console.log("- copy-template: logos padrão gravadas em public/ sem substituir as do consumidor");
 console.log("- REPLICAR 2.1 (sistema do zero) nas versões do modelo; OpenSpec em propor, aplicar e arquivar (1.2)");
 console.log("- zip gerado, descompactado e copiado DE LÁ: sem package.json, modos 644/755, versão lida do CHANGELOG");
 console.log("- consumidor de teste compilado com os exemplos da 4.4 e da 4.5: script de tema no HTML servido, texto no servidor, contrato no HTML");
