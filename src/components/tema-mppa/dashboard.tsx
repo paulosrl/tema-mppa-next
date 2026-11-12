@@ -135,7 +135,7 @@ export function InfoPill({
   description?: ReactNode;
 }) {
   return (
-    <div className="hidden shrink-0 items-center gap-3 rounded-2xl border bg-card/70 px-4 py-2.5 shadow-xs md:flex">
+    <div className="hidden shrink-0 items-center gap-3 rounded-2xl border border-card-border bg-card/70 px-4 py-2.5 shadow-xs md:flex">
       <SectionIcon icon={icon} tone={tone} />
       <div className="text-xs">
         <p className="m-0 font-semibold text-foreground">{title}</p>
@@ -192,12 +192,12 @@ export function PanelCard({
   return (
     <article
       className={cn(
-        "relative min-w-0 overflow-hidden rounded-2xl border border-t-[3px] bg-card text-card-foreground shadow-card",
+        "relative min-w-0 overflow-hidden rounded-2xl border border-card-border border-t-[3px] bg-card text-card-foreground shadow-card",
         accentBorder[accent],
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-3 border-b border-border/60 px-6 pt-6 pb-4">
+      <div className="flex items-center justify-between gap-3 border-b border-card-border px-6 pt-6 pb-4">
         <h3 className="m-0 flex items-center gap-2.5 text-base font-bold tracking-tight">
           {icon ? <SectionIcon icon={icon} tone={tone} size="sm" /> : null}
           {title}
@@ -224,7 +224,7 @@ export function InfoField({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex min-w-0 items-center justify-between gap-3 rounded-xl border bg-muted/40 p-4 transition-colors hover:bg-muted/70">
+    <div className="flex min-w-0 items-center justify-between gap-3 rounded-xl border border-card-border bg-muted/40 p-4 transition-colors hover:bg-muted/70">
       <div className="flex min-w-0 items-center gap-3.5">
         <SectionIcon icon={icon} tone={tone} className="size-10 rounded-xl [&_svg]:size-5" />
         <div className="flex min-w-0 flex-col">
@@ -278,7 +278,7 @@ export function LinkCard({
   const body = (
     <span
       className={cn(
-        "relative flex h-full min-w-0 flex-col justify-between rounded-2xl border border-t-[3px] bg-card p-6 text-left text-card-foreground shadow-card transition-all duration-200 group-hover:-translate-y-0.5 group-hover:bg-card group-hover:shadow-card-hover motion-reduce:group-hover:translate-y-0",
+        "relative flex h-full min-w-0 flex-col justify-between rounded-2xl border border-card-border border-t-[3px] bg-card p-6 text-left text-card-foreground shadow-card transition-all duration-200 group-hover:-translate-y-0.5 group-hover:bg-card group-hover:shadow-card-hover motion-reduce:group-hover:translate-y-0",
         accentBorder[accent],
       )}
     >
@@ -308,7 +308,7 @@ export function LinkCard({
         )}
       </span>
       {footer ? (
-        <span className="mt-6 flex items-center justify-between gap-2 border-t border-border/60 pt-4 text-xs text-muted-foreground">{footer}</span>
+        <span className="mt-6 flex items-center justify-between gap-2 border-t border-card-border pt-4 text-xs text-muted-foreground">{footer}</span>
       ) : null}
     </span>
   );

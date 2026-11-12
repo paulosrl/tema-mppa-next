@@ -39,7 +39,7 @@ export function DataTable<Row>({
   return (
     <Card padded={false} className={cn("overflow-hidden", className)}>
       {title || actions ? (
-        <div className="flex items-center justify-between gap-3 border-b px-6 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-card-border px-6 py-4">
           {title ? <h2 className="m-0 text-base font-bold tracking-tight">{title}</h2> : <span />}
           {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
         </div>
@@ -53,7 +53,7 @@ export function DataTable<Row>({
                 <th
                   key={column.key}
                   scope="col"
-                  className={cn("border-b px-4 py-3 text-[11px] font-bold tracking-wider whitespace-nowrap text-muted-foreground uppercase", alignClass[column.align ?? "left"], column.className)}
+                  className={cn("border-b border-card-border px-4 py-3 text-[11px] font-bold tracking-wider whitespace-nowrap text-muted-foreground uppercase", alignClass[column.align ?? "left"], column.className)}
                 >
                   {column.header}
                 </th>
@@ -65,7 +65,7 @@ export function DataTable<Row>({
               rows.map((row, index) => (
                 <tr key={rowKey(row, index)}>
                   {columns.map((column) => (
-                    <td key={column.key} className={cn("border-b px-4 py-3", alignClass[column.align ?? "left"], column.className)}>
+                    <td key={column.key} className={cn("border-b border-card-border px-4 py-3", alignClass[column.align ?? "left"], column.className)}>
                       {column.cell(row)}
                     </td>
                   ))}
@@ -73,7 +73,7 @@ export function DataTable<Row>({
               ))
             ) : (
               <tr>
-                <td colSpan={columns.length} className="border-b px-4 py-6 text-center text-muted-foreground">
+                <td colSpan={columns.length} className="border-b border-card-border px-4 py-6 text-center text-muted-foreground">
                   {emptyMessage}
                 </td>
               </tr>

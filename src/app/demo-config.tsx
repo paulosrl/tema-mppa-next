@@ -1,10 +1,10 @@
 import { FileText, LayoutDashboard, Monitor, ShieldAlert, ShieldCheck, ShieldHalf, User, Users } from "lucide-react";
 import type { ShellConfig, ShellSession } from "@/components/tema-mppa";
 
-/* Logos genéricas de exemplo (SVG embutido); o consumidor passa as logos institucionais reais. */
+/* Logos de exemplo: MPPA e CIIA (em public/) e a palavra CIIA em SVG embutido; o consumidor passa as dele. */
 const svg = (markup: string) => `data:image/svg+xml;utf8,${encodeURIComponent(markup)}`;
-const logoOrgao = svg(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="132" height="76" viewBox="0 0 132 76"><rect width="132" height="76" fill="#fff"/><text x="66" y="44" font-family="Arial" font-size="30" font-weight="700" fill="#9f0712" text-anchor="middle">ÓRGÃO</text><text x="66" y="62" font-family="Arial" font-size="11" fill="#18181b" text-anchor="middle">logo de exemplo</text></svg>',
+const logoCiia = svg(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="132" height="76" viewBox="0 0 132 76"><rect width="132" height="76" fill="#fff"/><text x="66" y="55" font-family="Arial" font-size="46" font-weight="700" fill="#1a237e" text-anchor="middle">CIIA</text></svg>',
 );
 
 /* Símbolo de exemplo: escudo em moldura com degradê, só com tokens. O consumidor passa a imagem dele. */
@@ -23,16 +23,16 @@ const symbol = (
 export const demoConfig: ShellConfig = {
   brand: {
     name: "Template",
-    version: "1.10.2",
+    version: "1.11.0",
     versionYears: "2026",
     tagline: "Portal de Sistemas MPPA",
     homeHref: "/",
     symbol,
   },
-  platformLabel: "Plataforma",
+  platformLabel: "Minha Página",
   administrationLabel: "Administração",
   platformNavigation: [
-    { id: "dashboard", label: "Dashboard", href: "/", icon: LayoutDashboard, exact: true, tone: "red", description: "Sistemas autorizados e ações rápidas" },
+    { id: "dashboard", label: "Meus acessos", href: "/", icon: LayoutDashboard, exact: true, tone: "red", description: "Sistemas autorizados e ações rápidas" },
     { id: "profile", label: "Perfil", href: "/perfil", icon: User, tone: "green", description: "Informações cadastrais" },
     { id: "sessions", label: "Sessões", href: "/sessoes", icon: ShieldAlert, tone: "violet", badge: "Ativa", description: "Sessões ativas e dispositivos" },
     { id: "item-detail", label: "Detalhe do item", href: "/itens/detalhe", icon: FileText, tone: "green", hidden: true },
@@ -44,8 +44,9 @@ export const demoConfig: ShellConfig = {
   ],
   header: {
     logos: [
-      { src: logoOrgao, alt: "Órgão (exemplo)", width: 132, height: 76 },
+      { src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 },
       { src: "/ciia.png", alt: "CIIA", width: 244, height: 244 },
+      { src: logoCiia, alt: "CIIA", width: 132, height: 76 },
     ],
     searchPlaceholder: "Ir para…",
     signOutLabel: "Sair",

@@ -4,7 +4,7 @@ name: "Tema MPPA · camada visual"
 description: >-
   Camada visual comum dos sistemas do Escritório de Inteligência Artificial do Ministério Público do Estado do
   Pará (modelo tema-mppa-next): azul de ação e vermelho institucional sobre ardósia (claro) e marinho (escuro), fonte Outfit, raio-base de 8px
-  (cartões de 16px, botões e itens de 12px), sombras em camadas, barra lateral de 268px com abas Plataforma e Administração,
+  (cartões de 16px, botões e itens de 12px), sombras em camadas, barra lateral de 304px com abas Plataforma e Administração,
   cabeçalho de 62px e rodapé padrão (estética de 12 nov. 2026). Texto principal com 7:1 ou mais nos dois temas, texto
   secundário cinza com 4,5:1 ou mais em toda superfície neutra e texto sobre preenchimento colorido com 4,5:1. Os valores
   abaixo são os do tema claro; os do escuro estão em "Colors". A fonte da verdade é styles/tema-mppa.css.
@@ -133,7 +133,7 @@ rounded:
 
 spacing:
   shell-bar: 62px
-  sidebar: 268px
+  sidebar: 304px
   sidebar-collapsed: 76px
   breakpoint-desk: 801px
   content: 40px
@@ -171,7 +171,7 @@ components:
     backgroundColor: "{colors.sidebar}"
     textColor: "{colors.sidebar-foreground}"
     typography: "{typography.nav-item}"
-    width: 268px
+    width: 304px
   app-sidebar-collapsed:
     backgroundColor: "{colors.sidebar}"
     textColor: "{colors.sidebar-foreground}"
@@ -412,7 +412,7 @@ A identidade vem de três escolhas:
 
 **Características principais:**
 
-- Casca única em todos os sistemas: barra lateral de 268px (76px recolhida) com abas Plataforma e
+- Casca única em todos os sistemas: barra lateral de 304px (76px recolhida) com abas Plataforma e
   Administração, cabeçalho de 62px, conteúdo com padding de 40px × 36px e largura máxima de 1380px, rodapé padrão
   fixo no pé da tela, na faixa do "Recolher". Cabeçalho e rodapé são translúcidos, com desfoque, e o fundo tem um
   brilho vermelho e azul nos cantos de cima.
@@ -491,6 +491,7 @@ com 4,5:1 ou mais; texto sobre preenchimento colorido com 4,5:1.
 | institutional, avatar, online, theme-icon | `#fb7185` (selo e texto, 6,40:1), degradê do avatar igual ao do claro, `#10b981`, lua `#60a5fa` |
 | success / warning (texto sobre eles: `#070b12`) | `#bbf7d0` / `#fef08a` |
 | border | `rgba(255, 255, 255, 0.08)` |
+| card-border (contorno dos quadros e linhas internas; claro `#b5bac0`) | `#3f6396` |
 | ring, sidebar-ring, sidebar-primary | `#61a6fa` (texto sobre sidebar-primary: `#080c16`) |
 | gráficos | forte `#3b82f6 → #61a6fa`, suave `#4f78b8 → #7aa2dd` |
 | tons dos ícones | a cor a 18% sobre a barra `#0c121e`, em hex, com os traços do CSS (5,93:1 ou mais): azul `#142645` + `#60a5fa`, verde `#0d3030` + `#34d399`, violeta `#231f45` + `#c4b5fd`, laranja `#37231d` + `#fdba74`, vermelho `#321426` + `#fb7185`, verde-água `#0d3036` + `#5eead4`, rosa `#341c34` + `#f9a8d4`, âmbar `#362b1b` + `#fcd34d` |
@@ -518,7 +519,7 @@ camada. A altura de linha da casca é `normal`.
 
 ## Layout
 
-- **Casca:** barra lateral de 268px (`{spacing.sidebar}`), recolhida em 76px por botão ou `Ctrl+B`,
+- **Casca:** barra lateral de 304px (`{spacing.sidebar}`), recolhida em 76px por botão ou `Ctrl+B`,
   lembrada no navegador. Abaixo de 801px (`{spacing.breakpoint-desk}`) vira menu móvel sobreposto, sempre
   expandido, com as logos sob a marca; `Esc` fecha.
 - **Faixas de 62px** (`{spacing.shell-bar}`): topo da barra lateral (marca), cabeçalho, faixa "Recolher" e

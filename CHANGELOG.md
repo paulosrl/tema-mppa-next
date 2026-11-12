@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.11.0 — 2026-11-12
+
+Pedidos do autor em 12 nov. 2026: quadros que não somem no escuro, barra lateral mais larga e nomes novos
+na demonstração.
+
+### Adicionado
+
+- **`--card-border`** (`border-card-border`): contorno dos quadros e das linhas de dentro deles. Claro
+  `#b5bac0` (a `--border` escurecida 20%); escuro `#3f6396`, um azul que destaca o cartão do fundo em
+  monitores onde os quadros sumiam. Vale para `Card`, `PanelCard`, `LinkCard`, `InfoField`, a caixa do
+  `PageGreeting` e as linhas do `DataTable`. As outras bordas (`--border`) não mudam.
+
+### Modificado
+
+- **Barra lateral:** 268px → 304px (recolhida continua com 76px), para os nomes das abas caberem inteiros,
+  inclusive "Administração" em negrito na aba ativa.
+- **Rótulo do grupo do menu:** o texto em maiúsculas abaixo das abas ("PLATAFORMA") dá lugar a uma linha de
+  1px em degradê do vermelho institucional ao azul. O nome continua num `h2` só para leitores de tela.
+- **Demonstração:** a aba "Plataforma" passa a "Minha Página" e o item "Dashboard" a "Meus acessos"; no cabeçalho, três logos:
+  a do MPPA (a mesma da página de referência do Heimdall, em `public/mppa-logo.png`) no lugar da "ÓRGÃO",
+  a do CIIA e a palavra "CIIA" num terceiro espaço do mesmo tamanho da primeira.
+
+### Ao atualizar de 1.10.2
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Refaça o `DESIGN.md` do sistema a partir do novo e confira com o `verificar-design.mjs`.
+3. Teste que meça 268px na barra lateral passa a 304px. Teste que procure o rótulo do grupo como texto
+   visível passa a procurá-lo pelo papel (`heading`), que continua acessível.
+4. Quadro próprio do sistema que imite o cartão da camada usa `border-card-border` no lugar de `border`.
+5. Os nomes da demonstração são só exemplo: o sistema mantém o seu `platformLabel` e os seus itens.
+6. Troque a versão na seção "Interface" do `AGENTS.md` para 1.11.0.
+
 ## 1.10.2 — 2026-11-12
 
 Pedido do autor em 12 nov. 2026: a interface não mostra mais etiquetas de atalho.

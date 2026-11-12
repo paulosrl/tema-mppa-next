@@ -67,8 +67,8 @@ export function AppHeader({
           <>
             <span className="mx-0.5 hidden h-5 w-px bg-border sm:block" aria-hidden />
             <span className="hidden items-center gap-2 sm:flex">
-              {logos.map((logo) => (
-                <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
+              {logos.map((logo, index) => (
+                <ImageSlot key={`${index}-${logo.src}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
               ))}
             </span>
           </>

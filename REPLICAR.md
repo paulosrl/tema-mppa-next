@@ -12,7 +12,7 @@ dela: o desenvolvedor aprova o diagnóstico e decide os conflitos antes de qualq
 Replicar:
 
 - **Layout:**
-  - barra lateral de 268px (76px recolhida);
+  - barra lateral de 304px (76px recolhida);
   - cabeçalho de 62px no padrão dos sistemas (seção 9);
   - conteúdo com padding 40px × 36px (24px no tablet, 16px no celular) e largura máxima de 1380px;
   - menu móvel abaixo de 801px;
@@ -145,7 +145,7 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 ## 3. Fase 0: Diagnóstico
 
 1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
-   (`unzip tema-mppa-next-v1.10.2.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
+   (`unzip tema-mppa-next-v1.11.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -656,6 +656,7 @@ Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 | `text-foreground` | `#0f172a` | `#f8fafc` | texto principal |
 | `text-muted-foreground` | `#5f6f86` | `#94a3b8` | texto secundário, cinza (4,67:1 no muted no claro; 6,21:1 no escuro) |
 | `border` (`border-border`) | `#e2e8f0` | `rgba(255,255,255,.08)` | bordas |
+| `border-card-border` | `#b5bac0` | `#3f6396` | contorno dos quadros (cartões, painéis, campos) e linhas internas deles e das tabelas |
 | `text-institutional` / `text-institutional-foreground` | `#e11d48` / `#be123c` | `#fb7185` / `#fb7185` | selo da versão, aba Plataforma, nome no rodapé |
 | `from-avatar-from to-avatar-to` / `text-avatar-foreground` | `#e11d48` → `#2563eb` / `#ffffff` | igual | avatar em degradê |
 | `bg-online` | `#10b981` | `#10b981` | ponto de conectado |
@@ -738,7 +739,7 @@ Raios, presos a `--radius` (8px; estética de 12 nov. 2026):
 ├──────────────┼──────────────────────────────────────────────────────────────┤
 │ Recolher ⌃B ◧│  Desenvolvido pelo MPPA - EIA - Nome - V 1.0.0 - 2026 (62px)  │
 └──────────────┴──────────────────────────────────────────────────────────────┘
-  268px (76px recolhida); abaixo de 801px vira menu móvel
+  304px (76px recolhida); abaixo de 801px vira menu móvel
 ```
 
 Cabeçalho (igual em todos os sistemas):
@@ -771,7 +772,7 @@ Rodapé (igual em todos os sistemas), montado pela camada a partir de `brand` (s
 Medidas:
 
 - **Ícone de seção:** caixa de 32px no menu (28px no título), tom com brilho (`tm-tone`).
-- **Item de menu:** raio 12px, padding 8px 10px, 12px entre ícone e texto, 6px entre itens; rótulo do grupo em maiúsculas, 11px, cinza.
+- **Item de menu:** raio 12px, padding 8px 10px, 12px entre ícone e texto, 6px entre itens; no lugar do rótulo do grupo, uma linha de 1px em degradê do vermelho institucional ao azul, sumindo à direita (o rótulo fica só para leitores de tela).
 - **Abas:** 32px de altura, com borda, num trilho com padding de 4px; a ativa em `bg-card` com sombra; ícones sempre visíveis.
 - **Botões:** 36px de altura, raio 12px, peso 700; variante `chrome` no tema e no menu móvel.
 - **Cartões:** raio 16px, padding de 24px, sombra `shadow-card`.
@@ -803,7 +804,7 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.10.2)
+## Interface (tema-mppa 1.11.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

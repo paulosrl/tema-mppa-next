@@ -61,8 +61,8 @@ function MobileLogos({ config }: { config: ShellConfig }) {
   if (!logos.length) return null;
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 border-b border-sidebar-border px-3 py-2.5 sm:hidden">
-      {logos.map((logo) => (
-        <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
+      {logos.map((logo, index) => (
+        <ImageSlot key={`${index}-${logo.src}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
       ))}
     </div>
   );
@@ -141,7 +141,9 @@ function SidebarBody({ config, session }: { config: ShellConfig; session: ShellS
         </Tabs.Root>
       ) : null}
       <section className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
-        <p className="mx-2 mb-2.5 text-[11px] font-bold tracking-wider text-muted-foreground uppercase desk:tm-collapsed:sr-only">{groupLabel}</p>
+        {/* Linha separadora no lugar do rótulo do grupo, no degradê do realce; o rótulo fica para leitores de tela. */}
+        <h2 className="sr-only">{groupLabel}</h2>
+        <div className="mx-2 mb-3 h-px bg-linear-to-r from-institutional/45 via-primary/35 to-transparent" aria-hidden />
         <NavigationList items={items} activeId={current?.section === activeTab ? current.item.id : undefined} />
       </section>
     </div>
@@ -157,9 +159,8 @@ function SidebarBodyFallback({ config }: { config: ShellConfig }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <section className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
-        <p className="mx-2 mb-2.5 text-[11px] font-bold tracking-wider text-muted-foreground uppercase desk:tm-collapsed:sr-only">
-          {config.platformLabel ?? "Plataforma"}
-        </p>
+        <h2 className="sr-only">{config.platformLabel ?? "Plataforma"}</h2>
+        <div className="mx-2 mb-3 h-px bg-linear-to-r from-institutional/45 via-primary/35 to-transparent" aria-hidden />
         <NavigationList items={visibleNavigation(config.platformNavigation)} />
       </section>
     </div>
@@ -189,7 +190,7 @@ export function AppSidebar({
       <aside
         aria-label="Navegação principal"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[268px] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-drawer transition-[width,transform] duration-300 ease-out desk:sticky desk:top-0 desk:z-30 desk:translate-x-0 desk:shadow-none desk:tm-collapsed:w-[76px]",
+          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[304px] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-drawer transition-[width,transform] duration-300 ease-out desk:sticky desk:top-0 desk:z-30 desk:translate-x-0 desk:shadow-none desk:tm-collapsed:w-[76px]",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
