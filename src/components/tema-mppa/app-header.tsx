@@ -13,7 +13,7 @@ import { UserIdentity } from "./user-identity";
 import { cn } from "./utils";
 
 /**
- * Cabeçalho padrão dos sistemas: 56px, fundo sólido, borda inferior. À esquerda, o título da página
+ * Cabeçalho padrão dos sistemas: 62px, translúcido com desfoque, borda inferior. À esquerda, o título da página
  * (só aqui); à direita, tema, logos institucionais e identidade com saída, separados por divisórias. As
  * ações do sistema (`headerActions`) vêm antes do tema. A busca fica na barra lateral, acima do "Recolher".
  */
@@ -35,10 +35,10 @@ export function AppHeader({
   const BackIcon = config.header?.backLink?.icon;
 
   return (
-    <header className="sticky top-0 z-20 flex h-(--shell-bar) shrink-0 items-center gap-2 border-b bg-background px-3 sm:px-4">
+    <header className="sticky top-0 z-20 flex h-(--shell-bar) shrink-0 items-center gap-2.5 border-b bg-header px-3.5 backdrop-blur-md sm:px-6">
       <button
         type="button"
-        className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "-ml-1 desk:hidden")}
+        className={cn(buttonVariants({ variant: "chrome", size: "icon" }), "-ml-1 desk:hidden")}
         onClick={() => setMobileOpen(true)}
         aria-label="Abrir menu lateral"
       >
@@ -50,7 +50,7 @@ export function AppHeader({
       <Suspense fallback={<div className="min-w-0 flex-1" />}>
         <Breadcrumbs config={config} session={session} title={title} />
       </Suspense>
-      <div className="ml-auto flex shrink-0 items-center gap-1">
+      <div className="ml-auto flex shrink-0 items-center gap-2">
         {config.header?.backLink ? (
           <Link
             href={config.header.backLink.href}
@@ -65,15 +65,15 @@ export function AppHeader({
         <ThemeToggle />
         {logos.length ? (
           <>
-            <span className="mx-1 hidden h-6 w-px bg-border sm:block" aria-hidden />
+            <span className="mx-0.5 hidden h-5 w-px bg-border sm:block" aria-hidden />
             <span className="hidden items-center gap-2 sm:flex">
               {logos.map((logo) => (
-                <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-7 w-auto rounded-sm bg-logo-surface px-1.5 py-0.5" />
+                <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
               ))}
             </span>
           </>
         ) : null}
-        <span className="mx-1 hidden h-6 w-px bg-border sm:block" aria-hidden />
+        <span className="mx-0.5 hidden h-5 w-px bg-border sm:block" aria-hidden />
         <UserIdentity session={session} onSignOut={onSignOut} signOutLabel={config.header?.signOutLabel ?? "Sair"} />
       </div>
     </header>

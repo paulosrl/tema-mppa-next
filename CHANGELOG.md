@@ -1,5 +1,76 @@
 # Changelog
 
+## 1.10.0 — 2026-11-12
+
+Estética nova, com a mesma estrutura e a mesma API. Pedido do autor em 12 nov. 2026: a camada passa a seguir a
+página de referência do Heimdall (`heimdall_acesso_a_sistemas.html`), inclusive o que a 1.9.0 deixou de fora por
+contraste. Decisão do autor: o texto secundário volta a ser cinza, com 4,5:1 (WCAG AA) em toda superfície
+neutra. Nada muda de lugar: a busca continua na barra lateral e o título continua só no cabeçalho.
+
+### Adicionado
+
+- **Peças de painel** (`dashboard.tsx`), da página de referência: `PageGreeting` (saudação com barra em
+  degradê), `StatusBadge`, `Tag`, `InfoPill`, `SectionTitle`, `PanelCard` (cartão com cabeçalho, ícone e borda
+  de cima colorida), `InfoField` (campo com ícone), `PanelGrid`, `LinkCard` (cartão clicável com seta e
+  rodapé), `LinkCardMedia` e `MetricLine`. Tabela de propriedades no `REPLICAR.md`, 5.2.
+- **`NavigationItem.badge`:** selo curto à direita do rótulo no menu ("Ativa"), no tom do item.
+- **Demonstração:** a página inicial reproduz a página de referência do Heimdall (saudação, resumo da conta,
+  acessos a sistemas e ações rápidas), com dados fictícios; as outras rotas mantêm métricas, gráficos e tabela.
+
+### Modificado
+
+- **Contraste:** texto principal com 7:1 ou mais nos dois temas; secundário cinza com 4,5:1 ou mais. No claro,
+  `--muted-foreground` passa de `#0f172a` a `#5f6f86` (o `#64748b` da referência escurecido para chegar a 4,5:1
+  no muted: 4,67:1; 4,76:1 no fundo; 5,12:1 no cartão). No escuro, `#94a3b8` (6,21:1 no muted).
+- **Escuro marinho:** deixa o Zinc. Fundo `#070b12`, barra `#0c121e`, cartão e popover `#111827`, muted,
+  secondary, accent e sidebar-accent `#182235`, texto `#f8fafc`, texto da barra `#cbd5e1`, borda branca a 8%.
+  Tons dos ícones a 18% da cor sobre a barra, com os traços da referência (de 5,93:1 a 9,59:1).
+- **Item ativo do menu:** degradê do vermelho institucional (9%) ao azul (6%), barra de 3,5px à esquerda
+  (`--highlight-bar`) e texto vinho `#881337` (no escuro, rosa `#fda4af`); utilitário `tm-nav-active`.
+  `--highlight` passa a `#f6eaee` (escuro `#321426`). As abas deixam o realce: a ativa fica em `bg-card` com
+  sombra, e os ícones das abas aparecem sempre (Plataforma no vermelho institucional, Administração na primária).
+- **Ícones de seção:** caixa de 32px no menu e 28px no título (eram 28 e 24), raio 8px, tom com brilho em degradê
+  e borda de 1px na cor do traço (utilitário `tm-tone`), miolo a 20%.
+- **Medidas:** faixas (`--shell-bar`) de 62px (eram 56px); barra lateral de 268px, 76px recolhida (eram 260 e
+  64); conteúdo com padding 40px × 36px (24px no tablet, 16px no celular) e largura máxima de 1380px (eram 38px e
+  1500px); `PageFrame` com 32px até o conteúdo e 16px entre blocos; `CardGrid` com 16px.
+- **Cartões:** raio 16px, padding 24px, sombra em camadas (`shadow-card`; `shadow-card-hover` para cartões
+  clicáveis do sistema). Cabeçalho da `DataTable` em maiúsculas, 11px.
+- **Botões:** raio 12px e ícone de 36px. Variante nova `chrome` (borda, fundo do cartão e sombra leve), usada no
+  botão de tema e no de menu móvel.
+- **Cabeçalho e rodapé:** translúcidos com desfoque (`--header`); fundo da página com brilho vermelho e azul nos
+  cantos de cima (`--canvas-glow`). Título com a seção à frente ("Plataforma / Dashboard", a seção a partir de
+  640px; o `<h1>` continua só com o rótulo). Logos em caixas com borda e sombra. Avatar em degradê do vermelho
+  ao azul com ponto verde de conectado; nome em negrito. Sair com realce destrutivo. Sol âmbar e lua azul no
+  botão de tema (`--theme-icon`).
+- **Barra lateral:** marca com nome em negrito e versão num selo vermelho em fonte mono; `tagline` em 11px.
+  Rótulo do grupo em maiúsculas, 11px, cinza. Itens com raio 12px e 13,5px. "Recolher" com `Ctrl B` em `kbd` e
+  ícone de painel. Busca com raio 12px, sombra e `kbd` mono.
+- **Rodapé:** "Ministério Público do Estado do Pará" em negrito e o nome do sistema no vermelho institucional;
+  o texto continua o de `footerText`.
+- **Tokens novos:** `--institutional`, `--institutional-foreground`, `--header`, `--canvas-glow`,
+  `--avatar-from`, `--avatar-to`, `--avatar-foreground`, `--online`, `--theme-icon`, `--tone-sheen`,
+  `--highlight-gradient`, `--highlight-bar`, `--card-shadow` e `--card-shadow-hover`.
+- **Documentos e verificador:** `AGENTS.md`, `DESIGN.md`, `REPLICAR.md`, `GUIA.html`, `README.md` e
+  `verify-template.mjs` com os valores e as regras novas. Prévia e comparações regeradas.
+
+### Ao atualizar de 1.9.x
+
+1. Rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Rode o `verificar-design.mjs` e leve ao `DESIGN.md` do sistema os valores novos (secundário, escuro marinho,
+   realce, logo surface, violeta e as medidas).
+3. Regras, specs e testes locais que exigem o secundário igual ao principal ou 12:1 em todo texto passam a
+   exigir 7:1 no texto principal e 4,5:1 no secundário; reescreva-os (a regra é da camada).
+4. Testes que leem o fundo do item ativo (`background-color`) passam a ler o degradê (`background-image`) ou a
+   cor do texto; os que medem 56px, 260px, 64px, 34px ou o realce da aba ativa precisam dos valores novos.
+5. Telas do sistema que imitavam a estética nova com classes locais (`rounded-xl`/`rounded-2xl`, `shadow-xs`,
+   borda superior colorida em `Card`, cinza fixo no texto secundário) podem voltar ao primitivo: o `Card` já tem
+   raio 16px, padding 24px e sombra em camadas. Mantenha só o que for do sistema.
+6. Opcional: `brand.tagline` aparece sob o nome; `sidebarShortcutLabel: "Recolher menu"` deixa o rótulo igual
+   ao da referência. Painéis montados à mão (saudação, cartões de atalho, campos com ícone) podem passar às
+   peças de painel (`PageGreeting`, `PanelCard`, `InfoField`, `SectionTitle`, `LinkCard`).
+7. Troque a versão na seção "Interface" do `AGENTS.md` para 1.10.0.
+
 ## 1.9.0 — 2026-11-11
 
 Superfícies em ardósia no claro, sombra com brilho interno, ícones de seção duotone, busca na barra lateral e

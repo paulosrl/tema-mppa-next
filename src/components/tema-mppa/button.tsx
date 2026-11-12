@@ -2,9 +2,9 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "./utils";
 
-/** Botões do protótipo: raio 8px, peso 700; primário cheio e secundário com borda sobre o cartão. */
+/** Botões: raio 12px, peso 700; primário cheio, secundário com borda sobre o cartão e `chrome` (cabeçalho). */
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg text-[13px] font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl text-[13px] font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -13,12 +13,14 @@ const buttonVariants = cva(
         /** Igual a `secondary`; mantido por compatibilidade com o primeiro zip. */
         outline: "border border-border bg-card text-card-foreground hover:bg-muted",
         ghost: "text-foreground hover:bg-accent hover:text-accent-foreground",
+        /** Botão de ícone do cabeçalho: borda, fundo do cartão e sombra leve. */
+        chrome: "border border-border bg-card text-foreground shadow-xs hover:bg-muted",
         destructive: "border border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90",
       },
       size: {
         default: "h-9 px-[13px]",
         sm: "h-8 px-3 text-xs",
-        icon: "size-[34px]",
+        icon: "size-9",
       },
     },
     defaultVariants: { variant: "default", size: "default" },

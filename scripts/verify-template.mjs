@@ -96,7 +96,7 @@ if (hasFooter(parse("app-shell.tsx", shell)) || (shellProps && hasFooter(shellPr
 }
 // Faixas alinhadas por um único token de altura, definido no CSS.
 const themeCss = await read("src/styles/tema-mppa.css");
-if (!/:root\s*\{[^}]*--shell-bar:\s*3\.5rem;/.test(themeCss)) errors.push("tema-mppa.css: falta --shell-bar: 3.5rem em :root (altura das faixas)");
+if (!/:root\s*\{[^}]*--shell-bar:\s*3\.875rem;/.test(themeCss)) errors.push("tema-mppa.css: falta --shell-bar: 3.875rem em :root (altura das faixas)");
 for (const [file, count] of [["app-header.tsx", 1], ["app-sidebar.tsx", 2]]) {
   const source = await read(`src/components/tema-mppa/${file}`);
   if ((source.match(/(?<![\w-])h-\(--shell-bar\)/g) ?? []).length < count) errors.push(`${file}: faixas devem usar h-(--shell-bar)`);
@@ -188,17 +188,21 @@ const light = block(":root");
 const dark = { ...light, ...block(".dark") };
 
 const prototype = {
-  light: { radius: "0.5rem", background: "#f4f7fb", card: "#ffffff", sidebar: "#ffffff", muted: "#f1f5f9", border: "#e2e8f0", highlight: "#ecf4fe" },
-  dark: { background: "#09090b", card: "#18181b", sidebar: "#18181b", muted: "#27272a", border: "rgba(255, 255, 255, 0.12)", highlight: "#1c3b73" },
+  light: { radius: "0.5rem", "shell-bar": "3.875rem", background: "#f4f7fb", card: "#ffffff", sidebar: "#ffffff", muted: "#f1f5f9", border: "#e2e8f0", highlight: "#f6eaee", "muted-foreground": "#5f6f86" },
+  dark: { background: "#070b12", card: "#111827", sidebar: "#0c121e", muted: "#182235", border: "rgba(255, 255, 255, 0.08)", highlight: "#321426", "muted-foreground": "#94a3b8" },
 };
 for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
   for (const [name, value] of Object.entries(theme === "claro" ? prototype.light : prototype.dark)) {
     if (tokens[name]?.toLowerCase() !== value) errors.push(`token --${name} (${theme}): esperado ${value}, encontrado ${tokens[name] ?? "ausente"}`);
   }
 }
-// Sombra adotada em 1.9.0 no lugar da do protótipo: camadas e um brilho interno de 1px no topo.
-if (!light.shadow?.startsWith("0 1px 3px rgba(9, 9, 11, 0.06)") || !light.shadow.includes("inset 0 1px 0 0")) errors.push("token --shadow (claro) diferente do padrão 1.9.0");
-if (!dark.shadow?.startsWith("0 4px 16px -2px rgba(0, 0, 0, 0.5)") || !dark.shadow.includes("inset 0 1px 0 0")) errors.push("token --shadow (escuro) diferente do padrão 1.9.0");
+// Sombras em camadas (estética de 12 nov. 2026): superfície, cartão e cartão sob o mouse; no escuro, com brilho interno.
+if (!light.shadow?.startsWith("0 1px 3px rgba(15, 23, 42, 0.06)")) errors.push("token --shadow (claro) diferente do padrão");
+if (!light["card-shadow"]?.startsWith("0 2px 8px -2px rgba(15, 23, 42, 0.05)")) errors.push("token --card-shadow (claro) diferente do padrão");
+if (!dark.shadow?.includes("inset 0 1px 0") || !dark["card-shadow"]?.includes("inset 0 1px 0")) errors.push("sombras do escuro sem o brilho interno de 1px");
+for (const name of ["highlight-gradient", "highlight-bar", "header", "canvas-glow", "institutional", "institutional-foreground", "card-shadow-hover", "tone-sheen"]) {
+  if (!light[name] || !dark[name]) errors.push(`token --${name} ausente em um dos temas`);
+}
 
 function luminance(hex) {
   const value = hex.replace("#", "");
@@ -222,13 +226,22 @@ function requireContrast(theme, tokens, foreground, background, minimum) {
 }
 
 const textOn = ["background", "card", "muted", "sidebar", "highlight", "popover"];
+// Texto principal com 7:1 nos dois temas; secundário cinza com 4,5:1 (WCAG AA) em toda superfície neutra.
 for (const surface of textOn) {
   requireContrast("claro", light, "foreground", surface, 7);
-  requireContrast("claro", light, "muted-foreground", surface, 7);
-  requireContrast("escuro", dark, "foreground", surface, 4.5);
+  requireContrast("escuro", dark, "foreground", surface, 7);
+  if (surface === "highlight") continue; // no item ativo só há o rótulo, em --highlight-foreground
+  requireContrast("claro", light, "muted-foreground", surface, 4.5);
   requireContrast("escuro", dark, "muted-foreground", surface, 4.5);
 }
-if (light["muted-foreground"] !== light.foreground) errors.push("claro: o texto secundário deve ser igual ao principal");
+requireContrast("claro", light, "highlight-foreground", "highlight", 7);
+requireContrast("escuro", dark, "highlight-foreground", "highlight", 7);
+requireContrast("claro", light, "sidebar-foreground", "sidebar", 7);
+requireContrast("escuro", dark, "sidebar-foreground", "sidebar", 7);
+for (const tone of ["red", "green", "violet", "orange", "blue", "teal", "pink", "amber"]) {
+  requireContrast("claro", light, `tone-${tone}-foreground`, `tone-${tone}`, 4.5);
+  requireContrast("escuro", dark, `tone-${tone}-foreground`, `tone-${tone}`, 4.5);
+}
 for (const pair of ["primary", "destructive", "success", "warning"]) {
   requireContrast("claro", light, `${pair}-foreground`, pair, 7);
   requireContrast("escuro", dark, `${pair}-foreground`, pair, 4.5);

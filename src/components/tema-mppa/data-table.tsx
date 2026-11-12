@@ -39,8 +39,8 @@ export function DataTable<Row>({
   return (
     <Card padded={false} className={cn("overflow-hidden", className)}>
       {title || actions ? (
-        <div className="flex items-center justify-between gap-3 border-b px-5 py-4">
-          {title ? <h2 className="m-0 text-base font-bold">{title}</h2> : <span />}
+        <div className="flex items-center justify-between gap-3 border-b px-6 py-4">
+          {title ? <h2 className="m-0 text-base font-bold tracking-tight">{title}</h2> : <span />}
           {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
         </div>
       ) : null}
@@ -53,7 +53,7 @@ export function DataTable<Row>({
                 <th
                   key={column.key}
                   scope="col"
-                  className={cn("border-b px-4 py-3 font-bold whitespace-nowrap text-muted-foreground", alignClass[column.align ?? "left"], column.className)}
+                  className={cn("border-b px-4 py-3 text-[11px] font-bold tracking-wider whitespace-nowrap text-muted-foreground uppercase", alignClass[column.align ?? "left"], column.className)}
                 >
                   {column.header}
                 </th>

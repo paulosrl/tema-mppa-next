@@ -12,9 +12,9 @@ dela: o desenvolvedor aprova o diagnóstico e decide os conflitos antes de qualq
 Replicar:
 
 - **Layout:**
-  - barra lateral de 260px (64px recolhida);
-  - cabeçalho de 56px no padrão dos sistemas (seção 9);
-  - conteúdo com padding 38px e largura máxima de 1500px;
+  - barra lateral de 268px (76px recolhida);
+  - cabeçalho de 62px no padrão dos sistemas (seção 9);
+  - conteúdo com padding 40px × 36px (24px no tablet, 16px no celular) e largura máxima de 1380px;
   - menu móvel abaixo de 801px;
   - rodapé padrão dos sistemas.
 - **Estrutura:**
@@ -145,7 +145,7 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 ## 3. Fase 0: Diagnóstico
 
 1. Se a pasta `tema-mppa-next/` ainda não existe, descompacte o zip na raiz do repositório
-   (`unzip tema-mppa-next-v1.9.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
+   (`unzip tema-mppa-next-v1.10.0.zip`). O desenvolvedor costuma descompactar antes, para abrir o `GUIA.html`.
    Não faça commit dela.
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
@@ -547,7 +547,7 @@ const colunas: DataTableColumn<Linha>[] = [
   carregava informação (atraso, sucesso), diga isso no `note`, com `text-success` ou `text-warning` se
   preciso.
 - **Componentes antigos:** troque cartões, botões, tabelas e gráficos antigos pelos primitivos. Para o que
-  não tem primitivo (formulários, diálogos), use os tokens da seção 8 e `rounded-lg` (8px).
+  não tem primitivo (formulários, diálogos), use os tokens da seção 8 e `rounded-xl` (12px) ou `rounded-2xl` (16px, cartões).
 - **Cores:** troque toda cor fixa (`#hex`, `rgb()`, `text-red-600`, `bg-white`, `bg-gray-*`) pelo token
   equivalente.
 - **Testes:** ajuste os testes da tela que procuravam o `<h1>`, textos ou classes antigas, pelo mesmo
@@ -560,12 +560,31 @@ const colunas: DataTableColumn<Linha>[] = [
 | --- | --- |
 | `PageFrame` | `description?`, `actions?` (botões; largura total no celular), `children?` |
 | `Card` | `title?`, `description?`, `actions?`, `padded?` (padrão `true`; `false` para conteúdo encostado), atributos de `<article>` |
-| `CardGrid` | `columns?`: `1`, `2` (padrão), `3` ou `4`; uma coluna abaixo de 801px; 20px entre cartões |
+| `CardGrid` | `columns?`: `1`, `2` (padrão), `3` ou `4`; uma coluna abaixo de 801px; 16px entre cartões |
 | `MetricCard` | `label`, `value`, `note?` |
 | `DataTable<Row>` | `title?`, `actions?`, `columns: { key, header, cell(row), align? }[]`, `rows`, `rowKey(row, i)`, `emptyMessage?`, `caption?` |
 | `BarChart` | `data: { label, value }[]`, `label` (leitor de tela), `max?`, `variant?`: `"strong"` (azul) ou `"soft"` (azul claro) |
-| `Button` | `variant?`: `"default"` (primário), `"secondary"`, `"ghost"`, `"destructive"`; `size?`: `"default"`, `"sm"`, `"icon"` (34px); atributos de `<button>` |
+| `Button` | `variant?`: `"default"` (primário), `"secondary"`, `"ghost"`, `"chrome"`, `"destructive"`; `size?`: `"default"`, `"sm"`, `"icon"` (36px); atributos de `<button>` |
 | `SectionIcon` | `icon` (Lucide), `tone?` |
+
+Peças de painel (1.10.0), na estética da página de referência do Heimdall; a demonstração do modelo (`/`) as
+usa todas:
+
+| Primitivo | Propriedades |
+| --- | --- |
+| `PageGreeting` | `title`, `description?`, `badge?` (um `StatusBadge`), `aside?` (uma `InfoPill`) |
+| `StatusBadge` | `children`, `tone?`: `"success"` (padrão), `"primary"`, `"warning"`, `"institutional"`; `pulse?` |
+| `Tag` | `children`, `tone?`: `"primary"` (padrão), `"success"`, `"warning"`, `"institutional"`, `"neutral"`; `mono?` (código, sem maiúsculas) |
+| `InfoPill` | `icon`, `tone?`, `title`, `description?`; some abaixo de 768px |
+| `SectionTitle` | `children`, `tone?`: `"primary"` ou `"institutional"`; `hint?` (à direita, a partir de 640px); `live?` (ponto pulsando) |
+| `PanelCard` | `title`, `icon?`, `tone?`, `accent?` (borda de cima: `"primary"`, `"institutional"` ou um tom), `aside?`, `children` |
+| `InfoField` | `icon`, `tone?`, `label`, `value`, `action?` |
+| `PanelGrid` | `children`; uma coluna no celular, três a partir de 640px |
+| `LinkCard` | `href` (link) ou `onClick` (botão), `title`, `tag?`, `description?`, `icon?` + `tone?` ou `media?`, `accent?`, `kind?`: `"internal"` (›, padrão) ou `"external"` (↗), `footer?`, `disabled?` |
+| `LinkCardMedia` | `icon?` ou `children` (a logo do sistema); caixa de 48px em degradê da primária |
+| `MetricLine` | `icon?`, `value`, `label`; para o `footer` do `LinkCard` |
+
+`NavigationItem` aceita `badge?` (selo curto à direita do rótulo no menu, no tom do item).
 
 Para links com cara de botão: `<Link className={buttonVariants({ variant: "secondary" })}>`.
 
@@ -597,34 +616,41 @@ Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 
 | Classe | Claro | Escuro | Uso |
 | --- | --- | --- | --- |
-| `bg-background` | `#f4f7fb` | `#09090b` | fundo da página e do cabeçalho (ardósia no claro) |
-| `bg-card` | `#ffffff` | `#18181b` | cartões, botão secundário, busca |
-| `bg-sidebar` / `text-sidebar-foreground` | `#ffffff` / `#334155` | `#18181b` / `#fafafa` | barra lateral |
-| `bg-muted` | `#f1f5f9` | `#27272a` | trilho das abas, avatar, áreas neutras |
-| `bg-highlight` | `#ecf4fe` | `#1c3b73` | item e aba ativos (azul-claro) |
-| `text-foreground` | `#0f172a` | `#fafafa` | texto |
-| `text-muted-foreground` | `#0f172a` | `#f4f4f5` | texto secundário (no claro, igual ao texto) |
-| `border` (`border-border`) | `#e2e8f0` | `rgba(255,255,255,.12)` | bordas |
+| `bg-background` | `#f4f7fb` | `#070b12` | fundo da página (ardósia no claro, marinho no escuro), com o brilho `--canvas-glow` nos cantos |
+| `bg-card` | `#ffffff` | `#111827` | cartões, botão secundário, busca |
+| `bg-sidebar` / `text-sidebar-foreground` | `#ffffff` / `#334155` | `#0c121e` / `#cbd5e1` | barra lateral |
+| `bg-muted` | `#f1f5f9` | `#182235` | trilho das abas, áreas neutras |
+| `bg-header` | `rgba(255,255,255,.85)` | `rgba(12,18,30,.82)` | cabeçalho e rodapé translúcidos, com desfoque |
+| `bg-highlight` / `text-highlight-foreground` | `#f6eaee` / `#881337` | `#321426` / `#fda4af` | tom sólido do item ativo (8,16:1 e 8,79:1); o item usa o degradê `--highlight-gradient` (vermelho 9% ao azul 6%) e a barra `--highlight-bar` de 3,5px (`tm-nav-active`) |
+| `text-foreground` | `#0f172a` | `#f8fafc` | texto principal |
+| `text-muted-foreground` | `#5f6f86` | `#94a3b8` | texto secundário, cinza (4,67:1 no muted no claro; 6,21:1 no escuro) |
+| `border` (`border-border`) | `#e2e8f0` | `rgba(255,255,255,.08)` | bordas |
+| `text-institutional` / `text-institutional-foreground` | `#e11d48` / `#be123c` | `#fb7185` / `#fb7185` | selo da versão, aba Plataforma, nome no rodapé |
+| `from-avatar-from to-avatar-to` / `text-avatar-foreground` | `#e11d48` → `#2563eb` / `#ffffff` | igual | avatar em degradê |
+| `bg-online` | `#10b981` | `#10b981` | ponto de conectado |
+| `text-theme-icon` | `#d97706` | `#60a5fa` | sol e lua do botão de tema |
 | `bg-primary` / `text-primary-foreground` | `#0842a1` / `#ffffff` | `#61a6fa` / `#080c16` | ação principal, foco, links de ação |
 | `bg-destructive` | `#991b1b` | `#f87171` | ação destrutiva |
 | `text-success` / `text-warning` | `#08351f` / `#432506` | `#bbf7d0` / `#fef08a` | status |
-| `bg-tone-red` + `text-tone-red-foreground` | `#fee2e2` + `#970611` | `#401f27` + `#fecdd3` | ícone vermelho (reservado) |
-| `bg-tone-green` + `text-tone-green-foreground` | `#d1fae5` + `#047857` | `#17352d` + `#a7f3d0` | ícone verde |
-| `bg-tone-violet` + `text-tone-violet-foreground` | `#ede9fe` + `#7c3aed` | `#2f2647` + `#ddd6fe` | ícone violeta |
-| `bg-tone-orange` + `text-tone-orange-foreground` | `#ffedd5` + `#a85005` | `#41281a` + `#fed7aa` | ícone laranja |
-| `bg-tone-blue` + `text-tone-blue-foreground` | `#dbeafe` + `#1d4ed8` | `#1f2d47` + `#bfdbfe` | ícone azul (padrão) |
-| `bg-tone-teal` + `text-tone-teal-foreground` | `#ccfbf1` + `#0f766e` | `#173534` + `#99f6e4` | ícone verde-água |
-| `bg-tone-pink` + `text-tone-pink-foreground` | `#fce7f3` + `#be185d` | `#3e2132` + `#fbcfe8` | ícone rosa |
-| `bg-tone-amber` + `text-tone-amber-foreground` | `#fef3c7` + `#92400e` | `#403018` + `#fde68a` | ícone âmbar |
+| `bg-tone-red` + `text-tone-red-foreground` | `#fee2e2` + `#970611` | `#321426` + `#fb7185` | ícone vermelho (reservado) |
+| `bg-tone-green` + `text-tone-green-foreground` | `#d1fae5` + `#047857` | `#0d3030` + `#34d399` | ícone verde |
+| `bg-tone-violet` + `text-tone-violet-foreground` | `#ede9fe` + `#6d28d9` | `#231f45` + `#c4b5fd` | ícone violeta |
+| `bg-tone-orange` + `text-tone-orange-foreground` | `#ffedd5` + `#a85005` | `#37231d` + `#fdba74` | ícone laranja |
+| `bg-tone-blue` + `text-tone-blue-foreground` | `#dbeafe` + `#1d4ed8` | `#142645` + `#60a5fa` | ícone azul (padrão) |
+| `bg-tone-teal` + `text-tone-teal-foreground` | `#ccfbf1` + `#0f766e` | `#0d3036` + `#5eead4` | ícone verde-água |
+| `bg-tone-pink` + `text-tone-pink-foreground` | `#fce7f3` + `#be185d` | `#341c34` + `#f9a8d4` | ícone rosa |
+| `bg-tone-amber` + `text-tone-amber-foreground` | `#fef3c7` + `#92400e` | `#362b1b` + `#fcd34d` | ícone âmbar |
 | `bg-overlay/40` | `#000` a 40% | igual | fundo atrás do menu móvel |
-| `bg-logo-surface` | `#f8fafc` | `#ffffff` | fundo das logos |
-| `shadow-surface` | `0 1px 3px rgba(9,9,11,.06), 0 4px 12px -2px rgba(9,9,11,.05), inset 0 1px 0 0 rgba(255,255,255,.8)` | `0 4px 16px -2px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 0 rgba(255,255,255,.07)` | cartão, aba e item ativos |
+| `bg-logo-surface` | `#ffffff` | `#ffffff` | fundo das logos |
+| `shadow-surface` | `0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04)` | `0 2px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06)` | aba e item ativos |
+| `shadow-card` / `shadow-card-hover` | `0 2px 8px -2px rgba(15,23,42,.05), 0 1px 3px -1px rgba(15,23,42,.03)` / `0 14px 28px -6px rgba(15,23,42,.08), 0 4px 10px -2px rgba(15,23,42,.04)` | `0 4px 20px -2px rgba(0,0,0,.5)` e `0 18px 36px -8px rgba(0,0,0,.7)`, com brilho interno de 1px | cartão e cartão sob o mouse |
 | `tm-bar tm-bar-strong` / `tm-bar-soft` | degradê `#0842a1→#3b82f6` / `#6f9be6→#94b6f1` | `#3b82f6→#61a6fa` / `#4f78b8→#7aa2dd` | barras de gráfico |
 
 Contraste obrigatório:
 
-- **Texto sobre superfície neutra** (fundo, cartão, muted, barra), nos dois temas: 12:1, inclusive o
-  secundário e o de status. No claro, o secundário é igual ao principal.
+- **Texto principal** (e o de status) sobre superfície neutra (fundo, cartão, muted, barra), nos dois temas: 7:1 ou mais.
+- **Texto secundário** (`text-muted-foreground`), nos dois temas: 4,5:1 ou mais (WCAG AA) em toda superfície neutra; é
+  cinza e deixa de ser igual ao principal.
 - **Texto sobre preenchimento colorido** (botão primário, pílula): 4,5:1; no escuro, texto escuro sobre a primária.
 - **Ícones de tom:** 4,5:1.
 
@@ -633,12 +659,12 @@ consumidor e confira o contraste.
 
 Equilíbrio de cores (igual em todos os sistemas, sem diferença de cor, fonte, tamanho ou estrutura):
 
-- **Azul é a ação:** botão primário, foco (`ring`), links de ação, `sidebar-primary` e `sidebar-ring`, o item
-  ativo da barra (fundo azul-claro `bg-highlight` com ícone azul), o ícone do título da seção, o tom
+- **Azul é a ação:** botão primário, foco (`ring`), links de ação, `sidebar-primary` e `sidebar-ring`, o ícone do título da seção, o tom
   padrão dos ícones (`"blue"`, sem `tone`), as barras fortes do `BarChart` e as ilustrações de estado vazio que
   seguem a primária.
 - **Vermelho só com significado:** destrutivo e erro (`--destructive`) e a identidade institucional (logos, o
-  símbolo `tm-brand-mark`, faixas institucionais vermelho-azul). Não pinte ação, realce nem ícone comum de vermelho.
+  símbolo `tm-brand-mark`, o selo da versão, a aba Plataforma, o nome no rodapé e o realce do item ativo, que é
+  um degradê do vermelho institucional ao azul). Não pinte ação nem ícone comum de vermelho.
 - Os demais tons de seção (verde, violeta, laranja, verde-água, rosa, âmbar) continuam variados.
 - Quem usava azul com token próprio (por exemplo, o `--accent-blue` do Heimdall) pode passar a usar a primária.
 
@@ -649,70 +675,75 @@ Não faça:
   `bg-primary/10` passa (`text-primary` sobre `bg-primary/10`: 7,18:1 sobre o fundo, 7,68:1 sobre o cartão e 7,04:1 sobre o muted;
   no escuro, 6,05:1 sobre o cartão e 4,98:1 sobre o muted). O mesmo vale para qualquer cor sobre a própria versão
   transparente: confira o contraste do par, não só o da cor.
-- **Texto colorido onde o consumidor exige texto preto:** `text-success` e `text-warning` são coloridos (12:1
+- **Texto colorido onde o consumidor exige texto preto:** `text-success` e `text-warning` são coloridos (mais de 12:1
   sobre superfície neutra, quase pretos no claro). Se o consumidor tem regra de todo texto preto no claro, isso é conflito do diagnóstico (item 12): a
   cor fica no ícone ou no ponto de status, com o texto em `text-foreground`.
 
 Fonte: Outfit (`font-sans`).
 
-Raios, presos a `--radius` (8px):
+Raios, presos a `--radius` (8px; estética de 12 nov. 2026):
 
-- `rounded-md` (6px): abas internas e ícones;
-- `rounded-lg` (8px): cartões, botões, itens e busca;
+- `rounded-md` (6px): selo da versão e `kbd`;
+- `rounded-lg` (8px): abas internas, ícones de seção e caixas das logos;
+- `rounded-xl` (12px): botões, itens do menu, busca e trilho das abas;
+- `rounded-2xl` (16px): cartões, tabelas e diálogo da busca;
 - `rounded-full`: avatar.
 
 ## 9. Estrutura do layout
 
 ```text
 ┌──────────────┬──────────────────────────────────────────────────────────────┐
-│ [▣] Nome v1.0│ [ícone] Título                     [☼] │ [logos] │ (PL) Nome / Perfil [⇥] │ 56px
+│ [▣] Nome [v1.0]│ [ícone] Plataforma / Título        [☼] │ [logos] │ (PL) Nome / Perfil [⇥] │ 62px
 ├──────────────┼──────────────────────────────────────────────────────────────┤
-│[Plataf.|Adm.]│  padding 38px (22/14 no celular), máx. 1500px                │
+│[Plataf.|Adm.]│  padding 40×36px (24 no tablet, 16 no celular), máx. 1380px  │
 │ Plataforma   │  Descrição da página ............ [Ação] [Secundária]        │
-│ ▣ Item ativo │  ↕ 38px                                                      │
-│ ▣ Item       │  ┌ Cartão ──────────┐ 20px ┌ Cartão ──────────┐              │
+│ ▣ Item ativo │  ↕ 32px                                                      │
+│ ▣ Item       │  ┌ Cartão ──────────┐ 16px ┌ Cartão ──────────┐              │
 │ ▣ Item       │  └──────────────────┘      └──────────────────┘              │
-│              │  ↕ 20px                                                      │
+│              │  ↕ 16px                                                      │
 │              │  ┌ Tabela ─────────────────────────────────────┐             │
 │              │  └─────────────────────────────────────────────┘             │
 │[⌕ Buscar… ⌃K]│                                                              │
 ├──────────────┼──────────────────────────────────────────────────────────────┤
-│ Recolher  ‹  │  Desenvolvido pelo MPPA - EIA - Nome - V 1.0.0 - 2026 (56px)  │
+│ Recolher ⌃B ◧│  Desenvolvido pelo MPPA - EIA - Nome - V 1.0.0 - 2026 (62px)  │
 └──────────────┴──────────────────────────────────────────────────────────────┘
-  260px (64px recolhida); abaixo de 801px vira menu móvel
+  268px (76px recolhida); abaixo de 801px vira menu móvel
 ```
 
 Cabeçalho (igual em todos os sistemas):
 
-- **Marca, no topo da barra lateral:** símbolo de 32px, com nome (semibold) e versão (`text-xs`, cor
-  secundária) na mesma linha.
-- **Título:** ícone de seção de 24px, 10px até o título (`text-sm`, peso 500).
-- **Tema:** botão de ícone de 34px.
-- **Logos:** 28px de altura sobre `bg-logo-surface`, com divisórias de 24px antes e depois.
+- **Marca, no topo da barra lateral:** símbolo de 36px, com o nome em negrito e a versão num selo vermelho
+  (fonte mono, 10px, `text-institutional-foreground`) na mesma linha.
+- **Título:** ícone de seção de 28px, a seção à frente ("Plataforma / Dashboard", a seção a partir de 640px) e o
+  rótulo do item (`text-sm`, peso 600).
+- **Tema:** botão `chrome` de ícone de 36px (borda, fundo do cartão, sombra leve), sol `text-theme-icon`.
+- **Logos:** 32px de altura em caixas com borda e sombra sobre `bg-logo-surface`, com divisórias antes e depois.
 - **Identidade:**
-  - avatar redondo de 32px com as iniciais (ou a foto);
-  - nome (`text-xs` semibold) e perfil (`text-xs`, cor secundária) a partir de 1280px;
-  - botão de sair de 34px.
+  - avatar redondo de 32px em degradê (`avatar-from` → `avatar-to`) com as iniciais (ou a foto) e o ponto
+    verde de conectado;
+  - nome (`text-xs` negrito) e perfil (`text-[11px]`, cor secundária) a partir de 1280px;
+  - botão de sair de 36px, com realce destrutivo ao passar o mouse.
+- **Fundo do cabeçalho:** `bg-header`, translúcido com desfoque.
 
-Busca (igual em todos os sistemas): caixa de 32px com lupa, "Buscar na página" e `Ctrl K`, fixa na barra lateral
+Busca (igual em todos os sistemas): caixa de 36px (raio 12px) com lupa, "Buscar na página" e `Ctrl K` em `kbd` mono, fixa na barra lateral
 logo acima do "Recolher" (não rola com o menu), na largura da barra. Com a barra recolhida, só a lupa; no
 celular, no menu móvel.
 
 Rodapé (igual em todos os sistemas), montado pela camada a partir de `brand` (seção 4.5):
 
-- **A partir de 801px:** fixo no pé da tela, na faixa do "Recolher", com a mesma altura (56px, token
+- **A partir de 801px:** fixo no pé da tela, na faixa do "Recolher", com a mesma altura (62px, token
   `--shell-bar`) e a mesma borda.
-- **Texto:** nunca é cortado. Até 3 linhas cabem em 56px; com um nome muito longo, o rodapé cresce.
+- **Texto:** nunca é cortado. Além de 62px, o rodapé cresce.
 - **No celular:** fica no fim da página, com a altura do texto.
-- **Aparência:** borda superior e texto `text-xs` centralizado, na cor secundária.
+- **Aparência:** borda superior, fundo `bg-header` com desfoque e texto `text-xs` centralizado, na cor secundária, com o órgão em negrito e o nome do sistema em `text-institutional-foreground`.
 
 Medidas:
 
-- **Ícone de seção:** 28px no menu.
-- **Item de menu:** padding 7px 8px, 10px entre ícone e texto, 5px entre itens.
-- **Abas:** 32px de altura, num trilho com padding de 3px.
-- **Botões:** 36px de altura, peso 700.
-- **Cartões:** padding de 20px.
+- **Ícone de seção:** caixa de 32px no menu (28px no título), tom com brilho (`tm-tone`).
+- **Item de menu:** raio 12px, padding 8px 10px, 12px entre ícone e texto, 6px entre itens; rótulo do grupo em maiúsculas, 11px, cinza.
+- **Abas:** 32px de altura, com borda, num trilho com padding de 4px; a ativa em `bg-card` com sombra; ícones sempre visíveis.
+- **Botões:** 36px de altura, raio 12px, peso 700; variante `chrome` no tema e no menu móvel.
+- **Cartões:** raio 16px, padding de 24px, sombra `shadow-card`.
 - **Métrica:** número de 32px, peso 800.
 - **Gráfico:** 165px de altura; barras de até 90px de largura.
 
@@ -741,7 +772,7 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.9.0)
+## Interface (tema-mppa 1.10.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
@@ -750,9 +781,9 @@ vez de copiá-la (e não há `verificar-camada.mjs`).
 - `DESIGN.md` na raiz do frontend: tokens e intenção do design para os agentes; confira com
   `node docs/tema-mppa/verificar-design.mjs --css <CSS próprio>` a cada mudança de token.
 - Telas só com os primitivos (`PageFrame`, `Card`, `CardGrid`, `MetricCard`, `DataTable`, `BarChart`,
-  `Button`); cores só pelos tokens; título só no cabeçalho, vindo do item de navegação.
-- Contraste: 12:1 em texto sobre superfície neutra nos dois temas (secundário igual ao principal no claro);
-  4,5:1 em texto sobre preenchimento colorido.
+  `Button` e as peças de painel: `PageGreeting`, `PanelCard`, `InfoField`, `SectionTitle`, `LinkCard`); cores só pelos tokens; título só no cabeçalho, vindo do item de navegação.
+- Contraste: texto principal com 7:1; secundário com 4,5:1 nos dois temas; 4,5:1 em texto sobre
+  preenchimento colorido.
 - Administração aparece só com `session.is_admin === true`.
 ```
 

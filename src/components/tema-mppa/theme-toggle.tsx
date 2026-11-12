@@ -14,13 +14,14 @@ export function ThemeToggle() {
 
   return (
     <Button
-      variant="ghost"
+      variant="chrome"
       size="icon"
+      className="group text-theme-icon"
       onClick={() => setTheme(next)}
       aria-label={`Tema: ${labels[theme]}. Alterar para ${labels[next]}`}
       title={`Tema: ${labels[theme]}`}
     >
-      <Icon />
+      <Icon className="fill-current/20 transition-transform duration-300 group-hover:rotate-12" />
     </Button>
   );
 }

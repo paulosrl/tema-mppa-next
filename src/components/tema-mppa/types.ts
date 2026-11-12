@@ -33,6 +33,8 @@ export type NavigationItem = {
   matches?: string[];
   /** Fora do menu e da busca, mas dá o título e marca a aba quando a rota é dele. */
   hidden?: boolean;
+  /** Selo curto à direita do rótulo no menu (por exemplo "Ativa"), no tom do item. */
+  badge?: string;
 };
 
 export type SearchItem = {

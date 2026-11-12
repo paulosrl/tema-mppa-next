@@ -90,22 +90,22 @@ export function CommandPalette({
       <button
         type="button"
         className={cn(
-          "flex h-8 w-full items-center gap-2 rounded-lg border bg-card px-3 text-xs text-muted-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring",
-          "desk:tm-collapsed:size-[34px] desk:tm-collapsed:justify-center desk:tm-collapsed:border-0 desk:tm-collapsed:bg-transparent desk:tm-collapsed:px-0",
+          "group flex h-9 w-full items-center gap-2.5 rounded-xl border bg-card/80 px-3 text-xs font-medium text-muted-foreground shadow-xs outline-none transition-all hover:border-primary/40 hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+          "desk:tm-collapsed:size-9 desk:tm-collapsed:justify-center desk:tm-collapsed:border-0 desk:tm-collapsed:bg-transparent desk:tm-collapsed:px-0 desk:tm-collapsed:shadow-none",
         )}
         title={placeholder}
         onClick={() => setOpen(true)}
         aria-label="Abrir busca"
         aria-keyshortcuts="Control+K Meta+K"
       >
-        <Search className="size-4 shrink-0" aria-hidden />
+        <Search className="size-4 shrink-0 transition-colors group-hover:text-primary" aria-hidden />
         <span className="flex-1 truncate text-left desk:tm-collapsed:hidden">{placeholder}</span>
-        <kbd className="rounded-xs border bg-muted px-1.5 py-0.5 font-sans text-[10px] font-semibold desk:tm-collapsed:hidden">Ctrl K</kbd>
+        <kbd className="rounded-md border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-semibold desk:tm-collapsed:hidden">Ctrl K</kbd>
       </button>
       {renderSearch && mounted ? createPortal(renderSearch({ open, setOpen }), document.body) : null}
       {open && !renderSearch && mounted ? createPortal(
         <div
-          className="fixed inset-0 z-[80] flex items-start justify-center bg-overlay/60 px-4 pt-[12vh]"
+          className="fixed inset-0 z-[80] flex items-start justify-center bg-overlay/60 px-4 pt-[12vh] backdrop-blur-xs"
           role="presentation"
           onMouseDown={() => setOpen(false)}
         >
@@ -113,11 +113,11 @@ export function CommandPalette({
             role="dialog"
             aria-modal="true"
             aria-label="Busca e navegação"
-            className="w-full max-w-xl overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-surface"
+            className="w-full max-w-xl overflow-hidden rounded-2xl border bg-popover text-popover-foreground shadow-card-hover"
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <div className="flex items-center gap-2 border-b px-3">
-              <Search className="size-4 text-muted-foreground" aria-hidden />
+            <div className="flex items-center gap-3 border-b px-4">
+              <Search className="size-5 text-primary" aria-hidden />
               <input
                 ref={inputRef}
                 value={query}
@@ -137,7 +137,7 @@ export function CommandPalette({
                       type="button"
                       key={item.id}
                       onClick={() => navigate(item)}
-                      className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-accent focus:bg-accent focus:outline-none"
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors hover:bg-muted focus:bg-muted focus:outline-none"
                     >
                       {Icon ? <Icon className="size-4 shrink-0" aria-hidden /> : <span className="size-4" />}
                       <span className="min-w-0 flex-1">

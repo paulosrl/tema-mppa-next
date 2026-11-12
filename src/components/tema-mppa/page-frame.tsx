@@ -3,7 +3,7 @@ import { cn } from "./utils";
 
 /**
  * Moldura da página, como o `.lead` do protótipo: descrição à esquerda, ações à direita (largura
- * total no celular) e 38px até o conteúdo, com 20px entre os blocos.
+ * total no celular) e 32px até o conteúdo, com 16px entre os blocos.
  *
  * O título não entra aqui: ele aparece uma única vez, no cabeçalho, vindo do item de navegação
  * marcado (use `hidden` para páginas fora do menu).
@@ -22,14 +22,14 @@ export function PageFrame({
   return (
     <div className={cn("flex min-w-0 flex-col", className)}>
       {description || actions ? (
-        <div className="mb-[38px] flex flex-wrap items-start justify-between gap-4">
-          {description ? <p className="m-0 text-muted-foreground">{description}</p> : null}
+        <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+          {description ? <p className="m-0 text-sm text-muted-foreground">{description}</p> : null}
           {actions ? (
             <div className="flex w-full gap-2 *:flex-1 desk:w-auto desk:*:flex-none">{actions}</div>
           ) : null}
         </div>
       ) : null}
-      {children ? <div className="flex min-w-0 flex-col gap-5">{children}</div> : null}
+      {children ? <div className="flex min-w-0 flex-col gap-4">{children}</div> : null}
     </div>
   );
 }

@@ -1,14 +1,14 @@
 "use client";
 
 import { Tabs } from "@base-ui/react/tabs";
-import { ChevronLeft, ChevronRight, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { ChevronLeft, LayoutDashboard, PanelLeftClose, PanelLeftOpen, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isValidElement, Suspense, useState } from "react";
 import { Button } from "./button";
 import { CommandPalette } from "./command-palette";
 import { ImageSlot } from "./image-slot";
-import { SectionIcon } from "./section-icon";
+import { SectionIcon, toneClass } from "./section-icon";
 import { useCollapsedAttribute, useSidebar } from "./sidebar-context";
 import type { AppShellProps, ImageAsset, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
 import { canSeeAdministration, cn, currentNavigationItem, visibleNavigation } from "./utils";
@@ -27,20 +27,28 @@ function Brand({ config }: { config: ShellConfig }) {
   const { setMobileOpen } = useSidebar();
   const { brand } = config;
   return (
-    <div className="flex h-(--shell-bar) shrink-0 items-center border-b border-sidebar-border px-2 desk:tm-collapsed:justify-center">
+    <div className="flex h-(--shell-bar) shrink-0 items-center border-b border-sidebar-border px-3 desk:tm-collapsed:justify-center">
       <Link
         href={brand.homeHref}
         onClick={() => setMobileOpen(false)}
-        className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg px-2 outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring desk:tm-collapsed:flex-none desk:tm-collapsed:justify-center desk:tm-collapsed:px-1"
+        className="group flex h-11 min-w-0 flex-1 items-center gap-3 rounded-xl px-2 outline-none transition-all hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring desk:tm-collapsed:flex-none desk:tm-collapsed:justify-center desk:tm-collapsed:px-1"
         title={`${brand.name}${brand.version ? ` v${brand.version}` : ""}`}
       >
-        {isImageAsset(brand.symbol) ? <ImageSlot asset={brand.symbol} className="size-8 shrink-0" /> : brand.symbol ?? null}
+        {isImageAsset(brand.symbol) ? (
+          <ImageSlot asset={brand.symbol} className="size-9 shrink-0 rounded-xl transition-transform group-hover:scale-105" />
+        ) : (
+          brand.symbol ?? null
+        )}
         <span className={cn("grid min-w-0 flex-1 text-left leading-tight", hideWhenCollapsed)}>
-          <span className="flex min-w-0 items-baseline gap-1.5">
-            <span className="truncate font-semibold tracking-tight">{brand.name}</span>
-            {brand.version ? <span className="shrink-0 text-xs font-normal text-muted-foreground">v{brand.version}</span> : null}
+          <span className="flex min-w-0 items-center gap-2">
+            <span className="truncate text-base font-bold tracking-tight text-foreground">{brand.name}</span>
+            {brand.version ? (
+              <span className="shrink-0 rounded-md border border-institutional/20 bg-institutional/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-institutional-foreground">
+                v{brand.version}
+              </span>
+            ) : null}
           </span>
-          {brand.tagline ? <span className="truncate text-xs text-muted-foreground">{brand.tagline}</span> : null}
+          {brand.tagline ? <span className="truncate text-[11px] font-medium text-muted-foreground">{brand.tagline}</span> : null}
         </span>
       </Link>
     </div>
@@ -52,9 +60,9 @@ function MobileLogos({ config }: { config: ShellConfig }) {
   const logos = (config.header?.logos ?? []).filter((logo) => Boolean(logo.src));
   if (!logos.length) return null;
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-sidebar-border px-3 py-2 sm:hidden">
+    <div className="flex flex-wrap items-center justify-center gap-2 border-b border-sidebar-border px-3 py-2.5 sm:hidden">
       {logos.map((logo) => (
-        <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-7 w-auto rounded-sm bg-logo-surface px-1.5 py-0.5" />
+        <ImageSlot key={`${logo.src}-${logo.alt}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
       ))}
     </div>
   );
@@ -64,7 +72,7 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
   const { setMobileOpen } = useSidebar();
   const collapsed = useCollapsedAttribute();
   return (
-    <nav className="grid gap-[5px]" aria-label="Itens da seção">
+    <nav className="grid gap-1.5" aria-label="Itens da seção">
       {items.map((item) => {
         const active = item.id === activeId;
         return (
@@ -75,12 +83,17 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
             title={collapsed ? item.label : undefined}
             onClick={() => setMobileOpen(false)}
             className={cn(
-              "group flex items-center gap-2.5 rounded-lg px-2 py-[7px] text-[13px] font-semibold text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring desk:tm-collapsed:justify-center desk:tm-collapsed:px-0",
-              active && "bg-highlight text-highlight-foreground shadow-surface hover:bg-highlight",
+              "group flex items-center gap-3 rounded-xl px-2.5 py-2 text-[13.5px] font-medium text-sidebar-foreground outline-none transition-all hover:bg-sidebar-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring desk:tm-collapsed:justify-center desk:tm-collapsed:px-0",
+              active && "tm-nav-active font-semibold text-highlight-foreground hover:bg-transparent hover:text-highlight-foreground",
             )}
           >
             <SectionIcon icon={item.icon} tone={item.tone} />
             <span className={cn("truncate", hideWhenCollapsed)}>{item.label}</span>
+            {item.badge ? (
+              <span className={cn("ml-auto shrink-0 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold", toneClass(item.tone), hideWhenCollapsed)}>
+                {item.badge}
+              </span>
+            ) : null}
           </Link>
         );
       })}
@@ -89,7 +102,7 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
 }
 
 const tabClass =
-  "flex h-8 items-center justify-center rounded-md px-2 text-[13px] font-[650] text-sidebar-foreground outline-none transition-[color,background-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[active]:bg-highlight data-[active]:text-highlight-foreground data-[active]:shadow-surface data-[active]:ring-1 data-[active]:ring-border/50";
+  "flex h-8 min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 text-[13px] font-medium text-muted-foreground outline-none transition-all duration-200 hover:text-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[active]:bg-card data-[active]:font-semibold data-[active]:text-foreground data-[active]:shadow-surface";
 
 function SidebarBody({ config, session }: { config: ShellConfig; session: ShellSession | null }) {
   const pathname = usePathname();
@@ -109,22 +122,22 @@ function SidebarBody({ config, session }: { config: ShellConfig; session: ShellS
         <Tabs.Root
           value={activeTab}
           onValueChange={(value) => setManualSelection({ pathname, tab: value as NavigationSection })}
-          className="mx-2.5 mt-2.5"
+          className="mx-3 mt-3.5"
         >
-          <Tabs.List className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-[3px] desk:tm-collapsed:grid-cols-1" aria-label="Seções do menu">
+          <Tabs.List className="grid grid-cols-2 gap-1 rounded-xl border bg-muted p-1 desk:tm-collapsed:grid-cols-1" aria-label="Seções do menu">
             <Tabs.Tab value="platform" className={tabClass} title={platformLabel}>
-              <LayoutDashboard className="hidden size-4 desk:tm-collapsed:block" aria-hidden />
+              <LayoutDashboard className="size-3.5 shrink-0 fill-current/20 text-institutional desk:tm-collapsed:size-4" strokeWidth={2.2} aria-hidden />
               <span className={cn("truncate", hideWhenCollapsed)}>{platformLabel}</span>
             </Tabs.Tab>
             <Tabs.Tab value="administration" className={tabClass} title={administrationLabel}>
-              <ShieldCheck className="hidden size-4 desk:tm-collapsed:block" aria-hidden />
+              <ShieldCheck className="size-3.5 shrink-0 fill-current/15 text-primary desk:tm-collapsed:size-4" strokeWidth={2.2} aria-hidden />
               <span className={cn("truncate", hideWhenCollapsed)}>{administrationLabel}</span>
             </Tabs.Tab>
           </Tabs.List>
         </Tabs.Root>
       ) : null}
-      <section className="min-h-0 flex-1 overflow-y-auto p-2.5">
-        <p className="mx-2 mt-0.5 mb-2 text-[13px] font-bold text-sidebar-foreground desk:tm-collapsed:sr-only">{groupLabel}</p>
+      <section className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+        <p className="mx-2 mb-2.5 text-[11px] font-bold tracking-wider text-muted-foreground uppercase desk:tm-collapsed:sr-only">{groupLabel}</p>
         <NavigationList items={items} activeId={current?.section === activeTab ? current.item.id : undefined} />
       </section>
     </div>
@@ -139,8 +152,8 @@ function SidebarBody({ config, session }: { config: ShellConfig; session: ShellS
 function SidebarBodyFallback({ config }: { config: ShellConfig }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <section className="min-h-0 flex-1 overflow-y-auto p-2.5">
-        <p className="mx-2 mt-0.5 mb-2 text-[13px] font-bold text-sidebar-foreground desk:tm-collapsed:sr-only">
+      <section className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+        <p className="mx-2 mb-2.5 text-[11px] font-bold tracking-wider text-muted-foreground uppercase desk:tm-collapsed:sr-only">
           {config.platformLabel ?? "Plataforma"}
         </p>
         <NavigationList items={visibleNavigation(config.platformNavigation)} />
@@ -172,7 +185,7 @@ export function AppSidebar({
       <aside
         aria-label="Navegação principal"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[260px] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-drawer transition-[width,transform] duration-200 desk:sticky desk:top-0 desk:z-30 desk:translate-x-0 desk:shadow-none desk:tm-collapsed:w-16",
+          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[268px] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-drawer transition-[width,transform] duration-300 ease-out desk:sticky desk:top-0 desk:z-30 desk:translate-x-0 desk:shadow-none desk:tm-collapsed:w-[76px]",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
@@ -182,29 +195,30 @@ export function AppSidebar({
           <SidebarBody config={config} session={session} />
         </Suspense>
         {/* Busca fixa acima do "Recolher": não rola com o menu. */}
-        <div className="flex shrink-0 justify-center border-t border-sidebar-border p-2.5">
+        <div className="flex shrink-0 justify-center border-t border-sidebar-border px-3 py-2.5">
           <CommandPalette config={config} session={session} renderSearch={renderSearch} />
         </div>
-        <div className="flex h-(--shell-bar) shrink-0 items-center justify-between gap-2 border-t border-sidebar-border px-2.5 desk:tm-collapsed:justify-center">
-          <span className={cn("truncate text-sm font-bold text-sidebar-foreground", hideWhenCollapsed)}>
-            {config.sidebarShortcutLabel ?? "Recolher"}
+        <div className="flex h-(--shell-bar) shrink-0 items-center justify-between gap-2 border-t border-sidebar-border px-3.5 desk:tm-collapsed:justify-center">
+          <span className={cn("flex min-w-0 items-center gap-2", hideWhenCollapsed)}>
+            <span className="truncate text-xs font-semibold text-muted-foreground">{config.sidebarShortcutLabel ?? "Recolher"}</span>
+            <kbd className="hidden rounded-md border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-medium text-muted-foreground desk:inline">Ctrl B</kbd>
           </span>
           <Button
             variant="ghost"
             size="icon"
-            className="hidden desk:inline-flex"
+            className="hidden size-8 rounded-lg text-muted-foreground desk:inline-flex"
             onClick={toggleCollapsed}
             aria-label={collapsed ? "Expandir menu lateral" : "Recolher menu lateral"}
             aria-expanded={!collapsed}
             aria-keyshortcuts="Control+B Meta+B"
           >
-            <ChevronLeft className="tm-collapsed:hidden" />
-            <ChevronRight className="hidden tm-collapsed:block" />
+            <PanelLeftClose className="tm-collapsed:hidden" />
+            <PanelLeftOpen className="hidden tm-collapsed:block" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="desk:hidden"
+            className="size-8 rounded-lg text-muted-foreground desk:hidden"
             onClick={() => setMobileOpen(false)}
             aria-label="Fechar menu lateral"
           >

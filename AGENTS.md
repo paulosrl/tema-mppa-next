@@ -12,11 +12,11 @@
 - Antes de publicar: `npm run check`; se a aparência mudou, regere a prévia e as comparações (README, "Manter o modelo"); depois `npm run empacotar`.
 - `REPLICAR.md` é o roteiro do agente no consumidor, em fases (diagnóstico, casca, telas, limpeza, atualização, sistema do zero; com OpenSpec ou sem), `DIAGNOSTICO.md` é o formulário da Fase 0 e `GUIA.html` é o guia do desenvolvedor, com o prompt de cada fase: mantenha os três em dia com a API da camada, os tokens e os scripts de cópia e de conferência (`copy-template.mjs`, `verificar-camada.mjs`).
 - O que um consumidor relatar que o roteiro não previu (REPLICAR.md, seção 11) entra no modelo na versão seguinte.
-- O protótipo `docs/prototipo/index.html` manda em todo elemento gráfico: raio 8px e realce dele; título só no cabeçalho.
-- Exceção de 2026-11-11 (1.9.0): superfícies do claro em ardósia (fundo `#f4f7fb`, cartão e barra `#ffffff`, muted `#f1f5f9`, borda `#e2e8f0`, texto `#0f172a`), sombra `--shadow` em camadas com brilho interno de 1px, tons do escuro translúcidos gravados em hex ícones de seção duotone (preenchimento de 15%) e realce do item e da aba ativos mais claro (`#ecf4fe` no claro, `#1c3b73` no escuro). O `verify-template.mjs` confere esses valores.
+- O protótipo `docs/prototipo/index.html` manda em todo elemento gráfico, e a estética de 12 nov. 2026 (1.10.0) prevalece sobre ele em raio, sombra, cores e medidas: título só no cabeçalho.
+- Estética de 12 nov. 2026 (1.10.0), regra da camada: claro em ardósia e escuro em marinho (fundo `#070b12`, barra `#0c121e`, cartão `#111827`, muted `#182235`); raio-base de 8px com cartões de 16px (`rounded-2xl`, padding 24px, sombra `shadow-card`) e botões, itens e busca de 12px; `--shell-bar` de 62px (`3.875rem`), barra lateral de 268px (76px recolhida), conteúdo com padding 40px × 36px e máximo de 1380px; realce do item ativo em degradê do vermelho institucional ao azul com barra de 3,5px à esquerda; avatar em degradê; cabeçalho e rodapé translúcidos com desfoque; ícones de seção em caixa de 32px (`tm-tone`); botão `chrome` no tema e no menu móvel. O `verify-template.mjs` confere esses valores.
 - Exceção: o cabeçalho segue o padrão dos sistemas, definido em 2026-11-10 (REPLICAR.md, seção 9):
   - marca com nome e versão na mesma linha;
-  - título com ícone de 24px;
+  - título com ícone de 28px e a seção à frente;
   - tema;
   - logos entre divisórias;
   - avatar com nome e perfil;
@@ -25,16 +25,16 @@
   Não volte ao avatar sozinho do protótipo.
 - Busca "Buscar na página" com `Ctrl K`, definida em 2026-11-11: fixa na barra lateral, logo acima do "Recolher", na largura da barra (só a lupa com a barra recolhida; no celular, no menu móvel). O diálogo vai para o `<body>` por portal. Não volte a busca para o cabeçalho.
 - Rodapé padrão dos sistemas, definido em 2026-11-10. O protótipo não tem rodapé; ele segue a página de exemplo do Heimdall e usa só tokens:
-  - a partir de 801px, fixo no pé da tela (`sticky`), na faixa do "Recolher": altura `--shell-bar` (56px), a mesma de cabeçalho, marca e "Recolher", e borda `--sidebar-border` (= `--border`);
-  - o texto institucional nunca é cortado (sem `line-clamp`): até 3 linhas em 56px; além disso, cresce;
+  - a partir de 801px, fixo no pé da tela (`sticky`), na faixa do "Recolher": altura `--shell-bar` (62px), a mesma de cabeçalho, marca e "Recolher", e borda `--sidebar-border` (= `--border`);
+  - o texto institucional nunca é cortado (sem `line-clamp`): além de 62px, cresce;
   - no celular, no fim da página, com a altura do texto;
   - sem substituição: o `AppShell` não aceita `footer`;
   - texto pequeno e centralizado, montado de `brand.name`, `brand.version` e `brand.versionYears`:
     "Desenvolvido pelo Ministério Público do Estado do Pará - Escritório de Inteligência Artificial - Nome - V x.y.z - Ano".
 
   Não mude o lado esquerdo (o "Recolher").
-- Contraste fixo: no claro, todo texto com 7:1 e secundário igual ao principal; no escuro, 4,5:1 e texto escuro sobre a primária; ícones de tom com 4,5:1.
-- Telas de demonstração usam só os primitivos exportados (`PageFrame`, `Card`, `MetricCard`, `DataTable`, `BarChart`, `Button`).
+- Contraste fixo, nos dois temas: texto principal com 7:1 ou mais; secundário (`--muted-foreground`, cinza) com 4,5:1 ou mais (WCAG AA) em toda superfície neutra, e não mais igual ao principal; texto sobre preenchimento colorido e ícones de tom com 4,5:1 (no escuro, texto escuro sobre a primária).
+- Telas de demonstração usam só os primitivos exportados (`PageFrame`, `Card`, `MetricCard`, `DataTable`, `BarChart`, `Button` e as peças de painel de `dashboard.tsx`). A página inicial da demonstração reproduz a página de referência do Heimdall (12 nov. 2026), com dados fictícios.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
