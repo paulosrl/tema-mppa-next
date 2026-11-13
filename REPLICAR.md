@@ -18,7 +18,7 @@ Replicar:
   - menu móvel abaixo de 801px;
   - rodapé padrão dos sistemas.
 - **Estrutura:**
-  - abas Plataforma e Administração;
+  - abas Plataforma e Administração, e cada aba abre a página do primeiro item visível dela;
   - menu com ícones de seção coloridos;
   - busca `Ctrl+K` na barra lateral, acima do "Recolher";
   - tema claro, escuro e sistema;
@@ -535,7 +535,9 @@ usuário como lista de conferência, dizendo que não foram verificados.
    protótipo: raio, sombra, fundos, bordas, espaçamentos e cores da casca iguais.
 4. Em 390px, a página não rola na horizontal.
 5. Com `is_admin: false`, não há abas nem itens de administração, nem na busca. Com `true`, as duas abas
-   aparecem.
+   aparecem. Clicar numa aba (mesmo na já aberta) abre a página do primeiro item visível dela, na ordem da
+   configuração: "Minha Página" abre o primeiro de `platformNavigation`, "Administração" o primeiro de
+   `administrationNavigation`. Por isso a ordem dos itens decide a página de entrada de cada aba.
 6. Cada rota mostra o título certo, uma vez, no cabeçalho, e um só item marcado.
 7. Login, logout, sessão expirada e chamadas de dados continuam funcionando como antes.
 8. As conferências do consumidor que leem todo arquivo rastreado (4.1) passam.
@@ -858,7 +860,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.12.2)
+## Interface (tema-mppa 1.12.3)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

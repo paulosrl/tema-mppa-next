@@ -58,6 +58,9 @@ if (!utils.includes("session.is_admin === true")) errors.push("utils não usa a 
 const sidebar = await read("src/components/tema-mppa/app-sidebar.tsx");
 if (!sidebar.includes("@base-ui/react/tabs")) errors.push("abas não usam Base UI");
 if (!sidebar.includes("canSeeAdministration(")) errors.push("barra lateral não usa canSeeAdministration");
+if (!sidebar.includes("router.push(first.href)") || !/onClick=\{\(\) => openTab\("platform"\)\}/.test(sidebar) || !/onClick=\{\(\) => openTab\("administration"\)\}/.test(sidebar)) {
+  errors.push("clicar numa aba deve abrir a página do primeiro item visível dela (openTab)");
+}
 
 const palette = await read("src/components/tema-mppa/command-palette.tsx");
 if (!palette.includes("canSeeAdministration(")) errors.push("busca não segue a regra das abas (canSeeAdministration)");

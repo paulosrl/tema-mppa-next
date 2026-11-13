@@ -3,7 +3,7 @@
 import { Tabs } from "@base-ui/react/tabs";
 import { ChevronLeft, LayoutDashboard, PanelLeftClose, PanelLeftOpen, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { isValidElement, Suspense, useState } from "react";
 import { Button } from "./button";
 import { CommandPalette } from "./command-palette";
@@ -114,6 +114,8 @@ const tabClass =
 
 function SidebarBody({ config, session }: { config: ShellConfig; session: ShellSession | null }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { setMobileOpen } = useSidebar();
   const current = currentNavigationItem(pathname, config, session);
   const [manualSelection, setManualSelection] = useState<{ pathname: string; tab: NavigationSection } | null>(null);
   const manualTab = manualSelection?.pathname === pathname ? manualSelection.tab : null;
@@ -124,20 +126,32 @@ function SidebarBody({ config, session }: { config: ShellConfig; session: ShellS
   const items = visibleNavigation(activeTab === "administration" ? config.administrationNavigation : config.platformNavigation);
   const groupLabel = activeTab === "administration" ? administrationLabel : platformLabel;
 
+  /*
+   * Clicar numa aba abre sempre a página do primeiro item visível dela (inclusive a aba já aberta, que volta
+   * ao primeiro item). A aba troca na hora; depois da navegação, quem manda é a rota. Sem item visível na
+   * aba, só o menu troca.
+   */
+  function openTab(tab: NavigationSection) {
+    setManualSelection({ pathname, tab });
+    const first = visibleNavigation(tab === "administration" ? config.administrationNavigation : config.platformNavigation)[0];
+    if (!first) return;
+    setMobileOpen(false);
+    if (first.href !== pathname) router.push(first.href);
+  }
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       {showTabs ? (
         <Tabs.Root
           value={activeTab}
-          onValueChange={(value) => setManualSelection({ pathname, tab: value as NavigationSection })}
           className="mx-3 mt-3.5"
         >
           <Tabs.List className="grid grid-cols-2 gap-1 rounded-xl border bg-muted p-1 desk:tm-collapsed:grid-cols-1" aria-label="Seções do menu">
-            <Tabs.Tab value="platform" className={tabClass} title={platformLabel}>
+            <Tabs.Tab value="platform" className={tabClass} title={platformLabel} onClick={() => openTab("platform")}>
               <LayoutDashboard className="size-3.5 shrink-0 fill-current/20 text-institutional desk:tm-collapsed:size-4" strokeWidth={2.2} aria-hidden />
               <span className={cn("truncate", hideWhenCollapsed)}>{platformLabel}</span>
             </Tabs.Tab>
-            <Tabs.Tab value="administration" className={tabClass} title={administrationLabel}>
+            <Tabs.Tab value="administration" className={tabClass} title={administrationLabel} onClick={() => openTab("administration")}>
               <ShieldCheck className="size-3.5 shrink-0 fill-current/15 text-primary desk:tm-collapsed:size-4" strokeWidth={2.2} aria-hidden />
               <span className={cn("truncate", hideWhenCollapsed)}>{administrationLabel}</span>
             </Tabs.Tab>

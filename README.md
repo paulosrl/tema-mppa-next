@@ -1,10 +1,10 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.12.2**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
+Versão **1.12.3**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
 estética de 12 nov. 2026 (ardósia no claro e marinho no escuro, cartões de 16px, sombras em camadas, realce em degradê do vermelho
 institucional ao azul, avatar em degradê) e o cabeçalho padrão dos sistemas:
 
-- barra lateral com abas Plataforma e Administração;
+- barra lateral com abas Plataforma e Administração; clicar numa aba abre a página do primeiro item dela;
 - cabeçalho de 62px, translúcido: título da página, busca, tema, logos institucionais, nome e perfil do usuário e
   botão de sair;
 - busca `Ctrl+K`;
@@ -18,9 +18,9 @@ Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre di
 
 ## Usar num codebase
 
-1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v1.12.2/tema-mppa-next/`, na pasta acima desta.
+1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v1.12.3/tema-mppa-next/`, na pasta acima desta.
 2. O desenvolvedor do sistema copia a pasta `tema-mppa-next/` inteira para a raiz do repositório
-   (`cp -r …/tema-mppa-next-v1.12.2/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html` no
+   (`cp -r …/tema-mppa-next-v1.12.3/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html` no
    navegador. A cópia da camada confere a pasta contra o `SHA256SUMS` dela antes de copiar.
 3. No [`GUIA.html`](GUIA.html), ele responde duas perguntas: a situação do sistema (do zero, já existe sem o
    tema, já tem o tema) e se o repositório usa OpenSpec. O guia monta os passos daquele caso, cada um com o

@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.12.3 — 2026-11-12
+
+Pedido do autor em 12 nov. 2026: cada aba do menu abre a página do seu primeiro item. A aparência não muda;
+é correção de comportamento, por isso 1.12.3.
+
+### Corrigido
+
+- **Abas do menu:** clicar em "Minha Página" ou "Administração" só trocava a lista de itens e deixava a página
+  aberta. Agora abre a página do primeiro item visível da aba (itens `hidden` não contam), na ordem de
+  `platformNavigation` e `administrationNavigation`: na demonstração, "Meus acessos" e "Usuários & Papéis". Vale
+  também ao clicar na aba já aberta, que volta ao primeiro item. No celular, o menu fecha, como num link. Aba sem
+  item visível só troca o menu. O `verify-template.mjs` confere.
+
+### Ao atualizar de 1.12.2
+
+1. Nada a mudar nas telas. Ponha, em cada lista de navegação, como primeiro item o que deve ser a página de
+   entrada da aba.
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 1.12.3.
+
 ## 1.12.2 — 2026-11-12
 
 Prévia (`docs/preview/index.html`) consertada, a partir do que o autor viu em 12 nov. 2026. A camada não muda:
