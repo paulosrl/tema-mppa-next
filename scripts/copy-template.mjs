@@ -121,7 +121,13 @@ const sources = [
   })),
 ];
 
-const existing = sources.filter(({ to }) => existsSync(to));
+// As comparações vão como pasta inteira: na atualização, a pasta antiga sai junto (para o backup), e uma imagem que o
+// modelo removeu não fica de resto no consumidor (na 2.0.3, `menu-movel-390-claro.png`).
+const comparisonsDir = path.join(referenceDir, "comparacao");
+const existing = [
+  ...(existsSync(comparisonsDir) ? [{ to: comparisonsDir }] : []),
+  ...sources.filter(({ to }) => existsSync(to)),
+];
 if (existing.length && !force) {
   console.error("O destino já contém arquivos do modelo. Revise o diff ou execute novamente com --force (faz backup):");
   for (const item of existing) console.error(`- ${path.relative(target, item.to)}`);
@@ -129,6 +135,7 @@ if (existing.length && !force) {
 }
 
 // Atualização: diz quais arquivos da camada o consumidor tinha editado, antes de substituí-los.
+let editedFiles = [];
 if (existing.length && force && existsSync(manifestPath)) {
   const previous = JSON.parse(await readFile(manifestPath, "utf8"));
   const edited = [];
@@ -140,6 +147,7 @@ if (existing.length && force && existsSync(manifestPath)) {
     console.warn(`Atenção: estes arquivos da camada ${previous.versao} tinham sido editados no consumidor e vão para o backup:`);
     for (const relative of edited) console.warn(`- ${relative}`);
   }
+  editedFiles = edited;
 }
 
 // O backup fica fora da raiz do consumidor (pasta temporária do sistema): dentro dela, lint, testes e
@@ -150,6 +158,8 @@ if (existing.length && force) {
   backupRoot = path.join(os.tmpdir(), `tema-mppa-backup-${new Date().toISOString().replace(/[:.]/g, "-")}`);
   await mkdir(backupRoot, { recursive: true });
   for (const { to } of existing) {
+    // Uma imagem de comparação já saiu com a pasta dela.
+    if (!existsSync(to)) continue;
     const backup = path.join(backupRoot, path.relative(target, to));
     await mkdir(path.dirname(backup), { recursive: true });
     await cp(to, backup, { recursive: true });
@@ -221,6 +231,11 @@ const manifest = {
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, { mode: 0o644 });
 await chmod(manifestPath, 0o644);
 
+// O que está em docs/tema-mppa/ e esta versão do modelo não traz: resto de versão anterior (por exemplo,
+// `preview-v2/`, que saiu na 2.0.0) ou arquivo do sistema (diagnóstico, registro de alterações locais). Só avisa.
+const delivered = new Set([...sources.map(({ to }) => path.relative(referenceDir, to).split(path.sep)[0]), "camada.json"]);
+const extras = (await readdir(referenceDir)).filter((name) => !delivered.has(name)).sort();
+
 const rel = (to) => path.relative(target, to) || ".";
 console.log("Camada visual copiada:");
 console.log(`- componentes: ${rel(path.join(componentsDir, "tema-mppa"))}/`);
@@ -228,14 +243,23 @@ console.log(`- cores e tokens: ${rel(path.join(stylesDir, "tema-mppa.css"))}`);
 console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (GUIA.html, REPLICAR.md, DESIGN.md, protótipo, prévias, comparações)`);
 console.log(`- logos do cabeçalho em ${rel(publicDir)}/ (header.logos, REPLICAR.md 4.5):`);
 for (const line of logoReport) console.log(`  - ${line}`);
-if (backupRoot) console.log(`Backup (fora do consumidor): ${backupRoot}`);
+if (backupRoot) {
+  console.log(`Backup (fora do consumidor, numa pasta temporária que o sistema pode apagar): ${backupRoot}`);
+  if (editedFiles.length) {
+    console.warn("Os arquivos editados acima estão no backup. Alteração local que não está no git: copie-a do backup agora para um lugar que fique; depois reaplique as alterações registradas e atualize o registro delas, inclusive a versão do modelo que ele cita (REPLICAR.md, 7.1).");
+  }
+}
 console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version}); confira com: node ${rel(path.join(referenceDir, "verificar-camada.mjs"))}`);
 console.log(`- conferência do DESIGN.md do sistema: node ${rel(path.join(referenceDir, "verificar-design.mjs"))} --css <CSS com os tokens próprios>`);
 console.log(
   updating
-    ? "Depois da cópia (atualização): apague a pasta tema-mppa-next/ e siga o REPLICAR.md, seção 7, a partir do passo 4 (CHANGELOG, DESIGN.md, verificação de 4.10)."
+    ? "Depois da cópia (atualização): apague a pasta tema-mppa-next/ e siga o REPLICAR.md, seção 7, a partir do fim do passo 3 (o que cita a versão da camada) e depois o 4 (CHANGELOG, DESIGN.md, verificação de 4.10)."
     : "Depois da cópia: apague a pasta tema-mppa-next/ e siga o REPLICAR.md, Fase 1, a partir do fim da 4.1 (conferências do consumidor que a cópia aciona) e depois 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).",
 );
+if (extras.length) {
+  console.warn(`Atenção: ${rel(referenceDir)}/ tem itens que a versão ${version} do modelo não traz. Apague os que são resto de versão anterior (por exemplo, preview-v2/); mantenha os do sistema (diagnóstico, registro de alterações locais):`);
+  for (const name of extras) console.warn(`- ${name}`);
+}
 if (staleFolders.length) {
   console.warn("Atenção: há outra pasta do modelo perto do consumidor. Apague estas (sem commit); depois desta cópia, apague também a pasta tema-mppa-next/ de onde você rodou o script:");
   for (const item of staleFolders) console.warn(`- ${item}`);

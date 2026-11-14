@@ -83,7 +83,11 @@ Em conflito sobre **o padrão visual**, não decida: leve ao desenvolvedor no di
   antes de código, cada fase é uma change desse fluxo, e o diagnóstico é o insumo do plano. A change anda em
   três passos, cada um num pedido do desenvolvedor:
   1. **Propor:** crie a change (proposta, tarefas e, se o projeto usa, design e specs) e **pare** sem
-     implementar. O desenvolvedor revisa e pede ajustes.
+     implementar. O desenvolvedor revisa e pede ajustes. Se o consumidor pede uma branch por change, crie-a
+     já aqui, sem commit (a skill de propor do OpenSpec pode não criá-la). Mantenha o "Why" da proposta curto: o
+     OpenSpec avisa acima de 1.000 caracteres. Nas tarefas, separe o que se confere sem o sistema no ar
+     (compilação, testes de unidade) do que precisa dele (HTML servido, testes no navegador, capturas), para que
+     uma tarefa não fique pela metade por falta de servidor.
   2. **Aplicar:** só quando ele aprovar, implemente as tarefas, verifique e faça o commit na branch.
   3. **Arquivar:** depois que ele conferir a entrega, arquive a change como o OpenSpec do projeto manda e
      faça o commit na mesma branch, antes do merge. Se o `AGENTS.md` e o `config.yaml` do projeto não dizem como,
@@ -92,9 +96,9 @@ Em conflito sobre **o padrão visual**, não decida: leve ao desenvolvedor no di
      relatório.
   
   **Specs.** A validação do OpenSpec recusa uma change sem nenhuma spec, e `openspec/specs/` pode estar vazio.
-  Numa atualização visual, crie uma capacidade `interface-tema-mppa` com os requisitos da interface (a camada
-  íntegra na versão nova, a fonte e o layout raiz, os tokens próprios com o contraste mínimo, o `DESIGN.md` em
-  dia), cada um com um cenário.
+  Numa atualização visual, ponha os requisitos da interface (a camada íntegra na versão nova, a fonte e o layout
+  raiz, os tokens próprios com o contraste mínimo, o `DESIGN.md` em dia), cada um com um cenário, na capacidade que
+  o projeto já tem para a interface ou o tema, se houver; só sem nenhuma, crie a capacidade `interface-tema-mppa`.
 
   Sem OpenSpec nem outro fluxo, cada fase é uma branch e um commit, sem passo de proposta.
 - **Branch:** no padrão do consumidor (por exemplo, `change/<nome>`). Sem padrão, `feat/interface-tema-mppa`
@@ -677,7 +681,9 @@ Quando nenhuma tela usar mais o visual antigo:
 ## 7. Atualizar para uma versão nova do modelo
 
 1. `node docs/tema-mppa/verificar-camada.mjs`: se apontar arquivo editado, entenda a edição antes de seguir;
-   ela será perdida (vai para o backup).
+   ela será perdida (vai para o backup, numa pasta temporária que o sistema pode apagar). Com git, o arquivo
+   volta da branch; sem git, copie-o antes para um lugar que fique. Leve ao desenvolvedor, logo na proposta, as
+   decisões que a versão nova pede (por exemplo, a do menu móvel e da aba, em 7.1).
 2. **Antes da cópia, capture as telas** (receita em 7.1), se a versão nova anuncia mudança de aparência.
 3. Confira que o `.gitignore` do consumidor ignora `tema-mppa-next/` e `tema-mppa-next-v*/` (4.1); se faltar,
    acrescente as duas linhas antes da cópia. Com a pasta nova `tema-mppa-next/` na raiz do repositório (seção 1.3; se sobrou uma de versão anterior, ela
@@ -685,8 +691,13 @@ Quando nenhuma tela usar mais o visual antigo:
    `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`. O script confere a pasta contra
    o `SHA256SUMS` dela e para se ela veio incompleta ou editada; depois lista os arquivos da camada que estavam
    editados, guarda o backup fora do consumidor, grava as logos que faltam em `public/` e a lista de conferência
-   da versão nova. **Logo em seguida, apague a pasta `tema-mppa-next/`** (4.1): daqui em diante, tudo é lido em
-   `docs/tema-mppa/`.
+   da versão nova. A pasta `docs/tema-mppa/comparacao/` é trocada inteira. Se a cópia avisar que
+   `docs/tema-mppa/` tem itens que a versão nova não traz, apague os que são resto de versão anterior (por exemplo,
+   `preview-v2/`) e mantenha os do sistema (diagnóstico, registro de alterações locais). **Logo em seguida, apague
+   a pasta `tema-mppa-next/`** (4.1): daqui em diante, tudo é lido em `docs/tema-mppa/`.
+   Depois da cópia, atualize junto o que no consumidor cita a versão da camada: o registro de alterações locais
+   (inclusive a versão do modelo que ele cita) e os testes que fixam a versão (por exemplo, um teste que lê o
+   `camada.json` e espera a versão antiga).
 4. Leia o `docs/tema-mppa/CHANGELOG.md` da versão anterior até a nova e faça o que a seção "Ao atualizar de"
    de cada versão pede ao consumidor (configuração nova, propriedade que saiu). **Saltando várias versões**, a
    cópia é uma só, com a versão final; os passos de cada "Ao atualizar de" se somam, e os que mandam copiar
@@ -695,15 +706,29 @@ Quando nenhuma tela usar mais o visual antigo:
    próprios do sistema por cima. Reaplicar as diferenças antigas (patch) falha quando a prosa da camada muda.
    Confira com o `verificar-design.mjs`, que precisa aprovar sem diferença.
 6. Rode a verificação de 4.10, capture as telas de novo e compare (7.1), atualize a versão na seção
-   "Interface" do `AGENTS.md`.
+   "Interface" do `AGENTS.md`. Antes das capturas de depois, confirme que o sistema no ar serve o código novo
+   (por exemplo, o HTML servido já sem o que a versão nova tirou, como o atributo de variante do `<html>` na 2.0.0): um script de
+   subir o sistema que só diz "no ar" não prova que reconstruiu o frontend.
 
 ### 7.1 Pontos que costumam quebrar numa atualização
 
+- **Menu móvel e aba:** desde a 1.12.3, clicar numa aba abre a página do primeiro item e o menu móvel fecha. Quem fazia
+  isso por alteração local (a aba navegando) a tira e decide se aceita o menu fechando. É decisão do desenvolvedor:
+  leve-a na proposta (passo 1 da seção 7).
 - **Capturas antes e depois:** um spec Playwright temporário, fora do commit, com um usuário administrador
   descartável e dados de exemplo; as telas principais (início, painel, uma lista, uma tela administrativa e o
   menu móvel), em 1280px e 390px, nos temas claro e escuro (tema gravado em `sessionStorage`, chave
   `tema-mppa-theme`, antes de abrir a página); cubra com uma faixa o que muda a cada execução (e-mail, hora).
-  Compare pixel a pixel e classifique cada diferença: anunciada pelo CHANGELOG ou defeito.
+  - **Dado vivo:** num sistema no ar, contadores, listas e auditoria mudam entre as duas rodadas. Prefira um banco
+    descartável com dados fixos; sem ele, cubra esses pontos com faixa ou compare só a estrutura deles.
+  - **Viewport, não página inteira:** com `fullPage`, o rodapé fixo (`sticky`) sai no meio da imagem, e uma
+    diferença de altura de poucos pixels desloca tudo o que vem abaixo dele. Capture a viewport (rolando, se
+    precisar) ou esconda o rodapé.
+  - **Login escondido:** se o sistema esconde a tela de login local no ambiente em que você captura, entre pelo
+    caminho que ele oferece (a API ou o BFF de login) e grave o estado da sessão do Playwright (`storageState`).
+    Apague no fim o usuário e os dados que criou.
+  Compare pixel a pixel e classifique cada diferença: anunciada pelo CHANGELOG, dado que mudou entre as rodadas
+  (contador, texto, auditoria, sem mudança de cor, fonte, raio, sombra ou espaçamento) ou defeito.
 - **Testes que leem classes internas da camada** (por exemplo, `desk:hidden` na barra recolhida) quebram
   quando a camada muda as classes. Teste pelo contrato observável (4.8): `aria-label`, `data-tm-sidebar`,
   largura e cor medidas.
@@ -729,8 +754,9 @@ Quando nenhuma tela usar mais o visual antigo:
   exemplo em `docs/tema-mppa/alteracoes-locais.json`): a cópia com `--force` sobrescreve o arquivo. Antes da cópia,
   anote cada uma; depois, para cada arquivo: se ele é **igual** nas duas versões do modelo, volte ao da branch
   (`git checkout <branch> -- <arquivo>`) em vez de reaplicar à mão; se mudou, reaplique a alteração e confira o diff;
-  se o CHANGELOG diz que a versão nova tornou a alteração desnecessária, tire-a e apague o registro. A regra "não edite
-  a camada" vale para o que não está registrado.
+  se o CHANGELOG diz que a versão nova tornou a alteração desnecessária, tire-a e apague o registro. Nos outros casos, o
+  registro fica, com a versão nova do modelo (passo 3 da seção 7). A regra "não edite a camada" vale para o que não
+  está registrado.
 - **Conferências que leem todo arquivo rastreado, também na atualização:** `docs/tema-mppa/` continua fora delas
   (links mortos em `.md`, cor fixa, ortografia), porque o `REPLICAR.md` e o CHANGELOG copiados citam caminhos do
   modelo (`scripts/…`, `src/…`) que no consumidor não existem. A seção 4.1 manda excluí-la; confira que a exclusão
@@ -738,8 +764,13 @@ Quando nenhuma tela usar mais o visual antigo:
 - **Arquivo novo na camada:** a cópia pode trazer um arquivo que o consumidor ainda não usa (na 1.14.0, `metas.tsx`).
   Ele passa pelo lint, pelos tipos e pelas conferências de cor do consumidor mesmo sem uso. Se alguma recusar, ajuste
   a configuração da conferência, não o arquivo, e registre o caso na seção 11.
-- **Menu móvel e aba:** desde a 1.12.3, clicar numa aba abre a página do primeiro item e o menu móvel fecha. Quem fazia
-  isso por alteração local (a aba navegando) a tira e decide se aceita o menu fechando.
+- **Testes e scripts que leem o CSS da camada como texto** (por exemplo, o primeiro bloco `:root` do
+  `tema-mppa.css`): podem passar por acaso, porque o bloco lido não era o que valia na tela, e quebrar na cópia
+  mesmo sem mudança de aparência. Leia o bloco que vale (`:root` e `.dark`) ou meça a cor no navegador.
+- **Busca por restos de variante:** procurar só as palavras `padrao`, `padrão`, `v2` ou `default` dá falso positivo
+  (a variante `default` de um botão, uma variável do sistema com "padrao"). Resto da variante é o que liga ao
+  atributo de variante do `<html>`, à propriedade `tema` do provider, a `useTemaVariante`, ao tipo de variante, a
+  `--font-tema`, `--card-radius`, `--card-top-width` ou a `preview-v2`; confira cada achado antes de tirar.
 
 ### 7.2 Atualizar de uma versão anterior à 2.0.0
 
@@ -751,10 +782,15 @@ da seção 7 e, além deles:
 1. **Capturas antes da cópia:** são as do passo 2 da seção 7 (receita em 7.1) e a base da classificação do passo 8.
 2. **Layout raiz (4.4):** deixe só a Inter, em `--font-inter`, no `className` do `<html>`; apague a fonte antiga
    (a Outfit) e o atributo de variante do `<html>`; tire a propriedade `tema` do `TemaMppaProvider` e todo uso de
-   `useTemaVariante` e do tipo de variante. A camada não os exporta mais.
+   `useTemaVariante` e do tipo de variante. A camada não os exporta mais. A camada lê só `--font-inter` (o
+   `--font-sans` e o `--font-heading` do tema apontam para ela): quem servia a fonte com outro nome, ou lia
+   `--font-tema`, passa a usar `--font-inter`. Apague também o módulo próprio do sistema que guardava a variante
+   (por exemplo, um `lib/tema.ts` com o valor `'v2'`) e os testes dele.
 3. **Consumidor que estava na `v2` da 1.14.x** (o layout raiz passava a variante `v2` ao `<html>` e ao
-   `TemaMppaProvider`): é só o passo 2 (remover o atributo de variante e a propriedade `tema`); a aparência já era esta,
-   e qualquer diferença nas capturas é defeito. Apague também `docs/tema-mppa/preview-v2/`, que a cópia não remove.
+   `TemaMppaProvider`): é só o passo 2 (remover o atributo de variante e a propriedade `tema`) e o passo 7 (o
+   `DESIGN.md`); a aparência já era esta, e qualquer diferença nas capturas é defeito. Apague também
+   `docs/tema-mppa/preview-v2/` (a cópia avisa) e `docs/tema-mppa/comparacao/menu-movel-390-claro.png`, se a cópia
+   foi feita por uma versão anterior à 2.0.5.
 4. **Consumidor que estava no padrão** (layout raiz sem variante, ou com `padrao`): faz os passos 1 e 2 e a troca visual completa, os passos 5 a 8.
 5. **Tokens próprios:** confira o contraste dos tokens próprios do consumidor (seção 8) sobre os fundos novos: a pedra
    quente (`#e7e5e4` no claro, `#0c0a09` no escuro) no lugar da ardósia e do marinho. Painel próprio que imita o cartão
@@ -764,11 +800,17 @@ da seção 7 e, além deles:
    ((c+0,055)/1,055)^2,4`) e a razão `(L1+0,05)/(L2+0,05)`, com L1 a maior. Mínimo de 7:1 para o texto principal e
    de 4,5:1 para o secundário. O que cair, corrija no token do sistema (por exemplo, apontando para
    `--muted-foreground`), nunca na camada.
-   Quem passa `accent` a `PanelCard` ou `LinkCard` pode tirá-lo: já não pinta nada.
+   Quem passa `accent` a `PanelCard` ou `LinkCard` pode tirá-lo: já não pinta nada. As classes de cor do topo do
+   quadro que o sistema passava na `className` (`border-t-*`, por exemplo `border-t-primary`) também ficaram sem
+   efeito, e o CHANGELOG não as cita: procure-as nas telas (`grep -rn "border-t-" <pasta das telas>`) e tire-as.
 6. **Testes** que citam cor, fonte, raio, sombra ou token (inclusive os de contraste e os que medem o fundo da página,
    que não tem mais brilho): reescreva-os para os valores novos ou, melhor, para o contrato observável (4.8).
 7. **`DESIGN.md` do sistema:** refaça-o a partir do `docs/tema-mppa/DESIGN.md` novo (passo 5 da seção 7) e rode o
    `verificar-design.mjs`; se ele não aceitar o sistema, o motivo costuma ser a fonte ou os tokens de cor que mudaram.
+   Quem estava na `v2` tem mais variante no `DESIGN.md` do que parece. O cabeçalho trazia os valores do padrão
+   (exigência do verificador) e passa a ter os valores reais. Saem a seção e a tabela da variante, a tabela do
+   escuro com os valores do padrão (marinho), as sombras do padrão e as lacunas ("Known Gaps") que falavam da
+   variante. Troque essas partes pelas do `DESIGN.md` novo, em vez de editar linha a linha.
 8. **Capturas depois da cópia e passada manual:** capture de novo e classifique cada diferença: esperada pela troca da
    2.0.0, anunciada pelo CHANGELOG ou defeito. Só então passe à mão por todas as telas, nos dois temas, em 1280px e
    390px, procurando o que a captura não mostra (cor fixa, classe que sobrepõe a camada, tela que dependia da faixa
@@ -957,7 +999,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.0.4)
+## Interface (tema-mppa 2.0.5)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

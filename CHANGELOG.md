@@ -3,6 +3,62 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.0.5 — 2026-11-14
+
+Retorno do Heimdall, que atualizou da 1.14.1 (variante v2) para a 2.0.4 com OpenSpec: o que o roteiro não previu
+(seção 11). Só os textos (`REPLICAR.md`, `CHANGELOG.md`, `GUIA.html`) e o `copy-template.mjs` mudam; a camada
+visual e a API não mudam, por isso sobe o último número.
+
+### Corrigido
+
+- **Cópia (`copy-template.mjs`):**
+  - troca a pasta `docs/tema-mppa/comparacao/` inteira, e uma imagem que o modelo removeu não fica de resto (na 2.0.3,
+    `menu-movel-390-claro.png`);
+  - avisa o que está em `docs/tema-mppa/` e a versão nova não traz (por exemplo, `preview-v2/`), para o agente apagar
+    o que é resto e manter o que é do sistema;
+  - diz que o backup fica numa pasta temporária que o sistema pode apagar e, havendo arquivo editado, manda guardar
+    a alteração que não está no git e atualizar o registro das alterações locais.
+- **Atualização (`REPLICAR.md`, 7):**
+  - o passo 1 diz onde fica o backup e manda levar na proposta as decisões que a versão nova pede (a do menu móvel
+    e da aba subiu para o topo da 7.1);
+  - o passo 3 manda atualizar o registro de alterações locais (com a versão do modelo que ele cita) e os testes do
+    consumidor que fixam a versão da camada;
+  - o passo 6 manda confirmar que o sistema no ar serve o código novo antes das capturas de depois.
+- **Capturas (7.1):**
+  - dado vivo (contador, auditoria) que muda entre as rodadas: banco com dados fixos, faixa ou comparação só da
+    estrutura, e uma classe própria na classificação;
+  - viewport em vez de página inteira, por causa do rodapé fixo;
+  - como entrar quando o sistema esconde a tela de login local.
+- **Outros pontos da 7.1:**
+  - testes e scripts que leem o CSS da camada como texto (o primeiro `:root`) podem passar por acaso e quebrar na
+    cópia;
+  - a busca por restos de variante dá falso positivo com `padrao` ou `default`, e a 7.1 lista o que é resto de fato.
+- **Vindo da 1.x (7.2):**
+  - a camada lê só `--font-inter`;
+  - o módulo próprio que guardava a variante (um `lib/tema.ts`) sai junto;
+  - as classes `border-t-*` de cor no topo dos quadros ficaram sem efeito como o `accent`;
+  - quem estava na v2 também refaz o `DESIGN.md`, e a 7.2 lista o que sai dele (cabeçalho com os valores do padrão,
+    seção e tabelas da variante, sombras e lacunas).
+- **OpenSpec (1.2):**
+  - os requisitos vão na capacidade que o projeto já tem para a interface, e `interface-tema-mppa` só é criada sem
+    nenhuma;
+  - a branch da change nasce no passo Propor;
+  - o "Why" fica curto;
+  - as tarefas separam o que se confere sem o sistema no ar do que precisa dele.
+- **Guia:**
+  - o prompt de propor manda não sugerir `/clear` mesmo quando o `AGENTS.md` do consumidor manda;
+  - o de atualizar cita o `accent` e as `border-t-*`, o módulo da variante, o `DESIGN.md` de quem vem da v2, o que
+    cita a versão da camada e a classe "dado" das capturas.
+- **Prévia (`docs/preview/`):** regerada. Na da 2.0.4, o botão de tema no escuro repetia o ícone do sol e o rótulo
+  "Tema: Claro"; agora mostra a lua e "Tema: Escuro", como a demonstração.
+
+### Ao atualizar de 2.0.4
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
+   (`REPLICAR.md`, seção 7). Nada a mudar nas telas. Se a cópia avisar itens a mais em `docs/tema-mppa/`, apague os
+   que são resto de versão anterior.
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 2.0.5.
+
 ## 2.0.4 — 2026-11-14
 
 Restos de texto da aparência antiga, achados ao revisar a 2.0.x. Só textos, imagens de comparação e a legenda delas
@@ -152,7 +208,8 @@ entra aqui.
    (`REPLICAR.md`, seção 7), depois de capturar as telas (passo 2 da seção 7, receita em 7.1). Apague
    `docs/tema-mppa/preview-v2/`, se existir.
 2. No layout raiz, ponha só a Inter (`--font-inter`) no `<html>` e tire a Outfit, o `data-tema` e a propriedade
-   `tema` do `TemaMppaProvider`; troque qualquer `useTemaVariante`.
+   `tema` do `TemaMppaProvider`; troque qualquer `useTemaVariante`. Apague o módulo próprio que guardava a
+   variante, se houver (completado na 2.0.5: `REPLICAR.md`, 7.2, passo 2).
 3. Quem estava no padrão muda de aparência por inteiro: confira o contraste dos tokens próprios sobre os fundos novos,
    os testes que citam cor, fonte, raio ou token e o `DESIGN.md` do sistema (`verificar-design.mjs`), e compare as
    capturas. Quem já usava a v2 só faz o passo 2.
