@@ -10,7 +10,7 @@
  *   PLAYWRIGHT_CORE=/caminho/node_modules/playwright-core/index.mjs node scripts/gerar-preview.mjs [saida.html]
  * Variáveis: BASE_URL (padrão http://localhost:3123) e CHROMIUM (executável do Chromium).
  */
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 // playwright-core não é dependência do modelo: instale-o fora e aponte PLAYWRIGHT_CORE para ele.
@@ -242,5 +242,6 @@ const finalHtml = offlineHtml
   .replace("</head>", `<style>${css}</style></head>`)
   .replace("</body>", `<script>${runtime}</script></body>`);
 
+mkdirSync(path.dirname(output), { recursive: true });
 writeFileSync(output, `<!doctype html>\n${finalHtml}\n`);
 console.log(`Prévia gravada em ${output} (${Math.round(finalHtml.length / 1024)} KB)`);

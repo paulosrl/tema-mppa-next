@@ -1,5 +1,36 @@
 # Changelog
 
+## 1.13.0 — 2026-11-14
+
+Pedido do autor em 14 nov. 2026: uma segunda versão do tema, no mesmo pacote, sem perder a atual. A interface que
+já existe (variante `padrao`) não muda: quem não escolhe nada continua exatamente como estava.
+
+### Novo
+
+- **Variante `v2`:** a forma do "Moveflux Design System" com as cores do tema anterior (azul de ação, vermelho
+  institucional só com significado, ardósia no claro e marinho no escuro, tons, avatar e gráficos). Quadros de
+  24px com contorno fino e sombra em cinco camadas, Inter com peso 600, e fundo da página `#e2e8f0` (cartão branco
+  em destaque). No escuro, só a forma muda. A tabela de tokens está na seção 8.1 do `REPLICAR.md`.
+- **Escolha da variante:** uma vez, no layout raiz: `data-tema` no `<html>` e `tema` no `TemaMppaProvider`
+  (`TemaVariant`: `"padrao"` ou `"v2"`; `useTemaVariante()` lê o valor). Na demonstração,
+  `NEXT_PUBLIC_TEMA=v2 npm run dev`. Sem escolha, `padrao`.
+- **Tokens novos, com o valor do padrão:** `--font-tema` (Outfit), `--card-radius` (16px) e `--card-top-width`
+  (3px), e a classe `rounded-card` e o utilitário `tm-card-top` que os usam em `Card`, `PanelCard` e `LinkCard`.
+  A fonte da camada agora vem de `--font-tema`, não de `--font-outfit` direto.
+- **Prévia da `v2`:** `docs/preview-v2/index.html`. O `GUIA.html` pergunta a variante e a põe nos prompts; o
+  `DIAGNOSTICO.md` a registra no item 1.
+- O `verify-template.mjs` confere os contrastes da `v2` e que ela use as mesmas cores de ação, avatar, destaque e
+  gráficos do padrão.
+
+### Ao atualizar de 1.12.3
+
+1. Quem continua no padrão: nada a mudar nas telas. O layout raiz pode ficar como está (sem `data-tema`, vale o
+   padrão); a `--font-outfit` segue sendo a fonte.
+2. Quem quer a `v2`: troque o layout raiz pelo exemplo da 4.4 (as duas fontes, `tema`, `data-tema` e
+   `tema` no provider), com `tema = "v2"`, e apague a fonte que não usa. Se o consumidor tinha tokens próprios
+   em `:root`/`.dark` por cima da camada, confira o contraste deles sobre o fundo `#e2e8f0` da `v2`.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.13.0.
+
 ## 1.12.3 — 2026-11-12
 
 Pedido do autor em 12 nov. 2026: cada aba do menu abre a página do seu primeiro item. A aparência não muda;

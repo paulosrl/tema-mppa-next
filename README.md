@@ -1,6 +1,6 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.12.3**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
+Versão **1.13.0**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
 estética de 12 nov. 2026 (ardósia no claro e marinho no escuro, cartões de 16px, sombras em camadas, realce em degradê do vermelho
 institucional ao azul, avatar em degradê) e o cabeçalho padrão dos sistemas:
 
@@ -16,11 +16,15 @@ institucional ao azul, avatar em degradê) e o cabeçalho padrão dos sistemas:
 
 Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre direto no navegador.
 
+**Variantes.** O tema tem duas, escolhidas uma vez no layout raiz (`REPLICAR.md`, 4.4): `padrao` (a de sempre) e `v2`
+(forma do "Moveflux Design System": cartões de 24px, Inter, contorno fino e sombras em camadas, com as mesmas cores).
+A prévia da `v2` é [`docs/preview-v2/index.html`](docs/preview-v2/index.html). Na demonstração, `NEXT_PUBLIC_TEMA=v2 npm run dev`.
+
 ## Usar num codebase
 
-1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v1.12.3/tema-mppa-next/`, na pasta acima desta.
+1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v1.13.0/tema-mppa-next/`, na pasta acima desta.
 2. O desenvolvedor do sistema copia a pasta `tema-mppa-next/` inteira para a raiz do repositório
-   (`cp -r …/tema-mppa-next-v1.12.3/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html` no
+   (`cp -r …/tema-mppa-next-v1.13.0/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html` no
    navegador. A cópia da camada confere a pasta contra o `SHA256SUMS` dela antes de copiar.
 3. No [`GUIA.html`](GUIA.html), ele responde duas perguntas: a situação do sistema (do zero, já existe sem o
    tema, já tem o tema) e se o repositório usa OpenSpec. O guia monta os passos daquele caso, cada um com o
@@ -73,7 +77,8 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 | `src/app/` | demonstração que compila e exibe a camada (fica fora da pasta entregue) |
 | `public/` | logos padrão do cabeçalho (vão na pasta entregue) |
 | `docs/prototipo/` | protótipo aprovado; manda em todo elemento gráfico |
-| `docs/preview/` | prévia offline gerada da demonstração |
+| `docs/preview/` | prévia offline gerada da demonstração (variante padrão) |
+| `docs/preview-v2/` | prévia offline da variante v2 |
 | `docs/comparacao/` | protótipo e modelo lado a lado, claro e escuro, 1280px e 390px |
 | `scripts/` | verificação, cópia, conferência da camada no consumidor, empacotamento, prévia e capturas |
 
@@ -92,6 +97,8 @@ Depois de mudar a aparência, regere a prévia e as comparações com a demonstr
 ```bash
 export PLAYWRIGHT_CORE=/caminho/node_modules/playwright-core/index.mjs
 node scripts/gerar-preview.mjs
+# prévia da v2: com NEXT_PUBLIC_TEMA=v2 no build e no start da demonstração
+NEXT_PUBLIC_TEMA=v2 node scripts/gerar-preview.mjs docs/preview-v2/index.html
 FONTE=$(curl -s http://localhost:3123/ | grep -o '/_next/static/media/[^")]*woff2' | head -1)
 node scripts/capturar-comparacao.mjs "$FONTE" /tmp/capturas
 node scripts/compor-comparacao.mjs /tmp/capturas docs/comparacao

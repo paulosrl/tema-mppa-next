@@ -160,6 +160,7 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
    nem `git add .` enquanto ela existir (o `.gitignore` só a exclui a partir da 4.1).
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
+   Registre no item 1 a **variante do tema** (`padrao` ou `v2`, 4.4) que o desenvolvedor pediu; sem pedido, `padrao`.
 3. Entregue ao desenvolvedor um resumo curto: o caminho (A ou B), o que a Fase 1 muda e, um por um, os
    conflitos do item 12, cada um com a sua recomendação. **Pare aqui** até ele aprovar e decidir.
 
@@ -270,23 +271,31 @@ globais (reset de formulário, impressão, animações) podem ficar.
 ### 4.4 Layout raiz
 
 ```tsx
-import { Outfit } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import { headers } from "next/headers";
-import { TemaMppaProvider, ThemeScript } from "@/components/tema-mppa"; // ajuste o caminho
+import { TemaMppaProvider, ThemeScript, type TemaVariant } from "@/components/tema-mppa"; // ajuste o caminho
 
 const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+const tema: TemaVariant = "padrao"; // "padrao" ou "v2": a variante escolhida no diagnóstico (item 1)
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const nonce = (await headers()).get("x-nonce") ?? undefined; // só se o consumidor tem CSP com nonce
   return (
-    <html lang="pt-BR" className={outfit.variable} suppressHydrationWarning>
+    <html lang="pt-BR" data-tema={tema} className={tema === "v2" ? inter.variable : outfit.variable} suppressHydrationWarning>
       <head><ThemeScript nonce={nonce} /></head>
-      <body><TemaMppaProvider>{children}</TemaMppaProvider></body>
+      <body><TemaMppaProvider tema={tema}>{children}</TemaMppaProvider></body>
     </html>
   );
 }
 ```
 
+- **Variante do tema:** `"padrao"` (a interface de sempre: cartões de 16px, Outfit) ou `"v2"` (cartões de 24px,
+  Inter, sombras em camadas e fundo da página mais escuro que o cartão; as cores são as mesmas). O valor vai nos
+  dois lugares, o `data-tema` do `<html>` (os tokens, também no diálogo da busca, que vai para o `<body>`) e o
+  `tema` do `TemaMppaProvider`. Quem usa só uma variante apaga a fonte da outra (`outfit` ou `inter`) e deixa o
+  `tema` fixo. Sem escolha registrada no diagnóstico, é `"padrao"`. Trocar de variante depois é mudar esse valor
+  (e a fonte); nenhum componente muda.
 - **Script de tema:** use o `<ThemeScript>`. Ele aplica o tema e marca a barra recolhida
   (`data-tm-sidebar` no `<html>`) antes da hidratação, sem piscar nenhum dos dois. Ele e o
   `THEME_BOOT_SCRIPT` vêm de `theme-script.tsx`, módulo sem `"use client"`, e chegam ao layout raiz como texto.
@@ -299,7 +308,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 - Se já tem um provedor de tema, remova-o e troque os usos dele (`useTheme`, alternador) pelos da camada. O
   da camada aplica a classe `dark` no `<html>`, abre sempre em claro e guarda a escolha só na aba
   (`sessionStorage`).
-- Fonte: troque a fonte antiga pela Outfit, como acima.
+- Fonte: troque a fonte antiga pela da variante, como acima: Outfit no `padrao`, Inter na `v2`.
 
 ### 4.5 Configuração do shell
 
@@ -589,7 +598,7 @@ const colunas: DataTableColumn<Linha>[] = [
   carregava informação (atraso, sucesso), diga isso no `note`, com `text-success` ou `text-warning` se
   preciso.
 - **Componentes antigos:** troque cartões, botões, tabelas e gráficos antigos pelos primitivos. Para o que
-  não tem primitivo (formulários, diálogos), use os tokens da seção 8 e `rounded-xl` (12px) ou `rounded-2xl` (16px, cartões).
+  não tem primitivo (formulários, diálogos), use os tokens da seção 8 e `rounded-xl` (12px), `rounded-2xl` (16px) ou, para um quadro, `rounded-card` (acompanha a variante).
 - **Cores:** troque toda cor fixa (`#hex`, `rgb()`, `text-red-600`, `bg-white`, `bg-gray-*`) pelo token
   equivalente.
 - **Testes:** ajuste os testes da tela que procuravam o `<h1>`, textos ou classes antigas, pelo mesmo
@@ -760,15 +769,38 @@ Não faça:
   sobre superfície neutra, quase pretos no claro). Se o consumidor tem regra de todo texto preto no claro, isso é conflito do diagnóstico (item 12): a
   cor fica no ícone ou no ponto de status, com o texto em `text-foreground`.
 
-Fonte: Outfit (`font-sans`).
+Fonte: Outfit (`font-sans`); na variante `v2`, Inter.
 
 Raios, presos a `--radius` (8px; estética de 12 nov. 2026):
 
 - `rounded-md` (6px): selo da versão;
 - `rounded-lg` (8px): abas internas, ícones de seção e caixas das logos;
 - `rounded-xl` (12px): botões, itens do menu, busca e trilho das abas;
-- `rounded-2xl` (16px): cartões, tabelas e diálogo da busca;
+- `rounded-2xl` (16px): tiles internos, tabelas e diálogo da busca; os quadros (`Card`, `PanelCard`, `LinkCard`) usam
+  `rounded-card`, que é 16px no `padrao` e 24px na `v2`;
 - `rounded-full`: avatar.
+
+### 8.1 Variante `v2`
+
+A `v2` muda a forma, não a paleta: azul de ação, vermelho institucional só com significado, ardósia no claro e
+marinho no escuro, tons de seção, avatar e gráficos são os mesmos do `padrao`, e o verificador do modelo exige
+isso. Os blocos dela ficam no `tema-mppa.css`, em `:root[data-tema="v2"]` (claro e escuro), e só sobrescrevem:
+
+| Token | `padrao` | `v2` | Uso |
+| --- | --- | --- | --- |
+| `--font-tema` | Outfit | Inter | fonte do `font-sans`, `font-heading` e `body` |
+| `--card-radius` (`rounded-card`) | 16px | 24px | `Card`, `PanelCard`, `LinkCard` |
+| `--card-top-width` (`tm-card-top`) | 3px | 1px, sem a cor de destaque | borda de topo dos quadros com destaque |
+| `--font-weight-bold` e `--font-weight-extrabold` | 700 e 800 | 600 | títulos e rótulos |
+| `--background` (claro) | `#f4f7fb` | `#e2e8f0` | fundo da página: o cartão branco se destaca |
+| `--muted-foreground` (claro) | `#5f6f86` | `#566880` | 4,62:1 no fundo mais escuro (o anterior dá 4,15:1) |
+| `--card-border` (claro) | `#b5bac0` | `#cbd5e1` | contorno fino dos quadros |
+| `--shadow`, `--card-shadow`, `--card-shadow-hover` (claro) | duas camadas | cinco camadas de 0,5px a 12px a 6% | quadros |
+
+No escuro, a `v2` só muda a forma (fonte, raio, borda de topo e pesos); fundo, contorno e sombras são os do
+`padrao`. Tela da `v2` usa os mesmos primitivos e as mesmas classes de cor; nada na tela depende da variante.
+A forma vem do "Moveflux Design System" (cartões de 24px, Inter, contorno fino e sombra em camadas); a pré-visualização
+da `v2` fica em `docs/tema-mppa/preview-v2/index.html`.
 
 ## 9. Estrutura do layout
 
@@ -860,12 +892,13 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.12.3)
+## Interface (tema-mppa 1.13.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
   (`docs/tema-mppa/REPLICAR.md`, seção 7).
 - Referência visual: `docs/tema-mppa/prototipo/index.html` (manda) e `docs/tema-mppa/preview/index.html`.
+- Variante do tema: `padrao` ou `v2`, escolhida uma vez no layout raiz (`tema`, `REPLICAR.md` 4.4). Mudar de variante é mudar esse valor e a fonte; tela nenhuma depende dela. A prévia da `v2` fica em `docs/tema-mppa/preview-v2/index.html`.
 - `DESIGN.md` na raiz do frontend: tokens e intenção do design para os agentes; confira com
   `node docs/tema-mppa/verificar-design.mjs --css <CSS próprio>` a cada mudança de token.
 - Telas só com os primitivos (`PageFrame`, `Card`, `CardGrid`, `MetricCard`, `DataTable`, `BarChart`,

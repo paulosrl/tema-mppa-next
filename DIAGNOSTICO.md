@@ -12,6 +12,8 @@ Em cada item, diga o que encontrou, com o caminho do arquivo. "Não há" também
 
 - Sistema, versão atual (de onde ela vem) e data do diagnóstico.
 - Versão do modelo `tema-mppa-next` que será aplicada.
+- **Variante do tema:** `padrao` (Outfit, cartões de 16px) ou `v2` (Inter, cartões de 24px, mesmas cores), como o
+  desenvolvedor pediu (`REPLICAR.md`, 4.4 e 8.1). Sem pedido, `padrao`.
 
 ## 2. Stack e caminho
 
@@ -84,7 +86,7 @@ ou somem por condição (consulta, permissão) e como a condição chega.
 
 ## 11. Cores, fonte e bibliotecas
 
-- Arquivo de tokens de hoje e a fonte.
+- Arquivo de tokens de hoje e a fonte (a da camada depende da variante do item 1: Outfit ou Inter).
 - `DESIGN.md` existente (ou outro documento de design para agentes) e o que ele diz.
 - **Regras visuais próprias** (spec, `AGENTS.md`, testes): por exemplo, "todo texto preto no tema claro",
   contraste mínimo, cores proibidas. Compare com a camada: `text-success` e `text-warning` são coloridos; a

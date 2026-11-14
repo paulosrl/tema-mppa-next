@@ -97,6 +97,7 @@ const sources = [
   { from: path.join(root, "CHANGELOG.md"), to: path.join(referenceDir, "CHANGELOG.md") },
   { from: path.join(root, "docs/prototipo/index.html"), to: path.join(referenceDir, "prototipo/index.html") },
   { from: path.join(root, "docs/preview/index.html"), to: path.join(referenceDir, "preview/index.html") },
+  { from: path.join(root, "docs/preview-v2/index.html"), to: path.join(referenceDir, "preview-v2/index.html") },
   ...comparisons.map((name) => ({
     from: path.join(root, "docs/comparacao", name),
     to: path.join(referenceDir, "comparacao", name),
@@ -207,7 +208,7 @@ const rel = (to) => path.relative(target, to) || ".";
 console.log("Camada visual copiada:");
 console.log(`- componentes: ${rel(path.join(componentsDir, "tema-mppa"))}/`);
 console.log(`- cores e tokens: ${rel(path.join(stylesDir, "tema-mppa.css"))}`);
-console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (GUIA.html, REPLICAR.md, DESIGN.md, protótipo, prévia, comparações)`);
+console.log(`- referência e guia do agente: ${rel(referenceDir)}/ (GUIA.html, REPLICAR.md, DESIGN.md, protótipo, prévias, comparações)`);
 console.log(`- logos do cabeçalho em ${rel(publicDir)}/ (header.logos, REPLICAR.md 4.5):`);
 for (const line of logoReport) console.log(`  - ${line}`);
 if (backupRoot) console.log(`Backup (fora do consumidor): ${backupRoot}`);

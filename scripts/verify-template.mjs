@@ -154,6 +154,22 @@ if (!preview.includes(`<title>Template Visual MPPA v${packageJson.version}</titl
   errors.push(`docs/preview/index.html: título fora da versão ${packageJson.version} (regere a prévia)`);
 }
 
+// Prévias das duas variantes: cada uma na versão do pacote e com o data-tema da sua variante no <html>.
+for (const [file, variante] of [["docs/preview/index.html", "padrao"], ["docs/preview-v2/index.html", "v2"]]) {
+  const html = await read(file);
+  if (!html.includes(`<title>Template Visual MPPA v${packageJson.version}</title>`)) errors.push(`${file}: título fora da versão ${packageJson.version} (regere a prévia)`);
+  if (!new RegExp(`<html[^>]*data-tema="${variante}"`).test(html)) errors.push(`${file}: o <html> deve ter data-tema="${variante}" (regere a prévia com NEXT_PUBLIC_TEMA=${variante === "v2" ? "v2" : ""})`);
+  if (!html.includes('root.setAttribute("data-tm-sidebar", state.collapsed ? "collapsed" : "expanded")')) errors.push(`${file}: o Recolher não marca data-tm-sidebar no <html> (regere a prévia)`);
+}
+// GUIA, REPLICAR e DIAGNOSTICO conhecem a variante.
+{
+  const guia = await read("GUIA.html");
+  if (!guia.includes('name="variante"') || !guia.includes("{{VARIANTE}}")) errors.push("GUIA.html: falta a pergunta da variante ou o marcador dela nos prompts");
+  const replicarDoc = await read("REPLICAR.md");
+  if (!replicarDoc.includes('data-tema={tema}') || !replicarDoc.includes("### 8.1 Variante `v2`")) errors.push("REPLICAR.md: falta a variante no layout raiz (4.4) ou a seção 8.1");
+  if (!(await read("DIAGNOSTICO.md")).includes("**Variante do tema:**")) errors.push("DIAGNOSTICO.md: falta a variante do tema no item 1");
+}
+
 const header = await read("src/components/tema-mppa/app-header.tsx");
 const identity = await read("src/components/tema-mppa/user-identity.tsx");
 if (!header.includes("<UserIdentity") || !header.includes("bg-logo-surface")) errors.push("cabeçalho sem identidade ou logos");
