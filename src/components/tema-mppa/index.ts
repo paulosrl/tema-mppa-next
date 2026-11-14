@@ -65,6 +65,7 @@ export { ImageSlot } from "./image-slot";
 export { PageFrame } from "./page-frame";
 export { TemaMppaProvider } from "./providers";
 export { SectionIcon } from "./section-icon";
+export { useTemaVariante } from "./tema-variante";
 export { ThemeProvider, useTheme, type Theme } from "./theme-provider";
 export { SIDEBAR_STORAGE_KEY, THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript } from "./theme-script";
 export { ThemeToggle } from "./theme-toggle";
@@ -82,4 +83,5 @@ export type {
   SearchItem,
   ShellConfig,
   ShellSession,
+  TemaVariant,
 } from "./types";

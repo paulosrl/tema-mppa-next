@@ -3,6 +3,12 @@ import type { ReactNode } from "react";
 
 export type IconComponent = LucideIcon;
 
+/**
+ * Variante do tema, escolhida uma vez no layout raiz: `"padrao"` (a atual) ou `"v2"`. O mesmo valor vai no
+ * atributo `data-tema` do `<html>` (tokens) e no `TemaMppaProvider` (peças com estrutura própria).
+ */
+export type TemaVariant = "padrao" | "v2";
+
 export type ImageAsset = {
   src?: string | null;
   alt: string;

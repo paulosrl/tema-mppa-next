@@ -16,6 +16,8 @@
   --radius: 0.5rem;
   /* Altura única das faixas do shell: cabeçalho, marca, "Recolher" e rodapé ficam alinhados por ela. */
   --shell-bar: 3.875rem;
+  /* Variante em uso (`data-tema` no <html>); `padrao` é a estética de 12 nov. 2026. */
+  --tema-variante: padrao;
 
   /* Ardósia: fundo #f4f7fb destaca cartão e barra brancos; cinzas e bordas azulados. */
   --background: #f4f7fb;
@@ -230,6 +232,19 @@
   --sidebar-hover: #142645;
   --sidebar-border: var(--border);
   --sidebar-ring: #61a6fa;
+}
+
+/*
+ * Variante v2: só o que muda em relação ao padrão. O atributo `data-tema="v2"` vem do <html> (layout raiz).
+ * Os seletores têm a mesma força nos dois temas (:not(.dark) e .dark), para a ordem entre eles não importar;
+ * sem `data-tema`, ou com `padrao`, nada daqui vale e o tema continua exatamente o de antes.
+ */
+:root[data-tema="v2"]:not(.dark) {
+  --tema-variante: v2;
+}
+
+:root[data-tema="v2"].dark {
+  --tema-variante: v2;
 }
 
 @theme inline {

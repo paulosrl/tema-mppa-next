@@ -100,6 +100,18 @@ if (hasFooter(parse("app-shell.tsx", shell)) || (shellProps && hasFooter(shellPr
 // Faixas alinhadas por um único token de altura, definido no CSS.
 const themeCss = await read("src/styles/tema-mppa.css");
 if (!/:root\s*\{[^}]*--shell-bar:\s*3\.875rem;/.test(themeCss)) errors.push("tema-mppa.css: falta --shell-bar: 3.875rem em :root (altura das faixas)");
+// Variantes do tema (padrão e v2): o padrão fica em :root/.dark; a v2 só sobrescreve, com seletores de mesma força nos dois temas.
+if (!/:root\s*\{[^}]*--tema-variante:\s*padrao;/.test(themeCss)) errors.push("tema-mppa.css: falta --tema-variante: padrao em :root");
+for (const selector of [':root[data-tema="v2"]:not(.dark)', ':root[data-tema="v2"].dark']) {
+  const block = themeCss.split(`${selector} {`)[1]?.split("}")[0];
+  if (block === undefined) errors.push(`tema-mppa.css: falta o bloco ${selector} da v2`);
+  else if (!/--tema-variante:\s*v2;/.test(block)) errors.push(`tema-mppa.css: ${selector} deve declarar --tema-variante: v2`);
+}
+const rootLayout = await read("src/app/layout.tsx");
+if (!/<html[^>]*data-tema=\{tema\}/.test(rootLayout) || !/<TemaMppaProvider tema=\{tema\}>/.test(rootLayout)) {
+  errors.push("layout.tsx: a variante (`tema`) deve ir no atributo data-tema do <html> e no TemaMppaProvider");
+}
+if (!/process\.env\.NEXT_PUBLIC_TEMA === "v2" \? "v2" : "padrao"/.test(rootLayout)) errors.push('layout.tsx: sem NEXT_PUBLIC_TEMA=v2 o demo deve abrir no padrão ("padrao")');
 for (const [file, count] of [["app-header.tsx", 1], ["app-sidebar.tsx", 2]]) {
   const source = await read(`src/components/tema-mppa/${file}`);
   if ((source.match(/(?<![\w-])h-\(--shell-bar\)/g) ?? []).length < count) errors.push(`${file}: faixas devem usar h-(--shell-bar)`);
