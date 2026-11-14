@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "./utils";
 
-/** Cartão: borda, raio `rounded-card` (16px; 24px na v2), fundo do cartão, sombra em camadas e padding 24px. */
+/** Cartão: borda, raio `rounded-card` (24px), fundo do cartão, sombra em camadas e padding 24px. */
 export function Card({
   title,
   description,

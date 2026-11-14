@@ -6,7 +6,7 @@ import type { IconComponent, NavigationTone } from "./types";
 import { cn } from "./utils";
 
 /*
- * Peças de painel da estética de 12 nov. 2026 (página de referência do Heimdall): saudação, selos, pílula
+ * Peças de painel (página de referência do Heimdall): saudação, selos, pílula
  * informativa, título de seção, cartão com cabeçalho, campo com ícone e cartão clicável. Só tokens; o
  * conteúdo chega por propriedades.
  */

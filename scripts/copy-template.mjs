@@ -115,7 +115,6 @@ const sources = [
   { from: path.join(root, "CHANGELOG.md"), to: path.join(referenceDir, "CHANGELOG.md") },
   { from: path.join(root, "docs/prototipo/index.html"), to: path.join(referenceDir, "prototipo/index.html") },
   { from: path.join(root, "docs/preview/index.html"), to: path.join(referenceDir, "preview/index.html") },
-  { from: path.join(root, "docs/preview-v2/index.html"), to: path.join(referenceDir, "preview-v2/index.html") },
   ...comparisons.map((name) => ({
     from: path.join(root, "docs/comparacao", name),
     to: path.join(referenceDir, "comparacao", name),

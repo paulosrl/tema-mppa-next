@@ -100,18 +100,19 @@ if (hasFooter(parse("app-shell.tsx", shell)) || (shellProps && hasFooter(shellPr
 // Faixas alinhadas por um único token de altura, definido no CSS.
 const themeCss = await read("src/styles/tema-mppa.css");
 if (!/:root\s*\{[^}]*--shell-bar:\s*3\.875rem;/.test(themeCss)) errors.push("tema-mppa.css: falta --shell-bar: 3.875rem em :root (altura das faixas)");
-// Variantes do tema (padrão e v2): o padrão fica em :root/.dark; a v2 só sobrescreve, com seletores de mesma força nos dois temas.
-if (!/:root\s*\{[^}]*--tema-variante:\s*padrao;/.test(themeCss)) errors.push("tema-mppa.css: falta --tema-variante: padrao em :root");
-for (const selector of [':root[data-tema="v2"]:not(.dark)', ':root[data-tema="v2"].dark']) {
-  const block = themeCss.split(`${selector} {`)[1]?.split("}")[0];
-  if (block === undefined) errors.push(`tema-mppa.css: falta o bloco ${selector} da v2`);
-  else if (!/--tema-variante:\s*v2;/.test(block)) errors.push(`tema-mppa.css: ${selector} deve declarar --tema-variante: v2`);
-}
+// Tema único (2.0.0): sem variantes, sem `data-tema`, sem seletor de variante no CSS, no layout ou nos providers.
+if (/data-tema|--tema-variante|--font-tema|--card-radius|--card-top-width/.test(themeCss)) errors.push("tema-mppa.css: o tema é único, sem data-tema, --tema-variante, --font-tema, --card-radius nem --card-top-width");
+if (/--font-outfit|Outfit/.test(themeCss)) errors.push("tema-mppa.css: a fonte é só a Inter (--font-inter)");
+if (!/--font-sans:\s*var\(--font-inter\)/.test(themeCss) || !/--radius-card:\s*1\.5rem;/.test(themeCss)) errors.push("tema-mppa.css: --font-sans deve ser var(--font-inter) e --radius-card deve ser 1.5rem (quadros de 24px)");
 const rootLayout = await read("src/app/layout.tsx");
-if (!/<html[^>]*data-tema=\{tema\}/.test(rootLayout) || !/<TemaMppaProvider tema=\{tema\}>/.test(rootLayout)) {
-  errors.push("layout.tsx: a variante (`tema`) deve ir no atributo data-tema do <html> e no TemaMppaProvider");
+if (/data-tema|NEXT_PUBLIC_TEMA|Outfit|TemaVariant/.test(rootLayout) || !/Inter\(\{ variable: "--font-inter"/.test(rootLayout) || !/className=\{inter\.variable\}/.test(rootLayout)) {
+  errors.push("layout.tsx: o layout raiz usa só a Inter (--font-inter) no <html>, sem variante nem data-tema");
 }
-if (!/process\.env\.NEXT_PUBLIC_TEMA === "v2" \? "v2" : "padrao"/.test(rootLayout)) errors.push('layout.tsx: sem NEXT_PUBLIC_TEMA=v2 o demo deve abrir no padrão ("padrao")');
+for (const file of ["src/components/tema-mppa/index.ts", "src/components/tema-mppa/providers.tsx", "src/components/tema-mppa/types.ts"]) {
+  if (/useTemaVariante|TemaVariant|TemaVarianteContext/.test(await read(file))) errors.push(`${file}: a variante do tema não existe mais (useTemaVariante, TemaVariant)`);
+}
+if (existsSync(path.join(root, "src/components/tema-mppa/tema-variante.tsx"))) errors.push("tema-variante.tsx não deve existir: o tema é único");
+if (existsSync(path.join(root, "docs/preview-v2"))) errors.push("docs/preview-v2 não deve existir: há uma só prévia (docs/preview)");
 for (const [file, count] of [["app-header.tsx", 1], ["app-sidebar.tsx", 2]]) {
   const source = await read(`src/components/tema-mppa/${file}`);
   if ((source.match(/(?<![\w-])h-\(--shell-bar\)/g) ?? []).length < count) errors.push(`${file}: faixas devem usar h-(--shell-bar)`);
@@ -154,27 +155,18 @@ if (!preview.includes(`<title>Template Visual MPPA v${packageJson.version}</titl
   errors.push(`docs/preview/index.html: título fora da versão ${packageJson.version} (regere a prévia)`);
 }
 
-// Prévias das duas variantes: cada uma na versão do pacote e com o data-tema da sua variante no <html>.
-for (const [file, variante] of [["docs/preview/index.html", "padrao"], ["docs/preview-v2/index.html", "v2"]]) {
-  const html = await read(file);
-  if (!html.includes(`<title>Template Visual MPPA v${packageJson.version}</title>`)) errors.push(`${file}: título fora da versão ${packageJson.version} (regere a prévia)`);
-  if (!new RegExp(`<html[^>]*data-tema="${variante}"`).test(html)) errors.push(`${file}: o <html> deve ter data-tema="${variante}" (regere a prévia com NEXT_PUBLIC_TEMA=${variante === "v2" ? "v2" : ""})`);
-  if (!html.includes('root.setAttribute("data-tm-sidebar", state.collapsed ? "collapsed" : "expanded")')) errors.push(`${file}: o Recolher não marca data-tm-sidebar no <html> (regere a prévia)`);
-}
-// Cada prévia traz o aviso da variante e o link para a outra.
-for (const [file, label, href] of [["docs/preview/index.html", "padrão", "../preview-v2/index.html"], ["docs/preview-v2/index.html", "v2", "../preview/index.html"]]) {
-  const html = await read(file);
-  if (!html.includes("data-preview-variante") || !html.includes(`Variante <strong>${label}</strong>`) || !html.includes(`href="${href}"`)) errors.push(`${file}: falta o aviso da variante com o link para ${href} (regere a prévia)`);
-}
+// A prévia é uma só: na versão do pacote, sem aviso nem seletor de variante.
+if (!preview.includes('root.setAttribute("data-tm-sidebar", state.collapsed ? "collapsed" : "expanded")')) errors.push("docs/preview/index.html: o Recolher não marca data-tm-sidebar no <html> (regere a prévia)");
+if (/data-tema|data-preview-variante/.test(preview)) errors.push("docs/preview/index.html: a prévia não tem variante (regere a prévia)");
 // O copy-template avisa de pasta do modelo sobrando perto do consumidor.
 if (!(await read("scripts/copy-template.mjs")).includes("staleFolders")) errors.push("copy-template.mjs: falta o aviso de pasta do modelo sobrando (staleFolders)");
-// GUIA, REPLICAR e DIAGNOSTICO conhecem a variante.
+// GUIA, REPLICAR e DIAGNOSTICO não conhecem variante: o tema é único.
 {
   const guia = await read("GUIA.html");
-  if (!guia.includes('name="variante"') || !guia.includes("{{VARIANTE}}")) errors.push("GUIA.html: falta a pergunta da variante ou o marcador dela nos prompts");
+  if (guia.includes('name="variante"') || guia.includes("{{VARIANTE}}") || guia.includes('name="troca"')) errors.push("GUIA.html: não há variante nem troca de variante (o tema é único)");
   const replicarDoc = await read("REPLICAR.md");
-  if (!replicarDoc.includes('data-tema={tema}') || !replicarDoc.includes("### 8.1 Variante `v2`")) errors.push("REPLICAR.md: falta a variante no layout raiz (4.4) ou a seção 8.1");
-  if (!(await read("DIAGNOSTICO.md")).includes("**Variante do tema:**")) errors.push("DIAGNOSTICO.md: falta a variante do tema no item 1");
+  if (/data-tema|\bTemaVariant\b|NEXT_PUBLIC_TEMA|### 8\.1 Variante/.test(replicarDoc)) errors.push("REPLICAR.md: não há variante (data-tema, TemaVariant, NEXT_PUBLIC_TEMA, seção 8.1 Variante)");
+  if ((await read("DIAGNOSTICO.md")).includes("**Variante do tema:**")) errors.push("DIAGNOSTICO.md: não há variante do tema");
 }
 
 const header = await read("src/components/tema-mppa/app-header.tsx");
@@ -258,21 +250,21 @@ const light = block(":root");
 const dark = { ...light, ...block(".dark") };
 
 const prototype = {
-  light: { radius: "0.5rem", "shell-bar": "3.875rem", background: "#f4f7fb", card: "#ffffff", sidebar: "#ffffff", muted: "#f1f5f9", border: "#e2e8f0", highlight: "#bfdbfe", "muted-foreground": "#5f6f86" },
-  dark: { background: "#070b12", card: "#111827", sidebar: "#0c121e", muted: "#182235", border: "rgba(255, 255, 255, 0.08)", highlight: "#2547a8", "muted-foreground": "#94a3b8" },
+  light: { radius: "0.5rem", "shell-bar": "3.875rem", background: "#e7e5e4", card: "#ffffff", sidebar: "#ffffff", muted: "#fafaf9", border: "#e7e5e4", highlight: "#bfdbfe", "muted-foreground": "#5f5a56" },
+  dark: { background: "#0c0a09", card: "#1c1917", sidebar: "#12100f", muted: "#292524", border: "rgba(255, 255, 255, 0.08)", highlight: "#2547a8", "muted-foreground": "#a8a29e" },
 };
 for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
   for (const [name, value] of Object.entries(theme === "claro" ? prototype.light : prototype.dark)) {
     if (tokens[name]?.toLowerCase() !== value) errors.push(`token --${name} (${theme}): esperado ${value}, encontrado ${tokens[name] ?? "ausente"}`);
   }
 }
-// Sombras em camadas (estética de 12 nov. 2026): superfície, cartão e cartão sob o mouse; no escuro, com brilho interno.
-if (!light.shadow?.startsWith("0 1px 3px rgba(15, 23, 42, 0.06)")) errors.push("token --shadow (claro) diferente do padrão");
-if (!light["card-shadow"]?.startsWith("0 2px 8px -2px rgba(15, 23, 42, 0.05)")) errors.push("token --card-shadow (claro) diferente do padrão");
+// Sombras em camadas (Moveflux): contorno de 1px e camadas a 6%; no escuro, com brilho interno.
+if (!light.shadow?.startsWith("0 0 0 1px rgba(0, 0, 0, 0.06)")) errors.push("token --shadow (claro) diferente do modelo");
+if (!light["card-shadow"]?.startsWith("0 0 0 1px rgba(0, 0, 0, 0.06)") || (light["card-shadow"].match(/rgba\(0, 0, 0, 0\.06\)/g) ?? []).length < 6) errors.push("token --card-shadow (claro): contorno de 1px e cinco camadas a 6%");
 if (!dark.shadow?.includes("inset 0 1px 0") || !dark["card-shadow"]?.includes("inset 0 1px 0")) errors.push("sombras do escuro sem o brilho interno de 1px");
 // Contorno dos quadros e largura da barra lateral (1.11.0).
-if (light["card-border"]?.toLowerCase() !== "#b5bac0") errors.push(`token --card-border (claro): esperado #b5bac0, encontrado ${light["card-border"] ?? "ausente"}`);
-if (dark["card-border"]?.toLowerCase() !== "#3f6396") errors.push(`token --card-border (escuro): esperado #3f6396, encontrado ${dark["card-border"] ?? "ausente"}`);
+if (light["card-border"]?.toLowerCase() !== "#e7e5e4") errors.push(`token --card-border (claro): esperado #e7e5e4, encontrado ${light["card-border"] ?? "ausente"}`);
+if (dark["card-border"]?.toLowerCase() !== "#44403c") errors.push(`token --card-border (escuro): esperado #44403c, encontrado ${dark["card-border"] ?? "ausente"}`);
 {
   const sidebarSource = await readFile(path.join(root, "src/components/tema-mppa/app-sidebar.tsx"), "utf8");
   if (!sidebarSource.includes("w-[304px]") || !sidebarSource.includes("desk:tm-collapsed:w-[76px]")) errors.push("barra lateral: largura deve ser 304px (76px recolhida)");
@@ -334,39 +326,25 @@ for (const surface of ["background", "card"]) {
 }
 if (luminance(dark["primary-foreground"]) > luminance(dark.primary)) errors.push("escuro: o texto sobre a primária deve ser escuro");
 requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
-// Variante v2: os mesmos contrastes do padrão, sobre os tokens dela (que sobrescrevem os do padrão).
+// Peças de metas e forma do tema: os mesmos contrastes, sobre os tokens do tema único.
 {
-  const v2Light = { ...light, ...block(':root[data-tema="v2"]:not(.dark)') };
-  const v2Dark = { ...dark, ...block(':root[data-tema="v2"].dark') };
-  for (const [theme, tokens, main, accent] of [["v2 claro", v2Light, 7, 7], ["v2 escuro", v2Dark, 7, 4.5]]) {
+  for (const [theme, tokens, accent] of [["claro", light, 7], ["escuro", dark, 4.5]]) {
     for (const surface of ["background", "card", "muted", "sidebar", "popover"]) {
-      requireContrast(theme, tokens, "foreground", surface, main);
+      requireContrast(theme, tokens, "foreground", surface, 7);
       requireContrast(theme, tokens, "muted-foreground", surface, 4.5);
     }
-    requireContrast(theme, tokens, "highlight-foreground", "highlight", 7);
     requireContrast(theme, tokens, "highlight-bar", "highlight", 3);
-    requireContrast(theme, tokens, "sidebar-foreground", "sidebar", 7);
-    requireContrast(theme, tokens, "foreground", "sidebar-hover", 7);
     requireContrast(theme, tokens, "primary-foreground", "primary", accent);
-    for (const surface of ["background", "card"]) requireContrast(theme, tokens, "primary", surface, accent === 7 ? 7 : 4.5);
-    requireContrast(theme, tokens, "ring", "background", 3);
-    requireContrast(theme, tokens, "chart-strong-from", "card", 3);
-    requireContrast(theme, tokens, "chart-strong-to", "card", 3);
-    // As cores são as do padrão: a ação continua o azul do Heimdall e a v2 só muda a forma.
-    for (const name of ["primary", "ring", "sidebar-primary", "sidebar-ring", "highlight", "avatar-from", "avatar-to", "institutional", "chart-strong-from"]) {
-      const base = theme === "v2 claro" ? light : dark;
-      if (tokens[name] !== base[name]) errors.push(`${theme}: --${name} deve ser o do padrão (${base[name]}), encontrado ${tokens[name]}`);
-    }
     requireContrast(theme, tokens, "avatar-foreground", "avatar-from", 4.5);
     requireContrast(theme, tokens, "avatar-foreground", "avatar-to", 4.5);
-    if (tokens["card-radius"] !== "1.5rem") errors.push(`${theme}: --card-radius deve ser 1.5rem (quadros de 24px), encontrado ${tokens["card-radius"] ?? "ausente"}`);
-    if (tokens["font-tema"] !== "var(--font-inter)") errors.push(`${theme}: --font-tema deve ser var(--font-inter)`);
+    // Contraste do texto de status sobre a superfície neutra mais clara/escura em que ele aparece.
+    for (const status of ["success", "warning"]) requireContrast(theme, tokens, status, "muted", 7);
   }
   // Peças de metas: tokens nos dois temas e texto legível sobre a trilha da barra e sobre a capa.
   for (const name of ["bar-track", "media", "media-foreground", "media-muted", "media-shadow", "bar-amber-from", "bar-amber-to", "bar-rose-from", "bar-rose-to", "bar-blue-from", "bar-blue-to", "bar-emerald-from", "bar-emerald-to", "bar-violet-from", "bar-violet-to", "bar-yellow-from", "bar-yellow-to"]) {
     if (!light[name] || !dark[name]) errors.push(`token --${name} (peças de metas) ausente em um dos temas`);
   }
-  for (const [theme, tokens] of [["claro", light], ["escuro", dark], ["v2 claro", v2Light], ["v2 escuro", v2Dark]]) {
+  for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
     requireContrast(theme, tokens, "foreground", "bar-track", 7);
     requireContrast(theme, tokens, "media-foreground", "media", 7);
     requireContrast(theme, tokens, "media-muted", "media", 7);
@@ -378,19 +356,16 @@ requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
   }
   if (/#[0-9a-f]{3,8}\b/i.test(metasSource)) errors.push("metas.tsx: cor fixa; use os tokens");
   if (/color-mix\(/.test(metasSource)) errors.push("metas.tsx: color-mix na classe (consumidores recusam); use o modificador de opacidade, como bg-(--meter)/22");
-  // Classes tm-* que dão a forma da v2: cada uma usada nas peças tem a regra sob data-tema="v2" no CSS.
+  // Classes tm-* que dão a forma do tema: cada uma usada nas peças tem a regra no CSS.
   const shapeSources = (await read("src/components/tema-mppa/card.tsx")) + (await read("src/components/tema-mppa/dashboard.tsx")) + (await read("src/components/tema-mppa/data-table.tsx"));
   for (const name of ["tm-tone", "tm-tile", "tm-panel-head", "tm-card-title", "tm-metric-label", "tm-label", "tm-section-title", "tm-section-dot", "tm-tag", "tm-status"]) {
-    if (name !== "tm-tone" && !shapeSources.includes(name)) errors.push(`as peças não usam ${name}, que o CSS da v2 define`);
-    if (!themeCss.includes(`:root[data-tema="v2"] .${name}`)) errors.push(`tema-mppa.css: falta a regra de :root[data-tema="v2"] .${name}`);
+    if (name !== "tm-tone" && !shapeSources.includes(name)) errors.push(`as peças não usam ${name}, que o CSS define`);
+    if (!new RegExp(`^\\.${name} \\{`, "m").test(themeCss)) errors.push(`tema-mppa.css: falta a regra de .${name}`);
   }
-  if (!themeCss.includes(':root[data-tema="v2"] & {') || !themeCss.includes("border-top-color: var(--card-border) !important")) errors.push("tema-mppa.css: o topo dos quadros na v2 deve ter a cor do contorno (tm-card-top)");
+  if (!/@utility tm-card-top \{\s*border-top-width: 1px;\s*border-top-color: var\(--card-border\) !important;/.test(themeCss)) errors.push("tema-mppa.css: o topo dos quadros deve ser um fio de 1px na cor do contorno (tm-card-top)");
   // Demonstração: a página das peças de metas.
   const demoConsumerSource = await read("src/app/demo-consumer.tsx");
   if (!demoConsumerSource.includes('pathname === "/metas"') || !(await read("src/app/demo-config.tsx")).includes('href: "/metas"')) errors.push('demonstração: falta a página "/metas" (Painel de metas) e o item de menu dela');
-  if (light["card-radius"] !== "calc(var(--radius) * 2)" || light["card-top-width"] !== "3px" || light["font-tema"] !== "var(--font-outfit)") {
-    errors.push("padrão: --card-radius (16px), --card-top-width (3px) e --font-tema (Outfit) devem continuar os de antes");
-  }
 }
 // Azul de ação: o mesmo do Heimdall, nos dois temas, em todos os tokens de ação (decisão de 11 nov. 2026).
 const actionBlue = { light: ["#0842a1", "#ffffff"], dark: ["#61a6fa", "#080c16"] };
@@ -431,10 +406,12 @@ const guia = await read("GUIA.html");
 for (const found of guia.replace(/placeholder="[^"]*"/g, "").match(/(?<![\w.#-])\d+\.\d+\.\d+(?![\w.])/g) ?? []) {
   if (found !== packageJson.version) errors.push(`GUIA.html cita a versão ${found}, esperado ${packageJson.version}`);
 }
-for (const needle of [`var VERSAO = "${packageJson.version}";`, "cp -r", 'value="zero"', 'value="existente"', 'value="atualizar"', 'value="openspec"', "Fase 0", "Fase 1", "Fase 2", "Fase 3", "seção 7", "seção 2.1", "Propor", "docs/tema-mppa/GUIA.html"]) {
+for (const needle of [`var VERSAO = "${packageJson.version}";`, "cp -r", 'value="zero"', 'value="existente"', 'value="atualizar"', 'value="openspec"', "Fase 0", "Fase 1", "Fase 2", "Fase 3", "seção 7", "seção 2.1", "Propor", "docs/tema-mppa/GUIA.html",
+  // 1.14.2: o agente não sugere comando nem /clear. 2.0.0: a atualização cobre a troca visual (fonte, contraste, testes, capturas).
+  "Não sugira comandos", "change que você acabou de propor", "REPLICAR.md, 4.4"]) {
   if (!guia.includes(needle)) errors.push(`GUIA.html sem "${needle}"`);
 }
-for (const heading of ["### 1.2 ", "### 2.1 ", "## 3. Fase 0: Diagnóstico", "### 4.9 ", "### 4.10 ", "## 7. Atualizar", "## 11. Registro"]) {
+for (const heading of ["### 1.2 ", "### 2.1 ", "## 3. Fase 0: Diagnóstico", "### 4.4 ", "### 4.9 ", "### 4.10 ", "## 7. Atualizar", "### 7.2 ", "## 11. Registro"]) {
   if (!replicar.includes(heading)) errors.push(`GUIA.html cita a seção "${heading.trim()}", ausente do REPLICAR.md`);
 }
 // Sistema do zero (2.1): o app nasce nas versões do modelo; OpenSpec em três passos (1.2).
@@ -589,14 +566,15 @@ for (const needle of ["@next/next/no-img-element", "--max-warnings", "reportUnus
 for (const needle of ["@next/next/no-img-element", "todo arquivo rastreado", "bg-primary/10"]) {
   if (!diagnostico.includes(needle)) errors.push(`DIAGNOSTICO.md sem a pergunta sobre "${needle}"`);
 }
-if (!section(replicar, "## 8. ").includes("`text-primary` sobre `bg-primary/10`")) errors.push("REPLICAR seção 8 sem o \"não faça\" de text-primary sobre bg-primary/10");
+if (!section(replicar, "## 8. ").includes("`text-primary` sobre `bg-primary/15`")) errors.push("REPLICAR seção 8 sem o \"não faça\" de text-primary sobre bg-primary/15 ou mais e sobre o fundo da página");
 // O aviso só vale enquanto o par ficar abaixo de 7:1 com os tokens atuais (mistura de 10% da primária).
 const mix = (fg, bg, alpha) => `#${[0, 2, 4].map((offset) => {
   const channel = (hex) => parseInt(hex.replace("#", "").slice(offset, offset + 2), 16);
   return Math.round(alpha * channel(fg) + (1 - alpha) * channel(bg)).toString(16).padStart(2, "0");
 }).join("")}`;
-// Com a primária azul, /10 passa de 7:1 (claro) e de 4,5:1 (escuro); /15 ou mais cai abaixo no fundo e no muted, e é isso que o aviso diz.
-for (const surface of ["background", "card", "muted", "sidebar"]) {
+// Com a primária azul e a pedra quente, /10 passa de 7:1 (claro) sobre o cartão, o muted e a barra, mas não sobre o fundo da página (6,18:1);
+// /15 ou mais cai abaixo no fundo e no muted; no escuro, /10 passa de 4,5:1. É isso que o aviso diz.
+for (const surface of ["card", "muted", "sidebar"]) {
   const ratio = contrast(light.primary, mix(light.primary, light[surface], 0.1));
   if (ratio < 7) errors.push(`REPLICAR diz que text-primary sobre bg-primary/10 passa de 7:1, mas dá ${ratio.toFixed(2)}:1 sobre --${surface}`);
 }
@@ -604,6 +582,7 @@ for (const surface of ["background", "card", "muted"]) {
   const ratio = contrast(dark.primary, mix(dark.primary, dark[surface], 0.1));
   if (ratio < 4.5) errors.push(`escuro: text-primary sobre bg-primary/10 dá ${ratio.toFixed(2)}:1 sobre --${surface}, mínimo 4,5:1`);
 }
+if (contrast(light.primary, mix(light.primary, light.background, 0.1)) >= 7) errors.push('o aviso sobre o fundo da página ficou obsoleto: bg-primary/10 chega a 7:1 sobre o --background');
 if (["background", "muted"].every((surface) => contrast(light.primary, mix(light.primary, light[surface], 0.15)) >= 7)) errors.push('o "não faça" de bg-primary/15 ficou obsoleto: o par chega a 7:1 sobre o fundo e o muted');
 
 // DESIGN.md do modelo preso ao CSS, e DESIGN.md exigido na Fase 1.
@@ -619,7 +598,7 @@ try {
 {
   const scratch = await mkdtemp(path.join(os.tmpdir(), "tema-mppa-design-"));
   try {
-    const withoutCardBorder = (await read("DESIGN.md")).replace(/^ {2}card-border: "#b5bac0"\n/m, "");
+    const withoutCardBorder = (await read("DESIGN.md")).replace(/^ {2}card-border: "#e7e5e4"\n/m, "");
     await writeFile(path.join(scratch, "DESIGN.md"), withoutCardBorder);
     execFileSync(process.execPath, [path.join(root, "scripts/verificar-design.mjs"), path.join(scratch, "DESIGN.md"), "--css", path.join(root, "src/styles/tema-mppa.css")], { stdio: "pipe" });
     errors.push("verificar-design aprova DESIGN.md sem colors.card-border");
@@ -814,7 +793,7 @@ console.log("- shadcn/ui base-nova + Base UI + Lucide, sem @radix-ui");
 console.log("- Administração condicionada a is_admin === true e a item administrativo visível, também na busca");
 console.log("- imagens opcionais desaparecem sem ícone quebrado");
 console.log("- shell sem chamadas de API/BFF/autenticação");
-console.log("- tokens do padrão (raio, sombra, fundos, borda, realce), claro e escuro");
+console.log("- tokens do tema único (raio, sombra, fundos, borda, realce), claro e escuro; sem variante nem data-tema");
 console.log("- contraste: 7:1 no claro, 4,5:1 no escuro, ícones de tom com 4,5:1");
 console.log("- componentes sem cor fixa nem canto reto; título só no cabeçalho");
 console.log("- rodapé padrão: texto de brand (5 casos executados), fixo na faixa do Recolher (--shell-bar), sem corte e sem substituição");

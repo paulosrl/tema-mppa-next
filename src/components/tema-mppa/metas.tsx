@@ -9,7 +9,7 @@ import { cn } from "./utils";
 /*
  * Peças de painel de metas, da composição do "Moveflux Design System" (14 nov. 2026): capa com imagem, cartão de
  * métrica, linha de meta com barra em degradê, anel de progresso, faixa de dias, tiles internos, selo de
- * status e linha de treino. Valem nas duas variantes do tema; só tokens, o conteúdo chega por propriedades.
+ * status e linha de treino. Só tokens, o conteúdo chega por propriedades.
  */
 
 /** Matiz da barra e do anel de progresso (degradê de dois tokens `--bar-*`). */

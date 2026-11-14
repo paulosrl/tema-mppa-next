@@ -3,34 +3,34 @@ version: alpha
 name: "Tema MPPA · camada visual"
 description: >-
   Camada visual comum dos sistemas do Escritório de Inteligência Artificial do Ministério Público do Estado do
-  Pará (modelo tema-mppa-next): azul de ação e vermelho institucional sobre ardósia (claro) e marinho (escuro), fonte Outfit, raio-base de 8px
-  (cartões de 16px, botões e itens de 12px), sombras em camadas, barra lateral de 304px com abas Plataforma e Administração,
-  cabeçalho de 62px e rodapé padrão (estética de 12 nov. 2026). Texto principal com 7:1 ou mais nos dois temas, texto
+  Pará (modelo tema-mppa-next): azul de ação e vermelho institucional sobre pedra quente (claro) e pedra escura (escuro), fonte Inter, raio-base de 8px
+  (quadros de 24px com contorno fino, botões e itens de 12px), sombras em camadas, barra lateral de 304px com abas Plataforma e
+  Administração, cabeçalho de 62px e rodapé padrão (aparência do Moveflux Design System, 14 nov. 2026). Texto principal com 7:1 ou mais nos dois temas, texto
   secundário cinza com 4,5:1 ou mais em toda superfície neutra e texto sobre preenchimento colorido com 4,5:1. Os valores
   abaixo são os do tema claro; os do escuro estão em "Colors". A fonte da verdade é styles/tema-mppa.css.
 
 colors:
   primary: "#0842a1"
   primary-foreground: "#ffffff"
-  background: "#f4f7fb"
-  foreground: "#0f172a"
+  background: "#e7e5e4"
+  foreground: "#1c1917"
   card: "#ffffff"
-  card-foreground: "#0f172a"
+  card-foreground: "#1c1917"
   popover: "#ffffff"
-  popover-foreground: "#0f172a"
-  secondary: "#f1f5f9"
-  muted: "#f1f5f9"
-  muted-foreground: "#5f6f86"
-  accent: "#f1f5f9"
-  accent-foreground: "#0f172a"
+  popover-foreground: "#1c1917"
+  secondary: "#f5f5f4"
+  muted: "#fafaf9"
+  muted-foreground: "#5f5a56"
+  accent: "#f5f5f4"
+  accent-foreground: "#1c1917"
   highlight: "#bfdbfe"
   highlight-foreground: "#0a2a66"
   destructive: "#991b1b"
   destructive-foreground: "#ffffff"
   success: "#08351f"
   warning: "#432506"
-  border: "#e2e8f0"
-  card-border: "#b5bac0"
+  border: "#e7e5e4"
+  card-border: "#e7e5e4"
   ring: "#0842a1"
   overlay: "#000000"
   logo-surface: "#ffffff"
@@ -42,9 +42,9 @@ colors:
   online: "#10b981"
   theme-icon: "#d97706"
   sidebar: "#ffffff"
-  sidebar-foreground: "#334155"
-  sidebar-accent: "#f1f5f9"
-  sidebar-accent-foreground: "#0f172a"
+  sidebar-foreground: "#44403c"
+  sidebar-accent: "#f5f5f4"
+  sidebar-accent-foreground: "#1c1917"
   sidebar-hover: "#ecf4fe"
   tone-red: "#fee2e2"
   tone-red-foreground: "#970611"
@@ -69,58 +69,59 @@ colors:
 
 typography:
   page-title:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 14px
     fontWeight: 600
   brand-name:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 16px
-    fontWeight: 700
+    fontWeight: 600
     letterSpacing: -0.025em
   nav-item:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 13.5px
     fontWeight: 500
   nav-group:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 11px
-    fontWeight: 700
+    fontWeight: 600
   tab:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 13px
     fontWeight: 500
   button:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 13px
-    fontWeight: 700
+    fontWeight: 600
   card-title:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
-    fontSize: 16px
-    fontWeight: 700
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
+    fontSize: 20px
+    fontWeight: 600
+    letterSpacing: -0.025em
   body-md:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 16px
     fontWeight: 400
   table:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 13px
     fontWeight: 400
   table-header:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 13px
-    fontWeight: 700
+    fontWeight: 600
   caption:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 12px
     fontWeight: 400
   caption-strong:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 12px
     fontWeight: 600
   metric:
-    fontFamily: "Outfit, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: 32px
-    fontWeight: 800
+    fontWeight: 600
     lineHeight: 1.2
 
 rounded:
@@ -130,6 +131,7 @@ rounded:
   lg: 8px
   xl: 12px
   2xl: 16px
+  3xl: 24px
   full: 9999px
 
 spacing:
@@ -317,7 +319,7 @@ components:
     backgroundColor: "{colors.card}"
     textColor: "{colors.card-foreground}"
     typography: "{typography.body-md}"
-    rounded: "{rounded.2xl}"
+    rounded: "{rounded.3xl}"
     padding: 24px
   card-title:
     backgroundColor: "{colors.card}"
@@ -327,13 +329,13 @@ components:
     backgroundColor: "{colors.card}"
     textColor: "{colors.card-foreground}"
     typography: "{typography.metric}"
-    rounded: "{rounded.2xl}"
+    rounded: "{rounded.3xl}"
     padding: 24px
   data-table:
     backgroundColor: "{colors.card}"
     textColor: "{colors.card-foreground}"
     typography: "{typography.table}"
-    rounded: "{rounded.2xl}"
+    rounded: "{rounded.3xl}"
     padding: "12px 16px"
   data-table-header:
     backgroundColor: "{colors.card}"
@@ -404,23 +406,22 @@ A identidade vem de três escolhas:
 - **Um azul de ação e um vermelho institucional.** O azul (`{colors.primary}`, `#0842a1`, o mesmo do
   Heimdall) é a cor de tudo o que o usuário aciona: botão primário, foco, realce do item ativo, ícone padrão
   de seção e gráficos. O vermelho só aparece com significado: erro e ação destrutiva (`{colors.destructive}`)
-  e a identidade institucional (logos, símbolo padrão, detalhes de realce). O resto é ardósia (claro) ou marinho (escuro) neutro. Nenhum sistema escolhe outra
+  e a identidade institucional (logos, símbolo padrão, detalhes de realce). O resto é pedra quente (claro) ou pedra escura (escuro) neutra. Nenhum sistema escolhe outra
   cor de ação.
-- **Outfit** em todo texto, geométrica e calma, com pesos fortes (650 a 800) nos rótulos e nas métricas.
-- **Raios de 8 a 16px e sombras em camadas** (estética de 12 nov. 2026): cartões de 16px com a sombra
-  `shadow-card`, botões e itens de 12px, abas e ícones de 8px; superfícies macias, sem exagero.
+- **Inter** em todo texto, com peso 600 nos títulos, rótulos e métricas.
+- **Raios de 8 a 24px e sombras em camadas** (aparência do "Moveflux Design System", 14 nov. 2026): quadros de
+  24px com contorno fino de 1px e a sombra `shadow-card`, botões e itens de 12px, tiles internos de 16px, abas e
+  ícones de 8px; superfícies macias, sem exagero.
 
 **Características principais:**
 
 - Casca única em todos os sistemas: barra lateral de 304px (76px recolhida) com abas Plataforma e
   Administração, cabeçalho de 62px, conteúdo com padding de 40px × 36px e largura máxima de 1380px, rodapé padrão
-  fixo no pé da tela, na faixa do "Recolher". Cabeçalho e rodapé são translúcidos, com desfoque, e o fundo tem um
-  brilho vermelho e azul nos cantos de cima.
+  fixo no pé da tela, na faixa do "Recolher". Cabeçalho e rodapé são translúcidos, com desfoque, e o fundo é liso, sem brilho nos cantos.
 - Título da página só no cabeçalho, vindo do item marcado no menu; nenhum título repetido no conteúdo.
 - Ícones de seção Lucide, numa caixa de 32px (28px no título) com raio de 8px, fundo pastel (no escuro,
-  translúcido) com brilho em degradê (`tm-tone`) e traço do mesmo tom (azul, verde, violeta, laranja,
-  revezados), duotone: o miolo do ícone recebe 20% da cor do traço, e uma borda de 1px na cor do traço contorna a
-  caixa. No menu, o ícone cresce 5% sob o mouse (sem movimento com
+  translúcido), chapado, sem brilho nem borda (`tm-tone`), e traço do mesmo tom (azul, verde, violeta, laranja,
+  revezados), duotone: o miolo do ícone recebe 20% da cor do traço. No menu, o ícone cresce 5% sob o mouse (sem movimento com
   `prefers-reduced-motion`).
 - Busca (atalho `Ctrl+K`, sem etiqueta na tela) com as páginas que cada usuário pode ver.
 - Tema claro, escuro e sistema; toda entrada abre em claro e a escolha vale só para a aba.
@@ -430,7 +431,7 @@ A identidade vem de três escolhas:
 ### Marca e ação
 
 - **Primary** (`{colors.primary}`, `#0842a1`): botão primário, foco (`ring`), links de ação, `sidebar-primary`,
-  barra de gráfico forte. Texto branco sobre ela (9,11:1; 8,48:1 dela sobre o fundo). No escuro, `#61a6fa` com texto `#080c16` (7,76:1).
+  barra de gráfico forte. Texto branco sobre ela (9,11:1; 7,26:1 dela sobre o fundo). No escuro, `#61a6fa` com texto `#080c16` (7,76:1).
 - **Equilíbrio:** o azul é a ação; o vermelho só com significado (destrutivo/erro e identidade
   institucional). Os demais tons de seção continuam variados.
 - **Destructive** (`{colors.destructive}`, `#991b1b`): ação destrutiva, com texto branco.
@@ -446,16 +447,16 @@ A identidade vem de três escolhas:
 
 ### Superfícies e texto
 
-- **Background** (`#f4f7fb`, ardósia): página e cabeçalho; destaca cartões e barra brancos. **Card**
+- **Background** (`#e7e5e4`, pedra quente): página e cabeçalho; mais escuro que o cartão, que o destaca. **Card**
   (`#ffffff`): cartões, botão secundário, caixa de busca. **Sidebar** (`#ffffff`): barra lateral. **Muted**
-  (`#f1f5f9`): trilho das abas, avatar, áreas neutras.
-- **Foreground** (`#0f172a`): texto principal (16,61:1 no fundo). **Muted foreground** (`#5f6f86`): texto
-  secundário (descrições, rótulos, rodapé, cabeçalhos de tabela) em cinza-ardósia, com 4,67:1 sobre o muted,
-  4,76:1 sobre o fundo e 5,12:1 sobre o cartão. O texto da barra (`sidebar-foreground`) é `#334155` (10,35:1
-  no branco, 9,45:1 no muted).
-- **Border** (`#e2e8f0`): bordas da casca (cabeçalho, rodapé, barra lateral, diálogos), para as linhas da barra e
+  (`#fafaf9`): tiles internos, trilho das abas, avatar, áreas neutras; **Secondary** e **Accent** (`#f5f5f4`).
+- **Foreground** (`#1c1917`): texto principal (13,93:1 no fundo, 17,49:1 no cartão). **Muted foreground**
+  (`#5f5a56`): texto secundário (descrições, rótulos, rodapé, cabeçalhos de tabela) em cinza de pedra, com 6,52:1
+  sobre o muted, 5,42:1 sobre o fundo e 6,81:1 sobre o cartão. O texto da barra (`sidebar-foreground`) é `#44403c`
+  (10,27:1 no branco, 9,84:1 no muted).
+- **Border** (`#e7e5e4`): bordas da casca (cabeçalho, rodapé, barra lateral, diálogos), para as linhas da barra e
   do conteúdo coincidirem.
-- **Card border** (`{colors.card-border}`, `#b5bac0`, a `--border` escurecida 20%; no escuro `#3f6396`): contorno
+- **Card border** (`{colors.card-border}`, `#e7e5e4`, o contorno fino de 1px do modelo; no escuro `#44403c`): contorno
   dos quadros e das linhas de dentro deles (`Card`, `PanelCard`, `LinkCard`, `InfoField`, a caixa do
   `PageGreeting` e as linhas do `DataTable`), utilitário `border-card-border`.
 - **Logo surface** (`#ffffff` nos dois temas): fundo das logos institucionais, em caixas com borda e sombra.
@@ -463,7 +464,7 @@ A identidade vem de três escolhas:
 ### Status e tons
 
 - **Success** (`#08351f`) e **Warning** (`#432506`): status, com 7:1 ou mais sobre toda superfície neutra
-  (12,45:1 e 12,73:1 sobre o muted).
+  (13,06:1 e 13,35:1 sobre o muted).
 - **Tons dos ícones de seção:** azul `#dbeafe` + `#1d4ed8` (o padrão, sem `tone`), verde `#d1fae5` +
   `#047857`, violeta `#ede9fe` + `#6d28d9`, laranja `#ffedd5` + `#a85005`, e mais quatro para menus com
   mais de quatro itens: vermelho `#fee2e2` + `#970611` (reservado ao que tem significado institucional),
@@ -477,48 +478,49 @@ A identidade vem de três escolhas:
 
 ### Tema escuro
 
-O formato não tem modos; os valores do escuro ficam aqui (marinho). Texto principal com 7:1 ou mais, secundário
+O formato não tem modos; os valores do escuro ficam aqui (pedra escura). Texto principal com 7:1 ou mais, secundário
 com 4,5:1 ou mais; texto sobre preenchimento colorido com 4,5:1.
 
 | Token | Escuro |
 | --- | --- |
-| background / foreground | `#070b12` / `#f8fafc` |
-| sidebar / sidebar-foreground | `#0c121e` / `#cbd5e1` |
-| card, popover | `#111827` |
-| muted, secondary, accent, sidebar-accent | `#182235` |
-| sidebar-hover (item do menu sob o ponteiro) | `#142645` (texto `#f8fafc` com 14,41:1) |
-| muted-foreground | `#94a3b8` (6,21:1 no muted, 6,92:1 no cartão, 7,69:1 no fundo) |
+| background / foreground | `#0c0a09` / `#fafaf9` (18,92:1) |
+| sidebar / sidebar-foreground | `#12100f` / `#d6d3d1` |
+| card, popover | `#1c1917` |
+| muted, secondary, accent, sidebar-accent | `#292524` |
+| sidebar-hover (item do menu sob o ponteiro) | `#142645` (texto `#fafaf9` com 14,44:1) |
+| muted-foreground | `#a8a29e` (6,01:1 no muted, 6,93:1 no cartão, 7,83:1 no fundo) |
 | primary / primary-foreground | `#61a6fa` / `#080c16` |
-| destructive / destructive-foreground | `#f87171` / `#070b12` |
+| destructive / destructive-foreground | `#f87171` / `#0c0a09` |
 | highlight / highlight-foreground | `#2547a8` / `#ffffff` (8,25:1), sólido, barra `#93c5fd` |
-| institutional, avatar, online, theme-icon | `#fb7185` (selo e texto, 6,40:1), degradê do avatar igual ao do claro, `#10b981`, lua `#60a5fa` |
-| success / warning (texto sobre eles: `#070b12`) | `#bbf7d0` / `#fef08a` |
+| institutional, avatar, online, theme-icon | `#fb7185` (selo e texto, 6,40:1; 6,50:1 no cartão), degradê do avatar igual ao do claro, `#10b981`, lua `#60a5fa` |
+| success / warning (texto sobre eles: `#0c0a09`) | `#bbf7d0` / `#fef08a` |
 | border | `rgba(255, 255, 255, 0.08)` |
-| card-border (contorno dos quadros e linhas internas; claro `#b5bac0`) | `#3f6396` |
+| card-border (contorno dos quadros e linhas internas; claro `#e7e5e4`) | `#44403c` |
 | ring, sidebar-ring, sidebar-primary | `#61a6fa` (texto sobre sidebar-primary: `#080c16`) |
 | gráficos | forte `#3b82f6 → #61a6fa`, suave `#4f78b8 → #7aa2dd` |
-| tons dos ícones | a cor a 18% sobre a barra `#0c121e`, em hex, com os traços do CSS (5,93:1 ou mais): azul `#142645` + `#60a5fa`, verde `#0d3030` + `#34d399`, violeta `#231f45` + `#c4b5fd`, laranja `#37231d` + `#fdba74`, vermelho `#321426` + `#fb7185`, verde-água `#0d3036` + `#5eead4`, rosa `#341c34` + `#f9a8d4`, âmbar `#362b1b` + `#fcd34d` |
+| tons dos ícones | a cor a 18% sobre a barra, em hex, com os traços do CSS (5,93:1 ou mais): azul `#142645` + `#60a5fa`, verde `#0d3030` + `#34d399`, violeta `#231f45` + `#c4b5fd`, laranja `#37231d` + `#fdba74`, vermelho `#321426` + `#fb7185`, verde-água `#0d3036` + `#5eead4`, rosa `#341c34` + `#f9a8d4`, âmbar `#362b1b` + `#fcd34d` |
 | logo surface | `#ffffff` |
 
 ## Typography
 
-Uma família só: **Outfit**, servida pelo `next/font` como `--font-outfit` e lida pelo `--font-sans` da
-camada. A altura de linha da casca é `normal`.
+Uma família só: **Inter**, servida pelo `next/font` como `--font-inter` e lida pelo `--font-sans` da
+camada. Os pesos 700 e 800 do Tailwind (`font-bold`, `font-extrabold`) valem 600 (`--font-weight-bold` e
+`--font-weight-extrabold`), como no modelo. A altura de linha da casca é `normal`.
 
 | Token | Tamanho | Peso | Uso |
 | --- | --- | --- | --- |
 | `{typography.page-title}` | 14px | 600 | Título da página no cabeçalho |
-| `{typography.brand-name}` | 16px | 700 | Nome do sistema no topo da barra lateral, em negrito; a versão ao lado, em selo vermelho de fonte mono (10px) |
+| `{typography.brand-name}` | 16px | 600 | Nome do sistema no topo da barra lateral, em negrito; a versão ao lado, em selo vermelho de fonte mono (10px) |
 | `{typography.nav-item}` | 13.5px | 500 (ativo 600) | Itens do menu |
-| `{typography.nav-group}` | 11px | 700 | Nome do grupo ("Plataforma", "Administração"), só para leitores de tela; na tela, uma linha de 1px em degradê do vermelho institucional ao azul |
+| `{typography.nav-group}` | 11px | 600 | Nome do grupo ("Plataforma", "Administração"), só para leitores de tela; na tela, uma linha de 1px em degradê do vermelho institucional ao azul |
 | `{typography.tab}` | 13px | 500 | Abas da barra lateral |
-| `{typography.button}` | 13px | 700 | Botões |
-| `{typography.card-title}` | 16px | 700 | Título de cartão e de tabela |
+| `{typography.button}` | 13px | 600 | Botões |
+| `{typography.card-title}` | 20px | 600 | Título de cartão e de tabela (`tm-card-title`, com `tracking-tight`) |
 | `{typography.body-md}` | 16px | 400 | Texto corrido e descrições |
-| `{typography.table}` / `{typography.table-header}` | 13px | 400 / 700 | Células e cabeçalhos de tabela |
+| `{typography.table}` / `{typography.table-header}` | 13px | 400 / 600 | Células e cabeçalhos de tabela |
 | `{typography.caption}` | 12px | 400 | Rodapé, perfil do usuário, texto da busca |
 | `{typography.caption-strong}` | 12px | 600 | Nome do usuário, iniciais do avatar |
-| `{typography.metric}` | 32px | 800 | Número do cartão de métrica (algarismos tabulares) |
+| `{typography.metric}` | 32px | 600 | Número do cartão de métrica (algarismos tabulares) |
 
 ## Layout
 
@@ -549,11 +551,11 @@ camada. A altura de linha da casca é `normal`.
 
 Hierarquia por superfície e por sombras em camadas (os valores exatos estão em `styles/tema-mppa.css`):
 
-- `shadow-surface` (`0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04)` no claro; no escuro, sombra funda
-  com brilho interno de 1px no topo): abas ativas, item ativo e busca aberta.
-- `shadow-card` (`0 2px 8px -2px rgba(15,23,42,.05), 0 1px 3px -1px rgba(15,23,42,.03)` no claro; no escuro,
-  `0 4px 20px -2px rgba(0,0,0,.5)` com brilho interno): cartões. `shadow-card-hover` (`0 14px 28px -6px
-  rgba(15,23,42,.08), 0 4px 10px -2px rgba(15,23,42,.04)` no claro): cartão sob o mouse e diálogo da busca.
+- `shadow-surface` (contorno de 1px e duas camadas a 6% no claro; no escuro, sombra funda com brilho interno de 1px
+  no topo): abas ativas, item ativo e busca aberta.
+- `shadow-card` (contorno de 1px e cinco camadas de 0,5px a 12px a 6% no claro; no escuro, `0 4px 20px -2px
+  rgba(0,0,0,.5)` com brilho interno): quadros. `shadow-card-hover` (as mesmas camadas a 7 e 8%, mais fundas, no
+  claro): quadro sob o mouse e diálogo da busca.
 - `shadow-drawer` (`8px 0 24px rgba(0,0,0,.22)`): só no menu móvel aberto; `bg-overlay` a 40% atrás dele e a
   60% atrás da busca.
 - As barras da casca não têm sombra: separam-se por borda de 1px; cabeçalho e rodapé são translúcidos (`--header`) com desfoque.
@@ -563,12 +565,13 @@ Hierarquia por superfície e por sombras em camadas (os valores exatos estão em
 
 Tudo preso a `--radius` (8px):
 
-- `{rounded.2xl}` 16px: cartões, tabelas, diálogo da busca.
+- `{rounded.3xl}` 24px (`--radius-card`, `rounded-card`): quadros (cartões, tabelas).
+- `{rounded.2xl}` 16px: tiles internos (`tm-tile`) e diálogo da busca.
 - `{rounded.xl}` 12px: botões, itens do menu, busca, trilho das abas, selos de caixa.
 - `{rounded.lg}` 8px: abas internas, ícones de seção, caixas das logos.
 - `{rounded.md}` 6px: selo da versão, topo das barras de gráfico. `{rounded.xs}` 2px: base das barras de gráfico.
 - `{rounded.full}`: avatar.
-- Raio maior que 16px: não use em tela nova. Exceção: o quadro (`rounded-card`), que na variante `v2` tem 24px.
+- Raio maior que 24px: não use em tela nova.
 
 ## Components
 
@@ -595,13 +598,14 @@ a lupa; no celular, no menu móvel. O atalho `Ctrl+K`, que não aparece na tela,
 aceita o nome ou a descrição, sem acento. O diálogo vai para o `<body>` por portal.
 
 **`Button`** (`button-primary`, `button-secondary`, `button-ghost`, `button-chrome`, `button-destructive`): 36px de altura,
-peso 700, raio de 12px; ícone de 36px (`size-9`), mais a variante `chrome` (borda, fundo do cartão, sombra leve), usada no tema e no menu móvel. Link com cara de botão: `buttonVariants`.
+peso 600, raio de 12px; ícone de 36px (`size-9`), mais a variante `chrome` (borda, fundo do cartão, sombra leve), usada no tema e no menu móvel. Link com cara de botão: `buttonVariants`.
 
-**`Card` / `MetricCard` / `CardGrid`** (`card`, `metric-card`): raio de 16px, padding de 24px, borda
-`border-card-border` e sombra `shadow-card`; métrica com número de 32px peso 800 e nota opcional.
+**`Card` / `MetricCard` / `CardGrid`** (`card`, `metric-card`): raio de 24px, padding de 24px, borda
+`border-card-border` e sombra `shadow-card`, sem faixa colorida no topo; métrica com número de 32px peso 600 e nota
+opcional.
 
 **`DataTable`** (`data-table`, `data-table-header`): título opcional com ações, células de 13px com padding
-12px × 16px, cabeçalho em negrito, mensagem de vazio.
+12px × 16px, cabeçalho em peso 600, mensagem de vazio.
 
 **`BarChart`** (`chart-bar-strong-base`/`-top`, `chart-bar-soft-base`/`-top`): 165px de altura, barras
 de até 90px de largura com degradê da base ao topo, variante forte (azul) ou suave (azul claro), com
@@ -614,19 +618,16 @@ nas páginas públicas que têm rodapé.
 
 **`ThemeScript`**: o script de tema no `<head>` do layout raiz, com o `nonce` da CSP quando houver.
 
-### Variante v2 e peças de metas
+### Forma do tema e peças de metas
 
-O tema tem duas variantes, escolhidas no layout raiz (`data-tema` no `<html>` e `tema` no `TemaMppaProvider`). A
-`padrao` é a descrita acima. A `v2` copia a aparência do "Moveflux Design System" e mantém a regra de cores do
-tema anterior (azul na ação, vermelho institucional só com significado, tons de seção, avatar e gráficos): quadros
-de 24px com contorno fino de 1px e sombra em cinco camadas, sem faixa colorida no topo; Inter em peso 600;
-neutros em pedra quente (fundo `#e7e5e4` no claro, `#0c0a09` no escuro); tiles internos, rótulos e selos sem
-maiúsculas; caixas de ícone chapadas. A forma da `v2` vem de `:root[data-tema="v2"]` e das classes `tm-*` do CSS; tela
-nenhuma depende da variante.
+A forma vem das classes `tm-*` do CSS, postas nas peças da camada: quadros de 24px com contorno fino de 1px e sombra em
+cinco camadas, sem faixa colorida no topo (`tm-card-top`; a cor de `accent` não pinta a borda); Inter em peso 600;
+tiles internos (`tm-tile`), rótulos (`tm-label`) e selos (`tm-tag`, `tm-status`) sem maiúsculas; caixas de ícone
+chapadas (`tm-tone`); título de seção sem o ponto colorido. Tela nenhuma depende dessas classes.
 
 As peças de metas (`MediaCard`, `StatCard`, `StatValue`, `GoalRow`, `WorkoutRow`, `ProgressBar`, `ProgressRing`,
-`DayStrip`, `InsetTile`, `MacroTile`, `StatusPill`, `RoundButton`) valem nas duas variantes. Barras, anéis e a capa
-usam só tokens (`--bar-*`, `--media*`); a ação do dia selecionado é a primária.
+`DayStrip`, `InsetTile`, `MacroTile`, `StatusPill`, `RoundButton`) usam só tokens (`--bar-*`, `--media*`); a ação do
+dia selecionado é a primária.
 
 ## Do's and Don'ts
 
@@ -640,10 +641,10 @@ usam só tokens (`--bar-*`, `--media*`); a ação do dia selecionado é a primá
 - **Don't** edite `components/tema-mppa/` nem `styles/tema-mppa.css`: o `verificar-camada.mjs` reprova.
   Necessidade que a camada não atende volta ao modelo `tema-mppa-next`.
 - **Do** use vermelho só com significado (erro, ação destrutiva, identidade institucional); a ação é azul.
-- **Don't** use `text-primary` sobre `bg-primary/15` ou mais: o par cai abaixo de 7:1 no claro (6,59:1 sobre o
-  fundo, 6,45:1 sobre o muted). Com `bg-primary/10` passa (7,18:1 sobre o fundo, 7,68:1 sobre o cartão,
-  7,04:1 sobre o muted); nos demais casos use o texto
+- **Don't** use `text-primary` sobre `bg-primary/15` ou mais, nem sobre `bg-primary/10` no fundo da página: o par cai
+  abaixo de 7:1 no claro (6,19:1 com /10 e 5,71:1 com /15 sobre o fundo; 6,73:1 com /15 sobre o muted). Com
+  `bg-primary/10` passa sobre o cartão (7,68:1) e o muted (7,39:1); nos demais casos use o texto
   principal e deixe a primária no ícone ou na borda.
 - **Don't** deduza administrador por e-mail, nome ou rótulo de perfil; só o booleano da sessão real.
 - **Don't** importe o `ThemeProvider` para pôr o script de tema: use `<ThemeScript nonce={nonce} />`.
-- **Don't** acrescente raio maior que 16px nem sombra mais forte que `shadow-card-hover` em tela nova.
+- **Don't** acrescente raio maior que 24px nem sombra mais forte que `shadow-card-hover` em tela nova.

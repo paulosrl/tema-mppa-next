@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
-import { TemaMppaProvider, ThemeScript, type TemaVariant } from "@/components/tema-mppa";
+import { Inter } from "next/font/google";
+import { TemaMppaProvider, ThemeScript } from "@/components/tema-mppa";
 import "./globals.css";
 
-const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -11,14 +10,11 @@ export const metadata: Metadata = {
   description: "Shell visual reutilizável para aplicações Next.js",
 };
 
-// Variante do tema: `NEXT_PUBLIC_TEMA=v2 npm run dev` para ver a v2; sem a variável, o padrão.
-const tema: TemaVariant = process.env.NEXT_PUBLIC_TEMA === "v2" ? "v2" : "padrao";
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" data-tema={tema} className={tema === "v2" ? inter.variable : outfit.variable} suppressHydrationWarning>
+    <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
       <head><ThemeScript /></head>
-      <body><TemaMppaProvider tema={tema}>{children}</TemaMppaProvider></body>
+      <body><TemaMppaProvider>{children}</TemaMppaProvider></body>
     </html>
   );
 }

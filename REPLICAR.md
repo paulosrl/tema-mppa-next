@@ -32,8 +32,8 @@ negócio. A interface **recebe** essas coisas por propriedade; o consumidor cont
 Referência visual, nesta ordem de autoridade:
 
 1. `docs/prototipo/index.html`: o protótipo aprovado. Manda em todo elemento gráfico.
-2. `docs/preview/index.html` (variante `padrao`) e `docs/preview-v2/index.html` (variante `v2`): o modelo pronto, página única offline.
-3. `docs/comparacao/*.png`: protótipo e modelo lado a lado (variante `padrao`), claro e escuro, 1280px e 390px.
+2. `docs/preview/index.html`: o modelo pronto, página única offline.
+3. `docs/comparacao/*.png`: protótipo e modelo lado a lado, claro e escuro, 1280px e 390px.
 
 Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "corrigidas":
 
@@ -106,9 +106,9 @@ Dentro dela, `SHA256SUMS` lista a soma de cada arquivo: o `copy-template.mjs` co
 para se ela veio incompleta ou editada.
 
 Caminhos do modelo citados sem prefixo (`src/…`, `scripts/…`, `docs/prototipo/`, `docs/preview/`,
-`docs/preview-v2/`, `docs/comparacao/`) são os de dentro de `tema-mppa-next/`. Depois da cópia (4.1), a referência
+`docs/comparacao/`) são os de dentro de `tema-mppa-next/`. Depois da cópia (4.1), a referência
 fica no consumidor em `docs/tema-mppa/` (`docs/tema-mppa/prototipo/index.html`,
-`docs/tema-mppa/preview/index.html`, `docs/tema-mppa/preview-v2/index.html` e `docs/tema-mppa/comparacao/`).
+`docs/tema-mppa/preview/index.html` e `docs/tema-mppa/comparacao/`).
 
 ## 2. Conferir a stack
 
@@ -163,7 +163,6 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
    nem `git add .` enquanto ela existir (o `.gitignore` só a exclui a partir da 4.1).
 2. Preencha o formulário `tema-mppa-next/DIAGNOSTICO.md` lendo o consumidor, **sem mudar nenhum arquivo dele**.
    Grave-o onde o processo do consumidor manda (seção 1.2); sem processo, em `docs/tema-mppa/diagnostico.md`.
-   Registre no item 1 a **variante do tema** (`padrao` ou `v2`, 4.4) que o desenvolvedor pediu; sem pedido, `padrao`.
 3. Entregue ao desenvolvedor um resumo curto: o caminho (A ou B), o que a Fase 1 muda e, um por um, os
    conflitos do item 12, cada um com a sua recomendação. **Pare aqui** até ele aprovar e decidir.
 
@@ -186,7 +185,7 @@ O script detecta a estrutura do consumidor:
 
 Use `--components-dir` e `--styles-dir` para outro lugar. Ele também grava em `docs/tema-mppa/`:
 
-- a referência visual (protótipo, prévias do padrão e da `v2`, comparações), este guia, o `GUIA.html` do desenvolvedor (os
+- a referência visual (protótipo, prévia, comparações), este guia, o `GUIA.html` do desenvolvedor (os
   prompts de cada fase) e o CHANGELOG do modelo;
 - `DESIGN.md`, os tokens e a intenção do design da camada no formato DESIGN.md (ponto de partida da 4.9), e
   `verificar-design.mjs`, que confere um DESIGN.md contra o CSS;
@@ -275,31 +274,26 @@ globais (reset de formulário, impressão, animações) podem ficar.
 ### 4.4 Layout raiz
 
 ```tsx
-import { Inter, Outfit } from "next/font/google";
+import { Inter } from "next/font/google";
 import { headers } from "next/headers";
-import { TemaMppaProvider, ThemeScript, type TemaVariant } from "@/components/tema-mppa"; // ajuste o caminho
+import { TemaMppaProvider, ThemeScript } from "@/components/tema-mppa"; // ajuste o caminho
 
-const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-const tema: TemaVariant = "padrao"; // "padrao" ou "v2": a variante escolhida no diagnóstico (item 1)
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const nonce = (await headers()).get("x-nonce") ?? undefined; // só se o consumidor tem CSP com nonce
   return (
-    <html lang="pt-BR" data-tema={tema} className={tema === "v2" ? inter.variable : outfit.variable} suppressHydrationWarning>
+    <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
       <head><ThemeScript nonce={nonce} /></head>
-      <body><TemaMppaProvider tema={tema}>{children}</TemaMppaProvider></body>
+      <body><TemaMppaProvider>{children}</TemaMppaProvider></body>
     </html>
   );
 }
 ```
 
-- **Variante do tema:** `"padrao"` (a interface de sempre: cartões de 16px, Outfit) ou `"v2"` (cartões de 24px,
-  Inter, sombras em camadas e fundo da página mais escuro que o cartão; as cores são as mesmas). O valor vai nos
-  dois lugares, o `data-tema` do `<html>` (os tokens, também no diálogo da busca, que vai para o `<body>`) e o
-  `tema` do `TemaMppaProvider`. Quem usa só uma variante apaga a fonte da outra (`outfit` ou `inter`) e deixa o
-  `tema` fixo. Sem escolha registrada no diagnóstico, é `"padrao"`. Trocar de variante depois é mudar esse valor
-  (e a fonte); nenhum componente muda.
+- **Fonte:** o tema usa só a Inter, servida pelo `next/font` como `--font-inter` e posta no `<html>`; o
+  `tema-mppa.css` a lê (`--font-sans`). Não há outra fonte nem escolha de tema no layout: o `<html>` não leva
+  atributo de variante e o `TemaMppaProvider` não tem a propriedade `tema`.
 - **Script de tema:** use o `<ThemeScript>`. Ele aplica o tema e marca a barra recolhida
   (`data-tm-sidebar` no `<html>`) antes da hidratação, sem piscar nenhum dos dois. Ele e o
   `THEME_BOOT_SCRIPT` vêm de `theme-script.tsx`, módulo sem `"use client"`, e chegam ao layout raiz como texto.
@@ -312,7 +306,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 - Se já tem um provedor de tema, remova-o e troque os usos dele (`useTheme`, alternador) pelos da camada. O
   da camada aplica a classe `dark` no `<html>`, abre sempre em claro e guarda a escolha só na aba
   (`sessionStorage`).
-- Fonte: troque a fonte antiga pela da variante, como acima: Outfit no `padrao`, Inter na `v2`.
+- Fonte: troque a fonte antiga pela Inter, como acima, e apague a fonte antiga do layout.
 
 ### 4.5 Configuração do shell
 
@@ -602,7 +596,7 @@ const colunas: DataTableColumn<Linha>[] = [
   carregava informação (atraso, sucesso), diga isso no `note`, com `text-success` ou `text-warning` se
   preciso.
 - **Componentes antigos:** troque cartões, botões, tabelas e gráficos antigos pelos primitivos. Para o que
-  não tem primitivo (formulários, diálogos), use os tokens da seção 8 e `rounded-xl` (12px), `rounded-2xl` (16px) ou, para um quadro, `rounded-card` (acompanha a variante).
+  não tem primitivo (formulários, diálogos), use os tokens da seção 8 e `rounded-xl` (12px), `rounded-2xl` (16px) ou, para um quadro, `rounded-card` (24px).
 - **Cores:** troque toda cor fixa (`#hex`, `rgb()`, `text-red-600`, `bg-white`, `bg-gray-*`) pelo token
   equivalente.
 - **Testes:** ajuste os testes da tela que procuravam o `<h1>`, textos ou classes antigas, pelo mesmo
@@ -622,7 +616,7 @@ const colunas: DataTableColumn<Linha>[] = [
 | `Button` | `variant?`: `"default"` (primário), `"secondary"`, `"ghost"`, `"chrome"`, `"destructive"`; `size?`: `"default"`, `"sm"`, `"icon"` (36px); atributos de `<button>` |
 | `SectionIcon` | `icon` (Lucide), `tone?` |
 
-Peças de painel (1.10.0), na estética da página de referência do Heimdall; a demonstração do modelo (`/`) as
+Peças de painel, na estética da página de referência do Heimdall; a demonstração do modelo (`/`) as
 usa todas:
 
 | Primitivo | Propriedades |
@@ -700,7 +694,7 @@ Quando nenhuma tela usar mais o visual antigo:
 - **Classes que sobrepõem a camada:** uma tela que passa cor ou borda na `className` de um primitivo (por
   exemplo, `border-border/70` num `Card`) continua com o visual antigo quando a camada muda o padrão. Procure
   essas classes (`grep -rn "border-border" <pasta das telas>` e semelhantes) e tire as que repetem ou contrariam
-  a camada. Painel próprio que imita o cartão (raio 16px, fundo de cartão, sombra) segue o mesmo token do
+  a camada. Painel próprio que imita o cartão (raio 24px, fundo de cartão, sombra) segue o mesmo token do
   cartão, para não ficarem dois contornos diferentes lado a lado.
 - **`bg-background` em componentes shadcn** (`Input`, botão `outline`, seletores, diálogos, alertas): o fundo
   da página deixa de ser o do cartão desde a 1.9.0. Superfície que precisa parecer cartão usa `bg-card`.
@@ -731,22 +725,48 @@ Quando nenhuma tela usar mais o visual antigo:
 - **Menu móvel e aba:** desde a 1.12.3, clicar numa aba abre a página do primeiro item e o menu móvel fecha. Quem fazia
   isso por alteração local (a aba navegando) a tira e decide se aceita o menu fechando.
 
+### 7.2 Atualizar de uma versão anterior à 2.0.0
+
+A 2.0.0 tem um só tema, a aparência do "Moveflux Design System" (pedra quente, Inter em peso 600, quadros de 24px com
+contorno fino e sombra em camadas, sem faixa colorida no topo), com a regra de cores de sempre: azul na ação, vermelho
+só com significado. As variantes das 1.13 e 1.14 acabaram, e a atualização muda a aparência por inteiro. Faça os passos
+da seção 7 e, além deles:
+
+1. **Antes da cópia, capture as telas** (7.1). Elas são a base da classificação do passo 8.
+2. **Layout raiz (4.4):** deixe só a Inter, em `--font-inter`, no `className` do `<html>`; apague a fonte antiga
+   (a Outfit) e o atributo de variante do `<html>`; tire a propriedade `tema` do `TemaMppaProvider` e todo uso de
+   `useTemaVariante` e do tipo de variante. A camada não os exporta mais.
+3. **Consumidor que estava na `v2` da 1.14.x:** é só o passo 2 (remover o atributo de variante e a propriedade `tema`);
+   a aparência já era esta. Apague também `docs/tema-mppa/preview-v2/`, que a cópia não remove.
+4. **Consumidor que estava no padrão:** faz a troca visual completa, os passos 5 a 8.
+5. **Tokens próprios:** confira o contraste dos tokens próprios do consumidor (seção 8) sobre os fundos novos: a pedra
+   quente (`#e7e5e4` no claro, `#0c0a09` no escuro) no lugar da ardósia e do marinho. Painel próprio que imita o cartão
+   passa a raio 24px, contorno de 1px e `shadow-card`.
+6. **Testes** que citam cor, fonte, raio, sombra ou token (inclusive os de contraste e os que medem o fundo da página,
+   que não tem mais brilho): reescreva-os para os valores novos ou, melhor, para o contrato observável (4.8).
+7. **`DESIGN.md` do sistema:** refaça-o a partir do `docs/tema-mppa/DESIGN.md` novo (passo 5 da seção 7) e rode o
+   `verificar-design.mjs`; se ele não aceitar o sistema, o motivo costuma ser a fonte ou os tokens de cor que mudaram.
+8. **Capturas depois da cópia e passada manual:** capture de novo e classifique cada diferença: esperada pela troca da
+   2.0.0, anunciada pelo CHANGELOG ou defeito. Só então passe à mão por todas as telas, nos dois temas, em 1280px e
+   390px, procurando o que a captura não mostra (cor fixa, classe que sobrepõe a camada, tela que dependia da faixa
+   colorida do quadro).
+
 ## 8. Código de cores (tokens)
 
 Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 
 | Classe | Claro | Escuro | Uso |
 | --- | --- | --- | --- |
-| `bg-background` | `#f4f7fb` | `#070b12` | fundo da página (ardósia no claro, marinho no escuro), com o brilho `--canvas-glow` nos cantos |
-| `bg-card` | `#ffffff` | `#111827` | cartões, botão secundário, busca |
-| `bg-sidebar` / `text-sidebar-foreground` | `#ffffff` / `#334155` | `#0c121e` / `#cbd5e1` | barra lateral |
-| `bg-muted` | `#f1f5f9` | `#182235` | trilho das abas, áreas neutras |
-| `bg-header` | `rgba(255,255,255,.85)` | `rgba(12,18,30,.82)` | cabeçalho e rodapé translúcidos, com desfoque |
+| `bg-background` | `#e7e5e4` | `#0c0a09` | fundo da página (pedra quente), liso, mais escuro que o cartão |
+| `bg-card` | `#ffffff` | `#1c1917` | cartões, botão secundário, busca |
+| `bg-sidebar` / `text-sidebar-foreground` | `#ffffff` / `#44403c` | `#12100f` / `#d6d3d1` | barra lateral |
+| `bg-muted` | `#fafaf9` | `#292524` | trilho das abas, áreas neutras, tiles internos |
+| `bg-header` | `rgba(255,255,255,.85)` | `rgba(18,16,15,.82)` | cabeçalho e rodapé translúcidos, com desfoque |
 | `bg-highlight` / `text-highlight-foreground` | `#bfdbfe` / `#0a2a66` | `#2547a8` / `#ffffff` | item selecionado do menu, azul sólido sem degradê (9,62:1 e 8,25:1); sob o ponteiro, `bg-sidebar-hover` (`#ecf4fe` / `#142645`) |
-| `text-foreground` | `#0f172a` | `#f8fafc` | texto principal |
-| `text-muted-foreground` | `#5f6f86` | `#94a3b8` | texto secundário, cinza (4,67:1 no muted no claro; 6,21:1 no escuro) |
-| `border` (`border-border`) | `#e2e8f0` | `rgba(255,255,255,.08)` | bordas |
-| `border-card-border` | `#b5bac0` | `#3f6396` | contorno dos quadros (cartões, painéis, campos) e linhas internas deles e das tabelas |
+| `text-foreground` | `#1c1917` | `#fafaf9` | texto principal |
+| `text-muted-foreground` | `#5f5a56` | `#a8a29e` | texto secundário, cinza (5,42:1 no fundo no claro; 6,01:1 no muted no escuro) |
+| `border` (`border-border`) | `#e7e5e4` | `rgba(255,255,255,.08)` | bordas |
+| `border-card-border` | `#e7e5e4` | `#44403c` | contorno fino dos quadros (cartões, painéis, campos) e linhas internas deles e das tabelas |
 | `text-institutional` / `text-institutional-foreground` | `#e11d48` / `#be123c` | `#fb7185` / `#fb7185` | selo da versão, aba Plataforma, nome no rodapé |
 | `from-avatar-from to-avatar-to` / `text-avatar-foreground` | `#e11d48` → `#2563eb` / `#ffffff` | igual | avatar em degradê |
 | `bg-online` | `#10b981` | `#10b981` | ponto de conectado |
@@ -764,8 +784,8 @@ Use as classes Tailwind da coluna "Classe". Nunca escreva o valor direto.
 | `bg-tone-amber` + `text-tone-amber-foreground` | `#fef3c7` + `#92400e` | `#362b1b` + `#fcd34d` | ícone âmbar |
 | `bg-overlay/40` | `#000` a 40% | igual | fundo atrás do menu móvel |
 | `bg-logo-surface` | `#ffffff` | `#ffffff` | fundo das logos |
-| `shadow-surface` | `0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04)` | `0 2px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06)` | aba e item ativos |
-| `shadow-card` / `shadow-card-hover` | `0 2px 8px -2px rgba(15,23,42,.05), 0 1px 3px -1px rgba(15,23,42,.03)` / `0 14px 28px -6px rgba(15,23,42,.08), 0 4px 10px -2px rgba(15,23,42,.04)` | `0 4px 20px -2px rgba(0,0,0,.5)` e `0 18px 36px -8px rgba(0,0,0,.7)`, com brilho interno de 1px | cartão e cartão sob o mouse |
+| `shadow-surface` | `0 0 0 1px rgba(0,0,0,.06), 0 1px 1px -.5px rgba(0,0,0,.06), 0 3px 3px -1.5px rgba(0,0,0,.06)` | `0 2px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06)` | aba e item ativos |
+| `shadow-card` / `shadow-card-hover` | contorno de 1px e cinco camadas a 6% (`0 1px 1px -.5px` a `0 24px 24px -12px`) / o mesmo com 7 a 8% e camadas maiores (até `0 36px 36px -12px`) | `0 4px 20px -2px rgba(0,0,0,.5)` e `0 18px 36px -8px rgba(0,0,0,.7)`, com brilho interno de 1px | cartão e cartão sob o mouse |
 | `tm-bar tm-bar-strong` / `tm-bar-soft` | degradê `#0842a1→#3b82f6` / `#6f9be6→#94b6f1` | `#3b82f6→#61a6fa` / `#4f78b8→#7aa2dd` | barras de gráfico |
 
 Contraste obrigatório:
@@ -792,51 +812,37 @@ Equilíbrio de cores (igual em todos os sistemas, sem diferença de cor, fonte, 
 
 Não faça:
 
-- **`text-primary` sobre `bg-primary/15` ou mais** (a pílula do shadcn/ui, nas opacidades maiores): com a
-  primária `#0842a1`, o par cai abaixo de 7:1 no claro (6,59:1 sobre o fundo, 6,45:1 sobre o muted). Com
-  `bg-primary/10` passa (`text-primary` sobre `bg-primary/10`: 7,18:1 sobre o fundo, 7,68:1 sobre o cartão e 7,04:1 sobre o muted;
-  no escuro, 6,05:1 sobre o cartão e 4,98:1 sobre o muted). O mesmo vale para qualquer cor sobre a própria versão
-  transparente: confira o contraste do par, não só o da cor.
+- **`text-primary` sobre `bg-primary/15` ou mais, ou sobre o fundo da página:** com a primária `#0842a1`, o par
+  cai abaixo de 7:1 no claro com `bg-primary/15` sobre o fundo (5,68:1) e sobre o muted (6,75:1), e com `bg-primary/10`
+  sobre o fundo (6,18:1). Passa sobre o cartão (`bg-primary/10`: 7,69:1; `/15`: 7,03:1) e sobre o muted com `/10`
+  (7,37:1); no escuro, com `/10`, 5,95:1 sobre o cartão e 5,11:1 sobre o muted. O mesmo vale para qualquer cor sobre a
+  própria versão transparente: confira o contraste do par, não só o da cor.
 - **Texto colorido onde o consumidor exige texto preto:** `text-success` e `text-warning` são coloridos (mais de 12:1
   sobre superfície neutra, quase pretos no claro). Se o consumidor tem regra de todo texto preto no claro, isso é conflito do diagnóstico (item 12): a
   cor fica no ícone ou no ponto de status, com o texto em `text-foreground`.
 
-Fonte: Outfit (`font-sans`); na variante `v2`, Inter.
+Fonte: Inter (`font-sans`), servida como `--font-inter` (4.4), com peso 600 nos títulos (`--font-weight-bold` e
+`-extrabold`, que o tema fixa em 600).
 
-Raios, presos a `--radius` (8px; estética de 12 nov. 2026):
+Raios, presos a `--radius` (8px):
 
 - `rounded-md` (6px): selo da versão;
 - `rounded-lg` (8px): abas internas, ícones de seção e caixas das logos;
 - `rounded-xl` (12px): botões, itens do menu, busca e trilho das abas;
 - `rounded-2xl` (16px): tiles internos, tabelas e diálogo da busca; os quadros (`Card`, `PanelCard`, `LinkCard`) usam
-  `rounded-card`, que é 16px no `padrao` e 24px na `v2`;
+  `rounded-card`, que é 24px;
 - `rounded-full`: avatar.
 
-### 8.1 Variante `v2`
+Forma dos quadros e das peças:
 
-A `v2` copia a aparência do "Moveflux Design System" e mantém a **regra de cores** do tema anterior: azul de ação
-(primária, foco, item ativo, gráficos), vermelho institucional só com significado, tons de seção, avatar e
-gráficos são os do `padrao`, e o verificador do modelo exige isso. Os blocos dela ficam no `tema-mppa.css`, em
-`:root[data-tema="v2"]` (claro e escuro), e só sobrescrevem. Do modelo vêm a forma e os neutros:
-
-| O que | `padrao` | `v2` |
-| --- | --- | --- |
-| Fonte (`--font-tema`) | Outfit | Inter, peso 600 nos títulos (`--font-weight-bold` e `-extrabold`) |
-| Quadros (`rounded-card`, `--card-radius`) | 16px | 24px, contorno fino de 1px e sombra em cinco camadas |
-| Faixa colorida no topo dos quadros (`--card-top-width`) | 3px, na cor do destaque | 1px, na cor do contorno: sem faixa |
-| `--background` (claro / escuro) | `#f4f7fb` / `#070b12` | `#e7e5e4` / `#0c0a09` (pedra quente) |
-| `--card` (escuro) | `#111827` | `#1c1917` |
-| `--muted` (claro / escuro): tile interno | `#f1f5f9` / `#182235` | `#fafaf9` / `#292524` |
-| `--muted-foreground` (claro / escuro) | `#5f6f86` / `#94a3b8` | `#5f5a56` / `#a8a29e` |
-| `--card-border` (claro / escuro) | `#b5bac0` / `#3f6396` | `#e7e5e4` / `#44403c` |
-| Brilho do fundo (`--canvas-glow`) | vermelho e azul nos cantos | nenhum |
-| Caixas de ícone (`tm-tone`) | brilho e borda | chapadas |
-| Cabeçalho do `PanelCard`, rótulos, título de seção, cabeçalho do `DataTable`, `Tag` e `StatusBadge` | linha, maiúsculas, ponto e borda | sem linha, sem maiúsculas, sem ponto e sem borda (pílula de 12px) |
-
-A forma vem das classes `tm-*` das peças da camada (`tm-card-title`, `tm-label`, `tm-tag`…), que só valem sob
-`data-tema="v2"`. Tela da `v2` usa os mesmos primitivos e as mesmas classes de cor; nada na tela depende da
-variante. As peças de metas (5.2) valem nas duas. A pré-visualização da `v2` fica em
-`docs/tema-mppa/preview-v2/index.html`; a página "Painel de metas" mostra as peças novas.
+- Quadros de 24px com contorno fino de 1px (`border-card-border`) e sombra em camadas (`shadow-card`); sem faixa colorida
+  no topo (o `accent` de `PanelCard` e `LinkCard` não pinta a borda).
+- Caixas de ícone (`tm-tone`) chapadas, sem brilho nem borda.
+- Cabeçalho do `PanelCard`, rótulos, título de seção, cabeçalho do `DataTable`, `Tag` e `StatusBadge`: sem linha, sem
+  maiúsculas, sem ponto e sem borda (pílula de 12px).
+- A forma vem das classes `tm-*` das peças da camada (`tm-card-title`, `tm-label`, `tm-tag`…), definidas no
+  `tema-mppa.css`; a tela usa os primitivos e as classes de cor, e nada mais.
+- As peças de metas (5.2) e a página "Painel de metas" da demonstração mostram as peças de painel.
 
 ## 9. Estrutura do layout
 
@@ -892,12 +898,12 @@ Rodapé (igual em todos os sistemas), montado pela camada a partir de `brand` (s
 
 Medidas:
 
-- **Ícone de seção:** caixa de 32px no menu (28px no título), tom com brilho (`tm-tone`).
+- **Ícone de seção:** caixa de 32px no menu (28px no título), tom chapado (`tm-tone`).
 - **Item de menu:** raio 12px, padding 8px 10px, 12px entre ícone e texto, 6px entre itens; no lugar do rótulo do grupo, uma linha de 1px em degradê do vermelho institucional ao azul, sumindo à direita (o rótulo fica só para leitores de tela).
 - **Abas:** 32px de altura, com borda, num trilho com padding de 4px; a ativa em `bg-card` com sombra; ícones sempre visíveis.
-- **Botões:** 36px de altura, raio 12px, peso 700; variante `chrome` no tema e no menu móvel.
-- **Cartões:** raio 16px, padding de 24px, sombra `shadow-card`.
-- **Métrica:** número de 32px, peso 800.
+- **Botões:** 36px de altura, raio 12px, peso 600; variante `chrome` no tema e no menu móvel.
+- **Cartões:** raio 24px, padding de 24px, contorno de 1px, sombra `shadow-card`.
+- **Métrica:** número de 32px, peso 600.
 - **Gráfico:** 165px de altura; barras de até 90px de largura.
 
 ## 10. Caminho B: portar para outra stack
@@ -905,11 +911,10 @@ Medidas:
 Os valores não mudam; só a forma. As fases são as mesmas; muda só a Fase 1, em que você recria a camada em
 vez de copiá-la (e não há `verificar-camada.mjs`). Sem a cópia, a referência não chega a `docs/tema-mppa/`: copie
 para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `CHANGELOG.md`, este guia e os
-`docs/prototipo/`, `docs/preview/`, `docs/preview-v2/` e `docs/comparacao/` da pasta `tema-mppa-next/`, antes de apagá-la; a 4.9 e a
+`docs/prototipo/`, `docs/preview/` e `docs/comparacao/` da pasta `tema-mppa-next/`, antes de apagá-la; a 4.9 e a
 4.10 os usam. O `verificar-design.mjs` precisa de `--css` com o CSS dos tokens, porque não há `camada.json`.
 
-- **Cores:** copie os blocos `:root` e `.dark` de `src/styles/tema-mppa.css` como estão (e, na variante `v2`, os
-  blocos `:root[data-tema="v2"]`, seção 8.1).
+- **Cores:** copie os blocos `:root` e `.dark` de `src/styles/tema-mppa.css` como estão, com as regras `tm-*`.
   - Tailwind 4: copie também o `@theme inline`.
   - Tailwind 3: mapeie as cores em `theme.extend.colors` como `var(--token)`.
   - Sem Tailwind: use as variáveis CSS diretamente.
@@ -929,13 +934,13 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.14.1)
+## Interface (tema-mppa 2.0.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
   (`docs/tema-mppa/REPLICAR.md`, seção 7).
 - Referência visual: `docs/tema-mppa/prototipo/index.html` (manda) e `docs/tema-mppa/preview/index.html`.
-- Variante do tema: `padrao` ou `v2`, escolhida uma vez no layout raiz (`tema`, `REPLICAR.md` 4.4). Mudar de variante é mudar esse valor e a fonte; tela nenhuma depende dela. A prévia da `v2` fica em `docs/tema-mppa/preview-v2/index.html`.
+- Tema único, sem variantes: Inter (`--font-inter`) no `<html>` do layout raiz (`REPLICAR.md` 4.4).
 - `DESIGN.md` na raiz do frontend: tokens e intenção do design para os agentes; confira com
   `node docs/tema-mppa/verificar-design.mjs --css <CSS próprio>` a cada mudança de token.
 - Telas só com os primitivos (`PageFrame`, `Card`, `CardGrid`, `MetricCard`, `DataTable`, `BarChart`,

@@ -1,8 +1,9 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.14.1**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
-estética de 12 nov. 2026 (ardósia no claro e marinho no escuro, cartões de 16px, sombras em camadas, realce em degradê do vermelho
-institucional ao azul, avatar em degradê; a variante `v2` troca só a forma, abaixo) e o cabeçalho padrão dos sistemas:
+Versão **2.0.0**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
+aparência do "Moveflux Design System" (pedra quente no claro e pedra escura no escuro, Inter, quadros de 24px com contorno
+fino e sombras em camadas, sem faixa colorida no topo, tiles internos, selos e rótulos sem maiúsculas) e o cabeçalho
+padrão dos sistemas:
 
 - barra lateral com abas Plataforma e Administração; clicar numa aba abre a página do primeiro item dela;
 - cabeçalho de 62px, translúcido: título da página, busca, tema, logos institucionais, nome e perfil do usuário e
@@ -10,29 +11,25 @@ institucional ao azul, avatar em degradê; a variante `v2` troca só a forma, ab
 - busca `Ctrl+K`;
 - tema claro e escuro;
 - rodapé padrão com o crédito institucional, o nome, a versão e o ano do sistema;
-- cartões, métricas, tabelas e gráficos;
+- cartões, métricas, tabelas e gráficos, e as peças de metas (capa com imagem, cartão de métrica, linha de meta, anel e
+  barra de progresso, faixa de dias);
 - código de cores com contraste (texto principal com 7:1 e secundário com 4,5:1, WCAG AA): azul na ação (igual ao Heimdall) e vermelho só para erro e identidade
   institucional.
 
 Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre direto no navegador.
 
-**Variantes.** O tema tem duas, escolhidas uma vez no layout raiz (`REPLICAR.md`, 4.4): `padrao` (a de sempre) e `v2`
-(a aparência do "Moveflux Design System": cartões de 24px com contorno fino e sombras em camadas, sem faixa colorida no
-topo, Inter, tiles internos, selos e rótulos sem maiúsculas, neutros em pedra quente; a regra de cores do tema anterior
-continua: azul na ação, vermelho só com significado). As peças de metas (capa com imagem, cartão de métrica, linha de meta,
-anel e barra de progresso, faixa de dias) valem nas duas. A prévia da `v2` é [`docs/preview-v2/index.html`](docs/preview-v2/index.html);
-a página "Painel de metas" da demonstração mostra as peças. Na demonstração, `NEXT_PUBLIC_TEMA=v2 npm run dev`.
+O tema tem uma só aparência, sem variantes: a demonstração, a prévia e a camada mostram a mesma. A página "Painel de
+metas" da demonstração mostra as peças de metas.
 
 ## Usar num codebase
 
 1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v<versão>/tema-mppa-next/`, na pasta acima desta
-   (com a versão atual, `tema-mppa-next-v1.14.1/tema-mppa-next/`). A de fora leva a versão no nome; a de dentro, não.
+   (com a versão atual, `tema-mppa-next-v2.0.0/tema-mppa-next/`). A de fora leva a versão no nome; a de dentro, não.
 2. O desenvolvedor do sistema copia **só a pasta de dentro**, `tema-mppa-next/`, inteira, para a raiz do
    repositório (`cp -r …/tema-mppa-next-v<versão>/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html`
    no navegador. A cópia da camada confere a pasta contra o `SHA256SUMS` dela antes de copiar.
-3. No [`GUIA.html`](GUIA.html), ele responde três perguntas: a situação do sistema (do zero, já existe sem o
-   tema, já tem o tema), se o repositório usa OpenSpec e a variante do tema (`padrao` ou `v2`; a pergunta some
-   para quem só vai atualizar). O guia monta os passos daquele caso, cada um com o
+3. No [`GUIA.html`](GUIA.html), ele responde duas perguntas: a situação do sistema (do zero, já existe sem o
+   tema, já tem o tema) e se o repositório usa OpenSpec. O guia monta os passos daquele caso, cada um com o
    prompt pronto para colar no Claude Code e o que conferir depois. No sistema do zero, nome, versão, ano e
    telas iniciais entram por campos do guia.
 
@@ -65,7 +62,7 @@ A pasta entregue (`tema-mppa-next/`) tem só o que o desenvolvedor e o agente us
   `verificar-design.mjs`, que prende o `DESIGN.md` do sistema às cores do CSS;
 - as três logos padrão do cabeçalho (`public/`: MPPA, CIIA e a sigla CIIA), que a cópia grava no `public/` do
   sistema quando faltam;
-- o protótipo, as prévias (padrão e `v2`) e as comparações.
+- o protótipo, a prévia e as comparações.
 
 Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 
@@ -81,9 +78,8 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 | `src/styles/tema-mppa.css` | tokens: cores, raio, sombra, base |
 | `src/app/` | demonstração que compila e exibe a camada (fica fora da pasta entregue) |
 | `public/` | logos padrão do cabeçalho (vão na pasta entregue) |
-| `docs/prototipo/` | protótipo aprovado; manda em todo elemento gráfico |
-| `docs/preview/` | prévia offline gerada da demonstração (variante padrão) |
-| `docs/preview-v2/` | prévia offline da variante v2 |
+| `docs/prototipo/` | protótipo aprovado (estrutura da casca) |
+| `docs/preview/` | prévia offline gerada da demonstração |
 | `docs/comparacao/` | protótipo e modelo lado a lado, claro e escuro, 1280px e 390px |
 | `scripts/` | verificação, cópia, conferência da camada no consumidor, empacotamento, prévia e capturas |
 
@@ -102,8 +98,6 @@ Depois de mudar a aparência, regere a prévia e as comparações com a demonstr
 ```bash
 export PLAYWRIGHT_CORE=/caminho/node_modules/playwright-core/index.mjs
 node scripts/gerar-preview.mjs
-# prévia da v2: com NEXT_PUBLIC_TEMA=v2 no build e no start da demonstração
-NEXT_PUBLIC_TEMA=v2 node scripts/gerar-preview.mjs docs/preview-v2/index.html
 FONTE=$(curl -s http://localhost:3123/ | grep -o '/_next/static/media/[^")]*woff2' | head -1)
 node scripts/capturar-comparacao.mjs "$FONTE" /tmp/capturas
 node scripts/compor-comparacao.mjs /tmp/capturas docs/comparacao

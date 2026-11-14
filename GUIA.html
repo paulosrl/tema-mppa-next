@@ -4,35 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Guia do Tema MPPA</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
 <style>
 /* Guia do desenvolvedor que recebe a pasta do modelo: duas escolhas no topo montam o roteiro do caso. Cores do tema MPPA. */
 :root {
-  --bg: #f4f7fb;
+  --bg: #e7e5e4;
   --card: #ffffff;
-  --fg: #0f172a;
-  --muted: #f1f5f9;
-  --border: #e2e8f0;
+  --fg: #1c1917;
+  --muted: #f5f5f4;
+  --border: #e7e5e4;
   --primary: #0842a1;
   --primary-fg: #ffffff;
   --highlight: #bfdbfe;
-  --shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 1px 3px -1px rgba(15, 23, 42, 0.03);
-  --font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0 3px 3px -1.5px rgba(0, 0, 0, 0.06), 0 6px 6px -3px rgba(0, 0, 0, 0.06), 0 12px 12px -6px rgba(0, 0, 0, 0.06);
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, monospace;
   --radius: 8px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #070b12;
-    --card: #111827;
-    --fg: #f8fafc;
-    --muted: #182235;
+    --bg: #0c0a09;
+    --card: #1c1917;
+    --fg: #fafaf9;
+    --muted: #292524;
     --border: rgba(255, 255, 255, 0.08);
     --primary: #61a6fa;
     --primary-fg: #080c16;
     --highlight: #2547a8;
-    --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 4px 20px -2px rgba(0, 0, 0, 0.5);
     color-scheme: dark;
   }
 }
@@ -48,10 +48,10 @@ p { margin: 0; }
 ul, ol { margin: 0; padding-left: 1.25em; display: grid; gap: 4px; }
 code { font-family: var(--mono); font-size: 0.86em; background: var(--muted); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-.eyebrow { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--primary); }
+.eyebrow { font-size: 0.85rem; font-weight: 500; color: var(--primary); }
 header { display: grid; gap: 10px; }
 .lead { max-width: 64ch; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 24px; display: grid; gap: 16px; min-width: 0; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; box-shadow: var(--shadow); padding: 24px; display: grid; gap: 16px; min-width: 0; }
 
 /* Escolhas */
 fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; min-width: 0; }
@@ -104,7 +104,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">tema-mppa-next 1.14.1 · guia do desenvolvedor</span>
+    <span class="eyebrow">tema-mppa-next <span id="versao-eyebrow"></span> · guia do desenvolvedor</span>
     <h1>Guia do Tema MPPA</h1>
     <p class="lead">Leva a interface padrão dos sistemas do MPPA ao seu repositório com o Claude Code. Responda as perguntas: o guia monta os passos do seu caso, com o prompt pronto de cada um e o que você confere depois.</p>
   </header>
@@ -116,7 +116,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       <div class="options">
         <label class="option"><input type="radio" name="situacao" value="zero" id="situacao-zero"><strong>Do zero</strong><span>Repositório vazio ou sem frontend. O agente cria o app já com o tema.</span></label>
         <label class="option"><input type="radio" name="situacao" value="existente" id="situacao-existente" checked><strong>Já existe, sem o tema</strong><span>App em uso, com telas próprias. Adoção em fases.</span></label>
-        <label class="option"><input type="radio" name="situacao" value="atualizar" id="situacao-atualizar"><strong>Já tem o tema</strong><span>Usa uma versão anterior do tema e vai atualizar.</span></label>
+        <label class="option"><input type="radio" name="situacao" value="atualizar" id="situacao-atualizar"><strong>Já tem o tema</strong><span>Usa uma versão anterior do tema e vai atualizar. Vindo de uma 1.x, a aparência muda por inteiro.</span></label>
       </div>
     </fieldset>
     <fieldset>
@@ -124,13 +124,6 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       <div class="options">
         <label class="option"><input type="radio" name="processo" value="sem" id="processo-sem" checked><strong>Sem OpenSpec</strong><span>Cada fase é uma branch e um commit.</span></label>
         <label class="option"><input type="radio" name="processo" value="openspec" id="processo-openspec"><strong>Com OpenSpec</strong><span>Cada fase é uma change: propor, revisar, aplicar e arquivar.</span></label>
-      </div>
-    </fieldset>
-    <fieldset id="variante-campo">
-      <legend>3. Qual variante do tema?</legend>
-      <div class="options">
-        <label class="option"><input type="radio" name="variante" value="padrao" id="variante-padrao" checked><strong>Padrão</strong><span>A interface de sempre: Outfit e cartões de 16px.</span></label>
-        <label class="option"><input type="radio" name="variante" value="v2" id="variante-v2"><strong>v2</strong><span>A aparência do Moveflux (Inter, cartões de 24px sem faixa colorida, tiles e selos sem maiúsculas, fundo em pedra), com a mesma regra de cores: azul na ação.</span></label>
       </div>
     </fieldset>
   </section>
@@ -181,10 +174,12 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "1.14.1";
+  var VERSAO = "2.0.0";
   var PASTA_ENTREGA = "tema-mppa-next-v" + VERSAO; // a pasta de fora, que leva a versão no nome (npm run empacotar)
   var spanAgents = document.getElementById("versao-agents");
   if (spanAgents) spanAgents.textContent = VERSAO;
+  var spanEyebrow = document.getElementById("versao-eyebrow");
+  if (spanEyebrow) spanEyebrow.textContent = VERSAO;
 
   // ---- Armazenamento (só neste navegador; a página funciona sem ele) ----
   var KEY = "tema-mppa-guia";
@@ -208,13 +203,6 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
   };
   var COMMIT = "- faça o commit na branch. Não faça merge nem push.";
   var BRANCH = "- trabalhe numa branch no padrão deste repositório;";
-  // A variante vem do campo 3 do guia; os prompts guardam o marcador e a página o troca ao desenhar.
-  var MARCADOR = "{{VARIANTE}}";
-  var textoVariante = function () {
-    return store.variante === "v2"
-      ? "- variante do tema: v2 (REPLICAR.md, 4.4 e 8.1: tema = \"v2\" no layout raiz, fonte Inter);"
-      : "- variante do tema: padrao (REPLICAR.md, 4.4: tema = \"padrao\" no layout raiz, fonte Outfit);";
-  };
   var linhas = function () { return Array.prototype.slice.call(arguments).filter(function (l) { return l !== null && l !== undefined; }).join("\n"); };
 
   var propor = function (oque, contexto, ref) {
@@ -222,11 +210,11 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       "Crie a change do OpenSpec para " + oque + ", conforme " + ref + " (seção 1.2, passo Propor): proposta, tarefas e, se este projeto usa, design e specs.",
       contexto || null,
       "",
-      "Não implemente nada e não faça commit. Pare e me mostre, em poucas linhas e sem jargão: o nome da change, o que ela vai mudar e a lista de tarefas."
+      "Não implemente nada e não faça commit. Não sugira comandos, \"próximos passos\" nem /clear: o próximo prompt vem de mim. Pare e me mostre, em poucas linhas e sem jargão: o nome da change, o que ela vai mudar, a lista de tarefas e as decisões que são minhas."
     );
   };
   var aplicar = function (corpo) {
-    return linhas("Change aprovada. Aplique-a de ponta a ponta, sem me perguntar nada no meio:", corpo);
+    return linhas("A change que você acabou de propor (a mais recente em openspec/changes/) está aprovada. Aplique-a de ponta a ponta, sem me perguntar nada no meio:", corpo);
   };
   var ARQUIVAR = "Entrega conferida. Arquive a change como o OpenSpec deste repositório manda e faça o commit na mesma branch. Não faça merge nem push.";
 
@@ -236,7 +224,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
   var REVISAR_CHANGE = [
     "Abre a change em <code>openspec/changes/</code> e lê a proposta e as tarefas.",
     "Se algo não estiver certo, pede o ajuste no chat, em palavras suas, até ficar como quer.",
-    "Então cola o prompt de aplicar."
+    "Então cola o prompt de aplicar, na mesma conversa. Se o agente sugerir outro comando ou um próximo passo (por exemplo <code>/clear</code> ou <code>/openspec-apply-change</code>), ignora: o próximo prompt é sempre o deste guia."
   ];
   var MERGE = "Junta a branch na <code>main</code> do jeito de sempre.";
 
@@ -266,7 +254,6 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
         "- versão: " + (d.versao || "[preencha no guia]"),
         "- ano da versão: " + (d.ano || "[preencha no guia]"),
         "- pasta do frontend: " + (d.pasta ? d.pasta : "a raiz do repositório"),
-        MARCADOR,
         "- telas iniciais: " + (telas.length ? telas.join("; ") : "[preencha no guia]")
       )
     };
@@ -320,8 +307,6 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
     "Leia tema-mppa-next/REPLICAR.md inteiro e faça só a Fase 0 (diagnóstico):",
     "- preencha o formulário tema-mppa-next/DIAGNOSTICO.md lendo este repositório, sem mudar nenhum arquivo dele;",
     "- grave o diagnóstico onde o processo deste repositório manda; sem processo, em docs/tema-mppa/diagnostico.md;",
-    MARCADOR,
-    "  (registre-a no item 1 do diagnóstico);",
     "- não faça commit.",
     "",
     "No fim, me diga em poucas linhas e sem jargão: onde gravou o diagnóstico, o que a Fase 1 vai mudar e, um por um, os conflitos com o padrão (item 12), cada um com a sua recomendação. Pare aí e espere eu decidir."
@@ -333,7 +318,6 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
   var DECISOES = "As minhas decisões estão no item 12 do diagnóstico; onde não escrevi decisão, siga a sua recomendação.";
   var CORPO_FASE1 = linhas(
     BRANCH, REGRAS[0],
-    MARCADOR,
     "- crie o DESIGN.md do sistema (4.9);",
     REGRAS[1],
     capturas("as telas principais", "antes (main) e depois (branch)"),
@@ -416,36 +400,54 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
   };
 
   // ---- Já tem o tema: atualizar ----
+  // Vindo de uma versão 1.x, a aparência muda por inteiro: o tema é um só.
+  var NOVA_APARENCIA = "fonte Inter, quadros de 24px com contorno fino e sombra em camadas, fundo em pedra, quadros sem faixa colorida no topo, selos e rótulos sem maiúsculas";
   var ALVO_ATUALIZAR = "atualizar a interface tema-mppa deste repositório para a " + VERSAO;
   var COMO_ATUALIZAR = linhas(
     "- siga a seção 7 do tema-mppa-next/REPLICAR.md à risca;",
-    "- faça os passos da seção \"Ao atualizar de\" do tema-mppa-next/CHANGELOG.md de cada versão entre a atual deste sistema e a " + VERSAO + ", inclusive tirar os contornos locais que a versão nova tornou desnecessários;"
+    "- faça os passos da seção \"Ao atualizar de\" do tema-mppa-next/CHANGELOG.md de cada versão entre a atual deste sistema e a " + VERSAO + ", inclusive tirar os contornos locais que a versão nova tornou desnecessários;",
+    "- se a versão atual deste sistema é 1.x, a aparência muda por inteiro (" + NOVA_APARENCIA + ") e isso é esperado; a regra de cores (azul na ação, vermelho só com significado) e os componentes são os mesmos;"
   );
-  var CORPO_ATUALIZAR = linhas(
-    COMO_ATUALIZAR, BRANCH, REGRAS[0], REGRAS[1],
-    capturas("as telas principais", "na main e na branch, e compare; se o CHANGELOG não anuncia mudança de aparência, diferença visual é defeito: corrija ou relate"),
-    "- apague a pasta tema-mppa-next/ logo depois da cópia, como a seção 7 manda, e atualize a versão na seção \"Interface\" do AGENTS.md;",
-    COMMIT, "", PARADA, "", relatorio("quais contornos locais saíram, se houve diferença nas capturas")
+  var MUDANCA_DE_APARENCIA = linhas(
+    "- se a versão atual deste sistema é 1.x, faça também:",
+    "  - layout raiz (REPLICAR.md, 4.4): a fonte é só a Inter (--font-inter) no <html>; tire a Outfit, o data-tema do <html>, a propriedade tema do TemaMppaProvider e qualquer useTemaVariante, e apague a fonte que ficou sem uso;",
+    "  - apague docs/tema-mppa/preview-v2/, se existir;",
+    "  - contraste dos tokens próprios deste sistema sobre os fundos novos (REPLICAR.md, 8: o fundo #e7e5e4 no claro e #0c0a09 no escuro, o cartão #1c1917 e o muted #292524 no escuro): texto principal com 7:1 e secundário com 4,5:1 nos dois temas; o que cair, ajuste no token do sistema, nunca na camada;",
+    "  - testes, specs e conferências deste repositório que citam cor, fonte, raio ou token (por exemplo Outfit, fundo, cartão, raio de 16px): alinhe-os à aparência nova, sem editar a camada para passar;",
+    "  - DESIGN.md: refaça o do sistema a partir do docs/tema-mppa/DESIGN.md e rode o verificar-design.mjs; se ele não aceitar o sistema, não contorne: relate na seção 11;",
+    "  - na seção \"Interface\" do AGENTS.md, tire a linha da variante, se houver;"
   );
+  var corpoAtualizar = function () {
+    return linhas(
+      COMO_ATUALIZAR, BRANCH, REGRAS[0],
+      MUDANCA_DE_APARENCIA,
+      REGRAS[1],
+      capturas("as telas principais", "na main e na branch, e compare; classifique cada diferença: esperada pela mudança de aparência (só vindo de uma 1.x: " + NOVA_APARENCIA + "), anunciada pelo CHANGELOG ou defeito; defeito, corrija ou relate. Sem mudança de aparência anunciada, diferença visual é defeito"),
+      "- vindo de uma 1.x, no fim, suba o sistema e percorra as telas principais nos temas claro e escuro, em 1280px e 390px, antes do relatório;",
+      "- apague a pasta tema-mppa-next/ logo depois da cópia, como a seção 7 manda, e atualize a versão na seção \"Interface\" do AGENTS.md;",
+      COMMIT, "", PARADA, "", relatorio("quais contornos locais saíram, cada diferença das capturas e como a classificou, o que ficou para a execução manual")
+    );
+  };
   var casoAtualizar = function (processo) {
-    var conferir = ["Olha as capturas, main e branch lado a lado."].concat(TESTE_MAO);
+    var titulo = "Atualizar para a " + VERSAO;
+    var conferir = ["Olha as capturas, main e branch lado a lado. Vindo de uma versão 1.x, a diferença esperada é a da aparência nova (" + NOVA_APARENCIA + ")."].concat(TESTE_MAO);
     if (processo === "sem") {
       return [preparar("atualizar", processo), {
-        id: "atualizar", titulo: "Atualizar para a " + VERSAO, onde: "No Claude Code, no repositório do sistema.",
-        prompt: linhas("Vamos " + ALVO_ATUALIZAR + ", de ponta a ponta, sem me perguntar nada no meio. A main está funcionando e não pode ser tocada.", CORPO_ATUALIZAR),
+        id: "atualizar", titulo: titulo, onde: "No Claude Code, no repositório do sistema.",
+        prompt: linhas("Vamos " + ALVO_ATUALIZAR + ", de ponta a ponta, sem me perguntar nada no meio. A main está funcionando e não pode ser tocada.", corpoAtualizar()),
         depois: conferir.concat([MERGE])
       }];
     }
     return [preparar("atualizar", processo), {
-      id: "propor", titulo: "Propor a atualização", onde: "No Claude Code, no repositório do sistema.",
+      id: "propor", titulo: "Propor: " + titulo.charAt(0).toLowerCase() + titulo.slice(1), onde: "No Claude Code, no repositório do sistema.",
       prompt: propor(ALVO_ATUALIZAR, COMO_ATUALIZAR.replace(/;$/, "."), "tema-mppa-next/REPLICAR.md"),
       depois: REVISAR_CHANGE
     }, {
-      id: "aplicar", titulo: "Aplicar a change", onde: "Depois de aprovar a proposta.",
-      prompt: aplicar(linhas("A main está funcionando e não pode ser tocada.", CORPO_ATUALIZAR)),
+      id: "aplicar", titulo: "Aplicar a change", onde: "Na mesma conversa, depois de aprovar a proposta.",
+      prompt: aplicar(linhas("A main está funcionando e não pode ser tocada.", corpoAtualizar())),
       depois: conferir
     }, {
-      id: "arquivar", titulo: "Arquivar a change", onde: "Depois de conferir.",
+      id: "arquivar", titulo: "Arquivar a change", onde: "Na mesma conversa, depois de conferir.",
       prompt: ARQUIVAR, depois: [MERGE]
     }];
   };
@@ -470,12 +472,9 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
     var processo = escolha("processo");
     store.situacao = situacao;
     store.processo = processo;
-    store.variante = escolha("variante") || "padrao";
     save();
     document.getElementById("dados").hidden = situacao !== "zero";
-    // Quem já tem o tema mantém a variante que usa: a pergunta só vale para quem vai adotá-lo.
-    document.getElementById("variante-campo").hidden = situacao === "atualizar";
-    document.getElementById("caso-resumo").textContent = NOMES[situacao] + ", " + NOMES[processo] + (situacao === "atualizar" ? "" : ", " + (store.variante === "v2" ? "variante v2" : "variante padrão"));
+    document.getElementById("caso-resumo").textContent = NOMES[situacao] + ", " + NOMES[processo];
 
     var passos = situacao === "zero" ? casoZero(processo) : situacao === "existente" ? casoExistente(processo) : casoAtualizar(processo);
     var caso = situacao + ":" + processo;
@@ -512,7 +511,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
         bar.appendChild(botao);
         box2.appendChild(bar);
         var pre = el("pre");
-        pre.textContent = passo.prompt.split(MARCADOR).join(textoVariante());
+        pre.textContent = passo.prompt;
         box2.appendChild(pre);
         card.appendChild(box2);
         ligarCopia(botao, pre);
@@ -547,7 +546,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
   }
 
   // ---- Estado inicial e eventos ----
-  ["situacao", "processo", "variante"].forEach(function (name) {
+  ["situacao", "processo"].forEach(function (name) {
     var guardado = store[name] && document.querySelector("input[name=" + name + "][value=" + store[name] + "]");
     if (guardado) guardado.checked = true;
     document.querySelectorAll("input[name=" + name + "]").forEach(function (input) { input.addEventListener("change", desenhar); });

@@ -1,5 +1,54 @@
 # Changelog
 
+## 2.0.0 — 2026-11-14
+
+Pedido do autor em 14 nov. 2026: uma versão só. O tema deixa de ter variantes e a última versão é a oficial. Fica a
+aparência da antiga v2 (a do "Moveflux Design System", com a regra de cores institucional); o padrão (Outfit,
+ardósia e marinho, quadros de 16px, faixa colorida de 3px no topo) sai. Como o contrato muda (`data-tema`, `tema` no
+provider, `useTemaVariante`), o número sobe para 2.0.0. A 1.14.2, que mexia só no `GUIA.html` e nunca foi entregue,
+entra aqui.
+
+### Muda (quebra o contrato)
+
+- **Tema único:** os tokens do `:root` e do `.dark` passam a ser os da v2, e o bloco `data-tema="v2"` some do CSS.
+  - Neutros em pedra quente: claro com fundo `#e7e5e4`, cartão `#ffffff`, muted `#fafaf9`, texto `#1c1917` e
+    secundário `#5f5a56`; escuro com fundo `#0c0a09`, barra `#12100f`, cartão `#1c1917`, muted `#292524` e secundário
+    `#a8a29e`.
+  - Quadros de 24px (`--radius-card`) com contorno fino (`--card-border`: `#e7e5e4` no claro, `#44403c` no escuro),
+    sombra em camadas e topo de 1px na cor do contorno; Inter com peso 600 nos títulos.
+  - Não mudam: o azul de ação (`#0842a1` e `#61a6fa`), o vermelho só com significado, os tons de seção, o avatar, os
+    gráficos, as medidas do shell (62px, 304px e 76px) e a API dos componentes.
+- **Removidos:**
+  - `data-tema` no `<html>` e a propriedade `tema` do `TemaMppaProvider`;
+  - `useTemaVariante` e o tipo `TemaVariant`;
+  - os tokens `--tema-variante`, `--font-tema`, `--card-radius` e `--card-top-width`;
+  - `NEXT_PUBLIC_TEMA`, a prévia `docs/preview-v2/` e o selo de variante da prévia (fica `docs/preview/`).
+- **Fonte:** só a Inter, servida como `--font-inter` no `<html>` (`REPLICAR.md`, 4.4). A Outfit sai do layout raiz.
+- **`accent` de `PanelCard` e `LinkCard`:** continua aceito, mas já não pinta o topo do quadro.
+
+### Guia (o que era a 1.14.2)
+
+- **Prompt de propor (OpenSpec):** manda o agente não sugerir comandos, "próximos passos" nem `/clear`, parar e
+  mostrar o nome da change, o que muda, a lista de tarefas e as decisões que são do desenvolvedor.
+- **Prompt de aplicar:** aprova "a change que você acabou de propor (a mais recente em `openspec/changes/`)", sem
+  depender do nome da change nem da conversa anterior.
+- **"Depois, você":** avisa que, se o agente sugerir outro comando, o desenvolvedor ignora e cola o prompt do guia, na
+  mesma conversa.
+- **Atualização:** o prompt de "Já tem o tema" cobre a troca visual da 2.0.0: layout raiz, contraste dos tokens
+  próprios sobre os fundos novos, testes que citam cor, fonte ou token, o `DESIGN.md` do sistema, capturas com cada
+  diferença classificada e uma passada manual pelas telas.
+
+### Ao atualizar de 1.x
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
+   (`REPLICAR.md`, seção 7). Apague `docs/tema-mppa/preview-v2/`, se existir.
+2. No layout raiz, ponha só a Inter (`--font-inter`) no `<html>` e tire a Outfit, o `data-tema` e a propriedade
+   `tema` do `TemaMppaProvider`; troque qualquer `useTemaVariante`.
+3. Quem estava no padrão muda de aparência por inteiro: confira o contraste dos tokens próprios sobre os fundos novos,
+   os testes que citam cor, fonte, raio ou token e o `DESIGN.md` do sistema (`verificar-design.mjs`), e compare as
+   capturas. Quem já usava a v2 só faz o passo 2.
+4. Troque a versão na seção "Interface" do `AGENTS.md` para 2.0.0.
+
 ## 1.14.1 — 2026-11-14
 
 O primeiro consumidor a atualizar para a 1.14.0 (o Heimdall) devolveu 11 pontos que o roteiro não previa

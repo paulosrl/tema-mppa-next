@@ -1,6 +1,8 @@
 /*
- * Tema MPPA: azul de ação e vermelho institucional sobre ardósia (claro) e marinho (escuro), Outfit, cantos de
- * 8 a 16px, sombras em camadas, ícones em caixa com degradê e gráficos com degradê (estética de 12 nov. 2026).
+ * Tema MPPA: a aparência do "Moveflux Design System" (14 nov. 2026) com a regra de cores institucional. Do modelo
+ * vêm a forma (quadros de 24px com contorno fino e sombra em camadas, Inter em peso 600, fundo da página mais
+ * escuro que o cartão, tiles internos, selos e rótulos sem maiúsculas, quadros sem faixa colorida no topo) e os
+ * neutros (pedra quente, clara e escura). A regra de cores é a institucional, abaixo.
  *
  * Equilíbrio de cores: a ação é azul (botão primário, foco, links de ação, item ativo da barra, ícone
  * padrão de seção e gráficos); o vermelho só aparece com significado: destrutivo/erro e identidade
@@ -16,31 +18,28 @@
   --radius: 0.5rem;
   /* Altura única das faixas do shell: cabeçalho, marca, "Recolher" e rodapé ficam alinhados por ela. */
   --shell-bar: 3.875rem;
-  /* Variante em uso (`data-tema` no <html>); `padrao` é a estética de 12 nov. 2026. */
-  --tema-variante: padrao;
-  /* Fonte do tema (a v2 troca por Inter), raio e borda de topo dos quadros: o padrão mantém Outfit, 16px e 3px. */
-  --font-tema: var(--font-outfit);
-  --card-radius: calc(var(--radius) * 2);
-  --card-top-width: 3px;
+  /* O modelo usa 600 nos títulos; o 700 e o 800 do Tailwind viram 600. */
+  --font-weight-bold: 600;
+  --font-weight-extrabold: 600;
 
-  /* Ardósia: fundo #f4f7fb destaca cartão e barra brancos; cinzas e bordas azulados. */
-  --background: #f4f7fb;
-  --foreground: #0f172a;
+  /* Pedra quente: fundo #e7e5e4, cartão branco, tile interno #fafaf9; texto #1c1917 (13,93:1 no fundo, 17,49:1
+     no cartão). Secundário #5f5a56: 5,42:1 no fundo, 6,24:1 no #f5f5f4 e 6,9:1 no cartão. */
+  --background: #e7e5e4;
+  --foreground: #1c1917;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #1c1917;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
+  --popover-foreground: #1c1917;
 
-  /* Azul de ação (o mesmo do Heimdall): 9,11:1 com branco e sobre o cartão, 8,48:1 sobre o fundo. */
+  /* Azul de ação (o mesmo do Heimdall): 9,11:1 com branco e sobre o cartão, 7,26:1 sobre o fundo. */
   --primary: #0842a1;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  /* Secundário cinza-ardósia: #64748b escurecido para 4,5:1 no muted (4,67:1; 4,76:1 no fundo; 5,12:1 no cartão). */
-  --muted-foreground: #5f6f86;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
+  --secondary: #f5f5f4;
+  --secondary-foreground: #1c1917;
+  --muted: #fafaf9;
+  --muted-foreground: #5f5a56;
+  --accent: #f5f5f4;
+  --accent-foreground: #1c1917;
   /* Item selecionado do menu: azul sólido #bfdbfe, sem degradê, texto azul-marinho #0a2a66 (9,62:1), barra de
      3,5px em azul forte à esquerda e brilho azul. O item sob o ponteiro usa o azul sutil de `--sidebar-hover`. */
   --highlight: #bfdbfe;
@@ -50,18 +49,18 @@
 
   --destructive: #991b1b;
   --destructive-foreground: #ffffff;
-  /* Status como texto sobre superfície neutra: 12:1 ou mais sobre o muted (#f4f4f5). */
-  --success: #08351f; /* 12,45:1 no muted */
+  /* Status como texto sobre superfície neutra: 12:1 ou mais sobre o muted (#fafaf9). */
+  --success: #08351f; /* 13,06:1 no muted */
   --success-foreground: #ffffff;
-  --warning: #432506; /* 12,73:1 no muted */
+  --warning: #432506; /* 13,35:1 no muted */
   --warning-foreground: #ffffff;
 
-  --border: #e2e8f0;
-  /* Contorno dos quadros: Card, PanelCard, LinkCard, InfoField, caixa do PageGreeting e linhas do DataTable.
-     Cabeçalho, rodapé, barra lateral e diálogos seguem com a --border. */
-  --card-border: #b5bac0; /* #e2e8f0 (a --border) escurecido 20% */
-  --input: #e2e8f0;
-  --ring: #0842a1; /* 8,48:1 sobre o fundo */
+  --border: #e7e5e4;
+  /* Contorno fino dos quadros (o ring-1 do modelo): Card, PanelCard, LinkCard, InfoField, caixa do PageGreeting e
+     linhas do DataTable. Cabeçalho, rodapé, barra lateral e diálogos seguem com a --border. */
+  --card-border: #e7e5e4;
+  --input: #d6d3d1;
+  --ring: #0842a1; /* 7,26:1 sobre o fundo */
 
   --overlay: #000000;
   --logo-surface: #ffffff;
@@ -70,9 +69,9 @@
      traço #e11d48 e texto #be123c (5,52:1 sobre o selo). */
   --institutional: #e11d48;
   --institutional-foreground: #be123c;
-  /* Cabeçalho e rodapé translúcidos com desfoque; fundo com brilho vermelho e azul nos cantos de cima. */
+  /* Cabeçalho e rodapé translúcidos com desfoque; fundo liso, sem brilho nos cantos. */
   --header: rgba(255, 255, 255, 0.85);
-  --canvas-glow: radial-gradient(at 0% 0%, rgba(158, 27, 70, 0.04) 0px, transparent 45%), radial-gradient(at 100% 0%, rgba(37, 99, 235, 0.05) 0px, transparent 45%);
+  --canvas-glow: none;
   /* Avatar: degradê do vermelho ao azul, texto branco (4,70:1 e 5,17:1); ponto de "conectado" verde. */
   --avatar-from: #e11d48;
   --avatar-to: #2563eb;
@@ -83,10 +82,10 @@
   /* Brilho do degradê dos ícones de seção. */
   --tone-sheen: rgba(255, 255, 255, 0.7);
 
-  /* Sombras em camadas: superfície (abas, item ativo), cartão e cartão sob o mouse. */
-  --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --card-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 1px 3px -1px rgba(15, 23, 42, 0.03);
-  --card-shadow-hover: 0 14px 28px -6px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+  /* Sombras do modelo: contorno de 1px e camadas de 0,5px a 12px a 6%; o hover escurece e sobe um pouco. */
+  --shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0 3px 3px -1.5px rgba(0, 0, 0, 0.06);
+  --card-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0 3px 3px -1.5px rgba(0, 0, 0, 0.06), 0 6px 6px -3px rgba(0, 0, 0, 0.06), 0 12px 12px -6px rgba(0, 0, 0, 0.06), 0 24px 24px -12px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 2px -0.5px rgba(0, 0, 0, 0.08), 0 6px 6px -1.5px rgba(0, 0, 0, 0.08), 0 12px 12px -3px rgba(0, 0, 0, 0.07), 0 24px 24px -6px rgba(0, 0, 0, 0.07), 0 36px 36px -12px rgba(0, 0, 0, 0.07);
   --bar-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   --drawer-shadow: 8px 0 24px rgba(0, 0, 0, 0.22);
 
@@ -128,7 +127,7 @@
   --brand-mark-foreground: #ffffff;
 
   /* Peças de metas (barras, anéis, capa com imagem): degradês só gráficos, sem texto, e a trilha das barras. */
-  --bar-track: #e2e8f0;
+  --bar-track: #e7e5e4;
   --bar-amber-from: #fbbf24;
   --bar-amber-to: #f97316;
   --bar-rose-from: #fb7185;
@@ -142,18 +141,18 @@
   --bar-yellow-from: #facc15;
   --bar-yellow-to: #f97316;
   /* Capa com imagem (`MediaCard`): fundo escuro, texto claro sobre a imagem e sombra de seis camadas. */
-  --media: #0f172a;
+  --media: #1c1917;
   --media-foreground: #ffffff;
   --media-muted: #e2e8f0;
   --media-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06), 0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #334155;
+  --sidebar-foreground: #44403c;
   --sidebar-primary: #0842a1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #0f172a;
-  /* Fundo azul do item do menu sob o ponteiro: texto com 16,10:1 (9,34:1 no da barra). */
+  --sidebar-accent: #f5f5f4;
+  --sidebar-accent-foreground: #1c1917;
+  /* Fundo azul do item do menu sob o ponteiro: texto com 15,77:1 (9,26:1 no da barra). */
   --sidebar-hover: #ecf4fe;
   /* A borda da barra é a borda geral: as faixas da barra e do conteúdo não podem divergir. */
   --sidebar-border: var(--border);
@@ -161,25 +160,25 @@
 }
 
 .dark {
-  /* Marinho: fundo #070b12, barra #0c121e, cartão #111827, muted #182235. */
-  --background: #070b12;
-  --foreground: #f8fafc;
-  --card: #111827;
-  --card-foreground: #f8fafc;
-  --popover: #111827;
-  --popover-foreground: #f8fafc;
+  /* Pedra escura: fundo #0c0a09, barra #12100f, cartão #1c1917, muted #292524. Secundário #a8a29e: 6,01:1 no
+     muted, 6,93:1 no cartão, 7,83:1 no fundo. */
+  --background: #0c0a09;
+  --foreground: #fafaf9;
+  --card: #1c1917;
+  --card-foreground: #fafaf9;
+  --popover: #1c1917;
+  --popover-foreground: #fafaf9;
 
-  /* Azul de ação (o mesmo do Heimdall): 7,04:1 sobre o cartão, 7,90:1 sobre o fundo e 5,92:1 sobre o
+  /* Azul de ação (o mesmo do Heimdall): 6,95:1 sobre o cartão, 7,85:1 sobre o fundo e 6,03:1 sobre o
      muted; texto escuro (#080c16) sobre ele com 7,76:1. */
   --primary: #61a6fa;
   --primary-foreground: #080c16;
-  --secondary: #182235;
-  --secondary-foreground: #f8fafc;
-  --muted: #182235;
-  /* Secundário cinza: 6,21:1 no muted, 6,92:1 no cartão, 7,69:1 no fundo. */
-  --muted-foreground: #94a3b8;
-  --accent: #182235;
-  --accent-foreground: #f8fafc;
+  --secondary: #292524;
+  --secondary-foreground: #fafaf9;
+  --muted: #292524;
+  --muted-foreground: #a8a29e;
+  --accent: #292524;
+  --accent-foreground: #fafaf9;
   /* Item selecionado: azul sólido #2547a8, sem degradê, texto branco (8,25:1); barra azul-clara. */
   --highlight: #2547a8;
   --highlight-foreground: #ffffff;
@@ -187,25 +186,24 @@
   --highlight-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.45);
 
   --destructive: #f87171;
-  --destructive-foreground: #070b12;
-  --success: #bbf7d0; /* 12,29:1 no muted, 14,62:1 no cartão */
-  --success-foreground: #070b12;
-  --warning: #fef08a; /* 12,80:1 no muted, 15,22:1 no cartão */
-  --warning-foreground: #070b12;
+  --destructive-foreground: #0c0a09;
+  --success: #bbf7d0; /* 12,52:1 no muted, 14,43:1 no cartão */
+  --success-foreground: #0c0a09;
+  --warning: #fef08a; /* 13,03:1 no muted, 15,03:1 no cartão */
+  --warning-foreground: #0c0a09;
 
   --border: rgba(255, 255, 255, 0.08);
-  /* Contorno azul dos quadros (12 nov. 2026), para eles não sumirem no fundo escuro de alguns monitores. */
-  --card-border: #3f6396;
-  --input: rgba(255, 255, 255, 0.08);
-  --ring: #61a6fa; /* 7,83:1 sobre o fundo */
+  --card-border: #44403c;
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #61a6fa; /* 7,85:1 sobre o fundo */
 
   --overlay: #000000;
   --logo-surface: #ffffff;
 
   --institutional: #fb7185;
   --institutional-foreground: #fb7185; /* 6,40:1 sobre o selo */
-  --header: rgba(12, 18, 30, 0.82);
-  --canvas-glow: radial-gradient(at 10% 0%, rgba(225, 29, 72, 0.08) 0px, transparent 50%), radial-gradient(at 90% 5%, rgba(37, 99, 235, 0.08) 0px, transparent 50%);
+  --header: rgba(18, 16, 15, 0.82);
+  --canvas-glow: none;
   --online: #10b981;
   --theme-icon: #60a5fa;
   --tone-sheen: rgba(255, 255, 255, 0.04);
@@ -215,7 +213,7 @@
   --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   --card-shadow-hover: 0 18px 36px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
-  /* Ícones de seção no escuro: a cor a 18% sobre a barra #0c121e, gravada em hex para o contraste ser medido;
+  /* Ícones de seção no escuro: a cor a 18% sobre a barra, gravada em hex para o contraste ser medido;
      traço com 5,93:1 ou mais. */
   --tone-red: #321426;
   --tone-red-foreground: #fb7185; /* 6,17:1 */
@@ -234,8 +232,8 @@
   --tone-amber: #362b1b;
   --tone-amber-foreground: #fcd34d; /* 9,59:1 */
 
-  /* Gráficos no escuro: as pontas têm 3:1 ou mais sobre o cartão (#111827): forte #3b82f6 (4,82:1) a
-     #61a6fa (7,05:1); suave #4f78b8 (3,98:1) a #7aa2dd. */
+  /* Gráficos no escuro: as pontas têm 3:1 ou mais sobre o cartão (#1c1917): forte #3b82f6 (4,75:1) a
+     #61a6fa (6,95:1); suave #4f78b8 (3,92:1) a #7aa2dd (6,70:1). */
   --chart-strong-from: #3b82f6;
   --chart-strong-to: #61a6fa;
   --chart-soft-from: #4f78b8;
@@ -246,152 +244,65 @@
   --chart-4: #7aa2dd;
   --chart-5: #a9c5f5;
 
-  --bar-track: #243047;
+  --bar-track: #44403c;
+  --media: #1c1917;
 
-  --sidebar: #0c121e;
-  --sidebar-foreground: #cbd5e1;
+  --sidebar: #12100f;
+  --sidebar-foreground: #d6d3d1;
   --sidebar-primary: #61a6fa;
   --sidebar-primary-foreground: #080c16;
-  --sidebar-accent: #182235;
-  --sidebar-accent-foreground: #f8fafc;
-  /* Azul-marinho do item sob o ponteiro: texto com 14,41:1 (10,15:1 no da barra). */
+  --sidebar-accent: #292524;
+  --sidebar-accent-foreground: #fafaf9;
+  /* Azul-marinho do item sob o ponteiro: texto com 14,44:1 (10,12:1 no da barra). */
   --sidebar-hover: #142645;
   --sidebar-border: var(--border);
   --sidebar-ring: #61a6fa;
 }
 
 /*
- * Variante v2: a aparência do "Moveflux Design System" (14 nov. 2026), com a regra de cores do tema anterior.
- * Do modelo vêm a forma (quadros de 24px com contorno fino e sombra em camadas, Inter em peso 600, fundo da
- * página mais escuro que o cartão, tiles internos, selos e rótulos sem maiúsculas, quadros sem faixa colorida
- * no topo) e os neutros (pedra quente). Da regra de cores do tema anterior fica o significado: azul na ação
- * (primária, foco, item ativo, gráficos), vermelho só no que é erro ou identidade institucional, tons de
- * seção, avatar e gráficos; esses tokens são os do padrão e o verificador exige isso.
- * O atributo `data-tema="v2"` vem do <html> (layout raiz). Os seletores têm a mesma força nos dois temas
- * (:not(.dark) e .dark), para a ordem entre eles não importar; sem `data-tema`, ou com `padrao`, nada daqui vale.
- */
-:root[data-tema="v2"]:not(.dark) {
-  --tema-variante: v2;
-  --font-tema: var(--font-inter);
-  --card-radius: 1.5rem;
-  --card-top-width: 1px;
-  /* O modelo usa 600 nos títulos; o 700 e o 800 do padrão viram 600. */
-  --font-weight-bold: 600;
-  --font-weight-extrabold: 600;
-
-  /* Pedra quente: fundo #e7e5e4, cartão branco, tile interno #fafaf9; texto #1c1917 (13,93:1 no fundo, 17,49:1
-     no cartão). Secundário #5f5a56: 5,42:1 no fundo, 6,24:1 no #f5f5f4 e 6,9:1 no cartão. */
-  --background: #e7e5e4;
-  --foreground: #1c1917;
-  --card: #ffffff;
-  --card-foreground: #1c1917;
-  --popover: #ffffff;
-  --popover-foreground: #1c1917;
-  --secondary: #f5f5f4;
-  --secondary-foreground: #1c1917;
-  --muted: #fafaf9;
-  --muted-foreground: #5f5a56;
-  --accent: #f5f5f4;
-  --accent-foreground: #1c1917;
-  --border: #e7e5e4;
-  /* Contorno fino dos quadros (o ring-1 do modelo). */
-  --card-border: #e7e5e4;
-  --input: #d6d3d1;
-  --canvas-glow: none;
-  --bar-track: #e7e5e4;
-  --media: #1c1917;
-
-  --sidebar: #ffffff;
-  --sidebar-foreground: #44403c;
-  --sidebar-accent: #f5f5f4;
-  --sidebar-accent-foreground: #1c1917;
-
-  /* Sombras do modelo: contorno de 1px e cinco camadas de 0,5px a 12px a 6%; o hover escurece e sobe um pouco. */
-  --shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0 3px 3px -1.5px rgba(0, 0, 0, 0.06);
-  --card-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0 3px 3px -1.5px rgba(0, 0, 0, 0.06), 0 6px 6px -3px rgba(0, 0, 0, 0.06), 0 12px 12px -6px rgba(0, 0, 0, 0.06), 0 24px 24px -12px rgba(0, 0, 0, 0.06);
-  --card-shadow-hover: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 2px -0.5px rgba(0, 0, 0, 0.08), 0 6px 6px -1.5px rgba(0, 0, 0, 0.08), 0 12px 12px -3px rgba(0, 0, 0, 0.07), 0 24px 24px -6px rgba(0, 0, 0, 0.07), 0 36px 36px -12px rgba(0, 0, 0, 0.07);
-}
-
-:root[data-tema="v2"].dark {
-  --tema-variante: v2;
-  --font-tema: var(--font-inter);
-  --card-radius: 1.5rem;
-  --card-top-width: 1px;
-  --font-weight-bold: 600;
-  --font-weight-extrabold: 600;
-
-  /* Pedra escura: fundo #0c0a09, barra #12100f, cartão #1c1917, muted #292524. Secundário #a8a29e: 6,01:1 no
-     muted, 6,93:1 no cartão, 7,83:1 no fundo. */
-  --background: #0c0a09;
-  --foreground: #fafaf9;
-  --card: #1c1917;
-  --card-foreground: #fafaf9;
-  --popover: #1c1917;
-  --popover-foreground: #fafaf9;
-  --secondary: #292524;
-  --secondary-foreground: #fafaf9;
-  --muted: #292524;
-  --muted-foreground: #a8a29e;
-  --accent: #292524;
-  --accent-foreground: #fafaf9;
-  --border: rgba(255, 255, 255, 0.08);
-  --card-border: #44403c;
-  --input: rgba(255, 255, 255, 0.1);
-  --canvas-glow: none;
-  --header: rgba(18, 16, 15, 0.82);
-  --bar-track: #44403c;
-  --media: #1c1917;
-
-  --sidebar: #12100f;
-  --sidebar-foreground: #d6d3d1;
-  --sidebar-accent: #292524;
-  --sidebar-accent-foreground: #fafaf9;
-}
-
-/*
- * Forma da v2 nas peças que já existem. Marcadores `tm-*` nas peças da camada; regras sem camada (@layer),
- * que vencem as classes do Tailwind sem `!important`. No padrão, nada disto vale.
+ * Forma das peças. Marcadores `tm-*` nas peças da camada; regras sem camada (@layer), que vencem as classes do
+ * Tailwind sem `!important`.
  */
 /* Caixas de ícone chapadas, como as do modelo (sem brilho nem borda); linhas de campo como tile interno. */
-:root[data-tema="v2"] .tm-tone {
+.tm-tone {
   background-image: none;
   box-shadow: none;
 }
-:root[data-tema="v2"] .tm-tile {
+.tm-tile {
   border-radius: 1rem;
   background-color: var(--muted);
 }
 /* Cabeçalho do cartão sem a linha de baixo; o título do cartão em 20px, e o rótulo de métrica em 14px. */
-:root[data-tema="v2"] .tm-panel-head {
+.tm-panel-head {
   border-bottom-width: 0;
   padding-bottom: 0.75rem;
 }
-:root[data-tema="v2"] .tm-card-title {
+.tm-card-title {
   font-size: 1.25rem;
   letter-spacing: -0.025em;
 }
-:root[data-tema="v2"] .tm-metric-label {
+.tm-metric-label {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--muted-foreground);
 }
 /* Rótulos e títulos de seção sem maiúsculas; o ponto colorido do título some. */
-:root[data-tema="v2"] .tm-label {
+.tm-label {
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
 }
-:root[data-tema="v2"] .tm-section-title {
+.tm-section-title {
   font-size: 1.125rem;
   letter-spacing: -0.025em;
   text-transform: none;
 }
-:root[data-tema="v2"] .tm-section-dot {
+.tm-section-dot {
   display: none;
 }
 /* Etiquetas e selos como o selo de status do modelo: pílula, sem borda, 12px, peso 500. */
-:root[data-tema="v2"] .tm-tag {
+.tm-tag {
   padding: 0.25rem 0.5rem;
   border-color: transparent;
   border-radius: 9999px;
@@ -400,13 +311,13 @@
   letter-spacing: 0;
   text-transform: none;
 }
-:root[data-tema="v2"] .tm-status {
+.tm-status {
   padding: 0.25rem 0.5rem;
   border-color: transparent;
   font-size: 0.75rem;
   font-weight: 500;
 }
-:root[data-tema="v2"] .tm-status > span {
+.tm-status > span {
   display: none;
 }
 
@@ -494,12 +405,12 @@
   --color-sidebar-hover: var(--sidebar-hover);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: var(--font-tema), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-tema), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Escala presa a --radius (8px): md = 6px, lg = 8px (ícones, abas), xl = 12px (itens do menu, botões,
-     caixas), 2xl = 16px (cartões). */
+     caixas), 2xl = 16px (tiles). Os quadros usam --radius-card (24px). */
   --radius-xs: calc(var(--radius) * 0.25);
   --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: calc(var(--radius) * 0.75);
@@ -508,8 +419,8 @@
   --radius-2xl: calc(var(--radius) * 2);
   --radius-3xl: calc(var(--radius) * 3);
   --radius-4xl: calc(var(--radius) * 4);
-  /* Raio dos quadros (Card, PanelCard, LinkCard): 16px no padrão, 24px na v2. */
-  --radius-card: var(--card-radius);
+  /* Raio dos quadros (Card, PanelCard, LinkCard): 24px. */
+  --radius-card: 1.5rem;
 
   --shadow-surface: var(--shadow);
   --shadow-card: var(--card-shadow);
@@ -531,7 +442,7 @@
   }
 
   html {
-    font-family: var(--font-tema), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   }
 
   body {
@@ -566,13 +477,10 @@
  */
 @custom-variant tm-collapsed (&:where([data-tm-sidebar="collapsed"], [data-tm-sidebar="collapsed"] *));
 
-/* Borda de topo dos quadros com destaque: 3px no padrão, fio de 1px na v2 (onde a cor do destaque não vale). */
+/* Borda de topo dos quadros: um fio de 1px na cor do contorno, sem faixa colorida (a cor de `accent` não vale). */
 @utility tm-card-top {
-  border-top-width: var(--card-top-width);
-
-  :root[data-tema="v2"] & {
-    border-top-color: var(--card-border) !important;
-  }
+  border-top-width: 1px;
+  border-top-color: var(--card-border) !important;
 }
 
 /* Barras de gráfico com degradê e topo arredondado (6px em cima, 2px embaixo). */

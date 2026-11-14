@@ -47,7 +47,6 @@ const files = [
   "src/styles/tema-mppa.css",
   "docs/prototipo/index.html",
   "docs/preview/index.html",
-  "docs/preview-v2/index.html",
   // Logos padrão do cabeçalho (REPLICAR, 4.5); o copy-template as leva ao public/ do consumidor.
   "public/mppa-logo.png",
   "public/ciia.png",
