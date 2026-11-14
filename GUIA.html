@@ -116,7 +116,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       <div class="options">
         <label class="option"><input type="radio" name="situacao" value="zero" id="situacao-zero"><strong>Do zero</strong><span>Repositório vazio ou sem frontend. O agente cria o app já com o tema.</span></label>
         <label class="option"><input type="radio" name="situacao" value="existente" id="situacao-existente" checked><strong>Já existe, sem o tema</strong><span>App em uso, com telas próprias. Adoção em fases.</span></label>
-        <label class="option"><input type="radio" name="situacao" value="atualizar" id="situacao-atualizar"><strong>Já tem o tema</strong><span>Usa uma versão anterior do tema e vai atualizar. Vindo de uma 1.x, a aparência muda por inteiro.</span></label>
+        <label class="option"><input type="radio" name="situacao" value="atualizar" id="situacao-atualizar"><strong>Já tem o tema</strong><span>Usa uma versão anterior do tema e vai atualizar. Vindo de uma 1.x no padrão, a aparência muda por inteiro; quem já usava a variante v2 da 1.14.x não vê mudança.</span></label>
       </div>
     </fieldset>
     <fieldset>
@@ -174,7 +174,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "2.0.1";
+  var VERSAO = "2.0.2";
   var PASTA_ENTREGA = "tema-mppa-next-v" + VERSAO; // a pasta de fora, que leva a versão no nome (npm run empacotar)
   var spanAgents = document.getElementById("versao-agents");
   if (spanAgents) spanAgents.textContent = VERSAO;
@@ -400,16 +400,16 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
   };
 
   // ---- Já tem o tema: atualizar ----
-  // Vindo de uma versão 1.x, a aparência muda por inteiro: o tema é um só.
+  // Vindo de uma 1.x no padrão, a aparência muda por inteiro; vindo da variante v2 da 1.14.x, não muda: o tema é um só.
   var NOVA_APARENCIA = "fonte Inter, quadros de 24px com contorno fino e sombra em camadas, fundo em pedra, quadros sem faixa colorida no topo, selos e rótulos sem maiúsculas";
   var ALVO_ATUALIZAR = "atualizar a interface tema-mppa deste repositório para a " + VERSAO;
   var COMO_ATUALIZAR = linhas(
     "- siga a seção 7 do tema-mppa-next/REPLICAR.md à risca;",
     "- faça os passos da seção \"Ao atualizar de\" do tema-mppa-next/CHANGELOG.md de cada versão entre a atual deste sistema e a " + VERSAO + ", inclusive tirar os contornos locais que a versão nova tornou desnecessários;",
-    "- se a versão atual deste sistema é 1.x, a aparência muda por inteiro (" + NOVA_APARENCIA + ") e isso é esperado; a regra de cores (azul na ação, vermelho só com significado) e os componentes são os mesmos;"
+    "- se a versão atual deste sistema é 1.x no padrão (o <html> do layout raiz sem data-tema, ou com data-tema=\"padrao\"), a aparência muda por inteiro (" + NOVA_APARENCIA + ") e isso é esperado; se ele já usa a variante v2 da 1.14.x (data-tema=\"v2\"), a aparência não muda: só saem os restos da variante, e qualquer diferença visual é defeito; a regra de cores (azul na ação, vermelho só com significado) e os componentes são os mesmos;"
   );
   var MUDANCA_DE_APARENCIA = linhas(
-    "- se a versão atual deste sistema é 1.x, faça também:",
+    "- se a versão atual deste sistema é 1.x, faça também (os itens de contraste e de testes só valem para quem estava no padrão):",
     "  - layout raiz (REPLICAR.md, 4.4): a fonte é só a Inter (--font-inter) no <html>; tire a Outfit, o data-tema do <html>, a propriedade tema do TemaMppaProvider e qualquer useTemaVariante, e apague a fonte que ficou sem uso;",
     "  - apague docs/tema-mppa/preview-v2/, se existir;",
     "  - contraste dos tokens próprios deste sistema sobre os fundos novos (REPLICAR.md, 8: o fundo #e7e5e4 no claro e #0c0a09 no escuro, o cartão #1c1917 e o muted #292524 no escuro): texto principal com 7:1 e secundário com 4,5:1 nos dois temas; o que cair, ajuste no token do sistema, nunca na camada;",
@@ -422,7 +422,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       COMO_ATUALIZAR, BRANCH, REGRAS[0],
       MUDANCA_DE_APARENCIA,
       REGRAS[1],
-      capturas("as telas principais", "na main e na branch, e compare; classifique cada diferença: esperada pela mudança de aparência (só vindo de uma 1.x: " + NOVA_APARENCIA + "), anunciada pelo CHANGELOG ou defeito; defeito, corrija ou relate. Sem mudança de aparência anunciada, diferença visual é defeito"),
+      capturas("as telas principais", "na main e na branch, e compare; classifique cada diferença: esperada pela mudança de aparência (só vindo de uma 1.x no padrão: " + NOVA_APARENCIA + "), anunciada pelo CHANGELOG ou defeito; defeito, corrija ou relate. Sem mudança de aparência anunciada, diferença visual é defeito"),
       "- vindo de uma 1.x, no fim, suba o sistema e percorra as telas principais nos temas claro e escuro, em 1280px e 390px, antes do relatório;",
       "- apague a pasta tema-mppa-next/ logo depois da cópia, como a seção 7 manda, e atualize a versão na seção \"Interface\" do AGENTS.md;",
       COMMIT, "", PARADA, "", relatorio("quais contornos locais saíram, cada diferença das capturas e como a classificou, o que ficou para a execução manual")
@@ -430,7 +430,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
   };
   var casoAtualizar = function (processo) {
     var titulo = "Atualizar para a " + VERSAO;
-    var conferir = ["Olha as capturas, main e branch lado a lado. Vindo de uma versão 1.x, a diferença esperada é a da aparência nova (" + NOVA_APARENCIA + ")."].concat(TESTE_MAO);
+    var conferir = ["Olha as capturas, main e branch lado a lado. Vindo de uma 1.x no padrão, a diferença esperada é a da aparência nova (" + NOVA_APARENCIA + "); vindo da variante v2, não deve haver diferença visual."].concat(TESTE_MAO);
     if (processo === "sem") {
       return [preparar("atualizar", processo), {
         id: "atualizar", titulo: titulo, onde: "No Claude Code, no repositório do sistema.",

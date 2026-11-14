@@ -747,9 +747,10 @@ da seção 7 e, além deles:
 2. **Layout raiz (4.4):** deixe só a Inter, em `--font-inter`, no `className` do `<html>`; apague a fonte antiga
    (a Outfit) e o atributo de variante do `<html>`; tire a propriedade `tema` do `TemaMppaProvider` e todo uso de
    `useTemaVariante` e do tipo de variante. A camada não os exporta mais.
-3. **Consumidor que estava na `v2` da 1.14.x:** é só o passo 2 (remover o atributo de variante e a propriedade `tema`);
-   a aparência já era esta. Apague também `docs/tema-mppa/preview-v2/`, que a cópia não remove.
-4. **Consumidor que estava no padrão:** faz os passos 1 e 2 e a troca visual completa, os passos 5 a 8.
+3. **Consumidor que estava na `v2` da 1.14.x** (o layout raiz passava a variante `v2` ao `<html>` e ao
+   `TemaMppaProvider`): é só o passo 2 (remover o atributo de variante e a propriedade `tema`); a aparência já era esta,
+   e qualquer diferença nas capturas é defeito. Apague também `docs/tema-mppa/preview-v2/`, que a cópia não remove.
+4. **Consumidor que estava no padrão** (layout raiz sem variante, ou com `padrao`): faz os passos 1 e 2 e a troca visual completa, os passos 5 a 8.
 5. **Tokens próprios:** confira o contraste dos tokens próprios do consumidor (seção 8) sobre os fundos novos: a pedra
    quente (`#e7e5e4` no claro, `#0c0a09` no escuro) no lugar da ardósia e do marinho. Painel próprio que imita o cartão
    passa a raio 24px, contorno de 1px e `shadow-card`. O `verificar-design.mjs` não mede token próprio: calcule a
@@ -951,7 +952,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.0.1)
+## Interface (tema-mppa 2.0.2)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

@@ -3,6 +3,28 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.0.2 — 2026-11-14
+
+Achado ao preparar a atualização do Heimdall, que já estava na variante v2 da 1.14.x: o prompt do guia dizia que,
+vindo de qualquer 1.x, "a aparência muda por inteiro", o que só vale para quem estava no padrão. Só os textos
+(`GUIA.html` e `REPLICAR.md`) mudam; a camada visual e a API não mudam, por isso sobe o último número.
+
+### Corrigido
+
+- **Prompt de atualizar (`GUIA.html`):** separa os dois casos de uma 1.x. No padrão, a aparência muda por inteiro e a
+  diferença das capturas é esperada; na variante v2 da 1.14.x, a aparência não muda, saem só os restos da variante e
+  qualquer diferença visual é defeito. Os itens de contraste e de testes só valem para quem estava no padrão.
+- **Como o agente reconhece o caso:** o prompt diz que o `<html>` do layout raiz sem `data-tema`, ou com
+  `data-tema="padrao"`, é o padrão, e com `data-tema="v2"` é a v2. O texto da opção "Já tem o tema" do guia diz o mesmo.
+- **`REPLICAR.md`, 7.2:** os passos 3 e 4 dizem como reconhecer cada caso (variante `v2` passada ao `<html>` e ao
+  `TemaMppaProvider`, ou ausente) e que, na v2, qualquer diferença nas capturas é defeito.
+
+### Ao atualizar de 2.0.1
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
+   (`REPLICAR.md`, seção 7). Nada a mudar nas telas.
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 2.0.2.
+
 ## 2.0.1 — 2026-11-14
 
 Achados do teste cego dos prompts do guia da 2.0.0 (dois agentes sem contexto atualizaram um consumidor de teste
