@@ -3,6 +3,29 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.0.3 — 2026-11-14
+
+Dois restos achados no teste cego da 2.0.0. Só a tela de demonstração e as imagens de comparação mudam; a camada
+visual, a API e os textos do roteiro não mudam, por isso sobe o último número.
+
+### Corrigido
+
+- **Demonstração, "Painel de metas":** a grade dos três `MacroTile` ficava ao lado do anel com `flex-1`, que parte de
+  largura zero e nunca quebrava de linha; a 390px cada coluna tinha 29px, o rótulo "Carboidratos" saía cortado e
+  "178 g" quebrava em duas linhas. Agora a grade quebra abaixo do anel quando falta espaço e usa colunas que se
+  adaptam (`grid-cols-[repeat(auto-fit,minmax(6.5rem,1fr))]`). Conferido de 1280px a 320px: nenhum texto sai cortado.
+  O `MacroTile` não muda; quem repete esse arranjo no sistema próprio deve evitar `flex-1` ao lado de algo largo.
+
+### Removido
+
+- `docs/comparacao/menu-movel-390-claro.png`: sobra da aparência antiga, que nenhum script gera e nada cita.
+
+### Ao atualizar de 2.0.2
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
+   (`REPLICAR.md`, seção 7). Nada a mudar nas telas. O sistema que repetiu o arranjo de macros acima pode ajustá-lo.
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 2.0.3.
+
 ## 2.0.2 — 2026-11-14
 
 Achado ao preparar a atualização do Heimdall, que já estava na variante v2 da 1.14.x: o prompt do guia dizia que,

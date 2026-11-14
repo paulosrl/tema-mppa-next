@@ -255,7 +255,7 @@ function DemoMetas() {
         <Card title="Nutrição" description="Calorias e macronutrientes">
           <div className="mt-5 flex flex-wrap items-center gap-6">
             <ProgressRing tone="balance" thick value="1.420" unit="kcal" label="Calorias: 1.420 kcal" />
-            <div className="grid min-w-0 flex-1 grid-cols-3 gap-3">
+            <div className="grid min-w-0 grow basis-72 grid-cols-[repeat(auto-fit,minmax(6.5rem,1fr))] gap-3">
               <MacroTile tone="red" label="Carboidratos" value="178 g" percent={65} />
               <MacroTile tone="blue" label="Proteínas" value="92 g" percent={80} />
               <MacroTile tone="amber" label="Gorduras" value="38 g" percent={45} />
