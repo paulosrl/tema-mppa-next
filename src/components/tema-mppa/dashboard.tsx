@@ -192,7 +192,7 @@ export function PanelCard({
   return (
     <article
       className={cn(
-        "relative min-w-0 overflow-hidden rounded-2xl border border-card-border border-t-[3px] bg-card text-card-foreground shadow-card",
+        "relative min-w-0 overflow-hidden rounded-card border border-card-border tm-card-top bg-card text-card-foreground shadow-card",
         accentBorder[accent],
         className,
       )}
@@ -278,7 +278,7 @@ export function LinkCard({
   const body = (
     <span
       className={cn(
-        "relative flex h-full min-w-0 flex-col justify-between rounded-2xl border border-card-border border-t-[3px] bg-card p-6 text-left text-card-foreground shadow-card transition-all duration-200 group-hover:-translate-y-0.5 group-hover:bg-card group-hover:shadow-card-hover motion-reduce:group-hover:translate-y-0",
+        "relative flex h-full min-w-0 flex-col justify-between rounded-card border border-card-border tm-card-top bg-card p-6 text-left text-card-foreground shadow-card transition-all duration-200 group-hover:-translate-y-0.5 group-hover:bg-card group-hover:shadow-card-hover motion-reduce:group-hover:translate-y-0",
         accentBorder[accent],
       )}
     >
@@ -313,7 +313,7 @@ export function LinkCard({
     </span>
   );
   const outer = cn(
-    "group block h-full rounded-2xl text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60",
+    "group block h-full rounded-card text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60",
     className,
   );
   if (target.href) {

@@ -311,6 +311,33 @@ for (const surface of ["background", "card"]) {
 }
 if (luminance(dark["primary-foreground"]) > luminance(dark.primary)) errors.push("escuro: o texto sobre a primária deve ser escuro");
 requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
+// Variante v2: os mesmos contrastes do padrão, sobre os tokens dela (que sobrescrevem os do padrão).
+{
+  const v2Light = { ...light, ...block(':root[data-tema="v2"]:not(.dark)') };
+  const v2Dark = { ...dark, ...block(':root[data-tema="v2"].dark') };
+  for (const [theme, tokens, main, accent] of [["v2 claro", v2Light, 7, 7], ["v2 escuro", v2Dark, 7, 4.5]]) {
+    for (const surface of ["background", "card", "muted", "sidebar", "popover"]) {
+      requireContrast(theme, tokens, "foreground", surface, main);
+      requireContrast(theme, tokens, "muted-foreground", surface, 4.5);
+    }
+    requireContrast(theme, tokens, "highlight-foreground", "highlight", 7);
+    requireContrast(theme, tokens, "highlight-bar", "highlight", 3);
+    requireContrast(theme, tokens, "sidebar-foreground", "sidebar", 7);
+    requireContrast(theme, tokens, "foreground", "sidebar-hover", 7);
+    requireContrast(theme, tokens, "primary-foreground", "primary", accent);
+    for (const surface of ["background", "card"]) requireContrast(theme, tokens, "primary", surface, accent === 7 ? 7 : 4.5);
+    requireContrast(theme, tokens, "ring", "background", 3);
+    requireContrast(theme, tokens, "chart-strong-from", "card", 3);
+    requireContrast(theme, tokens, "chart-strong-to", "card", 3);
+    requireContrast(theme, tokens, "avatar-foreground", "avatar-from", 4.5);
+    requireContrast(theme, tokens, "avatar-foreground", "avatar-to", 4.5);
+    if (tokens["card-radius"] !== "1.5rem") errors.push(`${theme}: --card-radius deve ser 1.5rem (quadros de 24px), encontrado ${tokens["card-radius"] ?? "ausente"}`);
+    if (tokens["font-tema"] !== "var(--font-inter)") errors.push(`${theme}: --font-tema deve ser var(--font-inter)`);
+  }
+  if (light["card-radius"] !== "calc(var(--radius) * 2)" || light["card-top-width"] !== "3px" || light["font-tema"] !== "var(--font-outfit)") {
+    errors.push("padrão: --card-radius (16px), --card-top-width (3px) e --font-tema (Outfit) devem continuar os de antes");
+  }
+}
 // Azul de ação: o mesmo do Heimdall, nos dois temas, em todos os tokens de ação (decisão de 11 nov. 2026).
 const actionBlue = { light: ["#0842a1", "#ffffff"], dark: ["#61a6fa", "#080c16"] };
 for (const [theme, tokens, [blue, onBlue]] of [["claro", light, actionBlue.light], ["escuro", dark, actionBlue.dark]]) {

@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "./utils";
 
-/** Cartão: borda, raio 16px (`rounded-2xl`), fundo do cartão, sombra em camadas e padding 24px. */
+/** Cartão: borda, raio `rounded-card` (16px; 24px na v2), fundo do cartão, sombra em camadas e padding 24px. */
 export function Card({
   title,
   description,
@@ -20,7 +20,7 @@ export function Card({
   return (
     <article
       className={cn(
-        "relative min-w-0 rounded-2xl border border-card-border bg-card text-card-foreground shadow-card transition-all duration-200",
+        "relative min-w-0 rounded-card border border-card-border bg-card text-card-foreground shadow-card transition-all duration-200",
         padded && "p-6",
         className,
       )}
