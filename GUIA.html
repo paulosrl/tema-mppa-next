@@ -174,7 +174,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "2.0.0";
+  var VERSAO = "2.0.1";
   var PASTA_ENTREGA = "tema-mppa-next-v" + VERSAO; // a pasta de fora, que leva a versão no nome (npm run empacotar)
   var spanAgents = document.getElementById("versao-agents");
   if (spanAgents) spanAgents.textContent = VERSAO;
@@ -216,7 +216,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
   var aplicar = function (corpo) {
     return linhas("A change que você acabou de propor (a mais recente em openspec/changes/) está aprovada. Aplique-a de ponta a ponta, sem me perguntar nada no meio:", corpo);
   };
-  var ARQUIVAR = "Entrega conferida. Arquive a change como o OpenSpec deste repositório manda e faça o commit na mesma branch. Não faça merge nem push.";
+  var ARQUIVAR = "Entrega conferida. Arquive a change como o OpenSpec deste repositório manda (docs/tema-mppa/REPLICAR.md, seção 1.2, passo Arquivar) e faça o commit na mesma branch. Não faça merge nem push.";
 
   var TESTE_MAO = [
     "Roda o sistema e testa na mão: recolher o menu; tema claro, escuro e sistema; busca com <code>Ctrl K</code>; aba Administração só com perfil de administrador; celular em 390px, sem rolagem para o lado.",

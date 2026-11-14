@@ -1,5 +1,44 @@
 # Changelog
 
+Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
+saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
+
+## 2.0.1 — 2026-11-14
+
+Achados do teste cego dos prompts do guia da 2.0.0 (dois agentes sem contexto atualizaram um consumidor de teste
+da 1.14.1, um sem OpenSpec e um com). Os dois concluíram a atualização sozinhos; o que sobrou eram lacunas do
+roteiro. Só os textos (`REPLICAR.md`, `CHANGELOG.md`, `GUIA.html`) e a mensagem final do `copy-template.mjs`
+mudam; a camada visual e a API não mudam, por isso sobe o último número.
+
+### Corrigido
+
+- **Ordem na atualização:** o "Ao atualizar de 1.x" da 2.0.0 mandava copiar no passo 1, e o `REPLICAR.md` manda
+  capturar as telas antes da cópia. Agora o passo 1 do CHANGELOG manda capturar antes.
+- **`REPLICAR.md`, 7.2:** o passo 1 só remete ao passo 2 da seção 7 (antes repetia a captura); o passo 4 diz que o
+  consumidor no padrão faz os passos 1 e 2 e a troca visual completa (5 a 8), em vez de "5 a 8".
+- **`.gitignore` na atualização:** a seção 7 passa a mandar conferir que `tema-mppa-next/` e `tema-mppa-next-v*/`
+  estão ignorados (antes só a 4.1, da Fase 1, dizia isso).
+- **Convenção do CHANGELOG:** uma nota no topo diz o que o "Ao atualizar de X" significa e como somar versões.
+- **Mensagem do `copy-template.mjs`:** o fim da cópia não diz mais "Próximos passos" (contradizia o prompt do guia,
+  que manda o agente não sugerir próximos passos); diz "Depois da cópia".
+- **`accent`:** as tabelas de `PanelCard` e `LinkCard` no `REPLICAR.md` diziam "borda de cima"; agora dizem que ele
+  não tem efeito visual desde a 2.0.0, e a 7.2 diz que quem o passa pode tirá-lo.
+- **Contraste de token próprio (7.2, passo 5):** traz a fórmula da razão WCAG e o limite de cada tipo de texto,
+  porque o `verificar-design.mjs` não mede token próprio; o que cair se corrige no token do sistema.
+- **4.10:** o item 3 diz que, numa atualização, a comparação é a da branch com a `main`; o item 7 diz que o que o
+  sistema não tem (login num sistema de exemplo) vai no relatório como "não se aplica"; o caminho do `--css` em 4.9
+  lembra `src/app/globals.css`.
+- **OpenSpec (1.2):** diz o comando para arquivar (`openspec archive <nome> -y`), o que fazer com tarefa pendente (não
+  se marca como feita; vai no relatório) e que, sem nenhuma spec no projeto, a validação exige uma: numa atualização
+  visual, a capacidade `interface-tema-mppa`. O prompt de arquivar do guia cita a seção 1.2.
+- **CHANGELOG da 2.0.0:** diz que a camada passa de 25 para 24 arquivos (saiu o `tema-variante.tsx`).
+
+### Ao atualizar de 2.0.0
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
+   (`REPLICAR.md`, seção 7). Nada a mudar nas telas.
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 2.0.1.
+
 ## 2.0.0 — 2026-11-14
 
 Pedido do autor em 14 nov. 2026: uma versão só. O tema deixa de ter variantes e a última versão é a oficial. Fica a
@@ -22,7 +61,8 @@ entra aqui.
   - `data-tema` no `<html>` e a propriedade `tema` do `TemaMppaProvider`;
   - `useTemaVariante` e o tipo `TemaVariant`;
   - os tokens `--tema-variante`, `--font-tema`, `--card-radius` e `--card-top-width`;
-  - `NEXT_PUBLIC_TEMA`, a prévia `docs/preview-v2/` e o selo de variante da prévia (fica `docs/preview/`).
+  - `NEXT_PUBLIC_TEMA`, a prévia `docs/preview-v2/` e o selo de variante da prévia (fica `docs/preview/`);
+  - o arquivo `tema-variante.tsx`: a camada passa de 25 para 24 arquivos.
 - **Fonte:** só a Inter, servida como `--font-inter` no `<html>` (`REPLICAR.md`, 4.4). A Outfit sai do layout raiz.
 - **`accent` de `PanelCard` e `LinkCard`:** continua aceito, mas já não pinta o topo do quadro.
 
@@ -41,7 +81,8 @@ entra aqui.
 ### Ao atualizar de 1.x
 
 1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
-   (`REPLICAR.md`, seção 7). Apague `docs/tema-mppa/preview-v2/`, se existir.
+   (`REPLICAR.md`, seção 7), depois de capturar as telas (passo 2 da seção 7, receita em 7.1). Apague
+   `docs/tema-mppa/preview-v2/`, se existir.
 2. No layout raiz, ponha só a Inter (`--font-inter`) no `<html>` e tire a Outfit, o `data-tema` e a propriedade
    `tema` do `TemaMppaProvider`; troque qualquer `useTemaVariante`.
 3. Quem estava no padrão muda de aparência por inteiro: confira o contraste dos tokens próprios sobre os fundos novos,

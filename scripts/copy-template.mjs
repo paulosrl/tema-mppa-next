@@ -233,8 +233,8 @@ console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version});
 console.log(`- conferência do DESIGN.md do sistema: node ${rel(path.join(referenceDir, "verificar-design.mjs"))} --css <CSS com os tokens próprios>`);
 console.log(
   updating
-    ? "Próximos passos (atualização): apague a pasta tema-mppa-next/ e siga o REPLICAR.md, seção 7, a partir do passo 4 (CHANGELOG, DESIGN.md, verificação de 4.10)."
-    : "Próximos passos: apague a pasta tema-mppa-next/ e siga o REPLICAR.md, Fase 1, a partir do fim da 4.1 (conferências do consumidor que a cópia aciona) e depois 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).",
+    ? "Depois da cópia (atualização): apague a pasta tema-mppa-next/ e siga o REPLICAR.md, seção 7, a partir do passo 4 (CHANGELOG, DESIGN.md, verificação de 4.10)."
+    : "Depois da cópia: apague a pasta tema-mppa-next/ e siga o REPLICAR.md, Fase 1, a partir do fim da 4.1 (conferências do consumidor que a cópia aciona) e depois 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).",
 );
 if (staleFolders.length) {
   console.warn("Atenção: há outra pasta do modelo perto do consumidor. Apague estas (sem commit); depois desta cópia, apague também a pasta tema-mppa-next/ de onde você rodou o script:");

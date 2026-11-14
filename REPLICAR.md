@@ -82,7 +82,15 @@ Em conflito sobre **o padrão visual**, não decida: leve ao desenvolvedor no di
      implementar. O desenvolvedor revisa e pede ajustes.
   2. **Aplicar:** só quando ele aprovar, implemente as tarefas, verifique e faça o commit na branch.
   3. **Arquivar:** depois que ele conferir a entrega, arquive a change como o OpenSpec do projeto manda e
-     faça o commit na mesma branch, antes do merge.
+     faça o commit na mesma branch, antes do merge. Se o `AGENTS.md` e o `config.yaml` do projeto não dizem como,
+     use `openspec archive <nome-da-change> -y` (sem o `-y` ele pergunta). O `-y` arquiva também com tarefa
+     pendente, só avisando: uma tarefa que ficou para o desenvolvedor decidir não se marca como feita, vai no
+     relatório.
+  
+  **Specs.** A validação do OpenSpec recusa uma change sem nenhuma spec, e `openspec/specs/` pode estar vazio.
+  Numa atualização visual, crie uma capacidade `interface-tema-mppa` com os requisitos da interface (a camada
+  íntegra na versão nova, a fonte e o layout raiz, os tokens próprios com o contraste mínimo, o `DESIGN.md` em
+  dia), cada um com um cenário.
 
   Sem OpenSpec nem outro fluxo, cada fase é uma branch e um commit, sem passo de proposta.
 - **Branch:** no padrão do consumidor (por exemplo, `change/<nome>`). Sem padrão, `feat/interface-tema-mppa`
@@ -519,7 +527,7 @@ frontend, ao lado do `package.json`:
 4. Confira:
 
    ```bash
-   node docs/tema-mppa/verificar-design.mjs --css <CSS com os tokens próprios, por exemplo app/globals.css>
+   node docs/tema-mppa/verificar-design.mjs --css <CSS com os tokens próprios, por exemplo app/globals.css ou src/app/globals.css>
    ```
 
    O script reprova cor diferente da do CSS, cor da camada ausente, referência `{grupo.token}` inexistente
@@ -539,14 +547,16 @@ usuário como lista de conferência, dizendo que não foram verificados.
 2. `typecheck`, `lint`, testes e `build` do consumidor sem erro. No HTML servido (`curl` da página), o
    `<head>` traz `sessionStorage.getItem('tema-mppa-theme')`, sem "Attempted to call".
 3. Abra o app em 1280px e em 390px, nos temas claro e escuro, e compare com `docs/tema-mppa/comparacao/` e o
-   protótipo: raio, sombra, fundos, bordas, espaçamentos e cores da casca iguais.
+   protótipo: raio, sombra, fundos, bordas, espaçamentos e cores da casca iguais. Numa atualização (seção 7), a
+   comparação é a da branch com a `main` (7.1), e as diferenças esperadas são as do passo 8 da 7.2.
 4. Em 390px, a página não rola na horizontal.
 5. Com `is_admin: false`, não há abas nem itens de administração, nem na busca. Com `true`, as duas abas
    aparecem. Clicar numa aba (mesmo na já aberta) abre a página do primeiro item visível dela, na ordem da
    configuração: "Minha Página" abre o primeiro de `platformNavigation`, "Administração" o primeiro de
    `administrationNavigation`. Por isso a ordem dos itens decide a página de entrada de cada aba.
 6. Cada rota mostra o título certo, uma vez, no cabeçalho, e um só item marcado.
-7. Login, logout, sessão expirada e chamadas de dados continuam funcionando como antes.
+7. Login, logout, sessão expirada e chamadas de dados continuam funcionando como antes. O que o sistema não tem
+   (por exemplo, login num sistema de exemplo só com demonstração) vai no relatório como "não se aplica".
 8. As conferências do consumidor que leem todo arquivo rastreado (4.1) passam.
 9. Procure cor fixa nas telas: `grep -rnE "#[0-9a-fA-F]{3,6}\b|bg-white|text-(red|gray|zinc)-[0-9]" <pasta das telas>`.
    O resultado vai para a lista da Fase 2.
@@ -626,10 +636,10 @@ usa todas:
 | `Tag` | `children`, `tone?`: `"primary"` (padrão), `"success"`, `"warning"`, `"institutional"`, `"neutral"`; `mono?` (código, sem maiúsculas) |
 | `InfoPill` | `icon`, `tone?`, `title`, `description?`; some abaixo de 768px |
 | `SectionTitle` | `children`, `tone?`: `"primary"` ou `"institutional"`; `hint?` (à direita, a partir de 640px); `live?` (ponto pulsando) |
-| `PanelCard` | `title`, `icon?`, `tone?`, `accent?` (borda de cima: `"primary"`, `"institutional"` ou um tom), `aside?`, `children` |
+| `PanelCard` | `title`, `icon?`, `tone?`, `accent?` (sem efeito visual desde a 2.0.0; aceito para não quebrar quem o passa), `aside?`, `children` |
 | `InfoField` | `icon`, `tone?`, `label`, `value`, `action?` |
 | `PanelGrid` | `children`; uma coluna no celular, três a partir de 640px |
-| `LinkCard` | `href` (link) ou `onClick` (botão), `title`, `tag?`, `description?`, `icon?` + `tone?` ou `media?`, `accent?`, `kind?`: `"internal"` (›, padrão) ou `"external"` (↗), `footer?`, `disabled?` |
+| `LinkCard` | `href` (link) ou `onClick` (botão), `title`, `tag?`, `description?`, `icon?` + `tone?` ou `media?`, `accent?` (sem efeito visual desde a 2.0.0), `kind?`: `"internal"` (›, padrão) ou `"external"` (↗), `footer?`, `disabled?` |
 | `LinkCardMedia` | `icon?` ou `children` (a logo do sistema); caixa de 48px em degradê da primária |
 | `MetricLine` | `icon?`, `value`, `label`; para o `footer` do `LinkCard` |
 | `MediaCard` | `title`, `subtitle?`, `image?` (`ImageAsset`, some se faltar), `action?` (por exemplo, um `RoundButton`); capa de 320px com degradê escuro por cima |
@@ -664,7 +674,8 @@ Quando nenhuma tela usar mais o visual antigo:
 1. `node docs/tema-mppa/verificar-camada.mjs`: se apontar arquivo editado, entenda a edição antes de seguir;
    ela será perdida (vai para o backup).
 2. **Antes da cópia, capture as telas** (receita em 7.1), se a versão nova anuncia mudança de aparência.
-3. Com a pasta nova `tema-mppa-next/` na raiz do repositório (seção 1.3; se sobrou uma de versão anterior, ela
+3. Confira que o `.gitignore` do consumidor ignora `tema-mppa-next/` e `tema-mppa-next-v*/` (4.1); se faltar,
+   acrescente as duas linhas antes da cópia. Com a pasta nova `tema-mppa-next/` na raiz do repositório (seção 1.3; se sobrou uma de versão anterior, ela
    precisa ter sido apagada antes, e não sobrescrita: arquivos velhos ficariam misturados), rode
    `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`. O script confere a pasta contra
    o `SHA256SUMS` dela e para se ela veio incompleta ou editada; depois lista os arquivos da camada que estavam
@@ -732,16 +743,22 @@ contorno fino e sombra em camadas, sem faixa colorida no topo), com a regra de c
 só com significado. As variantes das 1.13 e 1.14 acabaram, e a atualização muda a aparência por inteiro. Faça os passos
 da seção 7 e, além deles:
 
-1. **Antes da cópia, capture as telas** (7.1). Elas são a base da classificação do passo 8.
+1. **Capturas antes da cópia:** são as do passo 2 da seção 7 (receita em 7.1) e a base da classificação do passo 8.
 2. **Layout raiz (4.4):** deixe só a Inter, em `--font-inter`, no `className` do `<html>`; apague a fonte antiga
    (a Outfit) e o atributo de variante do `<html>`; tire a propriedade `tema` do `TemaMppaProvider` e todo uso de
    `useTemaVariante` e do tipo de variante. A camada não os exporta mais.
 3. **Consumidor que estava na `v2` da 1.14.x:** é só o passo 2 (remover o atributo de variante e a propriedade `tema`);
    a aparência já era esta. Apague também `docs/tema-mppa/preview-v2/`, que a cópia não remove.
-4. **Consumidor que estava no padrão:** faz a troca visual completa, os passos 5 a 8.
+4. **Consumidor que estava no padrão:** faz os passos 1 e 2 e a troca visual completa, os passos 5 a 8.
 5. **Tokens próprios:** confira o contraste dos tokens próprios do consumidor (seção 8) sobre os fundos novos: a pedra
    quente (`#e7e5e4` no claro, `#0c0a09` no escuro) no lugar da ardósia e do marinho. Painel próprio que imita o cartão
-   passa a raio 24px, contorno de 1px e `shadow-card`.
+   passa a raio 24px, contorno de 1px e `shadow-card`. O `verificar-design.mjs` não mede token próprio: calcule a
+   razão de contraste WCAG de cada par (token sobre fundo, cartão e muted, nos dois temas), com a luminância
+   relativa `0,2126·R + 0,7152·G + 0,0722·B` de cada cor (canal `c/255`, linearizado por `c ≤ 0,03928 ? c/12,92 :
+   ((c+0,055)/1,055)^2,4`) e a razão `(L1+0,05)/(L2+0,05)`, com L1 a maior. Mínimo de 7:1 para o texto principal e
+   de 4,5:1 para o secundário. O que cair, corrija no token do sistema (por exemplo, apontando para
+   `--muted-foreground`), nunca na camada.
+   Quem passa `accent` a `PanelCard` ou `LinkCard` pode tirá-lo: já não pinta nada.
 6. **Testes** que citam cor, fonte, raio, sombra ou token (inclusive os de contraste e os que medem o fundo da página,
    que não tem mais brilho): reescreva-os para os valores novos ou, melhor, para o contrato observável (4.8).
 7. **`DESIGN.md` do sistema:** refaça-o a partir do `docs/tema-mppa/DESIGN.md` novo (passo 5 da seção 7) e rode o
@@ -934,7 +951,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.0.0)
+## Interface (tema-mppa 2.0.1)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
