@@ -239,11 +239,12 @@
 }
 
 /*
- * Variante v2 (modelo "Moveflux Design System", 14 nov. 2026): neutros quentes (pedra), tinta #1c1917 como cor
- * de ação, Inter em peso 600, quadros de 24px com contorno fino e sombra em camadas. O atributo
- * `data-tema="v2"` vem do <html> (layout raiz). Os seletores têm a mesma força nos dois temas (:not(.dark) e
- * .dark), para a ordem entre eles não importar; sem `data-tema`, ou com `padrao`, nada daqui vale. O modelo só
- * tem tema claro: o escuro é derivado dele (pedra 950 a 700), com os contrastes do AGENTS.md.
+ * Variante v2 (forma do "Moveflux Design System", 14 nov. 2026; cores do tema anterior): quadros de 24px com
+ * contorno fino e sombra em camadas, Inter em peso 600 e fundo da página mais escuro que o cartão. As cores são as
+ * do padrão: azul de ação, vermelho institucional só com significado, ardósia no claro e marinho no escuro, tons
+ * de seção, avatar e gráficos. Aqui só entra o que a forma da v2 pede; o resto vem de `:root` e `.dark`.
+ * O atributo `data-tema="v2"` vem do <html> (layout raiz). Os seletores têm a mesma força nos dois temas
+ * (:not(.dark) e .dark), para a ordem entre eles não importar; sem `data-tema`, ou com `padrao`, nada daqui vale.
  */
 :root[data-tema="v2"]:not(.dark) {
   --tema-variante: v2;
@@ -254,66 +255,18 @@
   --font-weight-bold: 600;
   --font-weight-extrabold: 600;
 
-  /* Fundo da página #e7e5e4, cartão branco, tile interno #fafaf9; texto #1c1917 (13,93:1 no fundo, 17,49:1 no cartão). */
-  --background: #e7e5e4;
-  --foreground: #1c1917;
-  --card: #ffffff;
-  --card-foreground: #1c1917;
-  --popover: #ffffff;
-  --popover-foreground: #1c1917;
-
-  /* Tinta como ação: 17,49:1 com branco; texto sobre ela #fafaf9. */
-  --primary: #1c1917;
-  --primary-foreground: #fafaf9;
-  --secondary: #f5f5f4;
-  --secondary-foreground: #1c1917;
-  --muted: #fafaf9;
-  /* Secundário #5f5a56: 5,42:1 no fundo, 6,24:1 no muted de #f5f5f4 e 6,9:1 no cartão. */
-  --muted-foreground: #5f5a56;
-  --accent: #f5f5f4;
-  --accent-foreground: #1c1917;
-  /* Item selecionado: tinta com texto claro (16,2:1), como o dia selecionado do modelo; barra vermelha institucional. */
-  --highlight: #1c1917;
-  --highlight-foreground: #f5f5f4;
-  --highlight-bar: #e11d48;
-  --highlight-shadow: 0 6px 16px -8px rgba(28, 25, 23, 0.45);
-
-  --border: #e7e5e4;
-  --card-border: #e7e5e4;
-  --input: #d6d3d1;
-  --ring: #1c1917;
-
-  --header: rgba(255, 255, 255, 0.85);
-  --canvas-glow: none;
-  /* Avatar em tinta: texto branco com 7:1 ou mais. */
-  --avatar-from: #1c1917;
-  --avatar-to: #57534e;
-  --theme-icon: #d97706;
+  /* Fundo da página em ardósia #e2e8f0 (texto #0f172a com 14,48:1) para o cartão branco se destacar, como no
+     modelo. O secundário escurece para #566880: 4,62:1 no fundo (o #5f6f86 do padrão dá 4,15:1 aqui), 5,11:1 no
+     muted e 5,7:1 no cartão. */
+  --background: #e2e8f0;
+  --muted-foreground: #566880;
+  /* Contorno fino dos quadros (ardósia 300). */
+  --card-border: #cbd5e1;
 
   /* Cartão do modelo: cinco camadas de 0,5px a 12px a 6%; o hover sobe e escurece um pouco. */
-  --shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0 3px 3px -1.5px rgba(0, 0, 0, 0.06);
-  --card-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0 3px 3px -1.5px rgba(0, 0, 0, 0.06), 0 6px 6px -3px rgba(0, 0, 0, 0.06), 0 12px 12px -6px rgba(0, 0, 0, 0.06), 0 24px 24px -12px rgba(0, 0, 0, 0.06);
-  --card-shadow-hover: 0 2px 2px -0.5px rgba(0, 0, 0, 0.08), 0 6px 6px -1.5px rgba(0, 0, 0, 0.08), 0 12px 12px -3px rgba(0, 0, 0, 0.07), 0 24px 24px -6px rgba(0, 0, 0, 0.07), 0 36px 36px -12px rgba(0, 0, 0, 0.07);
-
-  /* Gráficos em âmbar, o acento do modelo: forte #92400e (7,09:1) a #d97706 (3,19:1) sobre o cartão. */
-  --chart-strong-from: #92400e;
-  --chart-strong-to: #d97706;
-  --chart-soft-from: #f59e0b;
-  --chart-soft-to: #fcd34d;
-  --chart-1: #92400e;
-  --chart-2: #d97706;
-  --chart-3: #f59e0b;
-  --chart-4: #fbbf24;
-  --chart-5: #44403c;
-
-  --sidebar: #ffffff;
-  --sidebar-foreground: #44403c;
-  --sidebar-primary: #1c1917;
-  --sidebar-primary-foreground: #fafaf9;
-  --sidebar-accent: #f5f5f4;
-  --sidebar-accent-foreground: #1c1917;
-  --sidebar-hover: #f5f5f4;
-  --sidebar-ring: #1c1917;
+  --shadow: 0 1px 1px -0.5px rgba(15, 23, 42, 0.06), 0 3px 3px -1.5px rgba(15, 23, 42, 0.06);
+  --card-shadow: 0 1px 1px -0.5px rgba(15, 23, 42, 0.06), 0 3px 3px -1.5px rgba(15, 23, 42, 0.06), 0 6px 6px -3px rgba(15, 23, 42, 0.06), 0 12px 12px -6px rgba(15, 23, 42, 0.06), 0 24px 24px -12px rgba(15, 23, 42, 0.06);
+  --card-shadow-hover: 0 2px 2px -0.5px rgba(15, 23, 42, 0.08), 0 6px 6px -1.5px rgba(15, 23, 42, 0.08), 0 12px 12px -3px rgba(15, 23, 42, 0.07), 0 24px 24px -6px rgba(15, 23, 42, 0.07), 0 36px 36px -12px rgba(15, 23, 42, 0.07);
 }
 
 :root[data-tema="v2"].dark {
@@ -323,64 +276,6 @@
   --card-top-width: 1px;
   --font-weight-bold: 600;
   --font-weight-extrabold: 600;
-
-  /* Pedra escura: fundo #0c0a09, barra #12100f, cartão #1c1917, muted #292524. */
-  --background: #0c0a09;
-  --foreground: #fafaf9;
-  --card: #1c1917;
-  --card-foreground: #fafaf9;
-  --popover: #1c1917;
-  --popover-foreground: #fafaf9;
-
-  /* A tinta se inverte: ação clara com texto #1c1917 (15,6:1). */
-  --primary: #fafaf9;
-  --primary-foreground: #1c1917;
-  --secondary: #292524;
-  --secondary-foreground: #fafaf9;
-  --muted: #292524;
-  /* Secundário #a8a29e: 6,01:1 no muted, 6,93:1 no cartão, 7,83:1 no fundo. */
-  --muted-foreground: #a8a29e;
-  --accent: #292524;
-  --accent-foreground: #fafaf9;
-  --highlight: #f5f5f4;
-  --highlight-foreground: #1c1917;
-  --highlight-bar: #e11d48;
-  --highlight-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.5);
-
-  --border: rgba(255, 255, 255, 0.08);
-  --card-border: #44403c;
-  --input: rgba(255, 255, 255, 0.1);
-  --ring: #d6d3d1;
-
-  --header: rgba(18, 16, 15, 0.82);
-  --canvas-glow: none;
-  --avatar-from: #44403c;
-  --avatar-to: #78716c;
-  --theme-icon: #fbbf24;
-
-  --shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --card-shadow-hover: 0 18px 36px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.09);
-
-  /* Âmbar no escuro: pontas com 3:1 ou mais sobre o cartão (#1c1917): #d97706 (5,49:1) e #f59e0b (8,14:1). */
-  --chart-strong-from: #d97706;
-  --chart-strong-to: #f59e0b;
-  --chart-soft-from: #a16207;
-  --chart-soft-to: #ca8a04;
-  --chart-1: #d97706;
-  --chart-2: #f59e0b;
-  --chart-3: #a16207;
-  --chart-4: #fbbf24;
-  --chart-5: #fde68a;
-
-  --sidebar: #12100f;
-  --sidebar-foreground: #d6d3d1;
-  --sidebar-primary: #fafaf9;
-  --sidebar-primary-foreground: #1c1917;
-  --sidebar-accent: #292524;
-  --sidebar-accent-foreground: #fafaf9;
-  --sidebar-hover: #292524;
-  --sidebar-ring: #d6d3d1;
 }
 
 @theme inline {

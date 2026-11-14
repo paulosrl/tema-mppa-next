@@ -329,6 +329,11 @@ requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
     requireContrast(theme, tokens, "ring", "background", 3);
     requireContrast(theme, tokens, "chart-strong-from", "card", 3);
     requireContrast(theme, tokens, "chart-strong-to", "card", 3);
+    // As cores são as do padrão: a ação continua o azul do Heimdall e a v2 só muda a forma.
+    for (const name of ["primary", "ring", "sidebar-primary", "sidebar-ring", "highlight", "avatar-from", "avatar-to", "institutional", "chart-strong-from"]) {
+      const base = theme === "v2 claro" ? light : dark;
+      if (tokens[name] !== base[name]) errors.push(`${theme}: --${name} deve ser o do padrão (${base[name]}), encontrado ${tokens[name]}`);
+    }
     requireContrast(theme, tokens, "avatar-foreground", "avatar-from", 4.5);
     requireContrast(theme, tokens, "avatar-foreground", "avatar-to", 4.5);
     if (tokens["card-radius"] !== "1.5rem") errors.push(`${theme}: --card-radius deve ser 1.5rem (quadros de 24px), encontrado ${tokens["card-radius"] ?? "ausente"}`);
