@@ -40,32 +40,6 @@ function DemoDashboard() {
         aside={<InfoPill icon={ShieldCheck} title="Autenticação Unificada SSO" description="2 sistemas habilitados para seu perfil" />}
       />
 
-      <PanelCard title="Resumo da conta" icon={IdCard} aside={<Tag tone="neutral" mono>ID: MPPA-ADM</Tag>}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <InfoField
-            icon={Mail}
-            label="E-mail"
-            value={demoSession.email}
-            action={
-              <Button variant="ghost" size="icon" className="size-8 rounded-lg text-muted-foreground" aria-label="Copiar e-mail" title="Copiar e-mail" onClick={() => navigator.clipboard?.writeText(demoSession.email)}>
-                <Copy />
-              </Button>
-            }
-          />
-          <InfoField
-            icon={BadgeCheck}
-            tone="green"
-            label="Verificação de e-mail"
-            value={
-              <span className="flex items-center gap-2">
-                <span className="font-bold text-tone-green-foreground">Verificado</span>
-                <Tag tone="success">Autenticado</Tag>
-              </span>
-            }
-          />
-        </div>
-      </PanelCard>
-
       <section>
         <SectionTitle live hint="Clique em um sistema para iniciar">
           Acessos a Sistemas
@@ -110,6 +84,32 @@ function DemoDashboard() {
           <LinkCard href="/sessoes" icon={ShieldCheck} tone="violet" accent="violet" title="Sessões Ativas" description="Gerencie onde você está conectado" />
         </PanelGrid>
       </section>
+
+      <PanelCard title="Resumo da conta" icon={IdCard} aside={<Tag tone="neutral" mono>ID: MPPA-ADM</Tag>}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <InfoField
+            icon={Mail}
+            label="E-mail"
+            value={demoSession.email}
+            action={
+              <Button variant="ghost" size="icon" className="size-8 rounded-lg text-muted-foreground" aria-label="Copiar e-mail" title="Copiar e-mail" onClick={() => navigator.clipboard?.writeText(demoSession.email)}>
+                <Copy />
+              </Button>
+            }
+          />
+          <InfoField
+            icon={BadgeCheck}
+            tone="green"
+            label="Verificação de e-mail"
+            value={
+              <span className="flex items-center gap-2">
+                <span className="font-bold text-tone-green-foreground">Verificado</span>
+                <Tag tone="success">Autenticado</Tag>
+              </span>
+            }
+          />
+        </div>
+      </PanelCard>
     </div>
   );
 }

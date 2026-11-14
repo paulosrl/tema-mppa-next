@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.13.1 — 2026-11-14
+
+Pedido do autor em 14 nov. 2026: na página "Meus acessos" da demonstração, o cartão "Resumo da conta" desce para o
+fim. A camada visual não muda (componentes, tokens e as duas variantes iguais aos da 1.13.0); mudam só a página
+de exemplo e, por consequência, a prévia e as comparações.
+
+### Alterado
+
+- **Página inicial da demonstração (`demo-consumer.tsx`):** a ordem agora é a saudação, "Acessos a Sistemas",
+  "Ações rápidas" e, por último, "Resumo da conta". O restante da página, os dados fictícios e os primitivos
+  usados são os mesmos.
+
+### Ao atualizar de 1.13.0
+
+1. Nada a mudar nas telas do consumidor: a ordem é da página de exemplo do modelo. Para ter a prévia nova em
+   `docs/tema-mppa/preview/` e `preview-v2/`, copie a pasta `tema-mppa-next/` e rode
+   `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 1.13.1.
+
 ## 1.13.0 — 2026-11-14
 
 Pedido do autor em 14 nov. 2026: uma segunda versão do tema, no mesmo pacote, sem perder a atual. A interface que
