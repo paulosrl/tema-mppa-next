@@ -12,7 +12,7 @@ function newestHeadlessShell() {
 const exe = process.env.CHROMIUM ?? newestHeadlessShell();
 const browser = await chromium.launch({ executablePath: exe });
 const base = process.env.BASE_URL ?? "http://localhost:3123";
-const font = process.argv[2]; // url da Outfit servida pelo Next
+const font = process.argv[2]; // url da fonte servida pelo Next (a Inter), que o protótipo usa no lugar da Outfit
 const out = process.argv[3] ?? ".";
 const prototype = process.env.PROTOTIPO ?? "docs/prototipo/index.html";
 const route = process.argv[4] ?? "/";

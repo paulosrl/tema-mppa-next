@@ -31,12 +31,16 @@ negócio. A interface **recebe** essas coisas por propriedade; o consumidor cont
 
 Referência visual, nesta ordem de autoridade:
 
-1. `docs/prototipo/index.html`: o protótipo aprovado. Manda em todo elemento gráfico.
-2. `docs/preview/index.html`: o modelo pronto, página única offline.
-3. `docs/comparacao/*.png`: protótipo e modelo lado a lado, claro e escuro, 1280px e 390px.
+1. `docs/prototipo/index.html`: o protótipo aprovado. Manda na estrutura da casca (disposição, itens e medidas); a
+   aparência (fonte, raio, sombra e cores) é a da 2.0, que está na prévia.
+2. `docs/preview/index.html`: o modelo pronto, página única offline. Manda na aparência.
+3. `docs/comparacao/*.png`: protótipo e modelo lado a lado, claro e escuro, 1280px e 390px. Compare a estrutura:
+   a aparência difere de propósito.
 
 Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "corrigidas":
 
+- **Aparência (desde a 2.0.0):** Inter no lugar da Outfit, quadros de 24px com contorno fino e sombras em camadas,
+  neutros em pedra, sem faixa colorida no topo dos quadros; o protótipo mostra a aparência de origem.
 - **Primária azul:** o protótipo era vermelho; todos os sistemas do MPPA usam azul como cor de ação (a mesma do
   Heimdall), e o realce, o ícone padrão e os gráficos o seguem (seção 8, "Equilíbrio de cores").
 - **Tons escurecidos para o contraste:** texto secundário e ícones verde e laranja (tabela de cores na seção 8).
@@ -547,7 +551,8 @@ usuário como lista de conferência, dizendo que não foram verificados.
 2. `typecheck`, `lint`, testes e `build` do consumidor sem erro. No HTML servido (`curl` da página), o
    `<head>` traz `sessionStorage.getItem('tema-mppa-theme')`, sem "Attempted to call".
 3. Abra o app em 1280px e em 390px, nos temas claro e escuro, e compare com `docs/tema-mppa/comparacao/` e o
-   protótipo: raio, sombra, fundos, bordas, espaçamentos e cores da casca iguais. Numa atualização (seção 7), a
+   protótipo: disposição, itens, medidas (62px, 304px e 76px) e espaçamentos da casca iguais; fonte, raio, sombra e
+   cores são os da prévia (`docs/tema-mppa/preview/index.html`), não os do protótipo. Numa atualização (seção 7), a
    comparação é a da branch com a `main` (7.1), e as diferenças esperadas são as do passo 8 da 7.2.
 4. Em 390px, a página não rola na horizontal.
 5. Com `is_admin: false`, não há abas nem itens de administração, nem na busca. Com `true`, as duas abas
@@ -823,8 +828,8 @@ Equilíbrio de cores (igual em todos os sistemas, sem diferença de cor, fonte, 
   padrão dos ícones (`"blue"`, sem `tone`), as barras fortes do `BarChart` e as ilustrações de estado vazio que
   seguem a primária.
 - **Vermelho só com significado:** destrutivo e erro (`--destructive`) e a identidade institucional (logos, o
-  símbolo `tm-brand-mark`, o selo da versão, a aba Plataforma, o nome no rodapé e o realce do item ativo, que é
-  um degradê do vermelho institucional ao azul). Não pinte ação nem ícone comum de vermelho.
+  símbolo `tm-brand-mark`, o selo da versão, a aba Plataforma, o nome no rodapé; o realce do item ativo é azul
+  sólido, `--highlight`, com barra azul à esquerda). Não pinte ação nem ícone comum de vermelho.
 - Os demais tons de seção (verde, violeta, laranja, verde-água, rosa, âmbar) continuam variados.
 - Quem usava azul com token próprio (por exemplo, o `--accent-blue` do Heimdall) pode passar a usar a primária.
 
@@ -941,7 +946,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
   - `usePathname` vira a rota atual;
   - as abas usam qualquer componente acessível de abas;
   - o rodapé usa o mesmo texto de `footerText` (`src/components/tema-mppa/utils.ts`).
-- **Fidelidade:** mantenha as medidas da seção 9 e compare visualmente com o protótipo, como em 4.10.
+- **Fidelidade:** mantenha as medidas da seção 9 e compare visualmente a estrutura com o protótipo e a aparência com a prévia, como em 4.10.
 
 ## 11. Registro e retorno ao modelo
 
@@ -952,12 +957,12 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.0.3)
+## Interface (tema-mppa 2.0.4)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
   (`docs/tema-mppa/REPLICAR.md`, seção 7).
-- Referência visual: `docs/tema-mppa/prototipo/index.html` (manda) e `docs/tema-mppa/preview/index.html`.
+- Referência visual: `docs/tema-mppa/prototipo/index.html` (estrutura da casca) e `docs/tema-mppa/preview/index.html` (aparência).
 - Tema único, sem variantes: Inter (`--font-inter`) no `<html>` do layout raiz (`REPLICAR.md` 4.4).
 - `DESIGN.md` na raiz do frontend: tokens e intenção do design para os agentes; confira com
   `node docs/tema-mppa/verificar-design.mjs --css <CSS próprio>` a cada mudança de token.

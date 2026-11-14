@@ -3,6 +3,29 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.0.4 — 2026-11-14
+
+Restos de texto da aparência antiga, achados ao revisar a 2.0.x. Só textos, imagens de comparação e a legenda delas
+mudam; a camada visual e a API não mudam, por isso sobe o último número.
+
+### Corrigido
+
+- **Item ativo do menu:** o `AGENTS.md` e o `REPLICAR.md` (seção 8) diziam que o realce é um degradê do vermelho
+  institucional ao azul; o CSS usa azul sólido (`--highlight`) com barra azul à esquerda, e agora os textos dizem isso.
+- **Protótipo e comparações:** o `REPLICAR.md` dizia que o protótipo "manda em todo elemento gráfico" e a 4.10 pedia
+  "raio, sombra, fundos, bordas e cores iguais" aos do protótipo, o que deixou de valer na 2.0.0. Agora o protótipo
+  manda na estrutura da casca (disposição, itens e medidas), a prévia manda na aparência, a lista de diferenças
+  intencionais inclui a aparência da 2.0 e o bloco "Interface" do `AGENTS.md` do consumidor diz o mesmo.
+- **`docs/comparacao/`:** continuam, só como comparação de estrutura. A legenda do lado do protótipo diz "só a
+  estrutura" e as quatro imagens foram regeradas.
+
+### Ao atualizar de 2.0.3
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
+   (`REPLICAR.md`, seção 7). Nada a mudar nas telas.
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 2.0.4 e, se ele cita o protótipo como autoridade
+   visual, use a linha nova do bloco "Interface" do `REPLICAR.md` (seção 11).
+
 ## 2.0.3 — 2026-11-14
 
 Dois restos achados no teste cego da 2.0.0. Só a tela de demonstração e as imagens de comparação mudam; a camada
