@@ -774,6 +774,13 @@ try {
   if (run(verifier, []).status !== 0) errors.push("verificar-camada reprova a camada recém-copiada");
   await appendFile(path.join(consumer, "components/tema-mppa/utils.ts"), "// editado\n");
   if (run(verifier, []).status === 0) errors.push("verificar-camada aprova a camada editada");
+  // Alteração local registrada: aprovada na versão certa do registro; reprovada com o registro de outra versão.
+  const registry = path.join(reference, "alteracoes-locais.json");
+  const register = (versaoDoModelo) => writeFile(registry, JSON.stringify({ versaoDoModelo, alteracoes: [{ arquivo: "components/tema-mppa/utils.ts", motivo: "teste" }] }));
+  await register(packageJson.version);
+  if (run(verifier, []).status !== 0) errors.push("verificar-camada reprova a alteração local registrada");
+  await register("0.0.0");
+  if (run(verifier, []).status === 0) errors.push("verificar-camada aprova o registro de alterações locais de outra versão do modelo");
 } catch (error) {
   errors.push(`consumidor de teste a partir da pasta entregue: ${error.message}`);
 } finally {
@@ -810,4 +817,4 @@ console.log("- REPLICAR 2.1 (sistema do zero) nas versões do modelo; OpenSpec e
 console.log("- pasta gerada e copiada DE LÁ: sem package.json, modos 644/755, versão lida do CHANGELOG; pasta editada recusada");
 console.log("- consumidor de teste compilado com os exemplos da 4.4 e da 4.5: script de tema no HTML servido, texto no servidor, contrato no HTML");
 console.log("- verificar-design: DESIGN.md do sistema aprovado, cor trocada ou ausente reprovada");
-console.log("- verificar-camada: camada intacta aprovada, editada reprovada");
+console.log("- verificar-camada: camada intacta aprovada, editada reprovada, alteração registrada aprovada, registro de outra versão reprovado");

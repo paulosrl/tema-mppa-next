@@ -550,7 +550,7 @@ Na Fase 3, tire do `DESIGN.md` os tokens que saíram do CSS.
 Os itens 3 a 7 precisam de navegador. Se você não tiver um, rode os itens 1, 2, 8 e 9, e entregue os demais ao
 usuário como lista de conferência, dizendo que não foram verificados.
 
-1. `node docs/tema-mppa/verificar-camada.mjs`: camada íntegra. `node docs/tema-mppa/verificar-design.mjs --css …`:
+1. `node docs/tema-mppa/verificar-camada.mjs`: camada íntegra (ou só com alterações registradas, 7.1). `node docs/tema-mppa/verificar-design.mjs --css …`:
    DESIGN.md conforme.
 2. `typecheck`, `lint`, testes e `build` do consumidor sem erro. No HTML servido (`curl` da página), o
    `<head>` traz `sessionStorage.getItem('tema-mppa-theme')`, sem "Attempted to call".
@@ -680,8 +680,8 @@ Quando nenhuma tela usar mais o visual antigo:
 
 ## 7. Atualizar para uma versão nova do modelo
 
-1. `node docs/tema-mppa/verificar-camada.mjs`: se apontar arquivo editado, entenda a edição antes de seguir;
-   ela será perdida (vai para o backup, numa pasta temporária que o sistema pode apagar). Com git, o arquivo
+1. `node docs/tema-mppa/verificar-camada.mjs`: se apontar arquivo editado (fora das alterações registradas, 7.1),
+   entenda a edição antes de seguir; ela será perdida (vai para o backup, numa pasta temporária que o sistema pode apagar). Com git, o arquivo
    volta da branch; sem git, copie-o antes para um lugar que fique. Leve ao desenvolvedor, logo na proposta, as
    decisões que a versão nova pede (por exemplo, a do menu móvel e da aba, em 7.1).
 2. **Antes da cópia, capture as telas** (receita em 7.1), se a versão nova anuncia mudança de aparência.
@@ -727,6 +727,10 @@ Quando nenhuma tela usar mais o visual antigo:
   - **Login escondido:** se o sistema esconde a tela de login local no ambiente em que você captura, entre pelo
     caminho que ele oferece (a API ou o BFF de login) e grave o estado da sessão do Playwright (`storageState`).
     Apague no fim o usuário e os dados que criou.
+  - **Menu móvel:** abra-o pelo botão `aria-label="Abrir menu lateral"`. Um seletor só por "menu" pega também o
+    "Fechar menu lateral", que fica fora da tela.
+  - **Versão antiga em outra pasta:** para capturar a `main` ao lado da branch (por exemplo, num `git worktree`), copie o
+    `node_modules` (`cp -al`, com links físicos, é rápido); o Next recusa um `node_modules` que é atalho (symlink).
   Compare pixel a pixel e classifique cada diferença: anunciada pelo CHANGELOG, dado que mudou entre as rodadas
   (contador, texto, auditoria, sem mudança de cor, fonte, raio, sombra ou espaçamento) ou defeito.
 - **Testes que leem classes internas da camada** (por exemplo, `desk:hidden` na barra recolhida) quebram
@@ -750,13 +754,22 @@ Quando nenhuma tela usar mais o visual antigo:
   preto") entra em conflito quando a camada muda a cor. Reescreva a regra local para seguir a camada; não
   sobreponha o token.
 
-- **Alterações locais registradas na camada** (um arquivo da camada que o consumidor mudou de propósito e registrou, por
-  exemplo em `docs/tema-mppa/alteracoes-locais.json`): a cópia com `--force` sobrescreve o arquivo. Antes da cópia,
+- **Alterações locais registradas na camada** (um arquivo da camada que o consumidor mudou de propósito e registrou em
+  `docs/tema-mppa/alteracoes-locais.json`): a cópia com `--force` sobrescreve o arquivo. Antes da cópia,
   anote cada uma; depois, para cada arquivo: se ele é **igual** nas duas versões do modelo, volte ao da branch
   (`git checkout <branch> -- <arquivo>`) em vez de reaplicar à mão; se mudou, reaplique a alteração e confira o diff;
   se o CHANGELOG diz que a versão nova tornou a alteração desnecessária, tire-a e apague o registro. Nos outros casos, o
   registro fica, com a versão nova do modelo (passo 3 da seção 7). A regra "não edite a camada" vale para o que não
   está registrado.
+  O registro tem este formato, e outros campos (motivo, histórico, change) são livres:
+
+  ```json
+  { "versaoDoModelo": "<versão do camada.json>", "alteracoes": [{ "arquivo": "components/tema-mppa/app-sidebar.tsx", "motivo": "…" }] }
+  ```
+
+  `arquivo` é relativo à raiz do consumidor, como no `camada.json`; com `sha256`, o arquivo tem de ter essa soma. O
+  `verificar-camada.mjs` aceita o arquivo registrado e reprova o registro que cita outra versão do modelo, o arquivo
+  registrado que voltou a ser igual ao modelo e o editado sem registro.
 - **Conferências que leem todo arquivo rastreado, também na atualização:** `docs/tema-mppa/` continua fora delas
   (links mortos em `.md`, cor fixa, ortografia), porque o `REPLICAR.md` e o CHANGELOG copiados citam caminhos do
   modelo (`scripts/…`, `src/…`) que no consumidor não existem. A seção 4.1 manda excluí-la; confira que a exclusão
@@ -787,8 +800,10 @@ da seção 7 e, além deles:
    `--font-tema`, passa a usar `--font-inter`. Apague também o módulo próprio do sistema que guardava a variante
    (por exemplo, um `lib/tema.ts` com o valor `'v2'`) e os testes dele.
 3. **Consumidor que estava na `v2` da 1.14.x** (o layout raiz passava a variante `v2` ao `<html>` e ao
-   `TemaMppaProvider`): é só o passo 2 (remover o atributo de variante e a propriedade `tema`) e o passo 7 (o
-   `DESIGN.md`); a aparência já era esta, e qualquer diferença nas capturas é defeito. Apague também
+   `TemaMppaProvider`): é só o passo 2 (remover o atributo de variante e a propriedade `tema`), a conta de contraste do passo 5 e o
+   passo 7 (o `DESIGN.md`); a aparência já era esta, e qualquer diferença nas capturas é defeito, salvo a de um token
+   próprio que o desenvolvedor decidiu corrigir por contraste (a v2 já tinha estes fundos, e um token pode já estar
+   abaixo do mínimo). Apague também
    `docs/tema-mppa/preview-v2/` (a cópia avisa) e `docs/tema-mppa/comparacao/menu-movel-390-claro.png`, se a cópia
    foi feita por uma versão anterior à 2.0.5.
 4. **Consumidor que estava no padrão** (layout raiz sem variante, ou com `padrao`): faz os passos 1 e 2 e a troca visual completa, os passos 5 a 8.
@@ -999,9 +1014,10 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.0.5)
+## Interface (tema-mppa 2.0.6)
 
-- A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
+- A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
+  (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
   (`docs/tema-mppa/REPLICAR.md`, seção 7).
 - Referência visual: `docs/tema-mppa/prototipo/index.html` (estrutura da casca) e `docs/tema-mppa/preview/index.html` (aparência).

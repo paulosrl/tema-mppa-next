@@ -144,8 +144,16 @@ if (existing.length && force && existsSync(manifestPath)) {
     if (existsSync(file) && (await sha256(file)) !== expected) edited.push(relative);
   }
   if (edited.length) {
+    // Alterações locais registradas (REPLICAR.md, 7.1), para marcar cada arquivo.
+    const registryPath = path.join(referenceDir, "alteracoes-locais.json");
+    let registered = new Set();
+    try {
+      registered = new Set((JSON.parse(await readFile(registryPath, "utf8")).alteracoes ?? []).map((item) => item?.arquivo));
+    } catch {
+      // Sem registro, ou registro ilegível: nada a marcar.
+    }
     console.warn(`Atenção: estes arquivos da camada ${previous.versao} tinham sido editados no consumidor e vão para o backup:`);
-    for (const relative of edited) console.warn(`- ${relative}`);
+    for (const relative of edited) console.warn(`- ${relative}${registered.has(relative) ? " (alteração local registrada)" : ""}`);
   }
   editedFiles = edited;
 }
@@ -246,7 +254,7 @@ for (const line of logoReport) console.log(`  - ${line}`);
 if (backupRoot) {
   console.log(`Backup (fora do consumidor, numa pasta temporária que o sistema pode apagar): ${backupRoot}`);
   if (editedFiles.length) {
-    console.warn("Os arquivos editados acima estão no backup. Alteração local que não está no git: copie-a do backup agora para um lugar que fique; depois reaplique as alterações registradas e atualize o registro delas, inclusive a versão do modelo que ele cita (REPLICAR.md, 7.1).");
+    console.warn("Os arquivos editados acima estão no backup. Para cada alteração registrada: se o arquivo é igual nas duas versões do modelo, volte-o do git (git checkout <branch> -- <arquivo>); se mudou, reaplique a alteração. Alteração que não está no git: copie-a do backup agora para um lugar que fique. Depois atualize o registro, inclusive a versão do modelo que ele cita (REPLICAR.md, 7.1).");
   }
 }
 console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version}); confira com: node ${rel(path.join(referenceDir, "verificar-camada.mjs"))}`);

@@ -174,7 +174,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "2.0.5";
+  var VERSAO = "2.0.6";
   var PASTA_ENTREGA = "tema-mppa-next-v" + VERSAO; // a pasta de fora, que leva a versão no nome (npm run empacotar)
   var spanAgents = document.getElementById("versao-agents");
   if (spanAgents) spanAgents.textContent = VERSAO;
@@ -410,7 +410,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
     "- se a versão atual deste sistema é 1.x no padrão (o <html> do layout raiz sem data-tema, ou com data-tema=\"padrao\"), a aparência muda por inteiro (" + NOVA_APARENCIA + ") e isso é esperado; se ele já usa a variante v2 da 1.14.x (data-tema=\"v2\"), a aparência não muda: só saem os restos da variante, e qualquer diferença visual é defeito; a regra de cores (azul na ação, vermelho só com significado) e os componentes são os mesmos;"
   );
   var MUDANCA_DE_APARENCIA = linhas(
-    "- se a versão atual deste sistema é 1.x, faça também (os itens de contraste e de testes só valem para quem estava no padrão):",
+    "- se a versão atual deste sistema é 1.x, faça também (o item de testes só vale para quem estava no padrão; o de contraste vale também para quem estava na v2, porque um token próprio pode já estar abaixo do mínimo: corrigi-lo muda a cor dele, e isso é decisão minha);",
     "  - layout raiz (REPLICAR.md, 4.4): a fonte é só a Inter (--font-inter) no <html>; tire a Outfit, o data-tema do <html>, a propriedade tema do TemaMppaProvider e qualquer useTemaVariante, e apague a fonte que ficou sem uso e o módulo próprio deste sistema que guardava a variante (por exemplo, lib/tema.ts), com os testes dele;",
     "  - apague docs/tema-mppa/preview-v2/, se existir, e o que mais a cópia avisar que é resto de versão anterior em docs/tema-mppa/;",
     "  - contraste dos tokens próprios deste sistema sobre os fundos novos (REPLICAR.md, 8: o fundo #e7e5e4 no claro e #0c0a09 no escuro, o cartão #1c1917 e o muted #292524 no escuro): texto principal com 7:1 e secundário com 4,5:1 nos dois temas; o que cair, ajuste no token do sistema, nunca na camada;",

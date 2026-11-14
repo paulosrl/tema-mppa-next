@@ -3,6 +3,42 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.0.6 — 2026-11-14
+
+Achados do teste cego da 2.0.5: dois agentes sem contexto atualizaram um consumidor de teste da 1.14.1 na variante v2,
+com as armadilhas que o Heimdall tinha, um com OpenSpec e outro sem. Os dois concluíram sozinhos; o que sobrou eram
+lacunas do roteiro e dos scripts. A camada visual e a API não mudam, por isso sobe o último número.
+
+### Corrigido
+
+- **`verificar-camada.mjs` lê o registro de alterações locais** (`docs/tema-mppa/alteracoes-locais.json`). Antes,
+  uma alteração registrada reprovava sempre e a mensagem mandava desfazê-la. Agora:
+  - o arquivo registrado passa, e a saída o lista como "alteração local registrada";
+  - o registro que cita outra versão do modelo reprova (`versaoDoModelo`);
+  - também reprova o registro de um arquivo que voltou a ser igual ao modelo, ou de um arquivo que não é da camada,
+    e o registro com `sha256` que não confere.
+- **Formato do registro:** `REPLICAR.md`, 7.1, define `versaoDoModelo` e a lista `alteracoes` com o `arquivo` de cada
+  uma, com outros campos livres. É o formato que os consumidores já usavam.
+- **`copy-template.mjs`:** marca na lista de editados a alteração registrada e diz como trazê-la de volta. Se o
+  arquivo é igual nas duas versões do modelo, ele volta do git (`git checkout <branch> -- <arquivo>`); se mudou, a
+  alteração é reaplicada.
+- **Contraste vindo da v2:** a 7.2 e o guia mandavam conferir os tokens próprios só para quem estava no padrão. Os
+  dois agentes acharam um token abaixo de 4,5:1 num consumidor que já estava na v2. Agora a conta vale também para
+  quem vem da v2, e corrigir o token é decisão do desenvolvedor, porque muda a cor dele.
+- **Capturas (7.1):**
+  - o menu móvel se abre pelo botão `aria-label="Abrir menu lateral"`;
+  - para capturar a `main` em outra pasta, o `node_modules` é copiado, porque o Next recusa um `node_modules` que é
+    atalho (symlink).
+- **4.10 e bloco "Interface":** a camada íntegra admite as alterações registradas.
+
+### Ao atualizar de 2.0.5
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
+   (`REPLICAR.md`, seção 7). Nada a mudar nas telas.
+2. Se o sistema tem alteração local na camada, confira que o registro está no formato da 7.1 e cita a 2.0.6, e rode
+   `node docs/tema-mppa/verificar-camada.mjs`. Ele deve aprovar, listando a alteração registrada.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 2.0.6, com a linha nova da camada (seção 11).
+
 ## 2.0.5 — 2026-11-14
 
 Retorno do Heimdall, que atualizou da 1.14.1 (variante v2) para a 2.0.4 com OpenSpec: o que o roteiro não previu
