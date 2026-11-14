@@ -40,7 +40,7 @@ export function DataTable<Row>({
     <Card padded={false} className={cn("overflow-hidden", className)}>
       {title || actions ? (
         <div className="flex items-center justify-between gap-3 border-b border-card-border px-6 py-4">
-          {title ? <h2 className="m-0 text-base font-bold tracking-tight">{title}</h2> : <span />}
+          {title ? <h2 className="tm-card-title m-0 text-base font-bold tracking-tight">{title}</h2> : <span />}
           {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
         </div>
       ) : null}
@@ -53,7 +53,7 @@ export function DataTable<Row>({
                 <th
                   key={column.key}
                   scope="col"
-                  className={cn("border-b border-card-border px-4 py-3 text-[11px] font-bold tracking-wider whitespace-nowrap text-muted-foreground uppercase", alignClass[column.align ?? "left"], column.className)}
+                  className={cn("tm-label border-b border-card-border px-4 py-3 text-[11px] font-bold tracking-wider whitespace-nowrap text-muted-foreground uppercase", alignClass[column.align ?? "left"], column.className)}
                 >
                   {column.header}
                 </th>

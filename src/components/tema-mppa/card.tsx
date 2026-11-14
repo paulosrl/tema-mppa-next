@@ -29,7 +29,7 @@ export function Card({
       {title || description || actions ? (
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            {title ? <h2 className="m-0 text-base font-bold tracking-tight">{title}</h2> : null}
+            {title ? <h2 className="tm-card-title m-0 text-base font-bold tracking-tight">{title}</h2> : null}
             {description ? <p className="m-0 mt-0.5 text-sm text-muted-foreground">{description}</p> : null}
           </div>
           {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
@@ -74,7 +74,7 @@ export function MetricCard({
 }) {
   return (
     <Card className={className}>
-      <h2 className="m-0 text-base font-bold tracking-tight">{label}</h2>
+      <h2 className="tm-metric-label m-0 text-base font-bold tracking-tight">{label}</h2>
       <p className="mt-3 mb-[3px] text-[32px] leading-[1.2] font-extrabold tabular-nums">{value}</p>
       {note ? <p className="m-0 text-muted-foreground">{note}</p> : null}
     </Card>

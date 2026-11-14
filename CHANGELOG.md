@@ -1,5 +1,43 @@
 # Changelog
 
+## 1.14.0 — 2026-11-14
+
+Pedido do autor em 14 nov. 2026: a variante `v2` passa a copiar **toda** a aparência do "Moveflux Design System"
+(antes copiava só os cantos, a fonte e a sombra) e a manter só a regra de cores do tema anterior. A variante
+`padrao` não muda.
+
+### Alterado (variante `v2`)
+
+- **Neutros em pedra quente**, como o modelo: fundo `#e7e5e4` (escuro: `#0c0a09`), cartão branco (escuro: `#1c1917`),
+  tile interno `#fafaf9` (escuro: `#292524`), contorno fino do quadro, sem brilho colorido no fundo. Texto principal
+  com 7:1 e secundário com 4,5:1 nos dois temas, conferidos pelo verificador.
+- **Quadros sem faixa colorida no topo:** o topo do `PanelCard` e do `LinkCard` é um fio de 1px na cor do contorno,
+  também ao passar o mouse. No `padrao`, a faixa de 3px segue como era.
+- **Forma das peças que já existiam:** cabeçalho do `PanelCard` sem a linha de baixo e com título de 20px; rótulo
+  do `MetricCard` em 14px; `InfoField` como tile interno; título de seção e rótulos sem maiúsculas e sem o ponto
+  colorido; `Tag` e `StatusBadge` como pílula de 12px sem borda e sem ponto; caixas de ícone chapadas; a tabela (`DataTable`) com título de 20px e cabeçalho de coluna sem maiúsculas.
+- **Regra de cores mantida:** ação em azul (primária, foco, item ativo, gráficos), vermelho só com significado,
+  tons de seção, avatar e gráficos iguais aos do padrão. O verificador exige isso.
+
+### Novo (as duas variantes)
+
+- **Peças de metas**, da composição do modelo: `MediaCard` (capa com imagem opcional), `RoundButton`, `StatCard` e
+  `StatValue`, `ProgressBar`, `ProgressRing`, `GoalRow`, `WorkoutRow`, `DayStrip`, `InsetTile`, `MacroTile` e
+  `StatusPill` (propriedades na seção 5.2 do `REPLICAR.md`). Só tokens, sem regra de negócio.
+- **Tokens:** `--bar-track`, os degradês `--bar-*-from`/`-to` (âmbar, rosa, azul, esmeralda, violeta e amarelo),
+  `--media`, `--media-foreground`, `--media-muted` e `--media-shadow`, com contraste conferido.
+- **Demonstração:** a página "Painel de metas" (`/metas`) mostra as peças; a versão da marca e do rodapé agora vem do
+  `package.json`, e não de um texto fixo.
+- **Documentos:** `REPLICAR.md` (5.2 e 8.1), `DESIGN.md` (variantes e peças de metas), README e GUIA.
+
+### Ao atualizar de 1.13.2
+
+1. Quem usa o `padrao`: nada a mudar nas telas. As peças de metas ficam disponíveis; a faixa colorida do topo dos
+   quadros continua.
+2. Quem usa a `v2`: a aparência muda (neutros em pedra, quadros sem faixa, selos e rótulos sem maiúsculas). Capture as
+   telas antes e depois da cópia (`REPLICAR.md`, 7.1) e confira o contraste de tokens próprios sobre o fundo `#e7e5e4`.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.14.0.
+
 ## 1.13.2 — 2026-11-14
 
 Pedido do autor em 14 nov. 2026: o guia, o README e o `REPLICAR.md` não batiam com os caminhos da pasta entregue.

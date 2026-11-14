@@ -104,7 +104,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">tema-mppa-next 1.13.2 · guia do desenvolvedor</span>
+    <span class="eyebrow">tema-mppa-next 1.14.0 · guia do desenvolvedor</span>
     <h1>Guia do Tema MPPA</h1>
     <p class="lead">Leva a interface padrão dos sistemas do MPPA ao seu repositório com o Claude Code. Responda as perguntas: o guia monta os passos do seu caso, com o prompt pronto de cada um e o que você confere depois.</p>
   </header>
@@ -130,7 +130,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
       <legend>3. Qual variante do tema?</legend>
       <div class="options">
         <label class="option"><input type="radio" name="variante" value="padrao" id="variante-padrao" checked><strong>Padrão</strong><span>A interface de sempre: Outfit e cartões de 16px.</span></label>
-        <label class="option"><input type="radio" name="variante" value="v2" id="variante-v2"><strong>v2</strong><span>Mesmas cores, com Inter, cartões de 24px, sombras em camadas e fundo da página mais escuro.</span></label>
+        <label class="option"><input type="radio" name="variante" value="v2" id="variante-v2"><strong>v2</strong><span>A aparência do Moveflux (Inter, cartões de 24px sem faixa colorida, tiles e selos sem maiúsculas, fundo em pedra), com a mesma regra de cores: azul na ação.</span></label>
       </div>
     </fieldset>
   </section>
@@ -181,7 +181,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "1.13.2";
+  var VERSAO = "1.14.0";
   var PASTA_ENTREGA = "tema-mppa-next-v" + VERSAO; // a pasta de fora, que leva a versão no nome (npm run empacotar)
   var spanAgents = document.getElementById("versao-agents");
   if (spanAgents) spanAgents.textContent = VERSAO;

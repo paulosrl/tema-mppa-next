@@ -84,7 +84,7 @@ export function StatusBadge({
   pulse?: boolean;
 }) {
   return (
-    <span className={cn("inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold", statusTone[tone])}>
+    <span className={cn("tm-status inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold", statusTone[tone])}>
       <span className={cn("size-1.5 rounded-full bg-current", pulse && "motion-safe:animate-pulse")} aria-hidden />
       {children}
     </span>
@@ -112,7 +112,7 @@ export function Tag({
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center rounded-md border",
+        "tm-tag inline-flex shrink-0 items-center rounded-md border",
         mono ? "px-2.5 py-1 font-mono text-[11px] font-medium" : "px-1.5 py-0.5 text-[10px] font-bold uppercase",
         tagTone[tone],
       )}
@@ -160,11 +160,11 @@ export function SectionTitle({
   return (
     <div className="mb-4 flex items-center justify-between gap-3">
       <div className="flex items-center gap-2.5">
-        <span className="relative flex size-2.5" aria-hidden>
+        <span className="tm-section-dot relative flex size-2.5" aria-hidden>
           {live ? <span className={cn("absolute inline-flex size-full rounded-full opacity-75 motion-safe:animate-ping", accentDot[tone])} /> : null}
           <span className={cn("relative inline-flex size-2.5 rounded-full", accentDot[tone])} />
         </span>
-        <h3 className="m-0 text-xs font-extrabold tracking-wider text-foreground uppercase">{children}</h3>
+        <h3 className="tm-section-title m-0 text-xs font-extrabold tracking-wider text-foreground uppercase">{children}</h3>
       </div>
       {hint ? <span className="hidden text-xs font-medium text-muted-foreground sm:inline">{hint}</span> : null}
     </div>
@@ -197,8 +197,8 @@ export function PanelCard({
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-3 border-b border-card-border px-6 pt-6 pb-4">
-        <h3 className="m-0 flex items-center gap-2.5 text-base font-bold tracking-tight">
+      <div className="tm-panel-head flex items-center justify-between gap-3 border-b border-card-border px-6 pt-6 pb-4">
+        <h3 className="tm-card-title m-0 flex items-center gap-2.5 text-base font-bold tracking-tight">
           {icon ? <SectionIcon icon={icon} tone={tone} size="sm" /> : null}
           {title}
         </h3>
@@ -224,11 +224,11 @@ export function InfoField({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex min-w-0 items-center justify-between gap-3 rounded-xl border border-card-border bg-muted/40 p-4 transition-colors hover:bg-muted/70">
+    <div className="flex min-w-0 items-center justify-between gap-3 tm-tile rounded-xl border border-card-border bg-muted/40 p-4 transition-colors hover:bg-muted/70">
       <div className="flex min-w-0 items-center gap-3.5">
         <SectionIcon icon={icon} tone={tone} className="size-10 rounded-xl [&_svg]:size-5" />
         <div className="flex min-w-0 flex-col">
-          <span className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">{label}</span>
+          <span className="tm-label text-[11px] font-bold tracking-wider text-muted-foreground uppercase">{label}</span>
           <span className="min-w-0 truncate text-sm font-semibold text-foreground">{value}</span>
         </div>
       </div>

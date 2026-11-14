@@ -355,6 +355,31 @@ requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
     if (tokens["card-radius"] !== "1.5rem") errors.push(`${theme}: --card-radius deve ser 1.5rem (quadros de 24px), encontrado ${tokens["card-radius"] ?? "ausente"}`);
     if (tokens["font-tema"] !== "var(--font-inter)") errors.push(`${theme}: --font-tema deve ser var(--font-inter)`);
   }
+  // Peças de metas: tokens nos dois temas e texto legível sobre a trilha da barra e sobre a capa.
+  for (const name of ["bar-track", "media", "media-foreground", "media-muted", "media-shadow", "bar-amber-from", "bar-amber-to", "bar-rose-from", "bar-rose-to", "bar-blue-from", "bar-blue-to", "bar-emerald-from", "bar-emerald-to", "bar-violet-from", "bar-violet-to", "bar-yellow-from", "bar-yellow-to"]) {
+    if (!light[name] || !dark[name]) errors.push(`token --${name} (peças de metas) ausente em um dos temas`);
+  }
+  for (const [theme, tokens] of [["claro", light], ["escuro", dark], ["v2 claro", v2Light], ["v2 escuro", v2Dark]]) {
+    requireContrast(theme, tokens, "foreground", "bar-track", 7);
+    requireContrast(theme, tokens, "media-foreground", "media", 7);
+    requireContrast(theme, tokens, "media-muted", "media", 7);
+  }
+  const metasSource = await read("src/components/tema-mppa/metas.tsx");
+  for (const name of ["MediaCard", "RoundButton", "StatCard", "StatValue", "ProgressBar", "ProgressRing", "GoalRow", "WorkoutRow", "DayStrip", "InsetTile", "MacroTile", "StatusPill"]) {
+    if (!new RegExp(`export function ${name}\\b`).test(metasSource)) errors.push(`metas.tsx não exporta ${name}`);
+    if (!new RegExp(`\\b${name}\\b`).test(await read("src/components/tema-mppa/index.ts"))) errors.push(`index.ts não exporta ${name}`);
+  }
+  if (/#[0-9a-f]{3,8}\b/i.test(metasSource)) errors.push("metas.tsx: cor fixa; use os tokens");
+  // Classes tm-* que dão a forma da v2: cada uma usada nas peças tem a regra sob data-tema="v2" no CSS.
+  const shapeSources = (await read("src/components/tema-mppa/card.tsx")) + (await read("src/components/tema-mppa/dashboard.tsx")) + (await read("src/components/tema-mppa/data-table.tsx"));
+  for (const name of ["tm-tone", "tm-tile", "tm-panel-head", "tm-card-title", "tm-metric-label", "tm-label", "tm-section-title", "tm-section-dot", "tm-tag", "tm-status"]) {
+    if (name !== "tm-tone" && !shapeSources.includes(name)) errors.push(`as peças não usam ${name}, que o CSS da v2 define`);
+    if (!themeCss.includes(`:root[data-tema="v2"] .${name}`)) errors.push(`tema-mppa.css: falta a regra de :root[data-tema="v2"] .${name}`);
+  }
+  if (!themeCss.includes(':root[data-tema="v2"] & {') || !themeCss.includes("border-top-color: var(--card-border) !important")) errors.push("tema-mppa.css: o topo dos quadros na v2 deve ter a cor do contorno (tm-card-top)");
+  // Demonstração: a página das peças de metas.
+  const demoConsumerSource = await read("src/app/demo-consumer.tsx");
+  if (!demoConsumerSource.includes('pathname === "/metas"') || !(await read("src/app/demo-config.tsx")).includes('href: "/metas"')) errors.push('demonstração: falta a página "/metas" (Painel de metas) e o item de menu dela');
   if (light["card-radius"] !== "calc(var(--radius) * 2)" || light["card-top-width"] !== "3px" || light["font-tema"] !== "var(--font-outfit)") {
     errors.push("padrão: --card-radius (16px), --card-top-width (3px) e --font-tema (Outfit) devem continuar os de antes");
   }

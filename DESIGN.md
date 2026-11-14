@@ -568,7 +568,7 @@ Tudo preso a `--radius` (8px):
 - `{rounded.lg}` 8px: abas internas, ícones de seção, caixas das logos.
 - `{rounded.md}` 6px: selo da versão, topo das barras de gráfico. `{rounded.xs}` 2px: base das barras de gráfico.
 - `{rounded.full}`: avatar.
-- Raio maior que 16px: não use em tela nova.
+- Raio maior que 16px: não use em tela nova. Exceção: o quadro (`rounded-card`), que na variante `v2` tem 24px.
 
 ## Components
 
@@ -613,6 +613,20 @@ nome do sistema no vermelho institucional, nunca cortado; na casca e
 nas páginas públicas que têm rodapé.
 
 **`ThemeScript`**: o script de tema no `<head>` do layout raiz, com o `nonce` da CSP quando houver.
+
+### Variante v2 e peças de metas
+
+O tema tem duas variantes, escolhidas no layout raiz (`data-tema` no `<html>` e `tema` no `TemaMppaProvider`). A
+`padrao` é a descrita acima. A `v2` copia a aparência do "Moveflux Design System" e mantém a regra de cores do
+tema anterior (azul na ação, vermelho institucional só com significado, tons de seção, avatar e gráficos): quadros
+de 24px com contorno fino de 1px e sombra em cinco camadas, sem faixa colorida no topo; Inter em peso 600;
+neutros em pedra quente (fundo `#e7e5e4` no claro, `#0c0a09` no escuro); tiles internos, rótulos e selos sem
+maiúsculas; caixas de ícone chapadas. A forma da `v2` vem de `:root[data-tema="v2"]` e das classes `tm-*` do CSS; tela
+nenhuma depende da variante.
+
+As peças de metas (`MediaCard`, `StatCard`, `StatValue`, `GoalRow`, `WorkoutRow`, `ProgressBar`, `ProgressRing`,
+`DayStrip`, `InsetTile`, `MacroTile`, `StatusPill`, `RoundButton`) valem nas duas variantes. Barras, anéis e a capa
+usam só tokens (`--bar-*`, `--media*`); a ação do dia selecionado é a primária.
 
 ## Do's and Don'ts
 

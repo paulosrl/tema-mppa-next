@@ -62,6 +62,22 @@ export {
 } from "./dashboard";
 export { DataTable, type DataTableColumn } from "./data-table";
 export { ImageSlot } from "./image-slot";
+export {
+  DayStrip,
+  GoalRow,
+  InsetTile,
+  MacroTile,
+  MediaCard,
+  ProgressBar,
+  ProgressRing,
+  RoundButton,
+  StatCard,
+  StatusPill,
+  StatValue,
+  WorkoutRow,
+  type BarTone,
+  type Day,
+} from "./metas";
 export { PageFrame } from "./page-frame";
 export { TemaMppaProvider } from "./providers";
 export { SectionIcon } from "./section-icon";

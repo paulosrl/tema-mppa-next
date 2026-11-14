@@ -1,5 +1,6 @@
-import { FileText, LayoutDashboard, Monitor, ShieldAlert, ShieldCheck, ShieldHalf, User, Users } from "lucide-react";
+import { FileText, LayoutDashboard, Monitor, ShieldAlert, ShieldCheck, ShieldHalf, Target, User, Users } from "lucide-react";
 import type { ShellConfig, ShellSession } from "@/components/tema-mppa";
+import packageJson from "../../package.json";
 
 /* Símbolo de exemplo: escudo em moldura com degradê, só com tokens. O consumidor passa a imagem dele. */
 const symbol = (
@@ -17,7 +18,7 @@ const symbol = (
 export const demoConfig: ShellConfig = {
   brand: {
     name: "Template",
-    version: "1.12.3",
+    version: packageJson.version,
     versionYears: "2026",
     tagline: "Portal de Sistemas MPPA",
     homeHref: "/",
@@ -27,6 +28,7 @@ export const demoConfig: ShellConfig = {
   administrationLabel: "Administração",
   platformNavigation: [
     { id: "dashboard", label: "Meus acessos", href: "/", icon: LayoutDashboard, exact: true, tone: "red", description: "Sistemas autorizados e ações rápidas" },
+    { id: "goals", label: "Painel de metas", href: "/metas", icon: Target, tone: "amber", description: "Metas do dia, anéis e treinos" },
     { id: "profile", label: "Perfil", href: "/perfil", icon: User, tone: "green", description: "Informações cadastrais" },
     { id: "sessions", label: "Sessões", href: "/sessoes", icon: ShieldAlert, tone: "violet", badge: "Ativa", description: "Sessões ativas e dispositivos" },
     { id: "item-detail", label: "Detalhe do item", href: "/itens/detalhe", icon: FileText, tone: "green", hidden: true },

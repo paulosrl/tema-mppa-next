@@ -635,6 +635,18 @@ usa todas:
 | `LinkCard` | `href` (link) ou `onClick` (botão), `title`, `tag?`, `description?`, `icon?` + `tone?` ou `media?`, `accent?`, `kind?`: `"internal"` (›, padrão) ou `"external"` (↗), `footer?`, `disabled?` |
 | `LinkCardMedia` | `icon?` ou `children` (a logo do sistema); caixa de 48px em degradê da primária |
 | `MetricLine` | `icon?`, `value`, `label`; para o `footer` do `LinkCard` |
+| `MediaCard` | `title`, `subtitle?`, `image?` (`ImageAsset`, some se faltar), `action?` (por exemplo, um `RoundButton`); capa de 320px com degradê escuro por cima |
+| `RoundButton` | `icon`, `label`, `onClick?`; botão redondo de 44px |
+| `StatCard` | `label`, `icon?` + `tone?`, `children`; cartão de métrica com padding de 20px |
+| `StatValue` | `value`, `unit?`; valor grande com a unidade ao lado |
+| `ProgressBar` | `value` (0 a 100), `tone?` (`"amber"`, `"rose"`, `"blue"`, `"emerald"`, `"violet"`, `"yellow"`), `label` (leitor de tela) |
+| `ProgressRing` | `value`, `unit?`, `tone?` (`"heart"`, `"balance"` ou um matiz), `thick?`, `label` |
+| `GoalRow` | `icon`, `tone?` (matiz), `title`, `status?`, `percent`, `caption?`, `done?`; linha de meta com barra |
+| `WorkoutRow` | `icon`, `tone?`, `title`, `description?`, `status`, `statusTone?`, `done?` |
+| `DayStrip` | `days` (`{ label, day }[]`), `selected` (índice), `onSelect?`; sete colunas, o dia selecionado na cor de ação |
+| `InsetTile` | `label`, `value`; tile interno sobre um cartão |
+| `MacroTile` | `label`, `value`, `percent`, `tone?`: `"red"`, `"blue"`, `"amber"`, `"green"`; tile colorido com medidor |
+| `StatusPill` | `children`, `tone?`: `"neutral"` (padrão), `"success"`, `"warning"`, `"primary"`; pílula sem borda |
 
 `NavigationItem` aceita `badge?` (selo curto à direita do rótulo no menu, no tom do item).
 
@@ -783,25 +795,29 @@ Raios, presos a `--radius` (8px; estética de 12 nov. 2026):
 
 ### 8.1 Variante `v2`
 
-A `v2` muda a forma, não a paleta: azul de ação, vermelho institucional só com significado, ardósia no claro e
-marinho no escuro, tons de seção, avatar e gráficos são os mesmos do `padrao`, e o verificador do modelo exige
-isso. Os blocos dela ficam no `tema-mppa.css`, em `:root[data-tema="v2"]` (claro e escuro), e só sobrescrevem:
+A `v2` copia a aparência do "Moveflux Design System" e mantém a **regra de cores** do tema anterior: azul de ação
+(primária, foco, item ativo, gráficos), vermelho institucional só com significado, tons de seção, avatar e
+gráficos são os do `padrao`, e o verificador do modelo exige isso. Os blocos dela ficam no `tema-mppa.css`, em
+`:root[data-tema="v2"]` (claro e escuro), e só sobrescrevem. Do modelo vêm a forma e os neutros:
 
-| Token | `padrao` | `v2` | Uso |
-| --- | --- | --- | --- |
-| `--font-tema` | Outfit | Inter | fonte do `font-sans`, `font-heading` e `body` |
-| `--card-radius` (`rounded-card`) | 16px | 24px | `Card`, `PanelCard`, `LinkCard` |
-| `--card-top-width` (`tm-card-top`) | 3px | 1px, sem a cor de destaque | borda de topo dos quadros com destaque |
-| `--font-weight-bold` e `--font-weight-extrabold` | 700 e 800 | 600 | títulos e rótulos |
-| `--background` (claro) | `#f4f7fb` | `#e2e8f0` | fundo da página: o cartão branco se destaca |
-| `--muted-foreground` (claro) | `#5f6f86` | `#566880` | 4,62:1 no fundo mais escuro (o anterior dá 4,15:1) |
-| `--card-border` (claro) | `#b5bac0` | `#cbd5e1` | contorno fino dos quadros |
-| `--shadow`, `--card-shadow`, `--card-shadow-hover` (claro) | duas camadas | cinco camadas de 0,5px a 12px a 6% | quadros |
+| O que | `padrao` | `v2` |
+| --- | --- | --- |
+| Fonte (`--font-tema`) | Outfit | Inter, peso 600 nos títulos (`--font-weight-bold` e `-extrabold`) |
+| Quadros (`rounded-card`, `--card-radius`) | 16px | 24px, contorno fino de 1px e sombra em cinco camadas |
+| Faixa colorida no topo dos quadros (`--card-top-width`) | 3px, na cor do destaque | 1px, na cor do contorno: sem faixa |
+| `--background` (claro / escuro) | `#f4f7fb` / `#070b12` | `#e7e5e4` / `#0c0a09` (pedra quente) |
+| `--card` (escuro) | `#111827` | `#1c1917` |
+| `--muted` (claro / escuro): tile interno | `#f1f5f9` / `#182235` | `#fafaf9` / `#292524` |
+| `--muted-foreground` (claro / escuro) | `#5f6f86` / `#94a3b8` | `#5f5a56` / `#a8a29e` |
+| `--card-border` (claro / escuro) | `#b5bac0` / `#3f6396` | `#e7e5e4` / `#44403c` |
+| Brilho do fundo (`--canvas-glow`) | vermelho e azul nos cantos | nenhum |
+| Caixas de ícone (`tm-tone`) | brilho e borda | chapadas |
+| Cabeçalho do `PanelCard`, rótulos, título de seção, cabeçalho do `DataTable`, `Tag` e `StatusBadge` | linha, maiúsculas, ponto e borda | sem linha, sem maiúsculas, sem ponto e sem borda (pílula de 12px) |
 
-No escuro, a `v2` só muda a forma (fonte, raio, borda de topo e pesos); fundo, contorno e sombras são os do
-`padrao`. Tela da `v2` usa os mesmos primitivos e as mesmas classes de cor; nada na tela depende da variante.
-A forma vem do "Moveflux Design System" (cartões de 24px, Inter, contorno fino e sombra em camadas); a pré-visualização
-da `v2` fica em `docs/tema-mppa/preview-v2/index.html`.
+A forma vem das classes `tm-*` das peças da camada (`tm-card-title`, `tm-label`, `tm-tag`…), que só valem sob
+`data-tema="v2"`. Tela da `v2` usa os mesmos primitivos e as mesmas classes de cor; nada na tela depende da
+variante. As peças de metas (5.2) valem nas duas. A pré-visualização da `v2` fica em
+`docs/tema-mppa/preview-v2/index.html`; a página "Painel de metas" mostra as peças novas.
 
 ## 9. Estrutura do layout
 
@@ -894,7 +910,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.13.2)
+## Interface (tema-mppa 1.14.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

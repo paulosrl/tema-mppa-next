@@ -1,6 +1,6 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.13.2**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
+Versão **1.14.0**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
 estética de 12 nov. 2026 (ardósia no claro e marinho no escuro, cartões de 16px, sombras em camadas, realce em degradê do vermelho
 institucional ao azul, avatar em degradê; a variante `v2` troca só a forma, abaixo) e o cabeçalho padrão dos sistemas:
 
@@ -17,13 +17,16 @@ institucional ao azul, avatar em degradê; a variante `v2` troca só a forma, ab
 Veja pronta em [`docs/preview/index.html`](docs/preview/index.html), que abre direto no navegador.
 
 **Variantes.** O tema tem duas, escolhidas uma vez no layout raiz (`REPLICAR.md`, 4.4): `padrao` (a de sempre) e `v2`
-(forma do "Moveflux Design System": cartões de 24px, Inter, contorno fino e sombras em camadas, com as mesmas cores).
-A prévia da `v2` é [`docs/preview-v2/index.html`](docs/preview-v2/index.html). Na demonstração, `NEXT_PUBLIC_TEMA=v2 npm run dev`.
+(a aparência do "Moveflux Design System": cartões de 24px com contorno fino e sombras em camadas, sem faixa colorida no
+topo, Inter, tiles internos, selos e rótulos sem maiúsculas, neutros em pedra quente; a regra de cores do tema anterior
+continua: azul na ação, vermelho só com significado). As peças de metas (capa com imagem, cartão de métrica, linha de meta,
+anel e barra de progresso, faixa de dias) valem nas duas. A prévia da `v2` é [`docs/preview-v2/index.html`](docs/preview-v2/index.html);
+a página "Painel de metas" da demonstração mostra as peças. Na demonstração, `NEXT_PUBLIC_TEMA=v2 npm run dev`.
 
 ## Usar num codebase
 
 1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v<versão>/tema-mppa-next/`, na pasta acima desta
-   (com a versão atual, `tema-mppa-next-v1.13.2/tema-mppa-next/`). A de fora leva a versão no nome; a de dentro, não.
+   (com a versão atual, `tema-mppa-next-v1.14.0/tema-mppa-next/`). A de fora leva a versão no nome; a de dentro, não.
 2. O desenvolvedor do sistema copia **só a pasta de dentro**, `tema-mppa-next/`, inteira, para a raiz do
    repositório (`cp -r …/tema-mppa-next-v<versão>/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html`
    no navegador. A cópia da camada confere a pasta contra o `SHA256SUMS` dela antes de copiar.
