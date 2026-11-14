@@ -237,10 +237,21 @@ const runtime = `
 })();
 `;
 
+// Aviso fixo da variante, com o link para a outra prévia (as duas ficam em pastas irmãs: preview/ e preview-v2/,
+// na pasta do modelo e em docs/tema-mppa/ do consumidor). Só tokens do tema; o clique segue o link normal.
+const variant = offlineHtml.match(/<html[^>]*\bdata-tema="([^"]+)"/)?.[1] === "v2" ? "v2" : "padrao";
+const other = variant === "v2" ? { label: "ver o padrão", href: "../preview/index.html" } : { label: "ver a v2", href: "../preview-v2/index.html" };
+const notice =
+  '<div data-preview-variante role="note" style="position:fixed;right:16px;bottom:78px;z-index:60;display:flex;gap:8px;align-items:center;' +
+  "padding:6px 12px;border:1px solid var(--card-border);border-radius:9999px;background:var(--card);color:var(--foreground);" +
+  'box-shadow:var(--shadow);font:500 12px/1.2 var(--font-tema),system-ui,sans-serif">Variante <strong>' +
+  (variant === "v2" ? "v2" : "padrão") +
+  '</strong><span aria-hidden="true">·</span><a href="' + other.href + '" style="color:var(--primary);text-decoration:underline">' + other.label + "</a></div>";
+
 const finalHtml = offlineHtml
   .replace(/<title>[^<]*<\/title>/, `<title>Template Visual MPPA v${version}</title>`)
   .replace("</head>", `<style>${css}</style></head>`)
-  .replace("</body>", `<script>${runtime}</script></body>`);
+  .replace("</body>", `${notice}<script>${runtime}</script></body>`);
 
 mkdirSync(path.dirname(output), { recursive: true });
 writeFileSync(output, `<!doctype html>\n${finalHtml}\n`);

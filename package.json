@@ -1,6 +1,6 @@
 {
   "name": "tema-mppa-next-template",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "private": true,
   "description": "Modelo de interface MPPA para Next.js: shell, tokens e primitivos iguais ao protótipo aprovado, pronto para um agente replicar.",
   "engines": {

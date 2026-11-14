@@ -53,6 +53,24 @@ const publicDir = path.resolve(target, option("--public-dir") ?? "public");
 // Logos padrão do cabeçalho, na ordem de `header.logos` (REPLICAR, 4.5).
 const logoFiles = ["mppa-logo.png", "ciia.png", "ciia-sigla.svg"];
 
+// Pastas do modelo que sobraram perto do consumidor (a raiz do repositório e as duas acima dela): outra
+// `tema-mppa-next/` (de uma versão antiga) ou a pasta de fora, `tema-mppa-next-v<versão>/`. Só avisa; o roteiro manda apagá-las
+// depois da cópia, porque o tsconfig e o lint do consumidor compilariam uma segunda cópia da camada.
+const staleFolders = [];
+for (const directory of new Set([target, path.dirname(target), path.dirname(path.dirname(target))])) {
+  if (!existsSync(directory)) continue;
+  for (const name of await readdir(directory)) {
+    if (!/^tema-mppa-next(-v[\w.-]+)?$/.test(name)) continue;
+    const folder = path.join(directory, name);
+    if (path.resolve(folder) === root || !(await stat(folder)).isDirectory()) continue;
+    let found = "versão desconhecida";
+    for (const candidate of [path.join(folder, "CHANGELOG.md"), path.join(folder, "tema-mppa-next/CHANGELOG.md")]) {
+      if (existsSync(candidate)) found = `versão ${(await readFile(candidate, "utf8")).match(/^## (\d+\.\d+\.\d+) /m)?.[1] ?? "desconhecida"}`;
+    }
+    staleFolders.push(`${folder} (${found})`);
+  }
+}
+
 const manifestPath = path.join(referenceDir, "camada.json");
 const sha256 = async (file) => createHash("sha256").update(await readFile(file)).digest("hex");
 const toPosix = (file) => file.split(path.sep).join("/");
@@ -219,4 +237,8 @@ console.log(
     ? "Próximos passos (atualização): apague a pasta tema-mppa-next/ e siga o REPLICAR.md, seção 7, a partir do passo 4 (CHANGELOG, DESIGN.md, verificação de 4.10)."
     : "Próximos passos: apague a pasta tema-mppa-next/ e siga o REPLICAR.md, Fase 1, a partir do fim da 4.1 (conferências do consumidor que a cópia aciona) e depois 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).",
 );
+if (staleFolders.length) {
+  console.warn("Atenção: há outra pasta do modelo perto do consumidor. Apague estas (sem commit); depois desta cópia, apague também a pasta tema-mppa-next/ de onde você rodou o script:");
+  for (const item of staleFolders) console.warn(`- ${item}`);
+}
 console.log("Nenhum arquivo de autenticação, BFF, API, rota ou regra de negócio foi alterado.");

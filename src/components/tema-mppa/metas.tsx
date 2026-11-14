@@ -283,7 +283,7 @@ const macroTone = {
 export function MacroTile({ label, value, percent, tone = "blue", className }: { label: ReactNode; value: ReactNode; percent: number; tone?: keyof typeof macroTone; className?: string }) {
   return (
     <div className={cn("min-w-0 rounded-2xl border p-3 text-center", macroTone[tone], className)}>
-      <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--meter)_22%,transparent)]" aria-hidden>
+      <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-(--meter)/22" aria-hidden>
         <div className="h-full rounded-full bg-(--meter)" style={{ width: `${clamp(percent)}%` }} />
       </div>
       <p className="m-0 text-xs font-medium">{label}</p>

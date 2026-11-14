@@ -1,6 +1,6 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.14.0**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
+Versão **1.14.1**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
 estética de 12 nov. 2026 (ardósia no claro e marinho no escuro, cartões de 16px, sombras em camadas, realce em degradê do vermelho
 institucional ao azul, avatar em degradê; a variante `v2` troca só a forma, abaixo) e o cabeçalho padrão dos sistemas:
 
@@ -26,7 +26,7 @@ a página "Painel de metas" da demonstração mostra as peças. Na demonstraçã
 ## Usar num codebase
 
 1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v<versão>/tema-mppa-next/`, na pasta acima desta
-   (com a versão atual, `tema-mppa-next-v1.14.0/tema-mppa-next/`). A de fora leva a versão no nome; a de dentro, não.
+   (com a versão atual, `tema-mppa-next-v1.14.1/tema-mppa-next/`). A de fora leva a versão no nome; a de dentro, não.
 2. O desenvolvedor do sistema copia **só a pasta de dentro**, `tema-mppa-next/`, inteira, para a raiz do
    repositório (`cp -r …/tema-mppa-next-v<versão>/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html`
    no navegador. A cópia da camada confere a pasta contra o `SHA256SUMS` dela antes de copiar.

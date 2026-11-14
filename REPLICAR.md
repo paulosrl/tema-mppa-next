@@ -98,7 +98,9 @@ exemplo, `apps/meu-app/frontend`). Todo caminho deste guia sem prefixo (`compone
 
 **A pasta do modelo.** A entrega vem numa pasta com a versão no nome, `tema-mppa-next-v<versão>/`; dentro dela está
 a pasta `tema-mppa-next/`, que o desenvolvedor copia inteira para a raiz do repositório (não para a do frontend,
-num monorepo), sem a versão no nome. Só a de dentro vai para o repositório. Este guia a chama assim; se ela estiver em outro
+num monorepo), sem a versão no nome. Só a de dentro vai para o repositório. Se a pasta de fora também chegou ao
+repositório (`tema-mppa-next-v<versão>/`), ou sobrou uma `tema-mppa-next/` de uma versão anterior, o
+`copy-template.mjs` avisa no fim da cópia: apague as duas depois dela (4.1), sem commit; o `.gitignore` as cobre (4.1). Este guia a chama assim; se ela estiver em outro
 lugar, troque `tema-mppa-next/` pelo caminho real em cada comando (é a pasta que tem `scripts/copy-template.mjs`).
 Dentro dela, `SHA256SUMS` lista a soma de cada arquivo: o `copy-template.mjs` confere a pasta antes de copiar e
 para se ela veio incompleta ou editada.
@@ -169,7 +171,8 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
 
 ### 4.1 Preparar e copiar
 
-Acrescente ao `.gitignore` do repositório a linha `tema-mppa-next/` e, se não estiver lá, `*.tsbuildinfo`. Da
+Acrescente ao `.gitignore` do repositório as linhas `tema-mppa-next/` e `tema-mppa-next-v*/` (a pasta de fora, se
+ela vier junto) e, se não estiverem lá, `*.tsbuildinfo`. Da
 raiz do repositório:
 
 ```bash
@@ -527,7 +530,7 @@ frontend, ao lado do `package.json`:
 
    O script reprova cor diferente da do CSS, cor da camada ausente, referência `{grupo.token}` inexistente
    e seção fora da ordem do formato. Ligue-o aos testes ou ao `check` do consumidor, como o
-   `verificar-camada.mjs`. Se houver rede, rode também o linter oficial: `npx @google/design.md lint DESIGN.md`
+   `verificar-camada.mjs`. Se houver rede e o `npx` puder baixar pacotes, rode também o linter oficial: `npx @google/design.md lint DESIGN.md`
    (0 erros; avisos de cor sem componente podem ficar).
 
 Na Fase 3, tire do `DESIGN.md` os tokens que saíram do CSS.
@@ -711,6 +714,22 @@ Quando nenhuma tela usar mais o visual antigo:
 - **Regras locais de cor:** regra, spec ou teste do consumidor que fixa a cor do texto (por exemplo, "todo texto
   preto") entra em conflito quando a camada muda a cor. Reescreva a regra local para seguir a camada; não
   sobreponha o token.
+
+- **Alterações locais registradas na camada** (um arquivo da camada que o consumidor mudou de propósito e registrou, por
+  exemplo em `docs/tema-mppa/alteracoes-locais.json`): a cópia com `--force` sobrescreve o arquivo. Antes da cópia,
+  anote cada uma; depois, para cada arquivo: se ele é **igual** nas duas versões do modelo, volte ao da branch
+  (`git checkout <branch> -- <arquivo>`) em vez de reaplicar à mão; se mudou, reaplique a alteração e confira o diff;
+  se o CHANGELOG diz que a versão nova tornou a alteração desnecessária, tire-a e apague o registro. A regra "não edite
+  a camada" vale para o que não está registrado.
+- **Conferências que leem todo arquivo rastreado, também na atualização:** `docs/tema-mppa/` continua fora delas
+  (links mortos em `.md`, cor fixa, ortografia), porque o `REPLICAR.md` e o CHANGELOG copiados citam caminhos do
+  modelo (`scripts/…`, `src/…`) que no consumidor não existem. A seção 4.1 manda excluí-la; confira que a exclusão
+  ainda vale depois da cópia.
+- **Arquivo novo na camada:** a cópia pode trazer um arquivo que o consumidor ainda não usa (na 1.14.0, `metas.tsx`).
+  Ele passa pelo lint, pelos tipos e pelas conferências de cor do consumidor mesmo sem uso. Se alguma recusar, ajuste
+  a configuração da conferência, não o arquivo, e registre o caso na seção 11.
+- **Menu móvel e aba:** desde a 1.12.3, clicar numa aba abre a página do primeiro item e o menu móvel fecha. Quem fazia
+  isso por alteração local (a aba navegando) a tira e decide se aceita o menu fechando.
 
 ## 8. Código de cores (tokens)
 
@@ -910,7 +929,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.14.0)
+## Interface (tema-mppa 1.14.1)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo

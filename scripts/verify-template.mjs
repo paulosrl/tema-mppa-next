@@ -161,6 +161,13 @@ for (const [file, variante] of [["docs/preview/index.html", "padrao"], ["docs/pr
   if (!new RegExp(`<html[^>]*data-tema="${variante}"`).test(html)) errors.push(`${file}: o <html> deve ter data-tema="${variante}" (regere a prévia com NEXT_PUBLIC_TEMA=${variante === "v2" ? "v2" : ""})`);
   if (!html.includes('root.setAttribute("data-tm-sidebar", state.collapsed ? "collapsed" : "expanded")')) errors.push(`${file}: o Recolher não marca data-tm-sidebar no <html> (regere a prévia)`);
 }
+// Cada prévia traz o aviso da variante e o link para a outra.
+for (const [file, label, href] of [["docs/preview/index.html", "padrão", "../preview-v2/index.html"], ["docs/preview-v2/index.html", "v2", "../preview/index.html"]]) {
+  const html = await read(file);
+  if (!html.includes("data-preview-variante") || !html.includes(`Variante <strong>${label}</strong>`) || !html.includes(`href="${href}"`)) errors.push(`${file}: falta o aviso da variante com o link para ${href} (regere a prévia)`);
+}
+// O copy-template avisa de pasta do modelo sobrando perto do consumidor.
+if (!(await read("scripts/copy-template.mjs")).includes("staleFolders")) errors.push("copy-template.mjs: falta o aviso de pasta do modelo sobrando (staleFolders)");
 // GUIA, REPLICAR e DIAGNOSTICO conhecem a variante.
 {
   const guia = await read("GUIA.html");
@@ -370,6 +377,7 @@ requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
     if (!new RegExp(`\\b${name}\\b`).test(await read("src/components/tema-mppa/index.ts"))) errors.push(`index.ts não exporta ${name}`);
   }
   if (/#[0-9a-f]{3,8}\b/i.test(metasSource)) errors.push("metas.tsx: cor fixa; use os tokens");
+  if (/color-mix\(/.test(metasSource)) errors.push("metas.tsx: color-mix na classe (consumidores recusam); use o modificador de opacidade, como bg-(--meter)/22");
   // Classes tm-* que dão a forma da v2: cada uma usada nas peças tem a regra sob data-tema="v2" no CSS.
   const shapeSources = (await read("src/components/tema-mppa/card.tsx")) + (await read("src/components/tema-mppa/dashboard.tsx")) + (await read("src/components/tema-mppa/data-table.tsx"));
   for (const name of ["tm-tone", "tm-tile", "tm-panel-head", "tm-card-title", "tm-metric-label", "tm-label", "tm-section-title", "tm-section-dot", "tm-tag", "tm-status"]) {

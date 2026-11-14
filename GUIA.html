@@ -104,7 +104,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">tema-mppa-next 1.14.0 · guia do desenvolvedor</span>
+    <span class="eyebrow">tema-mppa-next 1.14.1 · guia do desenvolvedor</span>
     <h1>Guia do Tema MPPA</h1>
     <p class="lead">Leva a interface padrão dos sistemas do MPPA ao seu repositório com o Claude Code. Responda as perguntas: o guia monta os passos do seu caso, com o prompt pronto de cada um e o que você confere depois.</p>
   </header>
@@ -165,7 +165,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
         <thead><tr><th>Caminho no sistema</th><th>O que é</th><th>Você mexe?</th></tr></thead>
         <tbody>
           <tr><td><code>tema-mppa-next/</code> (raiz do repositório)</td><td>A pasta do modelo, copiada para a raiz do repositório (a de dentro da entrega, a que tem este <code>GUIA.html</code>). Fica fora do git; a cópia confere os arquivos dela e o agente a apaga na primeira entrega. Depois disso, este guia fica em <code>docs/tema-mppa/GUIA.html</code>.</td><td>Não</td></tr>
-          <tr><td><code>.gitignore</code> (raiz do repositório)</td><td>O agente acrescenta a linha <code>tema-mppa-next/</code> (e <code>*.tsbuildinfo</code>, se faltar) antes de copiar.</td><td>Não</td></tr>
+          <tr><td><code>.gitignore</code> (raiz do repositório)</td><td>O agente acrescenta as linhas <code>tema-mppa-next/</code> e <code>tema-mppa-next-v*/</code> (e <code>*.tsbuildinfo</code>, se faltar) antes de copiar.</td><td>Não</td></tr>
           <tr><td><code>public/mppa-logo.png</code>, <code>public/ciia.png</code> e <code>public/ciia-sigla.svg</code></td><td>As três logos padrão do cabeçalho, gravadas pela cópia quando faltam. Uma que o sistema já tinha fica como está.</td><td>Não</td></tr>
           <tr><td><code>docs/tema-mppa/</code></td><td>Referência que fica no sistema: este guia (<code>GUIA.html</code>), o roteiro (<code>REPLICAR.md</code>), o <code>CHANGELOG.md</code> do modelo, o <code>DESIGN.md</code> da camada, o protótipo, as prévias, as comparações, a lista de conferência (<code>camada.json</code>) e os verificadores (<code>verificar-camada.mjs</code> e <code>verificar-design.mjs</code>).</td><td>Não</td></tr>
           <tr><td><code>docs/tema-mppa/diagnostico.md</code></td><td>Só no sistema que já existe: o diagnóstico da Fase 0, preenchido a partir do formulário <code>tema-mppa-next/DIAGNOSTICO.md</code>. Com OpenSpec ou outro processo, fica onde ele manda; o agente diz onde.</td><td><strong>Sim, item 12</strong></td></tr>
@@ -181,7 +181,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "1.14.0";
+  var VERSAO = "1.14.1";
   var PASTA_ENTREGA = "tema-mppa-next-v" + VERSAO; // a pasta de fora, que leva a versão no nome (npm run empacotar)
   var spanAgents = document.getElementById("versao-agents");
   if (spanAgents) spanAgents.textContent = VERSAO;
@@ -196,10 +196,10 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
   // ---- Trechos comuns dos prompts ----
   var REGRAS = [
-    "- não edite a camada copiada e não mexa em autenticação, API, BFF nem regra de negócio; o que é do sistema entra por configuração;",
+    "- não edite a camada copiada (exceto as alterações locais que este repositório já registra, que você confere uma a uma, como a seção 7.1 do REPLICAR manda) e não mexa em autenticação, API, BFF nem regra de negócio; o que é do sistema entra por configuração;",
     "- rode a verificação da 4.10 e os testes, o lint, o typecheck e o build que este repositório manda rodar; tudo tem de passar;"
   ];
-  var PARADA = "Pare e me relate se um teste só passar editando a camada ou regra de negócio, ou se aparecer uma decisão que é minha.";
+  var PARADA = "Pare e me relate se um teste só passar editando a camada (fora das alterações locais já registradas) ou regra de negócio, ou se aparecer uma decisão que é minha.";
   var relatorio = function (extra) {
     return "Relatório final, curto e sem jargão: nome da branch, o que mudou" + (extra ? ", " + extra : "") + ", o resultado de cada teste, onde estão as capturas e o que o roteiro não previu (seção 11).";
   };
@@ -246,7 +246,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
     if (situacao === "zero") itens.push("Crie o repositório do sistema, ou use o vazio que já existe, com o git iniciado.");
     else itens.push("Confira que a <code>main</code> do sistema está limpa e funcionando.");
     if (situacao === "atualizar") itens.push("Se sobrou uma pasta <code>tema-mppa-next/</code> de uma versão anterior, apague-a.");
-    itens.push("A entrega vem numa pasta com a versão no nome (<code>" + PASTA_ENTREGA + "/</code>), e dentro dela está a pasta <code>tema-mppa-next/</code>, a que tem este guia. Copie só a de dentro, inteira e sem editar nada nela, para a raiz do repositório: <code>cp -r &lt;onde está&gt;/" + PASTA_ENTREGA + "/tema-mppa-next &lt;raiz do repositório&gt;/</code> (no Windows, copie e cole a pasta de dentro). No repositório ela fica como <code>tema-mppa-next/</code>, sem a versão no nome. Num monorepo, é a raiz do repositório, não a do frontend. Não faça commit dela.");
+    itens.push("A entrega vem numa pasta com a versão no nome (<code>" + PASTA_ENTREGA + "/</code>), e dentro dela está a pasta <code>tema-mppa-next/</code>, a que tem este guia. Copie só a de dentro, inteira e sem editar nada nela, para a raiz do repositório: <code>cp -r &lt;onde está&gt;/" + PASTA_ENTREGA + "/tema-mppa-next &lt;raiz do repositório&gt;/</code> (no Windows, copie e cole a pasta de dentro). No repositório ela fica como <code>tema-mppa-next/</code>, sem a versão no nome. Se a pasta de fora também foi para o repositório, ou sobrou uma <code>tema-mppa-next/</code> de uma versão anterior, apague-as (a cópia avisa). Num monorepo, é a raiz do repositório, não a do frontend. Não faça commit delas.");
     if (processo === "openspec") itens.push(situacao === "zero"
       ? "Confira que a ferramenta do OpenSpec está instalada na máquina (<code>openspec --version</code>). O agente inicializa o OpenSpec no repositório."
       : "Confira que o repositório tem a pasta <code>openspec/</code>.");

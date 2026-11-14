@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.14.1 — 2026-11-14
+
+O primeiro consumidor a atualizar para a 1.14.0 (o Heimdall) devolveu 11 pontos que o roteiro não previa
+(`REPLICAR.md`, seção 11). Esta versão os trata e acrescenta um aviso de variante às prévias. A camada visual e as
+duas variantes não mudam, fora o ajuste de uma classe.
+
+### Corrigido
+
+- **`MacroTile`:** a trilha do medidor usava `color-mix(...)` escrito na classe, que testes de cor de consumidores
+  recusam. Agora é `bg-(--meter)/22`, com o mesmo resultado.
+- **Pasta de fora na cópia:** o `copy-template.mjs` avisa, no fim, quando há outra pasta do modelo perto do consumidor
+  (uma `tema-mppa-next/` de versão antiga ou a pasta de fora, `tema-mppa-next-v<versão>/`) e diz a versão dela. O
+  `REPLICAR.md` (1.3 e 4.1) e o `GUIA.html` mandam apagá-las, e o `.gitignore` ganha também `tema-mppa-next-v*/`.
+- **Roteiro de atualização (7.1):** alterações locais registradas na camada (a cópia sobrescreve; arquivo igual nas
+  duas versões volta ao da branch), `docs/tema-mppa/` fora das conferências também na atualização, arquivo novo na
+  camada que passa pelas conferências do consumidor, e o menu móvel que fecha no clique da aba.
+- **GUIA:** "não edite a camada" e a parada do agente agora ressalvam as alterações locais já registradas.
+- **`REPLICAR.md` 4.9:** o linter oficial do `DESIGN.md` só roda com rede e com o `npx` liberado; sem isso, o
+  `verificar-design.mjs` basta.
+- **CHANGELOG:** os passos "Ao atualizar de" das versões 1.12.2, 1.12.3 e 1.13.2 ganharam o que faltava (aba por
+  alteração local, linha da variante no `AGENTS.md` e o arquivo novo `metas.tsx`).
+
+### Novo
+
+- **Aviso de variante nas prévias:** um selo fixo no canto de cada prévia mostra a variante ("padrão" ou "v2") e o link
+  para a outra (`../preview-v2/` e `../preview/`, que ficam lado a lado no modelo e em `docs/tema-mppa/`).
+
+### Ao atualizar de 1.14.0
+
+1. Nada a mudar nas telas. Copie a pasta `tema-mppa-next/` e rode
+   `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Se o consumidor tinha contornado o `color-mix` do `MacroTile` por conta própria, tire o contorno.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.14.1.
+
 ## 1.14.0 — 2026-11-14
 
 Pedido do autor em 14 nov. 2026: a variante `v2` passa a copiar **toda** a aparência do "Moveflux Design System"
@@ -36,7 +70,9 @@ Pedido do autor em 14 nov. 2026: a variante `v2` passa a copiar **toda** a apar�
    quadros continua.
 2. Quem usa a `v2`: a aparência muda (neutros em pedra, quadros sem faixa, selos e rótulos sem maiúsculas). Capture as
    telas antes e depois da cópia (`REPLICAR.md`, 7.1) e confira o contraste de tokens próprios sobre o fundo `#e7e5e4`.
-3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.14.0.
+3. A cópia traz um arquivo novo, `metas.tsx`, que passa pelo lint, pelos tipos e pelas conferências de cor do consumidor
+   mesmo sem uso. Se uma delas recusar, ajuste a configuração dela, não o arquivo (`REPLICAR.md`, 7.1).
+4. Troque a versão na seção "Interface" do `AGENTS.md` para 1.14.0.
 
 ## 1.13.2 — 2026-11-14
 
@@ -111,7 +147,8 @@ já existe (variante `padrao`) não muda: quem não escolhe nada continua exatam
 2. Quem quer a `v2`: troque o layout raiz pelo exemplo da 4.4 (as duas fontes, `tema`, `data-tema` e
    `tema` no provider), com `tema = "v2"`, e apague a fonte que não usa. Se o consumidor tinha tokens próprios
    em `:root`/`.dark` por cima da camada, confira o contraste deles sobre o fundo `#e2e8f0` da `v2`.
-3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.13.0.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.13.0 e acrescente a ela a linha da variante (o modelo da
+   seção está no fim do `REPLICAR.md`).
 
 ## 1.12.3 — 2026-11-12
 
@@ -130,7 +167,9 @@ Pedido do autor em 12 nov. 2026: cada aba do menu abre a página do seu primeiro
 
 1. Nada a mudar nas telas. Ponha, em cada lista de navegação, como primeiro item o que deve ser a página de
    entrada da aba.
-2. Troque a versão na seção "Interface" do `AGENTS.md` para 1.12.3.
+2. Se o consumidor fazia a aba navegar por alteração local, tire-a e apague o registro: a camada já faz. O menu móvel
+   passa a fechar no clique da aba; decida se aceita (`REPLICAR.md`, 7.1).
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 1.12.3.
 
 ## 1.12.2 — 2026-11-12
 
