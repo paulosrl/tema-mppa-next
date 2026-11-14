@@ -1,8 +1,8 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **1.13.1**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
+Versão **1.13.2**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
 estética de 12 nov. 2026 (ardósia no claro e marinho no escuro, cartões de 16px, sombras em camadas, realce em degradê do vermelho
-institucional ao azul, avatar em degradê) e o cabeçalho padrão dos sistemas:
+institucional ao azul, avatar em degradê; a variante `v2` troca só a forma, abaixo) e o cabeçalho padrão dos sistemas:
 
 - barra lateral com abas Plataforma e Administração; clicar numa aba abre a página do primeiro item dela;
 - cabeçalho de 62px, translúcido: título da página, busca, tema, logos institucionais, nome e perfil do usuário e
@@ -22,12 +22,14 @@ A prévia da `v2` é [`docs/preview-v2/index.html`](docs/preview-v2/index.html).
 
 ## Usar num codebase
 
-1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v1.13.1/tema-mppa-next/`, na pasta acima desta.
-2. O desenvolvedor do sistema copia a pasta `tema-mppa-next/` inteira para a raiz do repositório
-   (`cp -r …/tema-mppa-next-v1.13.1/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html` no
-   navegador. A cópia da camada confere a pasta contra o `SHA256SUMS` dela antes de copiar.
-3. No [`GUIA.html`](GUIA.html), ele responde duas perguntas: a situação do sistema (do zero, já existe sem o
-   tema, já tem o tema) e se o repositório usa OpenSpec. O guia monta os passos daquele caso, cada um com o
+1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v<versão>/tema-mppa-next/`, na pasta acima desta
+   (com a versão atual, `tema-mppa-next-v1.13.2/tema-mppa-next/`). A de fora leva a versão no nome; a de dentro, não.
+2. O desenvolvedor do sistema copia **só a pasta de dentro**, `tema-mppa-next/`, inteira, para a raiz do
+   repositório (`cp -r …/tema-mppa-next-v<versão>/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html`
+   no navegador. A cópia da camada confere a pasta contra o `SHA256SUMS` dela antes de copiar.
+3. No [`GUIA.html`](GUIA.html), ele responde três perguntas: a situação do sistema (do zero, já existe sem o
+   tema, já tem o tema), se o repositório usa OpenSpec e a variante do tema (`padrao` ou `v2`; a pergunta some
+   para quem só vai atualizar). O guia monta os passos daquele caso, cada um com o
    prompt pronto para colar no Claude Code e o que conferir depois. No sistema do zero, nome, versão, ano e
    telas iniciais entram por campos do guia.
 
@@ -47,7 +49,7 @@ pedidos: propor (o agente para e o desenvolvedor revisa), aplicar e arquivar.
 Ele segue o processo do codebase (OpenSpec, padrão de branch, testes). Para levar um codebase a uma versão
 nova do modelo, o mesmo pedido serve: o `REPLICAR.md` tem a seção de atualização.
 
-A pasta entregue tem só o que o desenvolvedor e o agente usam:
+A pasta entregue (`tema-mppa-next/`) tem só o que o desenvolvedor e o agente usam:
 
 - [`GUIA.html`](GUIA.html), o guia do desenvolvedor, com os prompts;
 - [`REPLICAR.md`](REPLICAR.md), o roteiro dele, e o [`DIAGNOSTICO.md`](DIAGNOSTICO.md), o formulário da Fase 0;
@@ -60,7 +62,7 @@ A pasta entregue tem só o que o desenvolvedor e o agente usam:
   `verificar-design.mjs`, que prende o `DESIGN.md` do sistema às cores do CSS;
 - as três logos padrão do cabeçalho (`public/`: MPPA, CIIA e a sigla CIIA), que a cópia grava no `public/` do
   sistema quando faltam;
-- o protótipo, a prévia e as comparações.
+- o protótipo, as prévias (padrão e `v2`) e as comparações.
 
 Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 
@@ -88,7 +90,7 @@ Autenticação, sessão, API e regras de negócio do codebase não são tocadas.
 npm install
 npm run dev          # demonstração em http://localhost:3000
 npm run check        # verificação (pinos, tokens, contraste, pasta entregue e consumidor de teste), typecheck, lint e build
-npm run empacotar    # pasta tema-mppa-next/ para os consumidores
+npm run empacotar    # tema-mppa-next-v<versão>/tema-mppa-next/, ao lado deste repositório
 ```
 
 Depois de mudar a aparência, regere a prévia e as comparações com a demonstração rodando

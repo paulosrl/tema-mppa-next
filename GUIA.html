@@ -104,7 +104,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">tema-mppa-next 1.13.1 · guia do desenvolvedor</span>
+    <span class="eyebrow">tema-mppa-next 1.13.2 · guia do desenvolvedor</span>
     <h1>Guia do Tema MPPA</h1>
     <p class="lead">Leva a interface padrão dos sistemas do MPPA ao seu repositório com o Claude Code. Responda as perguntas: o guia monta os passos do seu caso, com o prompt pronto de cada um e o que você confere depois.</p>
   </header>
@@ -159,17 +159,20 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
   <section class="card">
     <h2>Arquivos</h2>
+    <p>A <strong>raiz do frontend</strong> é a pasta do <code>package.json</code> do frontend. Num sistema simples, é a raiz do repositório; num monorepo, é a subpasta (por exemplo, <code>apps/meu-app/frontend</code>). Todo caminho da tabela é relativo a ela, menos <code>tema-mppa-next/</code> e <code>openspec/</code>, que ficam na raiz do repositório.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Caminho no sistema</th><th>O que é</th><th>Você mexe?</th></tr></thead>
         <tbody>
-          <tr><td><code>tema-mppa-next/</code></td><td>A pasta do modelo, de onde você abriu este guia, copiada para a raiz do repositório. Fica fora do git; a cópia confere os arquivos dela e o agente a apaga na primeira entrega.</td><td>Não</td></tr>
+          <tr><td><code>tema-mppa-next/</code> (raiz do repositório)</td><td>A pasta do modelo, copiada para a raiz do repositório (a de dentro da entrega, a que tem este <code>GUIA.html</code>). Fica fora do git; a cópia confere os arquivos dela e o agente a apaga na primeira entrega. Depois disso, este guia fica em <code>docs/tema-mppa/GUIA.html</code>.</td><td>Não</td></tr>
+          <tr><td><code>.gitignore</code> (raiz do repositório)</td><td>O agente acrescenta a linha <code>tema-mppa-next/</code> (e <code>*.tsbuildinfo</code>, se faltar) antes de copiar.</td><td>Não</td></tr>
           <tr><td><code>public/mppa-logo.png</code>, <code>public/ciia.png</code> e <code>public/ciia-sigla.svg</code></td><td>As três logos padrão do cabeçalho, gravadas pela cópia quando faltam. Uma que o sistema já tinha fica como está.</td><td>Não</td></tr>
-          <tr><td><code>docs/tema-mppa/</code></td><td>Referência que fica no sistema: este guia (<code>docs/tema-mppa/GUIA.html</code>), o roteiro, o protótipo e os verificadores.</td><td>Não</td></tr>
-          <tr><td><code>docs/tema-mppa/diagnostico.md</code></td><td>Só no sistema que já existe: o diagnóstico da Fase 0. Com OpenSpec ou outro processo, fica onde ele manda; o agente diz onde.</td><td><strong>Sim, item 12</strong></td></tr>
-          <tr><td><code>openspec/changes/</code></td><td>Só com OpenSpec: a change de cada fase, que você revisa antes de aplicar.</td><td>Revisa</td></tr>
+          <tr><td><code>docs/tema-mppa/</code></td><td>Referência que fica no sistema: este guia (<code>GUIA.html</code>), o roteiro (<code>REPLICAR.md</code>), o <code>CHANGELOG.md</code> do modelo, o <code>DESIGN.md</code> da camada, o protótipo, as prévias, as comparações, a lista de conferência (<code>camada.json</code>) e os verificadores (<code>verificar-camada.mjs</code> e <code>verificar-design.mjs</code>).</td><td>Não</td></tr>
+          <tr><td><code>docs/tema-mppa/diagnostico.md</code></td><td>Só no sistema que já existe: o diagnóstico da Fase 0, preenchido a partir do formulário <code>tema-mppa-next/DIAGNOSTICO.md</code>. Com OpenSpec ou outro processo, fica onde ele manda; o agente diz onde.</td><td><strong>Sim, item 12</strong></td></tr>
+          <tr><td><code>openspec/changes/</code> (raiz do repositório)</td><td>Só com OpenSpec: a change de cada fase, que você revisa antes de aplicar.</td><td>Revisa</td></tr>
           <tr><td><code>components/tema-mppa/</code> e <code>styles/tema-mppa.css</code></td><td>A camada visual (dentro de <code>src/</code>, se o sistema usa). Ninguém edita: o verificador reprova.</td><td>Não</td></tr>
-          <tr><td><code>DESIGN.md</code></td><td>O design do sistema, criado na primeira entrega.</td><td>Não</td></tr>
+          <tr><td><code>DESIGN.md</code></td><td>O design do sistema, na raiz do frontend, ao lado do <code>package.json</code>. O agente o cria na primeira entrega a partir do <code>docs/tema-mppa/DESIGN.md</code>, que é o da camada.</td><td>Não</td></tr>
+          <tr><td><code>AGENTS.md</code></td><td>O agente acrescenta a seção "Interface (tema-mppa <span id="versao-agents"></span>)", com as regras da camada, e a atualiza a cada versão nova.</td><td>Não</td></tr>
         </tbody>
       </table>
     </div>
@@ -178,7 +181,10 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
 
 <script>
 (function () {
-  var VERSAO = "1.13.1";
+  var VERSAO = "1.13.2";
+  var PASTA_ENTREGA = "tema-mppa-next-v" + VERSAO; // a pasta de fora, que leva a versão no nome (npm run empacotar)
+  var spanAgents = document.getElementById("versao-agents");
+  if (spanAgents) spanAgents.textContent = VERSAO;
 
   // ---- Armazenamento (só neste navegador; a página funciona sem ele) ----
   var KEY = "tema-mppa-guia";
@@ -240,7 +246,7 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bor
     if (situacao === "zero") itens.push("Crie o repositório do sistema, ou use o vazio que já existe, com o git iniciado.");
     else itens.push("Confira que a <code>main</code> do sistema está limpa e funcionando.");
     if (situacao === "atualizar") itens.push("Se sobrou uma pasta <code>tema-mppa-next/</code> de uma versão anterior, apague-a.");
-    itens.push("Copie a pasta <code>tema-mppa-next/</code> inteira, de onde você abriu este guia, para a raiz do repositório, sem editar nada nela: <code>cp -r &lt;onde ela está&gt;/tema-mppa-next &lt;raiz do repositório&gt;/</code> (no Windows, copie e cole a pasta). Num monorepo, é a raiz do repositório, não a do frontend. Não faça commit dela.");
+    itens.push("A entrega vem numa pasta com a versão no nome (<code>" + PASTA_ENTREGA + "/</code>), e dentro dela está a pasta <code>tema-mppa-next/</code>, a que tem este guia. Copie só a de dentro, inteira e sem editar nada nela, para a raiz do repositório: <code>cp -r &lt;onde está&gt;/" + PASTA_ENTREGA + "/tema-mppa-next &lt;raiz do repositório&gt;/</code> (no Windows, copie e cole a pasta de dentro). No repositório ela fica como <code>tema-mppa-next/</code>, sem a versão no nome. Num monorepo, é a raiz do repositório, não a do frontend. Não faça commit dela.");
     if (processo === "openspec") itens.push(situacao === "zero"
       ? "Confira que a ferramenta do OpenSpec está instalada na máquina (<code>openspec --version</code>). O agente inicializa o OpenSpec no repositório."
       : "Confira que o repositório tem a pasta <code>openspec/</code>.");

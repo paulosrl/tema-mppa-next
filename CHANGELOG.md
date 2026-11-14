@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.13.2 — 2026-11-14
+
+Pedido do autor em 14 nov. 2026: o guia, o README e o `REPLICAR.md` não batiam com os caminhos da pasta entregue.
+A camada visual, as variantes e a demonstração não mudam; mudam os documentos e, por consequência, a versão que
+as prévias e as comparações mostram.
+
+### Corrigido
+
+- **Pasta a copiar:** a entrega sai em `tema-mppa-next-v<versão>/tema-mppa-next/`. O `GUIA.html` (passo "Preparar"),
+  o README e o `REPLICAR.md` (1.3) agora dizem que só a pasta de dentro, `tema-mppa-next/`, vai para a raiz do
+  repositório, com o comando `cp -r` do caminho completo; a de fora leva a versão no nome e não é copiada.
+- **GUIA, tabela "Arquivos":** explica a raiz do frontend (o que é relativo a ela e o que fica na raiz do
+  repositório) e lista o `.gitignore`, o `AGENTS.md` e o conteúdo de `docs/tema-mppa/`. A versão da seção
+  "Interface" do `AGENTS.md` aparecia em branco; agora vem do guia.
+- **README:** o guia faz três perguntas (situação, OpenSpec e variante), não duas; as prévias são duas (padrão e
+  `v2`); os caminhos usam `<versão>` em vez de uma versão fixa.
+- **REPLICAR:** a referência visual lista as duas prévias (0, 1.3, 4.1 e 10), e o caminho B manda levar também os
+  blocos `v2` dos tokens.
+
+### Ao atualizar de 1.13.1
+
+1. Nada a mudar nas telas. Para ter os documentos novos em `docs/tema-mppa/`, copie a pasta `tema-mppa-next/` e rode
+   `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force` (`REPLICAR.md`, seção 7).
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 1.13.2.
+
 ## 1.13.1 — 2026-11-14
 
 Pedido do autor em 14 nov. 2026: na página "Meus acessos" da demonstração, o cartão "Resumo da conta" desce para o

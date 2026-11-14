@@ -32,8 +32,8 @@ negócio. A interface **recebe** essas coisas por propriedade; o consumidor cont
 Referência visual, nesta ordem de autoridade:
 
 1. `docs/prototipo/index.html`: o protótipo aprovado. Manda em todo elemento gráfico.
-2. `docs/preview/index.html`: o modelo pronto, página única offline.
-3. `docs/comparacao/*.png`: protótipo e modelo lado a lado, claro e escuro, 1280px e 390px.
+2. `docs/preview/index.html` (variante `padrao`) e `docs/preview-v2/index.html` (variante `v2`): o modelo pronto, página única offline.
+3. `docs/comparacao/*.png`: protótipo e modelo lado a lado (variante `padrao`), claro e escuro, 1280px e 390px.
 
 Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "corrigidas":
 
@@ -96,16 +96,17 @@ A **raiz do consumidor** é a pasta do `package.json` do frontend. Num monorepo,
 exemplo, `apps/meu-app/frontend`). Todo caminho deste guia sem prefixo (`components/`, `styles/`,
 `docs/tema-mppa/`, `app/`) é relativo a ela.
 
-**A pasta do modelo.** O modelo chega como a pasta `tema-mppa-next/`, que o desenvolvedor copia inteira para a
-raiz do repositório (não para a do frontend, num monorepo). Este guia a chama assim; se ela estiver em outro
+**A pasta do modelo.** A entrega vem numa pasta com a versão no nome, `tema-mppa-next-v<versão>/`; dentro dela está
+a pasta `tema-mppa-next/`, que o desenvolvedor copia inteira para a raiz do repositório (não para a do frontend,
+num monorepo), sem a versão no nome. Só a de dentro vai para o repositório. Este guia a chama assim; se ela estiver em outro
 lugar, troque `tema-mppa-next/` pelo caminho real em cada comando (é a pasta que tem `scripts/copy-template.mjs`).
 Dentro dela, `SHA256SUMS` lista a soma de cada arquivo: o `copy-template.mjs` confere a pasta antes de copiar e
 para se ela veio incompleta ou editada.
 
 Caminhos do modelo citados sem prefixo (`src/…`, `scripts/…`, `docs/prototipo/`, `docs/preview/`,
-`docs/comparacao/`) são os de dentro de `tema-mppa-next/`. Depois da cópia (4.1), a referência fica no consumidor
-em `docs/tema-mppa/` (`docs/tema-mppa/prototipo/index.html`, `docs/tema-mppa/preview/index.html`,
-`docs/tema-mppa/comparacao/`).
+`docs/preview-v2/`, `docs/comparacao/`) são os de dentro de `tema-mppa-next/`. Depois da cópia (4.1), a referência
+fica no consumidor em `docs/tema-mppa/` (`docs/tema-mppa/prototipo/index.html`,
+`docs/tema-mppa/preview/index.html`, `docs/tema-mppa/preview-v2/index.html` e `docs/tema-mppa/comparacao/`).
 
 ## 2. Conferir a stack
 
@@ -182,7 +183,7 @@ O script detecta a estrutura do consumidor:
 
 Use `--components-dir` e `--styles-dir` para outro lugar. Ele também grava em `docs/tema-mppa/`:
 
-- a referência visual (protótipo, prévia, comparações), este guia, o `GUIA.html` do desenvolvedor (os
+- a referência visual (protótipo, prévias do padrão e da `v2`, comparações), este guia, o `GUIA.html` do desenvolvedor (os
   prompts de cada fase) e o CHANGELOG do modelo;
 - `DESIGN.md`, os tokens e a intenção do design da camada no formato DESIGN.md (ponto de partida da 4.9), e
   `verificar-design.mjs`, que confere um DESIGN.md contra o CSS;
@@ -869,10 +870,11 @@ Medidas:
 Os valores não mudam; só a forma. As fases são as mesmas; muda só a Fase 1, em que você recria a camada em
 vez de copiá-la (e não há `verificar-camada.mjs`). Sem a cópia, a referência não chega a `docs/tema-mppa/`: copie
 para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `CHANGELOG.md`, este guia e os
-`docs/prototipo/`, `docs/preview/` e `docs/comparacao/` da pasta `tema-mppa-next/`, antes de apagá-la; a 4.9 e a
+`docs/prototipo/`, `docs/preview/`, `docs/preview-v2/` e `docs/comparacao/` da pasta `tema-mppa-next/`, antes de apagá-la; a 4.9 e a
 4.10 os usam. O `verificar-design.mjs` precisa de `--css` com o CSS dos tokens, porque não há `camada.json`.
 
-- **Cores:** copie os blocos `:root` e `.dark` de `src/styles/tema-mppa.css` como estão.
+- **Cores:** copie os blocos `:root` e `.dark` de `src/styles/tema-mppa.css` como estão (e, na variante `v2`, os
+  blocos `:root[data-tema="v2"]`, seção 8.1).
   - Tailwind 4: copie também o `@theme inline`.
   - Tailwind 3: mapeie as cores em `theme.extend.colors` como `var(--token)`.
   - Sem Tailwind: use as variáveis CSS diretamente.
@@ -892,7 +894,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 1.13.1)
+## Interface (tema-mppa 1.13.2)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos.
   Confira com `node docs/tema-mppa/verificar-camada.mjs` e atualize copiando uma versão nova do modelo
