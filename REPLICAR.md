@@ -683,7 +683,9 @@ Quando nenhuma tela usar mais o visual antigo:
 1. `node docs/tema-mppa/verificar-camada.mjs`: se apontar arquivo editado (fora das alterações registradas, 7.1),
    entenda a edição antes de seguir; ela será perdida (vai para o backup, numa pasta temporária que o sistema pode apagar). Com git, o arquivo
    volta da branch; sem git, copie-o antes para um lugar que fique. Leve ao desenvolvedor, logo na proposta, as
-   decisões que a versão nova pede (por exemplo, a do menu móvel e da aba, em 7.1).
+   decisões que a versão nova pede (por exemplo, a do menu móvel e da aba, em 7.1). Uma decisão que ele já tomou
+   numa atualização anterior, e que está no registro de alterações locais, continua valendo: diga isso na proposta e
+   pergunte só se a versão nova mudou o motivo dela.
 2. **Antes da cópia, capture as telas** (receita em 7.1), se a versão nova anuncia mudança de aparência.
 3. Confira que o `.gitignore` do consumidor ignora `tema-mppa-next/` e `tema-mppa-next-v*/` (4.1); se faltar,
    acrescente as duas linhas antes da cópia. Com a pasta nova `tema-mppa-next/` na raiz do repositório (seção 1.3; se sobrou uma de versão anterior, ela
@@ -695,9 +697,13 @@ Quando nenhuma tela usar mais o visual antigo:
    `docs/tema-mppa/` tem itens que a versão nova não traz, apague os que são resto de versão anterior (por exemplo,
    `preview-v2/`) e mantenha os do sistema (diagnóstico, registro de alterações locais). **Logo em seguida, apague
    a pasta `tema-mppa-next/`** (4.1): daqui em diante, tudo é lido em `docs/tema-mppa/`.
+   No fim, a cópia diz se a camada visual mudou desde a versão anterior ou se só mudaram a referência e os
+   scripts ("Camada visual: igual à da…"): é a prova de que nada do que o navegador recebe mudou.
    Depois da cópia, atualize junto o que no consumidor cita a versão da camada: o registro de alterações locais
-   (inclusive a versão do modelo que ele cita) e os testes que fixam a versão (por exemplo, um teste que lê o
-   `camada.json` e espera a versão antiga).
+   (inclusive a versão do modelo que ele cita, a cada versão nova, mesmo quando o arquivo registrado não mudou), o
+   título da seção "Interface" do `AGENTS.md` e os testes que fixam a versão (por exemplo, um teste que lê o
+   `camada.json` e espera a versão antiga). Até o registro citar a versão nova, o `verificar-camada.mjs` reprova:
+   é o esperado logo depois da cópia.
 4. Leia o `docs/tema-mppa/CHANGELOG.md` da versão anterior até a nova e faça o que a seção "Ao atualizar de"
    de cada versão pede ao consumidor (configuração nova, propriedade que saiu). **Saltando várias versões**, a
    cópia é uma só, com a versão final; os passos de cada "Ao atualizar de" se somam, e os que mandam copiar
@@ -705,8 +711,8 @@ Quando nenhuma tela usar mais o visual antigo:
 5. **Refaça o `DESIGN.md` do sistema a partir do `docs/tema-mppa/DESIGN.md` novo**, com os tokens e o texto
    próprios do sistema por cima. Reaplicar as diferenças antigas (patch) falha quando a prosa da camada muda.
    Confira com o `verificar-design.mjs`, que precisa aprovar sem diferença.
-6. Rode a verificação de 4.10, capture as telas de novo e compare (7.1), atualize a versão na seção
-   "Interface" do `AGENTS.md`. Antes das capturas de depois, confirme que o sistema no ar serve o código novo
+6. Rode a verificação de 4.10, capture as telas de novo e compare (7.1), confira a versão na seção
+   "Interface" do `AGENTS.md` (passo 3). Antes das capturas de depois, confirme que o sistema no ar serve o código novo
    (por exemplo, o HTML servido já sem o que a versão nova tirou, como o atributo de variante do `<html>` na 2.0.0): um script de
    subir o sistema que só diz "no ar" não prova que reconstruiu o frontend.
 
@@ -777,6 +783,9 @@ Quando nenhuma tela usar mais o visual antigo:
 - **Arquivo novo na camada:** a cópia pode trazer um arquivo que o consumidor ainda não usa (na 1.14.0, `metas.tsx`).
   Ele passa pelo lint, pelos tipos e pelas conferências de cor do consumidor mesmo sem uso. Se alguma recusar, ajuste
   a configuração da conferência, não o arquivo, e registre o caso na seção 11.
+- **Quando refazer a conta de contraste dos tokens próprios** (7.2, passo 5): quando o `tema-mppa.css` muda (a
+  cópia diz se a camada visual mudou, passo 3) ou quando o sistema muda um token próprio. Numa versão que só muda
+  textos e scripts, vale a conta da atualização anterior; cite-a.
 - **Testes e scripts que leem o CSS da camada como texto** (por exemplo, o primeiro bloco `:root` do
   `tema-mppa.css`): podem passar por acaso, porque o bloco lido não era o que valia na tela, e quebrar na cópia
   mesmo sem mudança de aparência. Leia o bloco que vale (`:root` e `.dark`) ou meça a cor no navegador.
@@ -1014,7 +1023,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.0.6)
+## Interface (tema-mppa 2.0.7)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).

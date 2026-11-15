@@ -136,8 +136,10 @@ if (existing.length && !force) {
 
 // Atualização: diz quais arquivos da camada o consumidor tinha editado, antes de substituí-los.
 let editedFiles = [];
+let previousManifest;
 if (existing.length && force && existsSync(manifestPath)) {
   const previous = JSON.parse(await readFile(manifestPath, "utf8"));
+  previousManifest = previous;
   const edited = [];
   for (const [relative, expected] of Object.entries(previous.arquivos ?? {})) {
     const file = path.join(target, relative);
@@ -239,9 +241,22 @@ const manifest = {
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, { mode: 0o644 });
 await chmod(manifestPath, 0o644);
 
+// Atualização: compara a camada nova com a lista da versão anterior do modelo (não com os arquivos do consumidor),
+// para dizer se a camada visual mudou ou só os textos e scripts da referência.
+let layerReport;
+if (previousManifest?.arquivos) {
+  const before = previousManifest.arquivos;
+  const changed = Object.keys(files).filter((relative) => before[relative] !== files[relative]);
+  const removed = Object.keys(before).filter((relative) => !(relative in files));
+  layerReport = changed.length || removed.length
+    ? `Camada visual: mudou desde a ${previousManifest.versao} (${changed.length} arquivo(s) novo(s) ou alterado(s), ${removed.length} removido(s)): ${[...changed, ...removed].join(", ")}`
+    : `Camada visual: igual à da ${previousManifest.versao} (${Object.keys(files).length} arquivos com a mesma soma); mudaram só a referência e os scripts.`;
+}
+
 // O que está em docs/tema-mppa/ e esta versão do modelo não traz: resto de versão anterior (por exemplo,
-// `preview-v2/`, que saiu na 2.0.0) ou arquivo do sistema (diagnóstico, registro de alterações locais). Só avisa.
-const delivered = new Set([...sources.map(({ to }) => path.relative(referenceDir, to).split(path.sep)[0]), "camada.json"]);
+// `preview-v2/`, que saiu na 2.0.0). Os arquivos do sistema que o roteiro põe ali (o diagnóstico e o registro de
+// alterações locais) não entram no aviso. Só avisa.
+const delivered = new Set([...sources.map(({ to }) => path.relative(referenceDir, to).split(path.sep)[0]), "camada.json", "alteracoes-locais.json", "diagnostico.md"]);
 const extras = (await readdir(referenceDir)).filter((name) => !delivered.has(name)).sort();
 
 const rel = (to) => path.relative(target, to) || ".";
@@ -254,7 +269,7 @@ for (const line of logoReport) console.log(`  - ${line}`);
 if (backupRoot) {
   console.log(`Backup (fora do consumidor, numa pasta temporária que o sistema pode apagar): ${backupRoot}`);
   if (editedFiles.length) {
-    console.warn("Os arquivos editados acima estão no backup. Para cada alteração registrada: se o arquivo é igual nas duas versões do modelo, volte-o do git (git checkout <branch> -- <arquivo>); se mudou, reaplique a alteração. Alteração que não está no git: copie-a do backup agora para um lugar que fique. Depois atualize o registro, inclusive a versão do modelo que ele cita (REPLICAR.md, 7.1).");
+    console.warn("Até o registro de alterações locais citar a versão nova, o verificar-camada.mjs reprova: é o esperado logo depois da cópia. Os arquivos editados acima estão no backup. Para cada alteração registrada: se o arquivo é igual nas duas versões do modelo, volte-o do git (git checkout <branch> -- <arquivo>); se mudou, reaplique a alteração. Alteração que não está no git: copie-a do backup agora para um lugar que fique. Depois atualize o registro, inclusive a versão do modelo que ele cita (REPLICAR.md, 7.1).");
   }
 }
 console.log(`- lista de conferência: ${rel(manifestPath)} (versão ${version}); confira com: node ${rel(path.join(referenceDir, "verificar-camada.mjs"))}`);
@@ -264,8 +279,9 @@ console.log(
     ? "Depois da cópia (atualização): apague a pasta tema-mppa-next/ e siga o REPLICAR.md, seção 7, a partir do fim do passo 3 (o que cita a versão da camada) e depois o 4 (CHANGELOG, DESIGN.md, verificação de 4.10)."
     : "Depois da cópia: apague a pasta tema-mppa-next/ e siga o REPLICAR.md, Fase 1, a partir do fim da 4.1 (conferências do consumidor que a cópia aciona) e depois 4.2. Depois da Fase 1, a Fase 2 (telas) e a Fase 3 (limpeza).",
 );
+if (layerReport) console.log(layerReport);
 if (extras.length) {
-  console.warn(`Atenção: ${rel(referenceDir)}/ tem itens que a versão ${version} do modelo não traz. Apague os que são resto de versão anterior (por exemplo, preview-v2/); mantenha os do sistema (diagnóstico, registro de alterações locais):`);
+  console.warn(`Atenção: ${rel(referenceDir)}/ tem itens que a versão ${version} do modelo não traz. Apague os que são resto de versão anterior (por exemplo, preview-v2/); mantenha o que for do sistema:`);
   for (const name of extras) console.warn(`- ${name}`);
 }
 if (staleFolders.length) {

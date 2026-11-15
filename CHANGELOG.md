@@ -3,6 +3,38 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.0.7 — 2026-11-14
+
+Retorno do Heimdall, que atualizou da 2.0.4 para a 2.0.6 com OpenSpec. Só o `REPLICAR.md`, o `copy-template.mjs` e
+o CHANGELOG mudam; a camada visual e a API não mudam, por isso sobe o último número.
+
+### Corrigido
+
+- **A cópia diz se a camada visual mudou.** Numa atualização, o `copy-template.mjs` compara a camada nova com a lista
+  da versão anterior do modelo e termina com uma destas linhas:
+  - "Camada visual: igual à da X", quando só mudaram a referência e os scripts. Antes, o agente conferia a soma de
+    cada arquivo à mão.
+  - "mudou desde a X", com os arquivos que mudaram.
+- **Logo depois da cópia, o `verificar-camada.mjs` reprova** até o registro de alterações locais citar a versão nova.
+  A cópia e o `REPLICAR.md` (seção 7, passo 3) passam a avisar que isso é o esperado.
+- **O que cita a versão da camada (passo 3):** o registro de alterações locais é atualizado a cada versão, mesmo
+  quando o arquivo registrado não mudou. O título da seção "Interface" do `AGENTS.md` entra na lista; antes, só o
+  passo 6 o citava, tarde demais, e o teste do consumidor que confere esse título quebrava.
+- **Aviso de itens a mais em `docs/tema-mppa/`:** deixa de listar o registro de alterações locais e o diagnóstico,
+  que são do sistema. Só sobra o que pode ser resto de versão anterior.
+- **Decisão anterior (passo 1):** uma decisão que o desenvolvedor já tomou numa atualização anterior, e que está no
+  registro, continua valendo. A proposta diz isso e só pergunta de novo se a versão nova mudou o motivo.
+- **Conta de contraste dos tokens próprios (7.1):** refaz-se quando o `tema-mppa.css` muda ou quando o sistema muda
+  um token próprio. Numa versão só de textos e scripts, vale a da atualização anterior.
+
+### Ao atualizar de 2.0.6
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
+   (`REPLICAR.md`, seção 7). Nada a mudar nas telas. A cópia deve dizer "Camada visual: igual à da 2.0.6".
+2. Se há registro de alterações locais, troque o `versaoDoModelo` para 2.0.7 e rode
+   `node docs/tema-mppa/verificar-camada.mjs`.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 2.0.7.
+
 ## 2.0.6 — 2026-11-14
 
 Achados do teste cego da 2.0.5: dois agentes sem contexto atualizaram um consumidor de teste da 1.14.1 na variante v2,
