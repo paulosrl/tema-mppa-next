@@ -3,6 +3,35 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.0.8 — 2026-11-14
+
+Achado no diagnóstico do Xavier, cuja spec exige que o foco volte ao botão que abriu o menu do celular ou a busca.
+A camada fechava os dois sem devolver o foco, o que piora o uso pelo teclado em qualquer sistema. É correção de
+comportamento, sem propriedade nova nem mudança de aparência, por isso sobe o último número. Desta vez a camada muda:
+`sidebar-context.tsx` e `command-palette.tsx`.
+
+### Corrigido
+
+- **Foco ao fechar o menu do celular:** volta ao botão "Abrir menu lateral" quando o menu fecha por Esc, pelo X, por
+  um toque fora ou pela escolha de um item. Na escolha de um item, a devolução vale também depois da troca de
+  página. Se a troca montar o cabeçalho de novo, o foco vai para o botão novo de mesmo nome.
+- **Foco ao fechar a busca:** volta ao botão "Abrir busca" quando ela fecha por Esc, por clique fora ou pela escolha
+  de um item. Com `renderSearch`, a busca própria do sistema recebe o mesmo.
+- **Sem roubar o foco:** a devolução só age se o foco ficou solto (no corpo da página) ou dentro do que fechou. Quem
+  levou o foco a outro lugar de propósito fica onde está.
+- **Contrato observável (`REPLICAR.md`, 4.8):** ganha a linha "Foco ao fechar". O `verify-template.mjs` confere que o
+  menu e a busca usam a devolução.
+
+### Ao atualizar de 2.0.7
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`
+   (`REPLICAR.md`, seção 7). A cópia deve dizer que a camada mudou em `sidebar-context.tsx` e `command-palette.tsx`.
+   Nada a mudar nas telas.
+2. Teste do consumidor que esperava o foco no corpo da página, ou no primeiro link, depois de fechar o menu ou a
+   busca: passa a esperar o botão que os abriu.
+3. Se o sistema tinha alteração local na camada só para devolver o foco, tire-a e apague o registro dela.
+4. Troque a versão na seção "Interface" do `AGENTS.md` (e no registro de alterações locais, se houver) para 2.0.8.
+
 ## 2.0.7 — 2026-11-14
 
 Retorno do Heimdall, que atualizou da 2.0.4 para a 2.0.6 com OpenSpec. Só o `REPLICAR.md`, o `copy-template.mjs` e

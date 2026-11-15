@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "./button";
-import { useSidebar } from "./sidebar-context";
+import { useRestoreFocus, useSidebar } from "./sidebar-context";
 import type { AppShellProps, SearchItem, ShellConfig, ShellSession } from "./types";
 import { canSeeAdministration, cn, normalizeSearch, visibleNavigation } from "./utils";
 
@@ -69,6 +69,8 @@ export function CommandPalette({
   useEffect(() => {
     if (open && !customSearch) requestAnimationFrame(() => inputRef.current?.focus());
   }, [open, customSearch]);
+  // Ao fechar a busca (Esc, clique fora, item escolhido), o foco volta ao botão "Abrir busca".
+  useRestoreFocus(open, (element) => Boolean(element.closest('[aria-label="Busca e navegação"]')));
 
   const items = useMemo(() => configuredItems(config, session), [config, session]);
   const filtered = useMemo(() => {

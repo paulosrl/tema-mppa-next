@@ -514,6 +514,7 @@ casca antiga típica:
 | Abas | na aba Plataforma, os links administrativos não ficam no DOM | teste que clicava num link administrativo a partir do dashboard: abra antes a aba Administração |
 | Menu móvel | é a própria `aside`, fechada por translação (`-translate-x-full`); botão "Abrir menu lateral" | o Playwright a considera "visível" mesmo fechada: confira a posição (`boundingBox`) ou a classe, não `toBeVisible` |
 | Busca | botão "Abrir busca" e diálogo "Busca e navegação" | seletor da busca antiga |
+| Foco ao fechar | ao fechar o menu móvel (Esc, X, toque fora ou escolha de um item) ou a busca (Esc, clique fora, item escolhido), o foco volta ao botão que os abriu, "Abrir menu lateral" ou "Abrir busca", mesmo depois da troca de página; quem levou o foco a outro lugar fica onde está | teste que esperava o foco no corpo da página ou no primeiro link depois de fechar |
 | Sair | botão com o aria-label do `signOutLabel` da configuração | texto do botão antigo |
 | Tokens | cores em hex | teste que lia `--x` como HSL: leia a cor resolvida pelo navegador numa sonda (`el.style.color = 'var(--x)'` e `getComputedStyle(el).color`) |
 
@@ -1023,7 +1024,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.0.7)
+## Interface (tema-mppa 2.0.8)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).

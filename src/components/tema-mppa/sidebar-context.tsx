@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { SIDEBAR_STORAGE_KEY } from "./theme-script";
 
 type SidebarContextValue = {
@@ -67,6 +67,8 @@ const SidebarContext = createContext<SidebarContextValue | null>(null);
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const collapsed = useSyncExternalStore(subscribe, readCollapsed, serverCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Ao fechar o menu móvel, o foco volta ao botão que o abriu ("Abrir menu lateral"), se ficou na barra.
+  useRestoreFocus(mobileOpen, (element) => Boolean(element.closest("aside")));
 
   // Sem o script de boot (ou com outra aba mudando a preferência), o atributo segue o estado guardado. Lê o
   // guardado, e não o `collapsed` da renderização: na hidratação ele ainda é o do servidor (expandida), e
@@ -114,4 +116,41 @@ export function useSidebar() {
   const value = useContext(SidebarContext);
   if (!value) throw new Error("useSidebar deve ser usado dentro de SidebarProvider");
   return value;
+}
+
+/**
+ * Devolve o foco a quem o tinha quando `open` passou a verdadeiro (o botão que abriu o menu ou a busca), quando
+ * `open` volta a falso. Só devolve se esse elemento ainda está na página e se o foco ficou solto (no corpo da
+ * página) ou dentro do que fechou (`isInside`): quem levou o foco a outro lugar de propósito fica onde está.
+ */
+export function useRestoreFocus(open: boolean, isInside?: (element: Element) => boolean) {
+  const opener = useRef<HTMLElement | null>(null);
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (open && !wasOpen.current) {
+      const active = document.activeElement;
+      opener.current = active instanceof HTMLElement && active !== document.body ? active : null;
+    }
+    if (!open && wasOpen.current) {
+      const target = opener.current;
+      opener.current = null;
+      const label = target?.getAttribute("aria-label");
+      const restore = () => {
+        // Se a troca de página montou o cabeçalho de novo, o botão é outro: acha-o pelo mesmo nome acessível.
+        const button = target?.isConnected
+          ? target
+          : label
+            ? document.querySelector<HTMLElement>(`[aria-label="${CSS.escape(label)}"]`)
+            : null;
+        const active = document.activeElement;
+        const loose = !active || active === document.body || Boolean(isInside?.(active));
+        if (button && loose && active !== button) button.focus();
+      };
+      // Logo e de novo por um instante: escolher um item troca de página, e a troca de página do Next solta o foco
+      // no corpo da página depois que ele já tinha voltado ao botão.
+      requestAnimationFrame(restore);
+      for (const delay of [120, 300, 600, 1000]) window.setTimeout(restore, delay);
+    }
+    wasOpen.current = open;
+  }, [open, isInside]);
 }

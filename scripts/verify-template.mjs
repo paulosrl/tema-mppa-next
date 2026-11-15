@@ -158,6 +158,13 @@ if (!preview.includes(`<title>Template Visual MPPA v${packageJson.version}</titl
 // A prévia é uma só: na versão do pacote, sem aviso nem seletor de variante.
 if (!preview.includes('root.setAttribute("data-tm-sidebar", state.collapsed ? "collapsed" : "expanded")')) errors.push("docs/preview/index.html: o Recolher não marca data-tm-sidebar no <html> (regere a prévia)");
 if (/data-tema|data-preview-variante/.test(preview)) errors.push("docs/preview/index.html: a prévia não tem variante (regere a prévia)");
+// Foco ao fechar: o menu móvel e a busca devolvem o foco ao botão que os abriu (REPLICAR.md, 4.8).
+{
+  const sidebarContext = await read("src/components/tema-mppa/sidebar-context.tsx");
+  const palette = await read("src/components/tema-mppa/command-palette.tsx");
+  if (!sidebarContext.includes("export function useRestoreFocus") || !/useRestoreFocus\(mobileOpen/.test(sidebarContext)) errors.push("sidebar-context.tsx: o menu móvel não devolve o foco ao botão que o abriu (useRestoreFocus)");
+  if (!/useRestoreFocus\(open/.test(palette)) errors.push("command-palette.tsx: a busca não devolve o foco ao botão que a abriu (useRestoreFocus)");
+}
 // O copy-template avisa de pasta do modelo sobrando perto do consumidor.
 if (!(await read("scripts/copy-template.mjs")).includes("staleFolders")) errors.push("copy-template.mjs: falta o aviso de pasta do modelo sobrando (staleFolders)");
 // GUIA, REPLICAR e DIAGNOSTICO não conhecem variante: o tema é único.
