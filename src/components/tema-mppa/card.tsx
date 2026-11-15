@@ -20,7 +20,7 @@ export function Card({
   return (
     <article
       className={cn(
-        "relative min-w-0 rounded-card border border-card-border bg-card text-card-foreground shadow-card transition-all duration-200",
+        "relative min-w-0 rounded-card border border-card-border bg-card text-card-foreground shadow-card tm-card-hover",
         padded && "p-6",
         className,
       )}

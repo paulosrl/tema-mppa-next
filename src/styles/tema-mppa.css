@@ -483,6 +483,37 @@
   border-top-color: var(--card-border) !important;
 }
 
+/*
+ * Quadros (`Card`, `PanelCard`, `MediaCard` e os que usam o `Card`): no hover, o mesmo movimento do cartão
+ * clicável (`LinkCard`): sobe 2px, a sombra cresce e a caixa do ícone cresce 5%. Sem movimento com
+ * `prefers-reduced-motion`: fica só a sombra.
+ */
+@utility tm-card-hover {
+  transition:
+    transform 200ms ease-out,
+    box-shadow 200ms ease-out;
+
+  & .tm-tone {
+    transition: transform 200ms ease-out;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+  }
+
+  &:hover .tm-tone {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover,
+    &:hover .tm-tone {
+      transform: none;
+    }
+  }
+}
+
 /* Barras de gráfico com degradê e topo arredondado (6px em cima, 2px embaixo). */
 @utility tm-bar {
   border-radius: var(--radius-md) var(--radius-md) var(--radius-xs) var(--radius-xs);

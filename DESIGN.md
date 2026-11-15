@@ -556,6 +556,9 @@ Hierarquia por superfície e por sombras em camadas (os valores exatos estão em
 - `shadow-card` (contorno de 1px e cinco camadas de 0,5px a 12px a 6% no claro; no escuro, `0 4px 20px -2px
   rgba(0,0,0,.5)` com brilho interno): quadros. `shadow-card-hover` (as mesmas camadas a 7 e 8%, mais fundas, no
   claro): quadro sob o mouse e diálogo da busca.
+- Hover dos quadros (desde a 2.1.0): todo quadro (`Card`, `PanelCard`, `MediaCard`, `LinkCard` e os que usam o `Card`)
+  sobe 2px e passa a `shadow-card-hover` em 200ms, e a caixa do ícone cresce 5%; com `prefers-reduced-motion`, fica
+  só a sombra (`tm-card-hover`).
 - `shadow-drawer` (`8px 0 24px rgba(0,0,0,.22)`): só no menu móvel aberto; `bg-overlay` a 40% atrás dele e a
   60% atrás da busca.
 - As barras da casca não têm sombra: separam-se por borda de 1px; cabeçalho e rodapé são translúcidos (`--header`) com desfoque.

@@ -208,8 +208,10 @@ export function AppSidebar({
       <aside
         aria-label="Navegação principal"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[304px] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-drawer transition-[width,transform] duration-300 ease-out desk:sticky desk:top-0 desk:z-30 desk:translate-x-0 desk:shadow-none desk:tm-collapsed:w-[76px]",
+          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[304px] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width,transform,box-shadow] duration-300 ease-out desk:sticky desk:top-0 desk:z-30 desk:translate-x-0 desk:shadow-none desk:tm-collapsed:w-[76px]",
+          // Sombra só com o menu aberto: fechado, ele fica logo à esquerda da tela, e a sombra vazava na borda.
           mobileOpen ? "translate-x-0" : "-translate-x-full",
+          mobileOpen ? "shadow-drawer" : "shadow-none",
         )}
       >
         <Brand config={config} />

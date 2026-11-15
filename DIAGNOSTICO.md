@@ -22,6 +22,7 @@ Em cada item, diga o que encontrou, com o caminho do arquivo. "Não há" também
 ## 3. Estrutura
 
 - Raiz do consumidor: a pasta do `package.json` do frontend. Num monorepo, a subpasta.
+- Caminho base (`basePath` no `next.config`), se houver: as imagens da configuração precisam do prefixo (`REPLICAR.md`, 4.5).
 - Com ou sem `src/`; alias de import (`@/`); onde a camada e os estilos vão ficar.
 - CSS global e layout raiz.
 
@@ -75,7 +76,9 @@ ou somem por condição (consulta, permissão) e como a condição chega.
 ## 9. Tema e segurança
 
 - Provedor de tema de hoje, onde guarda a escolha e com que regra (sempre claro? lembra entre visitas?).
-- CSP com `nonce` para script inline, e onde o nonce é lido.
+- CSP com `nonce` para script inline, e onde o nonce é lido: num cabeçalho próprio (`x-nonce`) ou só dentro da própria
+  política (`REPLICAR.md`, 4.4).
+- Faixas ou avisos acima da casca (ambiente de testes, manutenção) e onde vão ficar (`REPLICAR.md`, 4.5).
 
 ## 10. Rodapé
 

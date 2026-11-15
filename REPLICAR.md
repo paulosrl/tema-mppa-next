@@ -316,7 +316,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   Não importe nada de `theme-provider.tsx` no servidor: ali tudo é `"use client"` e vira referência de cliente.
 - **CSP:** se o consumidor tem `Content-Security-Policy` com `nonce`, passe o mesmo nonce que ele já usa (o
   cabeçalho ou a função dele) ao `<ThemeScript>`; sem isso, o navegador bloqueia o script de tema. Sem CSP, tire
-  a linha do `nonce` e use `<ThemeScript />`.
+  a linha do `nonce` e use `<ThemeScript />`. O exemplo acima lê um cabeçalho próprio (`x-nonce`). Se o
+  consumidor não o tem e o nonce só vem dentro da própria política, leia-o de lá no layout, sem mudar o proxy:
+  `(await headers()).get("content-security-policy")?.match(/'nonce-([^']+)'/)?.[1]`.
 - O layout raiz continua Server Component; os componentes da camada são client e podem ser usados nele.
 - Se o consumidor já tem um `QueryClient`, passe-o: `<TemaMppaProvider queryClient={queryClient}>`.
 - Se já tem um provedor de tema, remova-o e troque os usos dele (`useTheme`, alternador) pelos da camada. O
@@ -379,6 +381,9 @@ Regras para preencher:
   2. CIIA: `{ src: "/ciia.png", alt: "CIIA", width: 244, height: 244 }`;
   3. a sigla "CIIA", num espaço do tamanho da primeira: `{ src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 }`.
 
+  Com `basePath` no `next.config` (por exemplo, `/xavier`), escreva o caminho completo em cada `src` da
+  configuração (`/xavier/mppa-logo.png`, também no `symbol` e no avatar): a camada usa `<img>`, que não recebe o
+  prefixo sozinho.
   Os arquivos vêm na pasta do modelo, em `tema-mppa-next/public/`, e o `copy-template.mjs` os grava no `public/` do
   consumidor (4.1). A sigla tem `alt=""` (decorativa): com `alt="CIIA"`, o leitor de tela leria "CIIA, CIIA". A
   sigla é um SVG de 132×76: fundo `#fff`, texto "CIIA" em `#1a237e`, Arial 46px, negrito, centralizado em
@@ -415,6 +420,11 @@ Campos de cada item de navegação:
 
 Um só item fica marcado: o de rota mais longa. Atalhos extras da busca entram em `searchItems: [{ id, label,
 href, icon?, description?, keywords? }]`. A barra recolhe por botão ou `Ctrl+B` (atalho sem etiqueta na tela) e lembra a escolha.
+
+**Faixa acima da casca** (por exemplo, a de ambiente de testes): a barra lateral tem a altura da tela e fica presa
+no topo, então uma faixa acima dela a empurra para baixo, e o pé da barra (a busca e o "Recolher") fica escondido até
+a página rolar. Prefira o selo de ambiente no cabeçalho (`headerActions`) ou uma faixa dentro do conteúdo; se a faixa
+acima for exigida, registre o caso (seção 11).
 
 ### 4.6 Sessão e layout autenticado
 
@@ -564,7 +574,9 @@ usuário como lista de conferência, dizendo que não foram verificados.
    aparecem. Clicar numa aba (mesmo na já aberta) abre a página do primeiro item visível dela, na ordem da
    configuração: "Minha Página" abre o primeiro de `platformNavigation`, "Administração" o primeiro de
    `administrationNavigation`. Por isso a ordem dos itens decide a página de entrada de cada aba.
-6. Cada rota mostra o título certo, uma vez, no cabeçalho, e um só item marcado.
+6. Cada rota mostra o título certo, uma vez, no cabeçalho, e um só item marcado. Até a Fase 2, a tela pode ainda
+   ter o título antigo no conteúdo: o título aparece duas vezes, e teste que procura o título na página inteira
+   quebra. Procure-o dentro do `header` (contrato da 4.8); o do conteúdo sai na Fase 2.
 7. Login, logout, sessão expirada e chamadas de dados continuam funcionando como antes. O que o sistema não tem
    (por exemplo, login num sistema de exemplo só com demonstração) vai no relatório como "não se aplica".
 8. As conferências do consumidor que leem todo arquivo rastreado (4.1) passam.
@@ -1024,7 +1036,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.0.8)
+## Interface (tema-mppa 2.1.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).

@@ -3,6 +3,45 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.1.0 — 2026-11-14
+
+Pedido do autor em 14 nov. 2026: todos os quadros passam a ter, no hover, o mesmo movimento dos cartões de "Acesso a
+Sistemas" e "Ações Rápidas". Entram junto os achados da Fase 1 do Xavier. Como a aparência muda e a mudança é
+anunciada, sobe o número do meio. A API não muda.
+
+### Alterado
+
+- **Hover dos quadros:** `Card`, `PanelCard` e `MediaCard` passam a fazer o que o `LinkCard` já fazia. Com isso,
+  todos os que usam o `Card` também mudam: `MetricCard`, `DataTable`, `StatCard` e os gráficos.
+  - No hover, o quadro sobe 2px e a sombra passa a `shadow-card-hover`, em 200ms.
+  - A caixa do ícone cresce 5%.
+  - O `MediaCard` mantém a sombra própria e só sobe.
+  - Com `prefers-reduced-motion`, fica só a sombra.
+  - A regra é a classe `tm-card-hover`, no CSS, então vale também na prévia.
+  - Só o `LinkCard` muda a cor do título, porque é o único quadro que leva a algum lugar.
+
+### Corrigido
+
+- **Sombra do menu do celular:** com o menu fechado, a sombra vazava na borda esquerda da tela a 390px. Agora ela só
+  existe com o menu aberto.
+- **Caminho base (`REPLICAR.md`, 4.5):** com `basePath`, o `src` de cada imagem da configuração leva o prefixo,
+  porque a camada usa `<img>`, que não o recebe sozinho.
+- **Nonce dentro da política (4.4):** quando o sistema não tem o cabeçalho `x-nonce`, o layout lê o nonce do
+  próprio `content-security-policy`, sem mudar o proxy.
+- **Faixa acima da casca (4.5):** ela empurra a barra lateral e esconde o "Recolher". Prefira o selo no cabeçalho
+  (`headerActions`) ou uma faixa dentro do conteúdo.
+- **Título duplicado até a Fase 2 (4.10):** os testes procuram o título dentro do `header`.
+- **`DIAGNOSTICO.md`:** passa a perguntar pelo caminho base, por onde chega o nonce e pelas faixas acima da casca.
+
+### Ao atualizar de 2.0.8
+
+1. Antes da cópia, capture as telas (`REPLICAR.md`, seção 7, passo 2): a aparência muda no hover.
+2. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia diz que a camada mudou em `card.tsx`, `dashboard.tsx`, `metas.tsx`, `app-sidebar.tsx` e `tema-mppa.css`.
+3. Quadro próprio do sistema que imita o cartão pode usar a classe `tm-card-hover` para ter o mesmo movimento. Teste
+   que media a posição de um quadro com o mouse em cima dele passa a contar com os 2px.
+4. Troque a versão na seção "Interface" do `AGENTS.md` (e no registro de alterações locais, se houver) para 2.1.0.
+
 ## 2.0.8 — 2026-11-14
 
 Achado no diagnóstico do Xavier, cuja spec exige que o foco volte ao botão que abriu o menu do celular ou a busca.

@@ -122,7 +122,7 @@ export function MediaCard({
   className?: string;
 }) {
   return (
-    <article className={cn("relative isolate h-80 overflow-hidden rounded-card bg-media text-media-foreground shadow-media", className)}>
+    <article className={cn("relative isolate h-80 overflow-hidden rounded-card bg-media text-media-foreground shadow-media transition-transform duration-200 ease-out hover:-translate-y-0.5 motion-reduce:hover:translate-y-0", className)}>
       <span className="absolute inset-0 bg-linear-to-br from-bar-blue-from/35 via-bar-violet-to/20 to-transparent" aria-hidden />
       <ImageSlot asset={image} className="absolute inset-0 size-full object-cover" />
       <span className="absolute inset-0 bg-linear-to-tr from-media/70 via-media/10 to-transparent" aria-hidden />

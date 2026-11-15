@@ -192,7 +192,7 @@ export function PanelCard({
   return (
     <article
       className={cn(
-        "relative min-w-0 overflow-hidden rounded-card border border-card-border tm-card-top bg-card text-card-foreground shadow-card",
+        "relative min-w-0 overflow-hidden rounded-card border border-card-border tm-card-top bg-card text-card-foreground shadow-card tm-card-hover",
         accentBorder[accent],
         className,
       )}
