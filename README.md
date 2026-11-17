@@ -24,7 +24,7 @@ metas" da demonstração mostra as peças de metas.
 ## Usar num codebase
 
 1. Gere a pasta: `npm run empacotar`. Ela sai em `tema-mppa-next-v<versão>/tema-mppa-next/`, na pasta acima desta
-   (com a versão atual, `tema-mppa-next-v2.2.0/tema-mppa-next/`). A de fora leva a versão no nome; a de dentro, não.
+   (com a versão atual, `tema-mppa-next-v2.2.1/tema-mppa-next/`). A de fora leva a versão no nome; a de dentro, não.
 2. O desenvolvedor do sistema copia **só a pasta de dentro**, `tema-mppa-next/`, inteira, para a raiz do
    repositório (`cp -r …/tema-mppa-next-v<versão>/tema-mppa-next <repositório>/`) e abre `tema-mppa-next/GUIA.html`
    no navegador. A cópia da camada confere a pasta contra o `SHA256SUMS` dela antes de copiar.
