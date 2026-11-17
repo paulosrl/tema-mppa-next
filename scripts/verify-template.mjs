@@ -373,6 +373,13 @@ requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
   // Demonstração: a página das peças de metas.
   const demoConsumerSource = await read("src/app/demo-consumer.tsx");
   if (!demoConsumerSource.includes('pathname === "/metas"') || !(await read("src/app/demo-config.tsx")).includes('href: "/metas"')) errors.push('demonstração: falta a página "/metas" (Painel de metas) e o item de menu dela');
+  // Grupo "Apoio" (17 nov. 2026, 2.2.0): da camada, em "Minha Página" de todos os sistemas; o sistema só dá os endereços.
+  const utilsSource = await read("src/components/tema-mppa/utils.ts");
+  const sidebarSource = await read("src/components/tema-mppa/app-sidebar.tsx");
+  if (!/SUPPORT_LABEL = "Apoio"/.test(utilsSource) || !/label: "Manual", href: config\.support\.manualHref/.test(utilsSource) || !/label: "Tutorial", href: config\.support\.tutorialHref/.test(utilsSource)) errors.push('utils.ts: o grupo "Apoio" deve ter "Manual" e "Tutorial", com os endereços de config.support');
+  if (!/activeTab === "platform" \? <SupportGroup/.test(sidebarSource)) errors.push('app-sidebar.tsx: o grupo "Apoio" deve aparecer em "Minha Página" (aba de plataforma)');
+  if (!/^\s*support: SupportConfig;/m.test(await read("src/components/tema-mppa/types.ts"))) errors.push("types.ts: ShellConfig.support deve ser obrigatório");
+  if (!demoConsumerSource.includes('pathname === "/manual"') || !demoConsumerSource.includes('pathname === "/tutorial"')) errors.push('demonstração: faltam as páginas "/manual" e "/tutorial" do grupo "Apoio"');
 }
 // Azul de ação: o mesmo do Heimdall, nos dois temas, em todos os tokens de ação (decisão de 11 nov. 2026).
 const actionBlue = { light: ["#0842a1", "#ffffff"], dark: ["#61a6fa", "#080c16"] };

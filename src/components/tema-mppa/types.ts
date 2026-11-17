@@ -74,12 +74,22 @@ export type HeaderConfig = {
   signOutLabel?: string;
 };
 
+/**
+ * Subgrupo "Apoio", que a camada põe em todos os sistemas, em "Minha Página" (aba de plataforma), depois dos
+ * itens do sistema: "Manual" e "Tutorial". O sistema só informa os endereços.
+ */
+export type SupportConfig = {
+  manualHref: string;
+  tutorialHref: string;
+};
+
 export type ShellConfig = {
   brand: BrandConfig;
   platformLabel?: string;
   administrationLabel?: string;
   platformNavigation: NavigationItem[];
   administrationNavigation?: NavigationItem[];
+  support: SupportConfig;
   header?: HeaderConfig;
   searchItems?: SearchItem[];
   sidebarShortcutLabel?: string;

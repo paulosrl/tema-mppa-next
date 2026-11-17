@@ -267,6 +267,15 @@ function DemoMetas() {
   );
 }
 
+/** Manual e Tutorial (subgrupo "Apoio"): o conteúdo ainda não existe. */
+function DemoApoio({ assunto }: { assunto: string }) {
+  return (
+    <PageFrame description={`${assunto} do sistema.`}>
+      <Card title="Conteúdo em preparação" description={`O ${assunto.toLowerCase()} ainda não foi publicado.`} />
+    </PageFrame>
+  );
+}
+
 export function DemoConsumer() {
   const pathname = usePathname();
   return (
@@ -275,7 +284,17 @@ export function DemoConsumer() {
       session={demoSession}
       onSignOut={() => window.alert("Conecte aqui a ação de saída do sistema consumidor.")}
     >
-      {pathname === "/" ? <DemoDashboard /> : pathname === "/metas" ? <DemoMetas /> : <DemoDados />}
+      {pathname === "/" ? (
+        <DemoDashboard />
+      ) : pathname === "/metas" ? (
+        <DemoMetas />
+      ) : pathname === "/manual" ? (
+        <DemoApoio assunto="Manual" />
+      ) : pathname === "/tutorial" ? (
+        <DemoApoio assunto="Tutorial" />
+      ) : (
+        <DemoDados />
+      )}
     </AppShell>
   );
 }

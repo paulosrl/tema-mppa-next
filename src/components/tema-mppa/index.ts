@@ -41,6 +41,8 @@
  * 24. Peças de painel (`dashboard.tsx`) e `NavigationItem.badge`, da estética de 12 nov. 2026.
  * 23. Azul como cor de ação (primária, foco, item ativo da barra, ícone padrão e gráficos); vermelho só
  *     para destrutivo/erro e identidade institucional.
+ * 25. Subgrupo "Apoio" (Manual e Tutorial) da camada em "Minha Página", em todos os sistemas: `config.support`
+ *     (obrigatório) só dá os endereços (`manualHref`, `tutorialHref`).
  */
 export { AppShell } from "./app-shell";
 export { BarChart, type BarChartDatum } from "./bar-chart";
@@ -98,4 +100,5 @@ export type {
   SearchItem,
   ShellConfig,
   ShellSession,
+  SupportConfig,
 } from "./types";

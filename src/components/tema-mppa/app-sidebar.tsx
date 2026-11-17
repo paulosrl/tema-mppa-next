@@ -11,7 +11,7 @@ import { ImageSlot } from "./image-slot";
 import { SectionIcon, toneClass } from "./section-icon";
 import { useCollapsedAttribute, useSidebar } from "./sidebar-context";
 import type { AppShellProps, ImageAsset, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
-import { canSeeAdministration, cn, currentNavigationItem, visibleNavigation } from "./utils";
+import { canSeeAdministration, cn, currentNavigationItem, SUPPORT_LABEL, supportNavigation, visibleNavigation } from "./utils";
 
 function isImageAsset(value: ShellConfig["brand"]["symbol"]): value is ImageAsset {
   return Boolean(value && typeof value === "object" && !isValidElement(value) && "alt" in value);
@@ -72,11 +72,11 @@ function MobileLogos({ config }: { config: ShellConfig }) {
   );
 }
 
-function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId?: string }) {
+function NavigationList({ items, activeId, label = "Itens da seção" }: { items: NavigationItem[]; activeId?: string; label?: string }) {
   const { setMobileOpen } = useSidebar();
   const collapsed = useCollapsedAttribute();
   return (
-    <nav className="grid gap-1.5" aria-label="Itens da seção">
+    <nav className="grid gap-1.5" aria-label={label}>
       {items.map((item) => {
         const active = item.id === activeId;
         return (
@@ -106,6 +106,22 @@ function NavigationList({ items, activeId }: { items: NavigationItem[]; activeId
         );
       })}
     </nav>
+  );
+}
+
+/*
+ * Subgrupo "Apoio" (Manual e Tutorial), da camada, em todos os sistemas: rótulo pequeno sobre a linha em
+ * degradê, depois dos itens de "Minha Página". Com a barra recolhida, só a linha.
+ */
+function SupportGroup({ config, activeId }: { config: ShellConfig; activeId?: string }) {
+  return (
+    <div className="mt-4">
+      <div className="mx-2 mb-2.5 grid gap-1.5">
+        <h3 className={cn("m-0 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase", hideWhenCollapsed)}>{SUPPORT_LABEL}</h3>
+        <div className="h-px bg-linear-to-r from-institutional/45 via-primary/35 to-transparent" aria-hidden />
+      </div>
+      <NavigationList items={supportNavigation(config)} activeId={activeId} label={SUPPORT_LABEL} />
+    </div>
   );
 }
 
@@ -163,6 +179,7 @@ function SidebarBody({ config, session }: { config: ShellConfig; session: ShellS
         <h2 className="sr-only">{groupLabel}</h2>
         <div className="mx-2 mb-3 h-px bg-linear-to-r from-institutional/45 via-primary/35 to-transparent" aria-hidden />
         <NavigationList items={items} activeId={current?.section === activeTab ? current.item.id : undefined} />
+        {activeTab === "platform" ? <SupportGroup config={config} activeId={current?.section === "platform" ? current.item.id : undefined} /> : null}
       </section>
     </div>
   );
@@ -180,6 +197,7 @@ function SidebarBodyFallback({ config }: { config: ShellConfig }) {
         <h2 className="sr-only">{config.platformLabel ?? "Plataforma"}</h2>
         <div className="mx-2 mb-3 h-px bg-linear-to-r from-institutional/45 via-primary/35 to-transparent" aria-hidden />
         <NavigationList items={visibleNavigation(config.platformNavigation)} />
+        <SupportGroup config={config} />
       </section>
     </div>
   );

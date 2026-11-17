@@ -54,6 +54,8 @@ Tabela com cada item do menu de hoje e o que vira na configuração:
 | Rótulo | Rota | Ícone | Só admin? | Proposta (`exact`, `matches`, `hidden`, `tone`, `description`) |
 | --- | --- | --- | --- | --- |
 
+Manual e tutorial do sistema (grupo "Apoio", `support`): a rota de cada um, se já existem; se não, "não há".
+
 Rotas fora do menu que precisam de título (detalhe, edição) e o item de cada uma. Itens que aparecem
 ou somem por condição (consulta, permissão) e como a condição chega.
 

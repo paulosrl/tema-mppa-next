@@ -7,11 +7,12 @@ import { createPortal } from "react-dom";
 import { Button } from "./button";
 import { useRestoreFocus, useSidebar } from "./sidebar-context";
 import type { AppShellProps, SearchItem, ShellConfig, ShellSession } from "./types";
-import { canSeeAdministration, cn, normalizeSearch, visibleNavigation } from "./utils";
+import { canSeeAdministration, cn, normalizeSearch, supportNavigation, visibleNavigation } from "./utils";
 
 function configuredItems(config: ShellConfig, session: ShellSession | null): SearchItem[] {
   const navigation = [
     ...visibleNavigation(config.platformNavigation),
+    ...supportNavigation(config),
     ...(canSeeAdministration(config, session) ? visibleNavigation(config.administrationNavigation) : []),
   ];
   return [

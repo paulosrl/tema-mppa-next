@@ -33,6 +33,8 @@ export const demoConfig: ShellConfig = {
     { id: "sessions", label: "Sessões", href: "/sessoes", icon: ShieldAlert, tone: "violet", badge: "Ativa", description: "Sessões ativas e dispositivos" },
     { id: "item-detail", label: "Detalhe do item", href: "/itens/detalhe", icon: FileText, tone: "green", hidden: true },
   ],
+  /* Subgrupo "Apoio" (Manual e Tutorial), posto pela camada em "Minha Página": o sistema só dá os endereços. */
+  support: { manualHref: "/manual", tutorialHref: "/tutorial" },
   administrationNavigation: [
     { id: "users", label: "Usuários & Papéis", href: "/administracao/usuarios", icon: Users, tone: "blue", description: "Contas e perfis" },
     { id: "systems", label: "Sistemas Integrados", href: "/administracao/sistemas", icon: Monitor, tone: "red", description: "Catálogo de sistemas" },

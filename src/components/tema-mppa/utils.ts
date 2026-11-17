@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { BookOpen, GraduationCap } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import type { BrandConfig, CurrentNavigation, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
 
@@ -39,6 +40,16 @@ export function visibleNavigation(items: NavigationItem[] | undefined) {
   return (items ?? []).filter((item) => !item.hidden);
 }
 
+export const SUPPORT_LABEL = "Apoio";
+
+/** Itens do subgrupo "Apoio", fixos da camada; só os endereços vêm de `config.support`. */
+export function supportNavigation(config: ShellConfig): NavigationItem[] {
+  return [
+    { id: "tm-apoio-manual", label: "Manual", href: config.support.manualHref, icon: BookOpen, tone: "blue", description: "Manual do sistema" },
+    { id: "tm-apoio-tutorial", label: "Tutorial", href: config.support.tutorialHref, icon: GraduationCap, tone: "teal", description: "Tutorial do sistema" },
+  ];
+}
+
 /**
  * O único item marcado: o de rota mais longa entre os que o usuário pode ver (inclusive os
  * `hidden`). É o mesmo do título no cabeçalho e o que decide a aba aberta.
@@ -48,7 +59,9 @@ export function currentNavigationItem(
   config: ShellConfig,
   session: ShellSession | null,
 ): CurrentNavigation | null {
-  const sections: [NavigationSection, NavigationItem[]][] = [["platform", config.platformNavigation]];
+  const sections: [NavigationSection, NavigationItem[]][] = [
+    ["platform", [...config.platformNavigation, ...supportNavigation(config)]],
+  ];
   if (canSeeAdministration(config, session)) sections.push(["administration", config.administrationNavigation ?? []]);
 
   let best: CurrentNavigation | null = null;

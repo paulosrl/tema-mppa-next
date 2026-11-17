@@ -3,6 +3,36 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.2.0 — 2026-11-17
+
+Pedido do autor em 17 nov. 2026: todos os sistemas passam a ter, em "Minha Página", o grupo "Apoio", com os itens
+"Manual" e "Tutorial". Quem desenha o grupo é a camada, e o sistema só informa os endereços. Como a aparência muda e
+a configuração ganha um campo obrigatório, sobe o número do meio.
+
+### Adicionado
+
+- **Grupo "Apoio" na barra lateral:** em "Minha Página", 16px abaixo dos itens do sistema.
+  - Rótulo "APOIO" pequeno, em maiúsculas e na cor secundária, sobre a linha em degradê do menu.
+  - "Manual", com ícone de livro em tom azul, e "Tutorial", com ícone de capelo em tom verde-água.
+  - Com a barra recolhida, fica só a linha.
+  - Os dois itens entram na busca e dão o título no cabeçalho ("Minha Página / Manual").
+- **`ShellConfig.support`** (obrigatório): `{ manualHref, tutorialHref }`, os endereços dos dois conteúdos. Rótulo,
+  ícones e cores são da camada. Tipo exportado: `SupportConfig`.
+- **Demonstração:** páginas `/manual` e `/tutorial` com "Conteúdo em preparação".
+- **`DIAGNOSTICO.md`:** pergunta pelas rotas do manual e do tutorial do sistema.
+
+### Ao atualizar de 2.1.0
+
+1. Antes da cópia, capture as telas (`REPLICAR.md`, seção 7, passo 2): a barra lateral muda.
+2. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia diz que a camada mudou em `types.ts`, `utils.ts`, `app-sidebar.tsx`, `command-palette.tsx` e `index.ts`.
+3. O `typecheck` passa a pedir `support` na configuração do shell. Acrescente
+   `support: { manualHref, tutorialHref }` (`REPLICAR.md`, 4.5): as rotas do manual e do tutorial, se o sistema já
+   os tem; se não, `/manual` e `/tutorial`, cada uma com a página "Conteúdo em preparação" da 4.5. Se o sistema já
+   tinha itens de manual ou tutorial em `platformNavigation`, tire-os de lá, para não aparecerem duas vezes.
+4. Teste que conta os itens do menu de "Minha Página" ou da busca passa a contar os dois itens do grupo.
+5. Troque a versão na seção "Interface" do `AGENTS.md` (e no registro de alterações locais, se houver) para 2.2.0.
+
 ## 2.1.0 — 2026-11-14
 
 Pedido do autor em 14 nov. 2026: todos os quadros passam a ter, no hover, o mesmo movimento dos cartões de "Acesso a

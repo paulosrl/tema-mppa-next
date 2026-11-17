@@ -538,6 +538,10 @@ camada. Os pesos 700 e 800 do Tailwind (`font-bold`, `font-extrabold`) valem 600
 - **Menu:** item com padding 8px × 10px, 12px entre ícone e texto, 6px entre itens; abas de 32px, com
   borda, num trilho com padding de 4px; ícones sempre visíveis (Plataforma no vermelho institucional,
   Administração na primária).
+- **Grupo "Apoio"** (desde a 2.2.0), da camada, em todos os sistemas: em "Minha Página", 16px abaixo dos itens do
+  sistema, rótulo "APOIO" (11px, peso 600, maiúsculas, `{colors.muted-foreground}`) sobre a linha em degradê do menu,
+  e os itens "Manual" (livro, tom azul) e "Tutorial" (capelo, tom verde-água). O sistema só dá os endereços
+  (`support`). Com a barra recolhida, só a linha.
 - **Cabeçalho, da esquerda para a direita:** ícone de seção de 28px e título com a seção à frente
   ("Minha Página / Meus acessos" na demonstração); tema (botão `chrome` de 36px); divisória; logos com 32px de
   altura, em caixas com borda e sombra; divisória; avatar de 32px em degradê com ponto verde, nome e perfil (a

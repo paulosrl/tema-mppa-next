@@ -162,13 +162,14 @@ que diagnosticar) nem Fase 3 (não há visual antigo).
    Apague a página e os estilos de exemplo do `create-next-app` (o conteúdo de `page.tsx`, o CSS além do
    `@import "tailwindcss";` e as imagens de `public/`).
 3. **Casca:** siga a Fase 1 inteira (4.1 a 4.7 e 4.9), com os dados do pedido no `config/shell.tsx` (4.5):
-   `brand.name`, `brand.version`, `brand.versionYears` e um item de `platformNavigation` por tela inicial,
-   cada um com ícone Lucide e `tone`. A 4.8 não se aplica: não há testes antigos.
+   `brand.name`, `brand.version`, `brand.versionYears`, um item de `platformNavigation` por tela inicial,
+   cada um com ícone Lucide e `tone`, e `support` com as rotas `/manual` e `/tutorial`. A 4.8 não se aplica: não há testes antigos.
 4. **Sessão:** o sistema ainda não tem autenticação, e este modelo não a implementa. Use uma sessão fixa
    num único arquivo (`config/sessao-provisoria.ts`), com `is_admin: false`, nome e perfil de exemplo, e um
    comentário dizendo que ela sai quando o sistema tiver autenticação. O botão de sair não faz nada até lá.
 5. **Telas iniciais:** uma rota por tela, cada uma com `PageFrame` e uma frase que diga para que ela serve,
-   só com os primitivos (seção 5). Sem dados inventados, sem API e sem regra de negócio.
+   só com os primitivos (seção 5). Sem dados inventados, sem API e sem regra de negócio. O manual e o tutorial
+   ganham a página de conteúdo em preparação (4.5, `support`).
 6. **Verificação e registro:** confira que a pasta `tema-mppa-next/` já foi apagada (4.1), rode a 4.10 (o item 7
    não se aplica), registre no `AGENTS.md` (seção 11) e faça o commit.
 
@@ -349,6 +350,8 @@ export const shellConfig: ShellConfig = {
     { id: "docs", label: "Documentos", href: "/documentos", icon: FileText, tone: "green" },
     { id: "doc", label: "Documento", href: "/documentos/detalhe", icon: FileText, tone: "green", hidden: true },
   ],
+  // Grupo "Apoio" (Manual e Tutorial), que a camada põe em "Minha Página": só os endereços.
+  support: { manualHref: "/manual", tutorialHref: "/tutorial" },
   administrationNavigation: [
     { id: "config", label: "Configurações", href: "/admin/config", icon: Settings, tone: "violet" },
   ],
@@ -392,6 +395,12 @@ Regras para preencher:
 - Onde as logos aparecem: no cabeçalho a partir de 1024px, ou a partir de 801px com a barra recolhida; fora disso,
   sob a marca, na barra lateral aberta (801px a 1023px) ou no menu móvel (abaixo de 801px). Assim o título nunca
   fica espremido (seção 9).
+- `support` (obrigatório): endereços do manual (`manualHref`) e do tutorial (`tutorialHref`) do sistema. A camada
+  põe em "Minha Página", depois dos itens de `platformNavigation`, o grupo "Apoio" com "Manual" e "Tutorial", igual
+  em todos os sistemas: rótulo, ícones e cores são da camada, não da configuração, e os dois itens entram na busca.
+  Não repita os dois itens em `platformNavigation`. Se o sistema já tem manual ou tutorial, use as rotas deles;
+  se não tem, use `/manual` e `/tutorial`, cada uma com `PageFrame` e um `Card` "Conteúdo em preparação", como
+  na demonstração, até o conteúdo existir.
 - `header.searchPlaceholder` é o texto da caixa de busca da barra lateral (padrão: "Buscar na página"); `header.signOutLabel`, o
   rótulo do botão de sair.
 - `description` e `keywords` dos itens são opcionais: preencha só com texto real do consumidor (por exemplo,
@@ -573,7 +582,9 @@ usuário como lista de conferência, dizendo que não foram verificados.
 5. Com `is_admin: false`, não há abas nem itens de administração, nem na busca. Com `true`, as duas abas
    aparecem. Clicar numa aba (mesmo na já aberta) abre a página do primeiro item visível dela, na ordem da
    configuração: "Minha Página" abre o primeiro de `platformNavigation`, "Administração" o primeiro de
-   `administrationNavigation`. Por isso a ordem dos itens decide a página de entrada de cada aba.
+   `administrationNavigation`. Por isso a ordem dos itens decide a página de entrada de cada aba. Em "Minha
+   Página", depois dos itens do sistema, aparece o grupo "Apoio" com "Manual" e "Tutorial", e cada um abre a sua
+   página, com o título certo no cabeçalho.
 6. Cada rota mostra o título certo, uma vez, no cabeçalho, e um só item marcado. Até a Fase 2, a tela pode ainda
    ter o título antigo no conteúdo: o título aparece duas vezes, e teste que procura o título na página inteira
    quebra. Procure-o dentro do `header` (contrato da 4.8); o do conteúdo sai na Fase 2.
@@ -957,7 +968,9 @@ Forma dos quadros e das peças:
 │ ▣ Item ativo │  ↕ 32px                                                      │
 │ ▣ Item       │  ┌ Cartão ──────────┐ 16px ┌ Cartão ──────────┐              │
 │ ▣ Item       │  └──────────────────┘      └──────────────────┘              │
-│              │  ↕ 16px                                                      │
+│ APOIO ────── │  ↕ 16px                                                      │
+│ ▣ Manual     │                                                              │
+│ ▣ Tutorial   │                                                              │
 │              │  ┌ Tabela ─────────────────────────────────────┐             │
 │              │  └─────────────────────────────────────────────┘             │
 │[⌕ Buscar…   ]│                                                              │
@@ -1002,6 +1015,9 @@ Medidas:
 
 - **Ícone de seção:** caixa de 32px no menu (28px no título), tom chapado (`tm-tone`).
 - **Item de menu:** raio 12px, padding 8px 10px, 12px entre ícone e texto, 6px entre itens; no lugar do rótulo do grupo, uma linha de 1px em degradê do vermelho institucional ao azul, sumindo à direita (o rótulo fica só para leitores de tela).
+- **Grupo "Apoio":** em "Minha Página", 16px abaixo dos itens do sistema: rótulo "APOIO" (11px, peso 600, maiúsculas,
+  cor secundária) sobre a mesma linha em degradê, e os itens "Manual" (livro, azul) e "Tutorial" (capelo, verde-água).
+  Com a barra recolhida, só a linha.
 - **Abas:** 32px de altura, com borda, num trilho com padding de 4px; a ativa em `bg-card` com sombra; ícones sempre visíveis.
 - **Botões:** 36px de altura, raio 12px, peso 600; variante `chrome` no tema e no menu móvel.
 - **Cartões:** raio 24px, padding de 24px, contorno de 1px, sombra `shadow-card`.
@@ -1036,7 +1052,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.1.0)
+## Interface (tema-mppa 2.2.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).
