@@ -7,26 +7,7 @@ import { createPortal } from "react-dom";
 import { Button } from "./button";
 import { useRestoreFocus, useSidebar } from "./sidebar-context";
 import type { AppShellProps, SearchItem, ShellConfig, ShellSession } from "./types";
-import { canSeeAdministration, cn, normalizeSearch, supportNavigation, visibleNavigation } from "./utils";
-
-function configuredItems(config: ShellConfig, session: ShellSession | null): SearchItem[] {
-  const navigation = [
-    ...visibleNavigation(config.platformNavigation),
-    ...supportNavigation(config),
-    ...(canSeeAdministration(config, session) ? visibleNavigation(config.administrationNavigation) : []),
-  ];
-  return [
-    ...navigation.map((item) => ({
-      id: `nav-${item.id}`,
-      label: item.label,
-      href: item.href,
-      icon: item.icon,
-      description: item.description,
-      keywords: item.keywords,
-    })),
-    ...(config.searchItems ?? []),
-  ];
-}
+import { cn, normalizeSearch, shellSearchItems } from "./utils";
 
 const subscribeNothing = () => () => {};
 
@@ -73,7 +54,7 @@ export function CommandPalette({
   // Ao fechar a busca (Esc, clique fora, item escolhido), o foco volta ao botão "Abrir busca".
   useRestoreFocus(open, (element) => Boolean(element.closest('[aria-label="Busca e navegação"]')));
 
-  const items = useMemo(() => configuredItems(config, session), [config, session]);
+  const items = useMemo(() => shellSearchItems(config, session), [config, session]);
   const filtered = useMemo(() => {
     const normalized = normalizeSearch(query.trim());
     if (!normalized) return items;

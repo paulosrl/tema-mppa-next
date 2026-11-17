@@ -63,7 +63,8 @@ if (!sidebar.includes("router.push(first.href)") || !/onClick=\{\(\) => openTab\
 }
 
 const palette = await read("src/components/tema-mppa/command-palette.tsx");
-if (!palette.includes("canSeeAdministration(")) errors.push("busca não segue a regra das abas (canSeeAdministration)");
+// A busca monta os itens por shellSearchItems (utils.ts), que segue a regra das abas; o caso de administrador é executado abaixo.
+if (!palette.includes("shellSearchItems(") || !/export function shellSearchItems[\s\S]*?canSeeAdministration\(config, session\)/.test(await read("src/components/tema-mppa/utils.ts"))) errors.push("busca não segue a regra das abas (shellSearchItems com canSeeAdministration)");
 
 const imageSlot = await read("src/components/tema-mppa/image-slot.tsx");
 if (!imageSlot.includes("if (!src || failedSrc === src) return null")) errors.push("ImageSlot não elimina imagem ausente/com falha");
@@ -143,6 +144,33 @@ try {
   }
 } catch (error) {
   errors.push(`rodapé: footerText não pôde ser executado: ${error.message}`);
+}
+// Grupo "Apoio" executado de verdade (2.2.1): itens, item marcado, repetidos e configuração sem `support`.
+try {
+  const utils = await import(`${pathToFileURL(path.join(root, "node_modules/.cache/verify-template/utils.mjs")).href}?t=${Date.now()}`);
+  const fail = (message) => errors.push(`grupo "Apoio": ${message}`);
+  const home = { id: "inicio", label: "Início", href: "/" };
+  const base = { brand: { name: "X", homeHref: "/" }, platformNavigation: [home], support: { manualHref: "/manual", tutorialHref: "/tutorial" } };
+  const labels = utils.supportNavigation(base).map((item) => `${item.label} ${item.href}`).join(", ");
+  if (labels !== "Manual /manual, Tutorial /tutorial") fail(`supportNavigation deu "${labels}", esperado "Manual /manual, Tutorial /tutorial"`);
+  for (const [pathname, id] of [["/manual", "tm-apoio-manual"], ["/tutorial/passo-1", "tm-apoio-tutorial"], ["/", "inicio"]]) {
+    const current = utils.currentNavigationItem(pathname, base, null);
+    if (current?.item.id !== id || current?.section !== "platform") fail(`em ${pathname}, o item marcado deveria ser ${id} (platform), e foi ${current?.item.id ?? "nenhum"} (${current?.section ?? "-"})`);
+  }
+  const repeated = { ...base, platformNavigation: [home, { id: "meu-manual", label: "Manual", href: "/manual" }], searchItems: [{ id: "busca-manual", label: "Manual", href: "/manual" }] };
+  if (utils.shellNavigation(repeated).platform.some((item) => item.href === "/manual")) fail("item do sistema com o endereço do manual deveria sair do menu");
+  if (utils.currentNavigationItem("/manual", repeated, null)?.item.id !== "tm-apoio-manual") fail("com item repetido, o marcado em /manual deveria ser o do grupo");
+  const manualHits = utils.shellSearchItems(repeated, null).filter((item) => item.href === "/manual").length;
+  if (manualHits !== 1) fail(`a busca deveria ter 1 item com /manual, e teve ${manualHits}`);
+  const withoutSupport = { brand: base.brand, platformNavigation: [home] };
+  if (utils.supportNavigation(withoutSupport).length !== 0 || utils.currentNavigationItem("/", withoutSupport, null)?.item.id !== "inicio") fail("sem support, o grupo deveria sumir e a casca seguir");
+  const admin = { ...base, administrationNavigation: [{ id: "usuarios", label: "Usuários", href: "/admin/usuarios" }] };
+  const adminHits = (session) => utils.shellSearchItems(admin, session).filter((item) => item.href === "/admin/usuarios").length;
+  if (adminHits({ email: "a@b", is_admin: true }) !== 1 || adminHits({ email: "a@b", is_admin: false }) !== 0 || adminHits(null) !== 0) fail("a busca deveria mostrar itens administrativos só com is_admin === true");
+  const onlyManual = { ...base, support: { manualHref: "/manual", tutorialHref: "" } };
+  if (utils.supportNavigation(onlyManual).map((item) => item.label).join() !== "Manual") fail("com tutorialHref vazio, só o Manual deveria aparecer");
+} catch (error) {
+  errors.push(`grupo "Apoio": as funções não puderam ser executadas: ${error.message}`);
 }
 
 // A prévia recolhe a barra pelo atributo do <html>, como a camada (variante tm-collapsed).
@@ -376,8 +404,13 @@ requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
   // Grupo "Apoio" (17 nov. 2026, 2.2.0): da camada, em "Minha Página" de todos os sistemas; o sistema só dá os endereços.
   const utilsSource = await read("src/components/tema-mppa/utils.ts");
   const sidebarSource = await read("src/components/tema-mppa/app-sidebar.tsx");
-  if (!/SUPPORT_LABEL = "Apoio"/.test(utilsSource) || !/label: "Manual", href: config\.support\.manualHref/.test(utilsSource) || !/label: "Tutorial", href: config\.support\.tutorialHref/.test(utilsSource)) errors.push('utils.ts: o grupo "Apoio" deve ter "Manual" e "Tutorial", com os endereços de config.support');
+  if (!/^export const SUPPORT_LABEL = "Apoio";/m.test(utilsSource)) errors.push('utils.ts: o rótulo do grupo deve ser "Apoio"');
   if (!/activeTab === "platform" \? <SupportGroup/.test(sidebarSource)) errors.push('app-sidebar.tsx: o grupo "Apoio" deve aparecer em "Minha Página" (aba de plataforma)');
+  const fallbackBody = sidebarSource.slice(sidebarSource.indexOf("function SidebarBodyFallback"), sidebarSource.indexOf("export function AppSidebar"));
+  if (!fallbackBody.includes("<SupportGroup")) errors.push('app-sidebar.tsx: o SidebarBodyFallback (rota ainda a caminho) deve mostrar o grupo "Apoio"');
+  for (const [file, source] of [["app-sidebar.tsx", sidebarSource], ["command-palette.tsx", await read("src/components/tema-mppa/command-palette.tsx")]]) {
+    if (/config\.platformNavigation/.test(source)) errors.push(`${file}: leia os itens de "Minha Página" por shellNavigation(config).platform, que tira os repetidos do grupo "Apoio"`);
+  }
   if (!/^\s*support: SupportConfig;/m.test(await read("src/components/tema-mppa/types.ts"))) errors.push("types.ts: ShellConfig.support deve ser obrigatório");
   if (!demoConsumerSource.includes('pathname === "/manual"') || !demoConsumerSource.includes('pathname === "/tutorial"')) errors.push('demonstração: faltam as páginas "/manual" e "/tutorial" do grupo "Apoio"');
 }

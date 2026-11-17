@@ -629,7 +629,8 @@ nas páginas públicas que têm rodapé.
 
 A forma vem das classes `tm-*` do CSS, postas nas peças da camada: quadros de 24px com contorno fino de 1px e sombra em
 cinco camadas, sem faixa colorida no topo (`tm-card-top`; a cor de `accent` não pinta a borda); Inter em peso 600;
-tiles internos (`tm-tile`), rótulos (`tm-label`) e selos (`tm-tag`, `tm-status`) sem maiúsculas; caixas de ícone
+tiles internos (`tm-tile`), rótulos (`tm-label`) e selos (`tm-tag`, `tm-status`) sem maiúsculas (a exceção é o rótulo "APOIO" da barra lateral, aprovado
+em 17 nov. 2026); caixas de ícone
 chapadas (`tm-tone`); título de seção sem o ponto colorido. Tela nenhuma depende dessas classes.
 
 As peças de metas (`MediaCard`, `StatCard`, `StatValue`, `GoalRow`, `WorkoutRow`, `ProgressBar`, `ProgressRing`,

@@ -43,6 +43,9 @@
  *     para destrutivo/erro e identidade institucional.
  * 25. Subgrupo "Apoio" (Manual e Tutorial) da camada em "Minha Página", em todos os sistemas: `config.support`
  *     (obrigatório) só dá os endereços (`manualHref`, `tutorialHref`).
+ * 26. O grupo "Apoio" não quebra a casca sem `support` (o item sem endereço só some), item do sistema com o
+ *     endereço do manual ou do tutorial sai do menu e da busca (vale o do grupo), e `shellSearchItems` dá à
+ *     busca própria (`renderSearch`) os mesmos itens da paleta do modelo, Manual e Tutorial inclusive.
  */
 export { AppShell } from "./app-shell";
 export { BarChart, type BarChartDatum } from "./bar-chart";
@@ -86,7 +89,17 @@ export { SectionIcon } from "./section-icon";
 export { ThemeProvider, useTheme, type Theme } from "./theme-provider";
 export { SIDEBAR_STORAGE_KEY, THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript } from "./theme-script";
 export { ThemeToggle } from "./theme-toggle";
-export { canSeeAdministration, cn, currentNavigationItem, FOOTER_CREDIT, footerText, isNavigationActive } from "./utils";
+export {
+  canSeeAdministration,
+  cn,
+  currentNavigationItem,
+  FOOTER_CREDIT,
+  footerText,
+  isNavigationActive,
+  shellSearchItems,
+  SUPPORT_LABEL,
+  supportNavigation,
+} from "./utils";
 export type {
   AppShellProps,
   BrandConfig,

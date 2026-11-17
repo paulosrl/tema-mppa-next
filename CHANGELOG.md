@@ -3,6 +3,37 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.2.1 — 2026-11-17
+
+Correções no grupo "Apoio" da 2.2.0, achadas na revisão do código. A aparência e os rótulos não mudam, e a API só
+ganha exportações. Por ser correção, sobe o último número.
+
+### Corrigido
+
+- **Configuração sem `support`:** a casca inteira caía (erro ao ler `config.support.manualHref` no título, na
+  barra e na busca). Agora o item sem endereço só some; sem os dois endereços, o grupo não aparece.
+- **Itens repetidos:** item de `platformNavigation` com o endereço do manual ou do tutorial aparecia duas vezes, e o
+  do grupo nunca ficava marcado. Agora esse item sai do menu e da busca, e vale o do grupo. Item de `searchItems`
+  com um desses endereços também sai da busca.
+- **Busca própria (`renderSearch`):** "Manual" e "Tutorial" não chegavam a ela. A camada passa a exportar
+  `shellSearchItems(config, session)`, com os mesmos itens da paleta do modelo, e também `supportNavigation` e
+  `SUPPORT_LABEL`.
+- **Conferência:** o `verify-template` passa a executar `supportNavigation`, `currentNavigationItem` e
+  `shellSearchItems` (item marcado, repetidos, configuração sem `support`, endereço vazio e itens administrativos
+  só para administrador) e confere o grupo no `SidebarBodyFallback`.
+- **Desempenho:** os itens de "Minha Página" são montados uma vez por configuração, não a cada renderização.
+- **Documentação:** o README e o DESIGN registram o rótulo "APOIO", em maiúsculas, como exceção aprovada à regra de
+  rótulos sem maiúsculas.
+
+### Ao atualizar de 2.2.0
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia diz que a camada mudou em `utils.ts`, `app-sidebar.tsx`, `command-palette.tsx` e `index.ts`. A aparência
+   não muda, e não é preciso capturar telas.
+2. Se o sistema usa `renderSearch`, inclua na busca própria os itens de `shellSearchItems(config, session)`, ou ao
+   menos os de `supportNavigation(config)`, para "Manual" e "Tutorial" aparecerem nela.
+3. Troque a versão na seção "Interface" do `AGENTS.md` (e no registro de alterações locais, se houver) para 2.2.1.
+
 ## 2.2.0 — 2026-11-17
 
 Pedido do autor em 17 nov. 2026: todos os sistemas passam a ter, em "Minha Página", o grupo "Apoio", com os itens

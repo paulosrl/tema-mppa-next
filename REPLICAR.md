@@ -398,7 +398,8 @@ Regras para preencher:
 - `support` (obrigatório): endereços do manual (`manualHref`) e do tutorial (`tutorialHref`) do sistema. A camada
   põe em "Minha Página", depois dos itens de `platformNavigation`, o grupo "Apoio" com "Manual" e "Tutorial", igual
   em todos os sistemas: rótulo, ícones e cores são da camada, não da configuração, e os dois itens entram na busca.
-  Não repita os dois itens em `platformNavigation`. Se o sistema já tem manual ou tutorial, use as rotas deles;
+  Não repita os dois itens em `platformNavigation` (desde a 2.2.1, item com o mesmo endereço de um dos dois sai do
+  menu e da busca, e vale o do grupo). Endereço vazio tira o item do grupo. Se o sistema já tem manual ou tutorial, use as rotas deles;
   se não tem, use `/manual` e `/tutorial`, cada uma com `PageFrame` e um `Card` "Conteúdo em preparação", como
   na demonstração, até o conteúdo existir.
 - `header.searchPlaceholder` é o texto da caixa de busca da barra lateral (padrão: "Buscar na página"); `header.signOutLabel`, o
@@ -484,7 +485,7 @@ Outras propriedades do `AppShell`, todas opcionais:
 | `session={null}` | sessão ainda a caminho: a casca aparece (layout estático, sem salto), sem dado de usuário nem administração, com o botão de sair. Passe a sessão quando ela chegar. |
 | `title` | título vindo do conteúdo, como o nome do registro numa rota de detalhe; substitui o rótulo do item no cabeçalho e sai sem ícone de seção |
 | `headerActions` | ações do sistema no cabeçalho, à esquerda do tema (por exemplo, um botão de volta a outro sistema que só aparece em certa condição) |
-| `renderSearch` | busca própria do sistema no lugar da paleta do modelo: recebe `{ open, setOpen }` e devolve o diálogo; o botão "Abrir busca" e o `Ctrl+K` continuam do modelo, e o diálogo é posto no `<body>` por portal |
+| `renderSearch` | busca própria do sistema no lugar da paleta do modelo: recebe `{ open, setOpen }` e devolve o diálogo; para listar os mesmos itens da paleta do modelo (menu visível, "Manual" e "Tutorial" do grupo "Apoio" e `searchItems`), chame `shellSearchItems(config, session)`, exportado pela camada; o botão "Abrir busca" e o `Ctrl+K` continuam do modelo, e o diálogo é posto no `<body>` por portal |
 
 `is_admin` tem de ser o booleano estrito vindo da sessão real (por exemplo, `sessao.role === "admin"`). Não
 deduza administrador por e-mail, nome ou texto de perfil. A camada só esconde a administração; a proteção
@@ -1052,7 +1053,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.2.0)
+## Interface (tema-mppa 2.2.1)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).

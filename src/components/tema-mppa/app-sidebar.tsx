@@ -11,7 +11,7 @@ import { ImageSlot } from "./image-slot";
 import { SectionIcon, toneClass } from "./section-icon";
 import { useCollapsedAttribute, useSidebar } from "./sidebar-context";
 import type { AppShellProps, ImageAsset, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
-import { canSeeAdministration, cn, currentNavigationItem, SUPPORT_LABEL, supportNavigation, visibleNavigation } from "./utils";
+import { canSeeAdministration, cn, currentNavigationItem, shellNavigation, SUPPORT_LABEL, supportNavigation, visibleNavigation } from "./utils";
 
 function isImageAsset(value: ShellConfig["brand"]["symbol"]): value is ImageAsset {
   return Boolean(value && typeof value === "object" && !isValidElement(value) && "alt" in value);
@@ -111,16 +111,19 @@ function NavigationList({ items, activeId, label = "Itens da seção" }: { items
 
 /*
  * Subgrupo "Apoio" (Manual e Tutorial), da camada, em todos os sistemas: rótulo pequeno sobre a linha em
- * degradê, depois dos itens de "Minha Página". Com a barra recolhida, só a linha.
+ * degradê, depois dos itens de "Minha Página". Com a barra recolhida, só a linha. Sem endereço nenhum em
+ * `config.support`, o grupo não aparece.
  */
 function SupportGroup({ config, activeId }: { config: ShellConfig; activeId?: string }) {
+  const items = supportNavigation(config);
+  if (!items.length) return null;
   return (
     <div className="mt-4">
       <div className="mx-2 mb-2.5 grid gap-1.5">
         <h3 className={cn("m-0 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase", hideWhenCollapsed)}>{SUPPORT_LABEL}</h3>
         <div className="h-px bg-linear-to-r from-institutional/45 via-primary/35 to-transparent" aria-hidden />
       </div>
-      <NavigationList items={supportNavigation(config)} activeId={activeId} label={SUPPORT_LABEL} />
+      <NavigationList items={items} activeId={activeId} label={SUPPORT_LABEL} />
     </div>
   );
 }
@@ -139,7 +142,7 @@ function SidebarBody({ config, session }: { config: ShellConfig; session: ShellS
   const activeTab: NavigationSection = showTabs ? (manualTab ?? current?.section ?? "platform") : "platform";
   const platformLabel = config.platformLabel ?? "Plataforma";
   const administrationLabel = config.administrationLabel ?? "Administração";
-  const items = visibleNavigation(activeTab === "administration" ? config.administrationNavigation : config.platformNavigation);
+  const items = visibleNavigation(activeTab === "administration" ? config.administrationNavigation : shellNavigation(config).platform);
   const groupLabel = activeTab === "administration" ? administrationLabel : platformLabel;
 
   /*
@@ -149,7 +152,7 @@ function SidebarBody({ config, session }: { config: ShellConfig; session: ShellS
    */
   function openTab(tab: NavigationSection) {
     setManualSelection({ pathname, tab });
-    const first = visibleNavigation(tab === "administration" ? config.administrationNavigation : config.platformNavigation)[0];
+    const first = visibleNavigation(tab === "administration" ? config.administrationNavigation : shellNavigation(config).platform)[0];
     if (!first) return;
     setMobileOpen(false);
     if (first.href !== pathname) router.push(first.href);
@@ -196,7 +199,7 @@ function SidebarBodyFallback({ config }: { config: ShellConfig }) {
       <section className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
         <h2 className="sr-only">{config.platformLabel ?? "Plataforma"}</h2>
         <div className="mx-2 mb-3 h-px bg-linear-to-r from-institutional/45 via-primary/35 to-transparent" aria-hidden />
-        <NavigationList items={visibleNavigation(config.platformNavigation)} />
+        <NavigationList items={visibleNavigation(shellNavigation(config).platform)} />
         <SupportGroup config={config} />
       </section>
     </div>

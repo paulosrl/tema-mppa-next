@@ -1,8 +1,8 @@
 # Tema MPPA — modelo de interface para Next.js
 
-Versão **2.2.0**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
+Versão **2.2.1**. Interface do protótipo aprovado ([`docs/prototipo/index.html`](docs/prototipo/index.html)), com a
 aparência do "Moveflux Design System" (pedra quente no claro e pedra escura no escuro, Inter, quadros de 24px com contorno
-fino e sombras em camadas, sem faixa colorida no topo, tiles internos, selos e rótulos sem maiúsculas) e o cabeçalho
+fino e sombras em camadas, sem faixa colorida no topo, tiles internos, selos e rótulos sem maiúsculas, exceto o rótulo "APOIO" do grupo de Manual e Tutorial) e o cabeçalho
 padrão dos sistemas:
 
 - barra lateral com abas Plataforma e Administração; clicar numa aba abre a página do primeiro item dela;
