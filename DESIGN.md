@@ -596,7 +596,9 @@ leitores de tela. Recolhido, só ícones com o rótulo no `title`. Cartões com 
 
 **Logos** (`logo-chip`): caixas de 32px de altura com borda e sombra sobre `bg-logo-surface`, vindas de
 `header.logos`. Padrão dos sistemas, nesta ordem: MPPA (132×76), CIIA (244×244) e a sigla CIIA (132×76,
-decorativa, `alt=""`). No cabeçalho a partir de 1024px (ou de 801px com a barra recolhida); fora disso, sob a
+decorativa, `alt=""`). Cada uma leva ao site da instituição, em nova aba (`href`): MPPA ao
+`https://www.mppa.mp.br/` e as duas do CIIA ao `https://ciia.mppa.mp.br/`; a sigla, decorativa, fica fora da
+tabulação e do leitor de tela. Foco visível com o anel de `--ring`. No cabeçalho a partir de 1024px (ou de 801px com a barra recolhida); fora disso, sob a
 marca, na barra lateral ou no menu móvel.
 
 **Busca** (`search-box`, `command-palette`): caixa de 36px (raio de 12px) com lupa e "Buscar na página", sem etiqueta de atalho, fixa

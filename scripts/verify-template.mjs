@@ -230,12 +230,21 @@ if (/popover/i.test(identity)) errors.push("cabeçalho padrão não usa painel n
   }
   const demo = await read("src/app/demo-config.tsx");
   const logoLines = [
-    '{ src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 }',
-    '{ src: "/ciia.png", alt: "CIIA", width: 244, height: 244 }',
-    '{ src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 }',
+    '{ src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76, href: "https://www.mppa.mp.br/" }',
+    '{ src: "/ciia.png", alt: "CIIA", width: 244, height: 244, href: "https://ciia.mppa.mp.br/" }',
+    '{ src: "/ciia-sigla.svg", alt: "", width: 132, height: 76, href: "https://ciia.mppa.mp.br/" }',
   ];
   const at = logoLines.map((line) => demo.indexOf(line));
-  if (at.some((index) => index < 0) || at[0] > at[1] || at[1] > at[2]) errors.push("demonstração: header.logos deve ter MPPA, CIIA e a sigla (alt vazio), nesta ordem");
+  if (at.some((index) => index < 0) || at[0] > at[1] || at[1] > at[2]) errors.push("demonstração: header.logos deve ter MPPA, CIIA e a sigla (alt vazio), nesta ordem, com os sites do MPPA e do CIIA");
+  // Logos com link (2.3.0): nova aba sem acesso à janela de origem; a decorativa fora da tabulação e do leitor de
+  // tela; nenhum link vazio quando a imagem falha; cabeçalho e barra lateral usam a mesma peça.
+  const slot = await read("src/components/tema-mppa/image-slot.tsx");
+  for (const needle of ["export function LogoSlot", 'target="_blank"', 'rel="noopener noreferrer"', "tabIndex={decorativa ? -1 : undefined}", "aria-hidden={decorativa ? true : undefined}", "if (!src || failedSrc === src) return null;", "(abre em nova aba)", "focus-visible:ring-2"]) {
+    if (!slot.includes(needle)) errors.push(`image-slot.tsx: LogoSlot sem ${needle}`);
+  }
+  for (const [file, source] of [["app-header.tsx", header], ["app-sidebar.tsx", await read("src/components/tema-mppa/app-sidebar.tsx")]]) {
+    if (!source.includes("<LogoSlot key={`${index}-${logo.src}`} logo={logo}")) errors.push(`${file}: logos pelo LogoSlot (link opcional)`);
+  }
 }
 
 const pageFrame = await read("src/components/tema-mppa/page-frame.tsx");

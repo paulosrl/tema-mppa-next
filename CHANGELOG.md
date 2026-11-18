@@ -3,6 +3,37 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.3.0 — 2026-11-18
+
+Pedido do autor em 18 nov. 2026: as logos institucionais do cabeçalho passam a levar ao site da instituição. Como a
+configuração ganha um campo opcional e o comportamento das logos muda, sem quebrar o que existia, sobe o número do
+meio.
+
+### Adicionado
+
+- **Logo com link (`href`):** cada logo de `header.logos` aceita `href`. Com ele, a logo vira link para o site, que
+  abre em nova aba (`target="_blank"`, `rel="noopener noreferrer"`), para o usuário não perder a tela do sistema; sem
+  ele, a logo continua só imagem. Vale no cabeçalho, na barra lateral e no menu móvel.
+- **Padrão dos sistemas:** MPPA leva a `https://www.mppa.mp.br/`, e CIIA e a sigla CIIA levam a
+  `https://ciia.mppa.mp.br/` (`REPLICAR.md`, 4.5).
+- **Acessibilidade:** o link tem o nome da logo e o aviso "(abre em nova aba)" para o leitor de tela, e o mesmo
+  texto no `title`. A sigla, decorativa (`alt=""`), repete o link da CIIA: fica fora da tabulação e do leitor de
+  tela, e continua clicável com o mouse. Foco visível com o anel de `--ring`. Imagem ausente ou inválida some com o
+  link: nunca sobra link vazio.
+- **API:** tipo `LogoAsset` (`ImageAsset` com `href` opcional), usado em `HeaderConfig.logos`, e a peça `LogoSlot`,
+  exportados pela camada.
+- **Conferência:** o `verify-template` confere os três endereços na demonstração, a nova aba, a sigla fora da
+  tabulação e o uso do `LogoSlot` no cabeçalho e na barra lateral.
+
+### Ao atualizar de 2.2.1
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia diz que a camada mudou em `types.ts`, `image-slot.tsx`, `app-header.tsx`, `app-sidebar.tsx` e
+   `index.ts`. A aparência não muda, e não é preciso capturar telas.
+2. Acrescente `href` às três logos de `header.logos`, como no modelo da seção 4.5 do `REPLICAR.md`: MPPA com
+   `"https://www.mppa.mp.br/"`, CIIA e a sigla com `"https://ciia.mppa.mp.br/"`.
+3. Troque a versão na seção "Interface" do `AGENTS.md` (e no registro de alterações locais, se houver) para 2.3.0.
+
 ## 2.2.1 — 2026-11-17
 
 Correções no grupo "Apoio" da 2.2.0, achadas na revisão do código. A aparência e os rótulos não mudam, e a API só

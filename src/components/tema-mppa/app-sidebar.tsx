@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { isValidElement, Suspense, useState } from "react";
 import { Button } from "./button";
 import { CommandPalette } from "./command-palette";
-import { ImageSlot } from "./image-slot";
+import { ImageSlot, LogoSlot } from "./image-slot";
 import { SectionIcon, toneClass } from "./section-icon";
 import { useCollapsedAttribute, useSidebar } from "./sidebar-context";
 import type { AppShellProps, ImageAsset, NavigationItem, NavigationSection, ShellConfig, ShellSession } from "./types";
@@ -66,7 +66,7 @@ function MobileLogos({ config }: { config: ShellConfig }) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 border-b border-sidebar-border px-3 py-2.5 lg:hidden desk:tm-collapsed:hidden">
       {logos.map((logo, index) => (
-        <ImageSlot key={`${index}-${logo.src}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
+        <LogoSlot key={`${index}-${logo.src}`} logo={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
       ))}
     </div>
   );

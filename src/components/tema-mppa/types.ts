@@ -67,8 +67,17 @@ export type BrandConfig = {
   symbol?: ImageAsset | ReactNode | null;
 };
 
+/**
+ * Logo institucional do cabeçalho. Com `href`, a logo vira link para o site da instituição, aberto em nova aba;
+ * sem ele, é só a imagem. Logo decorativa (`alt` vazio) com `href` fica fora da tabulação e do leitor de tela,
+ * porque repete o link da logo ao lado.
+ */
+export type LogoAsset = ImageAsset & {
+  href?: string | null;
+};
+
 export type HeaderConfig = {
-  logos?: ImageAsset[];
+  logos?: LogoAsset[];
   backLink?: { href: string; label: string; icon?: IconComponent } | null;
   searchPlaceholder?: string;
   signOutLabel?: string;

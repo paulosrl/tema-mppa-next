@@ -66,7 +66,7 @@ export {
   type Accent,
 } from "./dashboard";
 export { DataTable, type DataTableColumn } from "./data-table";
-export { ImageSlot } from "./image-slot";
+export { ImageSlot, LogoSlot } from "./image-slot";
 export {
   DayStrip,
   GoalRow,
@@ -106,6 +106,7 @@ export type {
   CurrentNavigation,
   HeaderConfig,
   ImageAsset,
+  LogoAsset,
   NavigationItem,
   NavigationSection,
   NavigationTone,

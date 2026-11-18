@@ -4,7 +4,7 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumbs } from "./breadcrumbs";
 import { buttonVariants } from "./button";
-import { ImageSlot } from "./image-slot";
+import { LogoSlot } from "./image-slot";
 import { useSidebar } from "./sidebar-context";
 import { ThemeToggle } from "./theme-toggle";
 import { Suspense, type ReactNode } from "react";
@@ -71,7 +71,7 @@ export function AppHeader({
             <span className="hidden items-center gap-2 lg:flex desk:tm-collapsed:flex">
               {/* Índice na chave: duas logos podem repetir o src ou o alt (a sigla CIIA tem alt vazio). */}
               {logos.map((logo, index) => (
-                <ImageSlot key={`${index}-${logo.src}`} asset={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
+                <LogoSlot key={`${index}-${logo.src}`} logo={logo} className="h-8 w-auto rounded-lg border bg-logo-surface px-2 py-1 shadow-xs" />
               ))}
             </span>
           </>

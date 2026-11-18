@@ -43,10 +43,10 @@ export const demoConfig: ShellConfig = {
   header: {
     /* As três logos padrão dos sistemas (REPLICAR, 4.5), nesta ordem; os arquivos vão na pasta entregue, em public/. */
     logos: [
-      { src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 },
-      { src: "/ciia.png", alt: "CIIA", width: 244, height: 244 },
+      { src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76, href: "https://www.mppa.mp.br/" },
+      { src: "/ciia.png", alt: "CIIA", width: 244, height: 244, href: "https://ciia.mppa.mp.br/" },
       // A sigla repete a CIIA: decorativa, com alt vazio, para o leitor de tela não ler "CIIA, CIIA".
-      { src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 },
+      { src: "/ciia-sigla.svg", alt: "", width: 132, height: 76, href: "https://ciia.mppa.mp.br/" },
     ],
     searchPlaceholder: "Ir para…",
     signOutLabel: "Sair",

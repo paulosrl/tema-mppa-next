@@ -24,7 +24,7 @@
   - botão de sair.
 
   Não volte ao avatar sozinho do protótipo.
-- Logos do cabeçalho, definidas em 12 nov. 2026 (1.12.0): três, nesta ordem, MPPA (132×76), CIIA (244×244) e a sigla CIIA (132×76, `alt=""`), em `public/` e na pasta entregue. O título tem prioridade de espaço (bloco de 128px no mínimo; a seção à frente só com 288px): as logos ficam no cabeçalho a partir de 1024px, ou desde 801px com a barra recolhida, e fora disso sob a marca (barra lateral ou menu móvel).
+- Logos do cabeçalho, definidas em 12 nov. 2026 (1.12.0): três, nesta ordem, MPPA (132×76), CIIA (244×244) e a sigla CIIA (132×76, `alt=""`), em `public/` e na pasta entregue. Desde 18 nov. 2026 (2.3.0), cada uma leva ao site da instituição, em nova aba: MPPA a `https://www.mppa.mp.br/` e as duas do CIIA a `https://ciia.mppa.mp.br/`. O título tem prioridade de espaço (bloco de 128px no mínimo; a seção à frente só com 288px): as logos ficam no cabeçalho a partir de 1024px, ou desde 801px com a barra recolhida, e fora disso sob a marca (barra lateral ou menu móvel).
 - Busca "Buscar na página", definida em 2026-11-11: fixa na barra lateral, logo acima do "Recolher", na largura da barra (só a lupa com a barra recolhida; no celular, no menu móvel). O diálogo vai para o `<body>` por portal. Não volte a busca para o cabeçalho.
 - Sem etiquetas de atalho na interface (pedido de 12 nov. 2026): nada de `Ctrl K`, `Ctrl B` ou outro `<kbd>` ao lado da lupa, do "Recolher" ou em qualquer ponto. Os atalhos `Ctrl+K` e `Ctrl+B` continuam funcionando e ficam só em `aria-keyshortcuts`.
 - Rodapé padrão dos sistemas, definido em 2026-11-10. O protótipo não tem rodapé; ele segue a página de exemplo do Heimdall e usa só tokens:

@@ -357,9 +357,9 @@ export const shellConfig: ShellConfig = {
   ],
   header: {
     logos: [
-      { src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 },
-      { src: "/ciia.png", alt: "CIIA", width: 244, height: 244 },
-      { src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 }, // sigla decorativa: repete a CIIA
+      { src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76, href: "https://www.mppa.mp.br/" },
+      { src: "/ciia.png", alt: "CIIA", width: 244, height: 244, href: "https://ciia.mppa.mp.br/" },
+      { src: "/ciia-sigla.svg", alt: "", width: 132, height: 76, href: "https://ciia.mppa.mp.br/" }, // sigla decorativa: repete a CIIA
     ],
     searchPlaceholder: "Buscar na página",
     signOutLabel: "Sair",
@@ -380,9 +380,14 @@ Regras para preencher:
   com a inicial do sistema (quadrado de 32px com degradê vermelho, definido no `tema-mppa.css`).
 - `header.logos`: **três itens, nesta ordem**, como no modelo acima. É o padrão dos sistemas, não exemplo da
   demonstração:
-  1. MPPA: `{ src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76 }`;
-  2. CIIA: `{ src: "/ciia.png", alt: "CIIA", width: 244, height: 244 }`;
-  3. a sigla "CIIA", num espaço do tamanho da primeira: `{ src: "/ciia-sigla.svg", alt: "", width: 132, height: 76 }`.
+  1. MPPA: `{ src: "/mppa-logo.png", alt: "MPPA", width: 132, height: 76, href: "https://www.mppa.mp.br/" }`;
+  2. CIIA: `{ src: "/ciia.png", alt: "CIIA", width: 244, height: 244, href: "https://ciia.mppa.mp.br/" }`;
+  3. a sigla "CIIA", num espaço do tamanho da primeira: `{ src: "/ciia-sigla.svg", alt: "", width: 132, height: 76, href: "https://ciia.mppa.mp.br/" }`.
+
+  Desde a 2.3.0, cada logo leva ao site da instituição (`href`): a do MPPA ao `https://www.mppa.mp.br/` e as duas
+  do CIIA ao `https://ciia.mppa.mp.br/`. O site abre em nova aba, para o usuário não perder a tela do sistema. A
+  sigla, decorativa, fica fora da tabulação e do leitor de tela, que leem só o link da logo da CIIA ao lado; com o
+  mouse, ela também leva ao site.
 
   Com `basePath` no `next.config` (por exemplo, `/xavier`), escreva o caminho completo em cada `src` da
   configuração (`/xavier/mppa-logo.png`, também no `symbol` e no avatar): a camada usa `<img>`, que não recebe o
@@ -391,7 +396,7 @@ Regras para preencher:
   consumidor (4.1). A sigla tem `alt=""` (decorativa): com `alt="CIIA"`, o leitor de tela leria "CIIA, CIIA". A
   sigla é um SVG de 132×76: fundo `#fff`, texto "CIIA" em `#1a237e`, Arial 46px, negrito, centralizado em
   `y=55`. Se o sistema já tinha outras logos, é conflito do diagnóstico (item 12): o desenvolvedor decide. Na
-  API, `logos: []` continua válido (sem logos, sem divisória). Cada logo é `{ src, alt, width, height }`; imagem ausente ou inválida some.
+  API, `logos: []` continua válido (sem logos, sem divisória). Cada logo é `{ src, alt, width, height, href }`, com `href` opcional (sem ele, a logo é só imagem); imagem ausente ou inválida some, com o link.
 - Onde as logos aparecem: no cabeçalho a partir de 1024px, ou a partir de 801px com a barra recolhida; fora disso,
   sob a marca, na barra lateral aberta (801px a 1023px) ou no menu móvel (abaixo de 801px). Assim o título nunca
   fica espremido (seção 9).
@@ -1053,7 +1058,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.2.1)
+## Interface (tema-mppa 2.3.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).
