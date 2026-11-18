@@ -3,6 +3,22 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.3.1 — 2026-11-18
+
+A prévia da 2.3.0 saiu sem as logos com link: ela não foi gerada de novo, e só o título mudou. Só a prévia muda; a
+camada, a API e a aparência são as da 2.3.0. Por ser correção, sobe o último número.
+
+### Corrigido
+
+- **Prévia (`docs/preview/index.html`):** gerada de novo pela demonstração. As três logos do cabeçalho, da barra
+  lateral e do menu móvel levam ao site da instituição, em nova aba, como na aplicação.
+
+### Ao atualizar de 2.3.0
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia diz "Camada visual: igual à da 2.3.0". Nada a mudar nas telas.
+2. Troque a versão na seção "Interface" do `AGENTS.md` (e no registro de alterações locais, se houver) para 2.3.1.
+
 ## 2.3.0 — 2026-11-18
 
 Pedido do autor em 18 nov. 2026: as logos institucionais do cabeçalho passam a levar ao site da instituição. Como a
