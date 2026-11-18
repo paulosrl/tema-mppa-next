@@ -3,6 +3,32 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.3.2 — 2026-11-18
+
+Retorno do Heimdall, que atualizou da 2.0.6 para a 2.2.1 com OpenSpec (change `tema-mppa-2-2-1`). O roteiro não
+previa três casos. Só o `REPLICAR.md` e o CHANGELOG mudam; a camada, a API e a aparência são as da 2.3.1. Por ser
+correção, sobe o último número.
+
+### Corrigido
+
+- **Rotas do grupo "Apoio" e a proteção do consumidor (`REPLICAR.md`, 4.5):** as rotas `/manual` e `/tutorial` da
+  2.2.0 seguem a mesma proteção das outras rotas da área logada. Consumidor que barra quem não tem sessão por uma lista
+  de rotas (`proxy`, `middleware` ou guarda) inclui as duas, com os testes dessa lista.
+- **Hover em quadro próprio (7.1):** o painel próprio que passa a usar `tm-card-hover` perde o `transition-all`,
+  que sobrepõe a transição do movimento, e a borda colorida no hover (`hover:border-*`), que contraria o contorno da
+  camada.
+- **Elemento `fixed` dentro de quadro (7.1):** o `transform` do hover da 2.1.0 faz todo elemento `fixed` dentro do
+  quadro se posicionar pelo quadro, e o rodapé fixo pode cobri-lo. Diálogo ou menu próprio dentro de um `Card` vai
+  para o `<body>` por portal. No Heimdall, foi o diálogo "Conceder acesso" de Gerenciar Sistemas.
+
+### Ao atualizar de 2.3.1
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia diz "Camada visual: igual à da 2.3.1". Nada a mudar nas telas.
+2. Quem já passou pela 2.1.0 ou pela 2.2.0 confere os três casos acima: as rotas `/manual` e `/tutorial` na proteção
+   do sistema, as classes de hover e de transição dos quadros próprios e os elementos `fixed` dentro de quadros.
+3. Troque a versão na seção "Interface" do `AGENTS.md` (e no registro de alterações locais, se houver) para 2.3.2.
+
 ## 2.3.1 — 2026-11-18
 
 A prévia da 2.3.0 saiu sem as logos com link: ela não foi gerada de novo, e só o título mudou. Só a prévia muda; a

@@ -406,7 +406,9 @@ Regras para preencher:
   Não repita os dois itens em `platformNavigation` (desde a 2.2.1, item com o mesmo endereço de um dos dois sai do
   menu e da busca, e vale o do grupo). Endereço vazio tira o item do grupo. Se o sistema já tem manual ou tutorial, use as rotas deles;
   se não tem, use `/manual` e `/tutorial`, cada uma com `PageFrame` e um `Card` "Conteúdo em preparação", como
-  na demonstração, até o conteúdo existir.
+  na demonstração, até o conteúdo existir. Rota nova da área logada segue a mesma proteção das outras: se o
+  consumidor barra quem não tem sessão por uma lista de rotas (no `proxy`, no `middleware` ou numa guarda), inclua
+  nela as duas rotas, com os testes que conferem essa lista.
 - `header.searchPlaceholder` é o texto da caixa de busca da barra lateral (padrão: "Buscar na página"); `header.signOutLabel`, o
   rótulo do botão de sair.
 - `description` e `keywords` dos itens são opcionais: preencha só com texto real do consumidor (por exemplo,
@@ -777,6 +779,15 @@ Quando nenhuma tela usar mais o visual antigo:
   essas classes (`grep -rn "border-border" <pasta das telas>` e semelhantes) e tire as que repetem ou contrariam
   a camada. Painel próprio que imita o cartão (raio 24px, fundo de cartão, sombra) segue o mesmo token do
   cartão, para não ficarem dois contornos diferentes lado a lado.
+- **Hover em quadro próprio:** o painel próprio que imita o cartão ganha o movimento dos quadros da camada com
+  `shadow-card` e `tm-card-hover` (desde a 2.1.0). Tire dele as classes de hover e de transição que já tinha: o
+  `transition-all` sobrepõe a transição do `tm-card-hover`, e uma borda colorida no hover (`hover:border-primary/40`)
+  contraria o contorno da camada. Procure-as com `grep -rn "transition-all\|hover:border-" <pasta das telas>`.
+- **Elemento `fixed` dentro de quadro:** no hover, o quadro se desloca (`transform`), e todo elemento `fixed`
+  dentro dele passa a se posicionar pelo quadro, não pela tela; o rodapé fixo pode cobri-lo. Um diálogo ou menu
+  próprio desenhado dentro de um `Card` (por exemplo, o de uma ação da tabela) vai para o `<body>` por portal, como
+  o diálogo da busca da camada. Procure-os com `grep -rn "fixed" <pasta das telas>` e confira cada um que fica
+  dentro de um quadro.
 - **`bg-background` em componentes shadcn** (`Input`, botão `outline`, seletores, diálogos, alertas): o fundo
   da página deixa de ser o do cartão desde a 1.9.0. Superfície que precisa parecer cartão usa `bg-card`.
 - **Degradê translúcido:** um degradê que termina transparente (`to-cor/[0.04]`) deixa ver o fundo da página
@@ -1058,7 +1069,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.3.1)
+## Interface (tema-mppa 2.3.2)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).
