@@ -47,11 +47,12 @@ async function open(route, { collapsed = false, theme = "light" } = {}) {
   return page;
 }
 
-// Rotas tiradas do próprio menu da demonstração, aba por aba: a prévia acompanha a configuração sem lista à mão.
+// Rotas tiradas do próprio menu da demonstração, aba por aba: a prévia acompanha a configuração sem lista à mão. Todo
+// link interno de navegação da barra entra, também o grupo "Apoio" (Manual e Tutorial), que tem a sua própria lista.
 const routes = {};
 {
   const page = await open("/");
-  const links = () => page.evaluate(() => [...document.querySelectorAll('aside nav[aria-label="Itens da seção"] a[href]')].map((a) => new URL(a.href).pathname));
+  const links = () => page.evaluate(() => [...new Set([...document.querySelectorAll('aside nav a[href^="/"]')].map((a) => new URL(a.href).pathname))]);
   routes.platform = await links();
   const adminTab = page.locator('aside [role="tab"]').nth(1);
   routes.administration = (await adminTab.count()) ? (await adminTab.click(), await page.waitForTimeout(300), await links()) : [];
@@ -195,9 +196,12 @@ const runtime = `
     const target = event.target.closest("a, button");
     if (!target) return;
     const label = target.getAttribute("aria-label") ?? "";
-    if (target.matches("aside a[href]")) {
+    // Só os links internos ficam na prévia; as logos levam ao site da instituição, em nova aba, como na aplicação.
+    if (target.matches('aside a[href^="/"]')) {
       event.preventDefault();
-      go(new URL(target.href).pathname);
+      // O href escrito, e não target.href: aberto de uma unidade do Windows (file:///D:/...), o navegador resolve "/manual"
+      // como "/D:/manual", a rota não existe e a prévia voltaria ao início.
+      go(target.getAttribute("href"));
     } else if (target.matches('[role="tab"]')) {
       const section = target.closest('[role="tablist"]').firstElementChild === target ? "platform" : "administration";
       go(state.last[section]);

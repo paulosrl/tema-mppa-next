@@ -1,16 +1,15 @@
 "use client";
 
-import { Monitor, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { Button } from "./button";
 import { useTheme, type Theme } from "./theme-provider";
 
-const sequence: Theme[] = ["light", "dark", "system"];
-const labels: Record<Theme, string> = { light: "Claro", dark: "Escuro", system: "Sistema" };
+const labels: Record<Theme, string> = { light: "Claro", dark: "Escuro" };
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const Icon = theme === "light" ? Sun : theme === "dark" ? Moon : Monitor;
-  const next = sequence[(sequence.indexOf(theme) + 1) % sequence.length];
+  const Icon = theme === "dark" ? Moon : Sun;
+  const next: Theme = theme === "dark" ? "light" : "dark";
 
   return (
     <Button

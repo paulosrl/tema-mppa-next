@@ -1,8 +1,8 @@
 "use client";
 
-import { Activity, ArrowRight, BadgeCheck, Bot, Brain, Copy, Droplets, Dumbbell, Ellipsis, Flame, FlaskConical, Footprints, Heart, IdCard, Mail, Moon, Navigation, Play, ShieldCheck, StretchHorizontal, User, Zap } from "lucide-react";
+import { Activity, ArrowRight, BadgeCheck, BookOpen, Bot, Brain, Copy, Droplets, Dumbbell, Ellipsis, Filter, Flame, FlaskConical, Footprints, Heart, IdCard, LogOut, Mail, Monitor, Moon, Navigation, Play, RotateCcw, ShieldCheck, StretchHorizontal, User, Zap } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import {
   AppShell,
   BarChart,
@@ -11,17 +11,18 @@ import {
   CardGrid,
   DataTable,
   DayStrip,
+  FeaturedCard,
+  FeaturedNote,
   GoalRow,
   InfoField,
-  InfoPill,
   LinkCard,
   LinkCardMedia,
   MacroTile,
   MediaCard,
   MetricCard,
   MetricLine,
+  OpeningCard,
   PageFrame,
-  PageGreeting,
   PanelCard,
   PanelGrid,
   ProgressBar,
@@ -30,7 +31,6 @@ import {
   SectionTitle,
   StatCard,
   StatValue,
-  StatusBadge,
   Tag,
   WorkoutRow,
   type DataTableColumn,
@@ -39,16 +39,25 @@ import { demoConfig, demoSession } from "./demo-config";
 
 /* Telas de demonstração pintadas só com os primitivos exportados pela camada visual. */
 
+/* Marca d'água dos quadros de abertura (decorativa). O quadro de abertura fica só no primeiro item de cada aba: com a
+   saudação em "Meus acessos" e sem ela em "Usuários & Papéis". */
+const ciia = { src: "/ciia.png", alt: "", width: 244, height: 244 };
+
 /** Painel inicial, na estética da página de referência do Heimdall. Dados fictícios. */
 function DemoDashboard() {
   const avisar = (texto: string) => window.alert(texto);
   return (
     <div className="flex min-w-0 flex-col gap-8">
-      <PageGreeting
-        title="Olá, PESSOA!"
-        badge={<StatusBadge pulse>Acesso Autorizado</StatusBadge>}
+      <OpeningCard
+        badge="Minha Página · Template"
+        badgeNote="CIIA · MPPA"
+        greeting={`Olá, ${demoSession.name}!`}
         description="Bem-vindo ao seu painel. Gerencie sua conta abaixo."
-        aside={<InfoPill icon={ShieldCheck} title="Autenticação Unificada SSO" description="2 sistemas habilitados para seu perfil" />}
+        watermark={ciia}
+        shortcuts={[
+          { label: "Meu Perfil", href: "/perfil", icon: User },
+          { label: "Manual", href: "/manual", icon: BookOpen },
+        ]}
       />
 
       <section>
@@ -267,11 +276,227 @@ function DemoMetas() {
   );
 }
 
-/** Manual e Tutorial (subgrupo "Apoio"): o conteúdo ainda não existe. */
+/* Quadros em destaque (featured.tsx), com dados fictícios. */
+
+/** Perfil: só a barra azul (retângulo em destaque), sem saudação, e os dados. */
+function DemoPerfil() {
+  return (
+    <div className="flex min-w-0 flex-col gap-6">
+      <FeaturedNote>Confira seus dados cadastrais e mantenha o e-mail em dia.</FeaturedNote>
+      <PanelCard title="Dados cadastrais" icon={IdCard}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <InfoField icon={User} label="Nome" value={demoSession.name} />
+          <InfoField icon={Mail} label="E-mail" value={demoSession.email} />
+        </div>
+      </PanelCard>
+    </div>
+  );
+}
+
+type DemoSession = { id: string; device: string; place: string; last: string };
+const sessionColumns: DataTableColumn<DemoSession>[] = [
+  { key: "device", header: "Dispositivo", cell: (row) => row.device },
+  { key: "place", header: "Local", cell: (row) => row.place },
+  { key: "last", header: "Último acesso", cell: (row) => row.last },
+];
+const sessionRows: DemoSession[] = [
+  { id: "1", device: "Navegador no computador", place: "Belém", last: "Hoje, 9h12" },
+  { id: "2", device: "Navegador no celular", place: "Belém", last: "Ontem, 18h40" },
+];
+
+/** Sessões: quadro sem marca d'água, com título, indicador e o botão dentro, à direita. */
+function DemoSessoes() {
+  return (
+    <div className="flex min-w-0 flex-col gap-6">
+      <FeaturedCard
+        title="Sessões ativas"
+        actions={
+          <Button variant="destructive" size="sm" onClick={() => window.alert("Conecte aqui a ação do sistema.")}>
+            <LogOut />
+            Encerrar as outras
+          </Button>
+        }
+      >
+        <p className="m-0 text-base text-foreground">
+          <strong className="font-semibold">2</strong> dispositivos conectados de <strong className="font-semibold">5</strong> permitidos
+        </p>
+      </FeaturedCard>
+      <DataTable title="Dispositivos" columns={sessionColumns} rows={sessionRows} rowKey={(row) => row.id} />
+    </div>
+  );
+}
+
+type Perfil = "todos" | "admin" | "usuario";
+type DemoUser = { id: string; name: string; email: string; admin: boolean };
+const perfis: { id: Perfil; label: string }[] = [
+  { id: "todos", label: "Todos" },
+  { id: "admin", label: "Administradores" },
+  { id: "usuario", label: "Usuários" },
+];
+const userColumns: DataTableColumn<DemoUser>[] = [
+  { key: "name", header: "Nome", cell: (row) => row.name },
+  { key: "email", header: "E-mail", cell: (row) => row.email },
+  { key: "profile", header: "Perfil", cell: (row) => <Tag tone={row.admin ? "primary" : "neutral"}>{row.admin ? "Administrador" : "Usuário"}</Tag> },
+];
+const userRows: DemoUser[] = [
+  { id: "1", name: "Pessoa Lima", email: "pessoa@exemplo.local", admin: true },
+  { id: "2", name: "Pessoa Souza", email: "souza@exemplo.local", admin: false },
+  { id: "3", name: "Pessoa Rocha", email: "rocha@exemplo.local", admin: false },
+];
+
+/** Usuários & Papéis, primeiro item da Administração: quadro de abertura sem saudação e filtro com Filtrar e Limpar dentro, à direita. */
+function DemoUsuarios() {
+  const [perfil, setPerfil] = useState<Perfil>("todos");
+  const [aplicado, setAplicado] = useState<Perfil>("todos");
+  const filtrar = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setAplicado(perfil);
+  };
+  const limpar = () => {
+    setPerfil("todos");
+    setAplicado("todos");
+  };
+  const linhas = userRows.filter((row) => aplicado === "todos" || row.admin === (aplicado === "admin"));
+  return (
+    <div className="flex min-w-0 flex-col gap-6">
+      <OpeningCard
+        badge="Administração do Template"
+        badgeNote="CIIA · MPPA"
+        description="Acompanhe os sistemas integrados e gerencie usuários, perfis e registros de acesso."
+        watermark={ciia}
+        shortcuts={[
+          { label: "Sistemas Integrados", href: "/administracao/sistemas", icon: Monitor },
+          { label: "Auditoria", href: "/administracao/auditoria", icon: ShieldCheck },
+        ]}
+      />
+      <FeaturedCard
+        onSubmit={filtrar}
+        actions={
+          <>
+            <Button type="submit">
+              <Filter />
+              Filtrar
+            </Button>
+            <Button variant="secondary" onClick={limpar}>
+              <RotateCcw />
+              Limpar
+            </Button>
+          </>
+        }
+      >
+        {perfis.map(({ id, label }) => (
+          <Button key={id} size="sm" variant={perfil === id ? "default" : "secondary"} aria-pressed={perfil === id} onClick={() => setPerfil(id)}>
+            {label}
+          </Button>
+        ))}
+      </FeaturedCard>
+      <DataTable title="Usuários" columns={userColumns} rows={linhas} rowKey={(row) => row.id} emptyMessage="Nenhum usuário para o filtro escolhido." />
+    </div>
+  );
+}
+
+type DemoSystem = { id: string; name: string; environment: string; active: boolean; users: number };
+const systemColumns: DataTableColumn<DemoSystem>[] = [
+  { key: "name", header: "Sistema", cell: (row) => row.name },
+  { key: "environment", header: "Ambiente", cell: (row) => row.environment },
+  { key: "status", header: "Situação", cell: (row) => <Tag tone={row.active ? "success" : "neutral"}>{row.active ? "Ativo" : "Suspenso"}</Tag> },
+  { key: "users", header: "Usuários", cell: (row) => row.users, align: "right" },
+];
+const systemRows: DemoSystem[] = [
+  { id: "1", name: "HubIA", environment: "Produção", active: true, users: 35 },
+  { id: "2", name: "HubIA (teste)", environment: "Homologação", active: true, users: 4 },
+  { id: "3", name: "Sistema legado", environment: "Produção", active: false, users: 0 },
+];
+
+/** Sistemas Integrados: retângulo em destaque, indicadores e o catálogo de sistemas. */
+function DemoSistemas() {
+  return (
+    <div className="flex min-w-0 flex-col gap-6">
+      <FeaturedNote>Catálogo dos sistemas integrados ao portal e de quem pode acessá-los.</FeaturedNote>
+      <CardGrid columns={3}>
+        <MetricCard label="Sistemas" value="3" note="2 ativos" />
+        <MetricCard label="Usuários com acesso" value="39" note="Em todos os sistemas" />
+        <MetricCard label="Ambientes" value="2" note="Produção e homologação" />
+      </CardGrid>
+      <DataTable
+        title="Sistemas"
+        actions={<Button size="sm" onClick={() => window.alert("Conecte aqui a ação do sistema.")}>Novo sistema</Button>}
+        columns={systemColumns}
+        rows={systemRows}
+        rowKey={(row) => row.id}
+      />
+    </div>
+  );
+}
+
+type Periodo = "hoje" | "7dias" | "30dias";
+type DemoEvent = { id: string; when: string; user: string; event: string; ok: boolean; periodo: Periodo };
+const periodos: { id: Periodo; label: string }[] = [
+  { id: "hoje", label: "Hoje" },
+  { id: "7dias", label: "7 dias" },
+  { id: "30dias", label: "30 dias" },
+];
+const eventColumns: DataTableColumn<DemoEvent>[] = [
+  { key: "when", header: "Quando", cell: (row) => row.when },
+  { key: "user", header: "Usuário", cell: (row) => row.user },
+  { key: "event", header: "Evento", cell: (row) => row.event },
+  { key: "result", header: "Resultado", cell: (row) => <Tag tone={row.ok ? "success" : "warning"}>{row.ok ? "Sucesso" : "Falha"}</Tag> },
+];
+const eventRows: DemoEvent[] = [
+  { id: "1", when: "Hoje, 9h12", user: "pessoa@exemplo.local", event: "Entrada no HubIA", ok: true, periodo: "hoje" },
+  { id: "2", when: "Hoje, 8h47", user: "souza@exemplo.local", event: "Senha incorreta", ok: false, periodo: "hoje" },
+  { id: "3", when: "20/11/2026, 17h05", user: "rocha@exemplo.local", event: "Perfil alterado", ok: true, periodo: "7dias" },
+  { id: "4", when: "02/11/2026, 10h30", user: "pessoa@exemplo.local", event: "Sessão encerrada", ok: true, periodo: "30dias" },
+];
+const ordemDoPeriodo: Record<Periodo, number> = { hoje: 0, "7dias": 1, "30dias": 2 };
+
+/** Auditoria & Segurança: retângulo em destaque, filtro de período com Filtrar e Limpar e os registros de acesso. */
+function DemoAuditoria() {
+  const [periodo, setPeriodo] = useState<Periodo>("30dias");
+  const [aplicado, setAplicado] = useState<Periodo>("30dias");
+  const filtrar = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setAplicado(periodo);
+  };
+  const limpar = () => {
+    setPeriodo("30dias");
+    setAplicado("30dias");
+  };
+  const linhas = eventRows.filter((row) => ordemDoPeriodo[row.periodo] <= ordemDoPeriodo[aplicado]);
+  return (
+    <div className="flex min-w-0 flex-col gap-6">
+      <FeaturedNote>Registros de acesso e eventos de segurança de todos os sistemas.</FeaturedNote>
+      <FeaturedCard
+        onSubmit={filtrar}
+        actions={
+          <>
+            <Button type="submit">
+              <Filter />
+              Filtrar
+            </Button>
+            <Button variant="secondary" onClick={limpar}>
+              <RotateCcw />
+              Limpar
+            </Button>
+          </>
+        }
+      >
+        {periodos.map(({ id, label }) => (
+          <Button key={id} size="sm" variant={periodo === id ? "default" : "secondary"} aria-pressed={periodo === id} onClick={() => setPeriodo(id)}>
+            {label}
+          </Button>
+        ))}
+      </FeaturedCard>
+      <DataTable title="Registros" columns={eventColumns} rows={linhas} rowKey={(row) => row.id} emptyMessage="Nenhum registro no período escolhido." />
+    </div>
+  );
+}
+
+/** Manual e Tutorial (subgrupo "Apoio"): conteúdo em elaboração. */
 function DemoApoio({ assunto }: { assunto: string }) {
   return (
     <PageFrame description={`${assunto} do sistema.`}>
-      <Card title="Conteúdo em preparação" description={`O ${assunto.toLowerCase()} ainda não foi publicado.`} />
+      <Card title="Conteúdo em elaboração" />
     </PageFrame>
   );
 }
@@ -288,6 +513,16 @@ export function DemoConsumer() {
         <DemoDashboard />
       ) : pathname === "/metas" ? (
         <DemoMetas />
+      ) : pathname === "/perfil" ? (
+        <DemoPerfil />
+      ) : pathname === "/sessoes" ? (
+        <DemoSessoes />
+      ) : pathname === "/administracao/usuarios" ? (
+        <DemoUsuarios />
+      ) : pathname === "/administracao/sistemas" ? (
+        <DemoSistemas />
+      ) : pathname === "/administracao/auditoria" ? (
+        <DemoAuditoria />
       ) : pathname === "/manual" ? (
         <DemoApoio assunto="Manual" />
       ) : pathname === "/tutorial" ? (

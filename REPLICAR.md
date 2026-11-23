@@ -21,7 +21,7 @@ Replicar:
   - abas Plataforma e Administração, e cada aba abre a página do primeiro item visível dela;
   - menu com ícones de seção coloridos;
   - busca `Ctrl+K` na barra lateral, acima do "Recolher";
-  - tema claro, escuro e sistema;
+  - tema claro e escuro;
   - identidade do usuário (avatar, nome e perfil) e botão de sair no cabeçalho;
   - cartões, métricas, tabelas e gráficos de barras.
 - **Cores:** só os tokens de `src/styles/tema-mppa.css` (tabela na seção 8).
@@ -51,7 +51,7 @@ Diferenças intencionais entre o modelo e o protótipo, que **não** devem ser "
   - logos institucionais;
   - nome e perfil do usuário visíveis;
   - botão de sair.
-- **Tema:** o botão alterna entre claro, escuro e sistema.
+- **Tema:** o botão alterna entre claro (sol) e escuro (lua); não há modo sistema.
 - **Rodapé:** o protótipo não tem; o padrão dos sistemas tem (seção 9).
 
 ## 1. Como trabalhar no consumidor
@@ -535,7 +535,7 @@ casca antiga típica:
 | --- | --- | --- |
 | Chaves de armazenamento | tema em `tema-mppa-theme` (`sessionStorage`); barra recolhida em `tema-mppa-sidebar-collapsed` (`localStorage`, `"1"` ou `"0"`) | teste que gravava a chave antiga ou o tema no `localStorage` |
 | Barra recolhida | atributo `data-tm-sidebar="collapsed"` (ou `"expanded"`) no `<html>`; botão "Recolher menu lateral" / "Expandir menu lateral" com `aria-expanded` | teste que lia `data-state` da barra antiga |
-| Alternador de tema | botão com aria-label "Tema: Claro. Alterar para Escuro"; ciclo claro → escuro → sistema | teste que procurava "Ativar tema escuro" ou alternava só entre claro e escuro |
+| Alternador de tema | botão com aria-label "Tema: Claro. Alterar para Escuro"; alterna claro ↔ escuro (sol e lua), sem modo sistema | teste que procurava "Ativar tema escuro" ou esperava um terceiro estado ("Sistema") |
 | Barra lateral | `aside` com aria-label "Navegação principal"; abas com aria-label "Seções do menu" | seletor da `nav` ou da `aside` antigas |
 | Título | um `h1` dentro do `header` (papel `banner`), sem trilha navegável; a seção à frente dele é decorativa (`aria-hidden`) | teste que procurava o título no conteúdo ou a trilha |
 | Abas | na aba Plataforma, os links administrativos não ficam no DOM | teste que clicava num link administrativo a partir do dashboard: abra antes a aba Administração |
@@ -668,7 +668,7 @@ const colunas: DataTableColumn<Linha>[] = [
 | `SectionIcon` | `icon` (Lucide), `tone?` |
 
 Peças de painel, na estética da página de referência do Heimdall; a demonstração do modelo (`/`) as
-usa todas:
+usa, menos `PageGreeting`, `StatusBadge` e `InfoPill`, cujo lugar no topo é do quadro de abertura desde a 2.4.1:
 
 | Primitivo | Propriedades |
 | --- | --- |
@@ -695,6 +695,18 @@ usa todas:
 | `InsetTile` | `label`, `value`; tile interno sobre um cartão |
 | `MacroTile` | `label`, `value`, `percent`, `tone?`: `"red"`, `"blue"`, `"amber"`, `"green"`; tile colorido com medidor |
 | `StatusPill` | `children`, `tone?`: `"neutral"` (padrão), `"success"`, `"warning"`, `"primary"`; pílula sem borda |
+
+Quadros em destaque, com o fundo azul em degradê, os brilhos e o filete à esquerda; a demonstração os usa em
+`/` (Meus acessos), `/perfil`, `/sessoes` e nas três páginas da Administração. O quadro de abertura (`OpeningCard`) fica só
+no primeiro item de cada aba: com a saudação no primeiro de "Minha Página" e sem ela no primeiro de "Administração".
+Nenhuma outra tela tem saudação; o Perfil, por exemplo, traz só o retângulo em destaque com a frase da página:
+
+| Primitivo | Propriedades |
+| --- | --- |
+| `OpeningCard` | `badge` (texto do selo), `badgeIcon?` (padrão `Sparkles`), `badgeNote?` (ao lado do selo, a partir de 640px), `greeting?` (`h2`; sem ele, o selo dá nome à região), `description`, `watermark?` (`ImageAsset`, sempre decorativa, fixa logo antes dos atalhos; some se faltar ou falhar), `shortcuts?` (`OpeningShortcut[]`: `{ label, href, icon? }`; o primeiro primário, os demais secundários) |
+| `FeaturedCard` | `title?`, `children?` (à esquerda: campos de filtro, indicadores), `actions?` (botões dentro do quadro, à direita), `onSubmit?` (o conteúdo e os botões ficam num `<form>`; o botão de enviar leva `type="submit"`) |
+| `FeaturedNote` | `children`; retângulo em destaque, num `<p>` |
+| `CardBackdrop` | sem propriedades; o fundo dos três, para um quadro próprio: dentro de um `Card` com `overflow-hidden`, e o conteúdo com `relative z-10 pl-2` |
 
 `NavigationItem` aceita `badge?` (selo curto à direita do rótulo no menu, no tom do item).
 
@@ -1069,7 +1081,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.3.2)
+## Interface (tema-mppa 2.4.2)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).
@@ -1080,7 +1092,8 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
 - `DESIGN.md` na raiz do frontend: tokens e intenção do design para os agentes; confira com
   `node docs/tema-mppa/verificar-design.mjs --css <CSS próprio>` a cada mudança de token.
 - Telas só com os primitivos (`PageFrame`, `Card`, `CardGrid`, `MetricCard`, `DataTable`, `BarChart`,
-  `Button` e as peças de painel: `PageGreeting`, `PanelCard`, `InfoField`, `SectionTitle`, `LinkCard`); cores só pelos tokens; título só no cabeçalho, vindo do item de navegação.
+  `Button`, as peças de painel: `PageGreeting`, `PanelCard`, `InfoField`, `SectionTitle`, `LinkCard`, e os quadros em
+  destaque: `OpeningCard`, `FeaturedCard`, `FeaturedNote`); cores só pelos tokens; título só no cabeçalho, vindo do item de navegação.
 - Contraste: texto principal com 7:1; secundário com 4,5:1 nos dois temas; 4,5:1 em texto de destaque
   colorido (marca, links, status) e em texto sobre preenchimento colorido.
 - Administração aparece só com `session.is_admin === true`.

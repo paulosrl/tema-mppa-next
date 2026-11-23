@@ -3,6 +3,102 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.4.2 — 2026-11-23
+
+Teste do autor na prévia da 2.4.1, aberta pelo Windows. A pasta da 2.4.1 já tinha sido gerada; por isso sobe o número.
+Por ser correção, sobe o último número.
+
+### Corrigido
+
+- **Prévia aberta de uma unidade do Windows (`D:\...`):** Manual, Tutorial e os itens da Administração voltavam para
+  "Meus acessos". O navegador lia o link "/manual" como "/D:/manual", rota que a prévia não tem. Agora a navegação usa
+  o endereço escrito no menu. O defeito vinha de antes da 2.4.0.
+- **Carimbo do quadro de abertura (`OpeningCard`):** fica fixo logo antes dos atalhos, no mesmo lugar em toda página.
+  Antes, seguia o fim da frase e mudava de lugar de uma página para outra. A frase ocupa a largura até os atalhos, com
+  160px reservados à direita para o carimbo, e a caixa de atalhos tem 240px no mínimo a partir de 768px.
+- **Páginas de exemplo:** todo item do menu tem a sua. Sistemas Integrados e Auditoria & Segurança mostravam a
+  página genérica de dados. Agora seguem o padrão das seções administrativas: retângulo em destaque com a frase, e
+  depois indicadores e catálogo de sistemas, ou filtro de período e registros de acesso. O `npm run check` reprova
+  item visível do menu sem página própria.
+
+### Ao atualizar de 2.4.1
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia traz o `featured.tsx` novo, com o carimbo fixo. Nada a mudar nas telas.
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 2.4.2.
+
+## 2.4.1 — 2026-11-23
+
+Revisão do autor sobre a demonstração da 2.4.0. A pasta da 2.4.0 já tinha sido gerada; por isso sobe o número. A camada
+e a API são as da 2.4.0. Mudam a demonstração, a prévia e o roteiro; por ser correção, sobe o último número.
+
+### Corrigido
+
+- **Lugar do quadro de abertura:** só no primeiro item de cada aba (`REPLICAR.md`, 5.2):
+  - com a saudação, no primeiro de "Minha Página" (na demonstração, Meus acessos, no lugar do `PageGreeting`);
+  - sem a saudação, no primeiro de "Administração" (Usuários & Papéis).
+
+  Nenhuma outra tela tem saudação. O Perfil traz só o retângulo em destaque: "Confira seus dados cadastrais e mantenha
+  o e-mail em dia." Sistemas Integrados volta à página de dados comum.
+- **Manual e Tutorial:** dizem "Conteúdo em elaboração".
+- **Prévia (`docs/preview/index.html`):**
+  - Manual e Tutorial não abriam, porque as rotas vinham só da lista principal do menu, e o grupo "Apoio" tem a sua
+    própria lista. Agora toda rota interna da barra entra;
+  - as logos da barra lateral levam ao site, em nova aba, como na aplicação, em vez de voltar à página inicial da
+    prévia.
+
+### Ao atualizar de 2.4.0
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia diz "Camada visual: igual à da 2.4.0".
+2. Quem já pôs o quadro de abertura confere o lugar dele: só no primeiro item de cada aba, com saudação só no de
+   "Minha Página".
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 2.4.1.
+
+## 2.4.0 — 2026-11-23
+
+Dois pedidos do autor em 23 nov. 2026. Os quadros que o Xavier criou na change 81 passam para a camada, para todo
+sistema poder usá-los, e o botão de tema perde o modo "sistema". Como a camada ganha primitivos e a aparência do tema
+muda, com passo do consumidor, sobe o número do meio.
+
+### Adicionado
+
+- **Quadros em destaque (`featured.tsx`):** tudo entra por propriedades (`REPLICAR.md`, 5.2):
+  - **`CardBackdrop`:** o fundo do quadro, com degradê azul da direita para a esquerda, dois brilhos e filete à
+    esquerda;
+  - **`OpeningCard`:** o quadro de abertura, com selo, saudação opcional, frase, marca d'água opcional logo após o
+    ponto final e atalhos à direita;
+  - **`FeaturedCard`:** o quadro sem marca d'água, com o conteúdo à esquerda e os botões dentro, à direita, e com
+    `onSubmit` para filtros;
+  - **`FeaturedNote`:** o retângulo em destaque;
+  - o tipo **`OpeningShortcut`**.
+- **Utilitários `tm-card-backdrop` e `tm-watermark` (`tema-mppa.css`):** o degradê do fundo e a marca d'água, com
+  os valores do claro e do escuro. A peça não usa `dark:`, para não depender dessa variante no consumidor.
+- **Demonstração:**
+  - `/perfil`: quadro de abertura com saudação;
+  - `/administracao/sistemas`: quadro de abertura sem saudação;
+  - `/sessoes`: quadro com título, indicador e botão;
+  - `/administracao/usuarios`: retângulo em destaque e filtro.
+
+### Removido
+
+- **Modo "sistema" do tema:** o botão alterna só entre claro (sol) e escuro (lua). Sai o ícone `Monitor`. O tema
+  não acompanha mais o sistema operacional. O tipo `Theme` fica `"light" | "dark"`. O valor `"system"` guardado
+  na aba vira claro. `resolvedTheme` continua em `useTheme()`, igual a `theme`.
+
+### Ao atualizar de 2.3.2
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia traz o arquivo novo `featured.tsx`.
+2. Procure `"system"` no código do sistema que usa `useTheme()` ou `setTheme` e tire esse caso: o tipo não o aceita
+   mais, e o `typecheck` reprova. Teste que esperava três estados no alternador passa a esperar dois
+   (`REPLICAR.md`, 4.8).
+3. Sistema que tinha um quadro próprio com o mesmo fundo, um quadro de abertura ou um retângulo em destaque (o
+   Xavier, desde a change 81) pode trocá-lo pelo primitivo da camada. O que for do sistema (texto, selo, imagem,
+   atalhos, campos) passa por propriedade.
+4. Troque a versão na seção "Interface" do `AGENTS.md` (e no registro de alterações locais, se houver) para 2.4.0. A
+   lista de primitivos dessa seção ganhou os quadros em destaque.
+
 ## 2.3.2 — 2026-11-18
 
 Retorno do Heimdall, que atualizou da 2.0.6 para a 2.2.1 com OpenSpec (change `tema-mppa-2-2-1`). O roteiro não

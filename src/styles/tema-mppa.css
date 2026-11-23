@@ -514,6 +514,42 @@
   }
 }
 
+/*
+ * Fundo do quadro (`CardBackdrop`): degradê azul da direita para a esquerda, que se dissolve no fundo do cartão aos
+ * 60%; no escuro, um pouco mais suave. Escrito aqui, e não com `dark:` na peça, para não depender da variante do
+ * consumidor.
+ */
+@utility tm-card-backdrop {
+  background-image: linear-gradient(
+    to left,
+    color-mix(in oklab, var(--tone-blue) 85%, transparent) 0%,
+    color-mix(in oklab, var(--tone-blue) 30%, transparent) 35%,
+    var(--card) 60%
+  );
+
+  :where(.dark) & {
+    background-image: linear-gradient(
+      to left,
+      color-mix(in oklab, var(--tone-blue) 75%, transparent) 0%,
+      color-mix(in oklab, var(--tone-blue) 25%, transparent) 35%,
+      var(--card) 60%
+    );
+  }
+}
+
+/* Marca d'água do quadro de abertura: 8% de opacidade no claro; no escuro, 11%, invertida e clareando o fundo. */
+@utility tm-watermark {
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+  filter: contrast(1.25);
+
+  :where(.dark) & {
+    opacity: 0.11;
+    mix-blend-mode: screen;
+    filter: contrast(1.25) hue-rotate(180deg) invert(1);
+  }
+}
+
 /* Barras de gráfico com degradê e topo arredondado (6px em cima, 2px embaixo). */
 @utility tm-bar {
   border-radius: var(--radius-md) var(--radius-md) var(--radius-xs) var(--radius-xs);

@@ -46,6 +46,9 @@
  * 26. O grupo "Apoio" não quebra a casca sem `support` (o item sem endereço só some), item do sistema com o
  *     endereço do manual ou do tutorial sai do menu e da busca (vale o do grupo), e `shellSearchItems` dá à
  *     busca própria (`renderSearch`) os mesmos itens da paleta do modelo, Manual e Tutorial inclusive.
+ * 27. Quadros em destaque (`featured.tsx`): o fundo do quadro (`CardBackdrop`), o quadro de abertura
+ *     (`OpeningCard`), o quadro com os botões dentro, à direita (`FeaturedCard`), e o retângulo em destaque
+ *     (`FeaturedNote`). Texto, selo, marca d'água e atalhos entram por propriedades.
  */
 export { AppShell } from "./app-shell";
 export { BarChart, type BarChartDatum } from "./bar-chart";
@@ -66,6 +69,7 @@ export {
   type Accent,
 } from "./dashboard";
 export { DataTable, type DataTableColumn } from "./data-table";
+export { CardBackdrop, FeaturedCard, FeaturedNote, OpeningCard, type OpeningShortcut } from "./featured";
 export { ImageSlot, LogoSlot } from "./image-slot";
 export {
   DayStrip,

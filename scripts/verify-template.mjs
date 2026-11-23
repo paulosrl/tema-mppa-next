@@ -182,6 +182,12 @@ const preview = await read("docs/preview/index.html");
 if (!preview.includes(`<title>Template Visual MPPA v${packageJson.version}</title>`)) {
   errors.push(`docs/preview/index.html: título fora da versão ${packageJson.version} (regere a prévia)`);
 }
+// Manual e Tutorial (grupo "Apoio") são páginas da prévia, e as logos da barra não são desviadas para dentro dela.
+for (const route of ["/manual", "/tutorial"]) {
+  if (!preview.includes(`"${route}":"`)) errors.push(`docs/preview/index.html: sem a página ${route} do grupo "Apoio" (regere a prévia)`);
+}
+if (!preview.includes(`target.matches('aside a[href^="/"]')`)) errors.push("docs/preview/index.html: só os links internos da barra navegam dentro da prévia (regere a prévia)");
+if (!preview.includes('go(target.getAttribute("href"))') || preview.includes("go(new URL(target.href).pathname)")) errors.push('docs/preview/index.html: a navegação usa o href escrito (getAttribute("href")), que funciona aberto de uma unidade do Windows (regere a prévia)');
 
 // A prévia é uma só: na versão do pacote, sem aviso nem seletor de variante.
 if (!preview.includes('root.setAttribute("data-tm-sidebar", state.collapsed ? "collapsed" : "expanded")')) errors.push("docs/preview/index.html: o Recolher não marca data-tm-sidebar no <html> (regere a prévia)");
@@ -410,6 +416,48 @@ requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
   // Demonstração: a página das peças de metas.
   const demoConsumerSource = await read("src/app/demo-consumer.tsx");
   if (!demoConsumerSource.includes('pathname === "/metas"') || !(await read("src/app/demo-config.tsx")).includes('href: "/metas"')) errors.push('demonstração: falta a página "/metas" (Painel de metas) e o item de menu dela');
+  // Quadros em destaque (2.4.0, vindos da change 81 do Xavier): fundo, abertura, quadro com botões e retângulo.
+  const featuredSource = await read("src/components/tema-mppa/featured.tsx");
+  const indexSource = await read("src/components/tema-mppa/index.ts");
+  for (const name of ["CardBackdrop", "OpeningCard", "FeaturedCard", "FeaturedNote"]) {
+    if (!new RegExp(`export function ${name}\\b`).test(featuredSource)) errors.push(`featured.tsx não exporta ${name}`);
+    if (!new RegExp(`\\b${name}\\b`).test(indexSource)) errors.push(`index.ts não exporta ${name}`);
+  }
+  if (!/\bOpeningShortcut\b/.test(indexSource)) errors.push("index.ts não exporta o tipo OpeningShortcut");
+  if (/^"use client"/m.test(featuredSource)) errors.push('featured.tsx: sem "use client", para os ícones chegarem de componentes de servidor');
+  if (/#[0-9a-f]{3,8}\b/i.test(featuredSource)) errors.push("featured.tsx: cor fixa; use os tokens");
+  if (/color-mix\(/.test(featuredSource)) errors.push("featured.tsx: color-mix na classe (consumidores recusam); use o modificador de opacidade");
+  if (/\bdark:/.test(featuredSource)) errors.push("featured.tsx: variante dark: (o consumidor pode não ter); o escuro vai nos utilitários tm-* do CSS");
+  if (!featuredSource.includes("tm-card-backdrop") || !/@utility tm-card-backdrop \{[\s\S]*?:where\(\.dark\) &/.test(themeCss)) errors.push("tema-mppa.css: o fundo do quadro (tm-card-backdrop) precisa da regra do claro e do escuro");
+  if (!(await read("src/components/tema-mppa/image-slot.tsx")).includes("tm-watermark") || !/@utility tm-watermark \{[\s\S]*?:where\(\.dark\) &/.test(themeCss)) errors.push("tema-mppa.css: a marca d'água (tm-watermark) precisa da regra do claro e do escuro");
+  for (const [theme, tokens] of [["claro", light], ["escuro", dark]]) {
+    requireContrast(theme, tokens, "foreground", "tone-blue", 7);
+    requireContrast(theme, tokens, "tone-blue-foreground", "card", 4.5);
+  }
+  for (const route of ["/perfil", "/sessoes", "/administracao/usuarios"]) {
+    if (!demoConsumerSource.includes(`pathname === "${route}"`)) errors.push(`demonstração: falta a tela dos quadros em destaque em "${route}"`);
+  }
+  for (const name of ["OpeningCard", "FeaturedCard", "FeaturedNote"]) {
+    if (!new RegExp(`<${name}\\b`).test(demoConsumerSource)) errors.push(`demonstração: não usa ${name}`);
+  }
+  // Todo item visível do menu tem a sua página de exemplo (23 nov. 2026): nenhum cai na página genérica de dados.
+  {
+    const demoConfigSource = await read("src/app/demo-config.tsx");
+    for (const [, line, href] of demoConfigSource.matchAll(/^(.*\bhref: "(\/[^"]*)".*)$/gm)) {
+      if (/hidden: true/.test(line)) continue;
+      if (!demoConsumerSource.includes(`pathname === "${href}"`)) errors.push(`demonstração: o item de menu ${href} não tem página de exemplo própria`);
+    }
+    for (const href of ["/manual", "/tutorial"]) {
+      if (!demoConsumerSource.includes(`pathname === "${href}"`)) errors.push(`demonstração: ${href} (grupo "Apoio") sem página`);
+    }
+  }
+  // O quadro de abertura só no primeiro item de cada aba (23 nov. 2026): com a saudação em "Meus acessos" (DemoDashboard)
+  // e sem ela em "Usuários & Papéis" (DemoUsuarios). Saudação em nenhuma outra tela.
+  const demoBody = (name) => demoConsumerSource.slice(demoConsumerSource.indexOf(`function ${name}(`), demoConsumerSource.indexOf("\nfunction ", demoConsumerSource.indexOf(`function ${name}(`) + 1));
+  if ((demoConsumerSource.match(/<OpeningCard\b/g) ?? []).length !== 2) errors.push("demonstração: o quadro de abertura aparece só em Meus acessos e em Usuários & Papéis");
+  if ((demoConsumerSource.match(/\bgreeting=/g) ?? []).length !== 1 || !/\bgreeting=/.test(demoBody("DemoDashboard"))) errors.push('demonstração: a saudação ("Olá, ...") só em Meus acessos');
+  if (!/<OpeningCard\b/.test(demoBody("DemoUsuarios"))) errors.push("demonstração: o quadro de abertura da Administração fica em Usuários & Papéis, o primeiro item");
+  if ((demoConsumerSource.match(/Conteúdo em elaboração/g) ?? []).length !== 1 || !/Conteúdo em elaboração/.test(demoBody("DemoApoio"))) errors.push('demonstração: Manual e Tutorial dizem "Conteúdo em elaboração"');
   // Grupo "Apoio" (17 nov. 2026, 2.2.0): da camada, em "Minha Página" de todos os sistemas; o sistema só dá os endereços.
   const utilsSource = await read("src/components/tema-mppa/utils.ts");
   const sidebarSource = await read("src/components/tema-mppa/app-sidebar.tsx");
@@ -510,10 +558,15 @@ for (const name of ["THEME_STORAGE_KEY", "THEME_BOOT_SCRIPT", "ThemeScript"]) {
 }
 if (!/export \{ SIDEBAR_STORAGE_KEY, THEME_BOOT_SCRIPT, THEME_STORAGE_KEY, ThemeScript \} from "\.\/theme-script";/.test(index)) errors.push("index.ts deve exportar SIDEBAR_STORAGE_KEY, THEME_BOOT_SCRIPT, THEME_STORAGE_KEY e ThemeScript de ./theme-script");
 const themeProvider = await read("src/components/tema-mppa/theme-provider.tsx");
+// Só claro e escuro (23 nov. 2026): nada de modo sistema nem de prefers-color-scheme no tema.
+for (const file of ["theme-provider.tsx", "theme-toggle.tsx", "theme-script.tsx"]) {
+  const source = await read(`src/components/tema-mppa/${file}`);
+  if (/"system"|'system'|prefers-color-scheme|\bMonitor\b/.test(source)) errors.push(`${file}: o tema tem só claro e escuro; tire o modo sistema`);
+}
 // Na hidratação, o tema da renderização ainda é o do servidor: o efeito aplica o guardado.
-const themeEffect = themeProvider.match(/useEffect\(\(\) => \{([\s\S]*?)\}, \[resolvedTheme\]\);/)?.[1] ?? "";
-if (!themeEffect.includes("readStoredTheme()") || /classList\.add\(resolvedTheme\)/.test(themeEffect)) {
-  errors.push("theme-provider.tsx: o efeito deve aplicar o tema guardado (readStoredTheme), não o resolvedTheme da hidratação");
+const themeEffect = themeProvider.match(/useEffect\(\(\) => \{([\s\S]*?)\}, \[theme\]\);/)?.[1] ?? "";
+if (!themeEffect.includes("readStoredTheme()") || /classList\.add\((resolvedTheme|theme)\)/.test(themeEffect)) {
+  errors.push("theme-provider.tsx: o efeito deve aplicar o tema guardado (readStoredTheme), não o tema da hidratação");
 }
 if (/THEME_BOOT_SCRIPT\s*=/.test(themeProvider)) errors.push("theme-provider.tsx (\"use client\") não pode definir THEME_BOOT_SCRIPT");
 
@@ -569,7 +622,7 @@ if (/THEME_BOOT_SCRIPT\s*=/.test(themeProvider)) errors.push("theme-provider.tsx
         document: { documentElement: { classList: classList(["light"]) } },
       }, { react: reactStub, "react/jsx-runtime": jsxStub, "./theme-script": scriptModule });
       const render = () => provider.ThemeProvider({ children: null }).props.value;
-      for (const next of ["dark", "system", "light"]) {
+      for (const next of ["dark", "light"]) {
         render().setTheme(next);
         const { theme } = render();
         if (theme !== next) errors.push(`theme-provider.tsx: com o sessionStorage ${label}, setTheme("${next}") deixa o tema em "${theme}"`);
@@ -597,8 +650,8 @@ const contract = [
   ["`tema-mppa-theme`", "theme-script.tsx", 'THEME_STORAGE_KEY = "tema-mppa-theme"'],
   ["`tema-mppa-sidebar-collapsed`", "theme-script.tsx", 'SIDEBAR_STORAGE_KEY = "tema-mppa-sidebar-collapsed"'],
   ['"Tema: Claro. Alterar para Escuro"', "theme-toggle.tsx", "aria-label={`Tema: ${labels[theme]}. Alterar para ${labels[next]}`}"],
-  ["claro → escuro → sistema", "theme-toggle.tsx", 'const sequence: Theme[] = ["light", "dark", "system"];'],
-  ["claro → escuro → sistema", "theme-toggle.tsx", '{ light: "Claro", dark: "Escuro", system: "Sistema" }'],
+  ["claro ↔ escuro", "theme-toggle.tsx", 'const next: Theme = theme === "dark" ? "light" : "dark";'],
+  ["claro ↔ escuro", "theme-toggle.tsx", '{ light: "Claro", dark: "Escuro" }'],
   ['"Navegação principal"', "app-sidebar.tsx", 'aria-label="Navegação principal"'],
   ["`-translate-x-full`", "app-sidebar.tsx", '"-translate-x-full"'],
   ['"Abrir menu lateral"', "app-header.tsx", 'aria-label="Abrir menu lateral"'],

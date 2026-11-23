@@ -70,3 +70,35 @@ export function LogoSlot({ logo, className }: { logo: LogoAsset; className?: str
     </a>
   );
 }
+
+/**
+ * Marca d'água circular do quadro de abertura (`OpeningCard`): sempre decorativa (`alt=""`), girada e quase
+ * transparente (`tm-watermark`). Como as outras imagens opcionais, o círculo inteiro some quando a imagem falta ou
+ * falha. A posição chega por `className`.
+ */
+export function WatermarkSlot({ asset, className }: { asset?: ImageAsset | null; className?: string }) {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+
+  if (!asset?.src || failedSrc === asset.src) return null;
+  const { src, width, height, className: assetClassName } = asset;
+
+  return (
+    <div
+      aria-hidden
+      className={cn(
+        "pointer-events-none absolute z-0 overflow-hidden rounded-full border border-tone-blue-foreground/15 select-none",
+        className,
+      )}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element -- mesmo motivo de ImageSlot */}
+      <img
+        src={src}
+        alt=""
+        width={width}
+        height={height}
+        className={cn("tm-watermark size-full scale-[1.13] rounded-full object-contain", assetClassName)}
+        onError={() => setFailedSrc(src)}
+      />
+    </div>
+  );
+}

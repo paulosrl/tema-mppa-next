@@ -3,17 +3,16 @@
 import { createContext, useContext, useEffect, useSyncExternalStore, type ReactNode } from "react";
 import { THEME_STORAGE_KEY } from "./theme-script";
 
-export type Theme = "light" | "dark" | "system";
-type ResolvedTheme = "light" | "dark";
+/** Só claro e escuro: o tema não acompanha o sistema operacional. */
+export type Theme = "light" | "dark";
 
 type ThemeContextValue = {
   theme: Theme;
-  resolvedTheme: ResolvedTheme;
+  /** Igual a `theme`; mantido para quem já o lia. */
+  resolvedTheme: Theme;
   setTheme: (theme: Theme) => void;
 };
 
-
-const DARK_MEDIA = "(prefers-color-scheme: dark)";
 const listeners = new Set<() => void>();
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
@@ -23,11 +22,8 @@ function notify() {
 
 function subscribe(listener: () => void) {
   listeners.add(listener);
-  const media = window.matchMedia(DARK_MEDIA);
-  media.addEventListener("change", listener);
   return () => {
     listeners.delete(listener);
-    media.removeEventListener("change", listener);
   };
 }
 
@@ -39,34 +35,26 @@ function readStoredTheme(): Theme {
   if (fallbackTheme) return fallbackTheme;
   try {
     const stored = sessionStorage.getItem(THEME_STORAGE_KEY);
-    return stored === "dark" || stored === "system" ? stored : "light";
+    return stored === "dark" ? "dark" : "light";
   } catch {
     return "light";
   }
 }
 
-function readSystemTheme(): ResolvedTheme {
-  return window.matchMedia(DARK_MEDIA).matches ? "dark" : "light";
-}
-
 const serverTheme = (): Theme => "light";
-const serverSystemTheme = (): ResolvedTheme => "light";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const theme = useSyncExternalStore(subscribe, readStoredTheme, serverTheme);
-  const systemTheme = useSyncExternalStore(subscribe, readSystemTheme, serverSystemTheme);
-  const resolvedTheme: ResolvedTheme = theme === "system" ? systemTheme : theme;
 
-  // Lê o tema guardado, e não o `resolvedTheme` da renderização: na hidratação ele ainda é o do servidor
+  // Lê o tema guardado, e não o `theme` da renderização: na hidratação ele ainda é o do servidor
   // ("light"), e aplicá-lo trocaria o escuro do ThemeScript pelo claro por um instante. Uma casca montada
   // nesse instante (por exemplo, depois de a sessão chegar) nasceria com as cores do claro e faria a
   // transição até as do escuro.
   useEffect(() => {
-    const stored = readStoredTheme();
-    const current = stored === "system" ? readSystemTheme() : stored;
+    const current = readStoredTheme();
     document.documentElement.classList.remove(current === "dark" ? "light" : "dark");
     document.documentElement.classList.add(current);
-  }, [resolvedTheme]);
+  }, [theme]);
 
   function setTheme(next: Theme) {
     try {
@@ -78,7 +66,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     notify();
   }
 
-  return <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>{children}</ThemeContext.Provider>;
+  return <ThemeContext.Provider value={{ theme, resolvedTheme: theme, setTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

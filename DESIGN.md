@@ -380,6 +380,21 @@ components:
     backgroundColor: "{colors.card}"
     textColor: "{colors.warning}"
     typography: "{typography.caption-strong}"
+  card-backdrop:
+    backgroundColor: "{colors.tone-blue}"
+    textColor: "{colors.foreground}"
+    rounded: "{rounded.3xl}"
+  opening-card:
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.foreground}"
+    typography: "{typography.body-md}"
+    rounded: "{rounded.3xl}"
+    padding: 24px
+  featured-note:
+    backgroundColor: "{colors.tone-blue}"
+    textColor: "{colors.foreground}"
+    rounded: "{rounded.2xl}"
+    padding: 16px 24px
 ---
 
 # Tema MPPA · camada visual
@@ -424,7 +439,7 @@ A identidade vem de três escolhas:
   revezados), duotone: o miolo do ícone recebe 20% da cor do traço. No menu, o ícone cresce 5% sob o mouse (sem movimento com
   `prefers-reduced-motion`).
 - Busca (atalho `Ctrl+K`, sem etiqueta na tela) com as páginas que cada usuário pode ver.
-- Tema claro, escuro e sistema; toda entrada abre em claro e a escolha vale só para a aba.
+- Tema claro e escuro (sol e lua), sem modo sistema; toda entrada abre em claro e a escolha vale só para a aba.
 
 ## Colors
 
@@ -626,6 +641,33 @@ nome do sistema no vermelho institucional, nunca cortado; na casca e
 nas páginas públicas que têm rodapé.
 
 **`ThemeScript`**: o script de tema no `<head>` do layout raiz, com o `nonce` da CSP quando houver.
+
+**Fundo do quadro** (`card-backdrop`, `CardBackdrop`): quatro camadas decorativas dentro de um `Card` com
+`overflow-hidden`: degradê azul da direita para a esquerda que se dissolve no fundo do cartão aos 60% (`tm-card-backdrop`:
+`tone-blue` a 85% e 30% aos 35% no claro; 75% e 25% no escuro), contorno interno `ring-primary/15`, dois brilhos
+(`institutional/8` e `primary/12`, `blur-2xl`) e filete vertical de 4px à esquerda (`institutional` → `primary` →
+`chart-2`). O conteúdo fica por cima, com `relative z-10` e `pl-2`. Base dos três quadros abaixo.
+
+**`OpeningCard`** (`opening-card`): quadro de abertura com o fundo do quadro. À esquerda, selo `Tag` institucional
+com ícone (`Sparkles` por padrão) e, a partir de 640px, nota em `text-tone-blue-foreground`; saudação opcional num `h2`
+(16px, 18px a partir de 768px, peso 600); frase em `text-muted-foreground`, com a largura do texto; marca d'água
+circular opcional, fixa logo antes dos atalhos, no mesmo lugar em toda página, qualquer que seja o tamanho da frase
+(a frase reserva 160px à direita para ela; 112px, 144px a partir de 768px, girada −12°, `tm-watermark`: 8% de
+opacidade no claro, 11% e invertida no escuro). À direita, caixa de atalhos (`bg-card/80`, raio de 16px, 240px no
+mínimo a partir de 768px): o primeiro
+primário, os demais secundários, com ↗. Sem saudação, o selo dá nome à região. Só no primeiro item de cada aba: com
+a saudação no de "Minha Página" (na demonstração, Meus acessos) e sem ela no de "Administração" (Usuários & Papéis);
+nenhuma outra tela tem saudação.
+
+**`FeaturedCard`**: quadro com o fundo do quadro, sem marca d'água; título opcional (16px, 18px a partir de 768px,
+peso 600) e conteúdo à esquerda, botões dentro do quadro, à direita (abaixo, alinhados à direita, quando não cabem).
+Com `onSubmit`, vira formulário: filtros com Filtrar e Limpar; também a barra de um gerenciador, com os indicadores
+e a ação destrutiva.
+
+**`FeaturedNote`** (`featured-note`): retângulo em destaque, raio de 16px, degradê da esquerda para a direita
+(`tone-blue` → `tone-blue/70` → `tone-blue/30`), contorno `ring-primary/15`, texto de 16px em peso 600 e
+`text-foreground` (7:1 ou mais sobre `tone-blue` nos dois temas); largura total no celular e do texto a partir de
+640px. A frase que descreve uma seção.
 
 ### Forma do tema e peças de metas
 
