@@ -3,6 +3,22 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.4.3 — 2026-11-23
+
+Pedido do autor: a saudação de exemplo de "Meus acessos" passa a ser "Olá, José Hernandez!". Só a demonstração, a
+prévia e as comparações mudam; a camada, a API e a aparência são as da 2.4.2. A pasta da 2.4.2 já tinha sido gerada, e,
+por ser correção, sobe o último número.
+
+### Corrigido
+
+- **Saudação da demonstração:** "Olá, José Hernandez!" em "Meus acessos", no lugar de "Olá, Pessoa Lima!".
+
+### Ao atualizar de 2.4.2
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia diz "Camada visual: igual à da 2.4.2". Nada a mudar nas telas.
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 2.4.3.
+
 ## 2.4.2 — 2026-11-23
 
 Teste do autor na prévia da 2.4.1, aberta pelo Windows. A pasta da 2.4.1 já tinha sido gerada; por isso sobe o número.

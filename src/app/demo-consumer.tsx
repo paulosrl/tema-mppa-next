@@ -51,7 +51,7 @@ function DemoDashboard() {
       <OpeningCard
         badge="Minha Página · Template"
         badgeNote="CIIA · MPPA"
-        greeting={`Olá, ${demoSession.name}!`}
+        greeting="Olá, José Hernandez!"
         description="Bem-vindo ao seu painel. Gerencie sua conta abaixo."
         watermark={ciia}
         shortcuts={[
