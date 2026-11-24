@@ -3,6 +3,22 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.4.4 — 2026-11-23
+
+Achado ao montar os prompts de atualização do Xavier: o teste na mão do `GUIA.html` ainda pedia o modo "sistema" do
+tema, que saiu na 2.4.0. Só o guia muda; a camada, a API e a aparência são as da 2.4.3. Por ser correção, sobe o
+último número.
+
+### Corrigido
+
+- **Teste na mão do guia (`GUIA.html`):** pede "tema claro e escuro", no lugar de "tema claro, escuro e sistema".
+
+### Ao atualizar de 2.4.3
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia diz "Camada visual: igual à da 2.4.3". Nada a mudar nas telas.
+2. Troque a versão na seção "Interface" do `AGENTS.md` para 2.4.4.
+
 ## 2.4.3 — 2026-11-23
 
 Pedido do autor: a saudação de exemplo de "Meus acessos" passa a ser "Olá, José Hernandez!". Só a demonstração, a
