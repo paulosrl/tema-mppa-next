@@ -651,11 +651,12 @@ nas páginas públicas que têm rodapé.
 **`OpeningCard`** (`opening-card`): quadro de abertura com o fundo do quadro. À esquerda, selo `Tag` institucional
 com ícone (`Sparkles` por padrão) e, a partir de 640px, nota em `text-tone-blue-foreground`; saudação opcional num `h2`
 (16px, 18px a partir de 768px, peso 600); frase em `text-muted-foreground`, com a largura do texto; marca d'água
-circular opcional, fixa logo antes dos atalhos, no mesmo lugar em toda página, qualquer que seja o tamanho da frase
-(a frase reserva 160px à direita para ela; 112px, 144px a partir de 768px, girada −12°, `tm-watermark`: 8% de
-opacidade no claro, 11% e invertida no escuro). À direita, caixa de atalhos (`bg-card/80`, raio de 16px, 240px no
-mínimo a partir de 768px): o primeiro
-primário, os demais secundários, com ↗. Sem saudação, o selo dá nome à região. Só no primeiro item de cada aba: com
+circular opcional, fixa no mesmo lugar em toda página, qualquer que seja o tamanho da frase (a frase reserva 160px
+à direita para ela; 112px, 144px a partir de 768px, girada −12°, `tm-watermark`: 8% de opacidade no claro, 11% e
+invertida no escuro). Sem atalhos, como na demonstração, a marca d'água fica à direita do quadro, com o mesmo recuo do
+texto à esquerda (32px da borda), e o conteúdo tem 104px de altura no mínimo a partir de 768px, para ela caber inteira.
+Atalhos opcionais: à direita, caixa de atalhos (`bg-card/80`, raio de 16px, 240px no mínimo a partir de 768px), o
+primeiro primário, os demais secundários, com ↗, e a marca d'água logo antes dela. Sem saudação, o selo dá nome à região. Só no primeiro item de cada aba: com
 a saudação no de "Minha Página" (na demonstração, Meus acessos) e sem ela no de "Administração" (Usuários & Papéis);
 nenhuma outra tela tem saudação.
 

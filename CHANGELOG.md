@@ -3,6 +3,28 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.5.0 — 2026-11-24
+
+Pedido do autor: os quadros de abertura de "Meus acessos" e de "Usuários & Papéis" ficam sem os botões, e o carimbo
+vai para a direita do quadro, no lugar deles. Por mudar a aparência e pedir um passo do consumidor, sobe o número do
+meio.
+
+### Mudado
+
+- **Quadro de abertura (`OpeningCard`) sem atalhos:** o carimbo fica à direita do quadro, com o mesmo recuo do texto à
+  esquerda (32px da borda), e o quadro guarda a altura do carimbo (104px de conteúdo, no mínimo, a partir de 768px),
+  para ele aparecer inteiro. Com `shortcuts`, nada muda: a caixa de atalhos à direita e o carimbo logo antes dela.
+- **Demonstração:** "Meus acessos" e "Usuários & Papéis" deixam de passar `shortcuts` (saem "Meu Perfil" e "Manual",
+  "Sistemas Integrados" e "Auditoria").
+
+### Ao atualizar de 2.4.4
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia traz o `featured.tsx` novo.
+2. Nos dois quadros de abertura (o primeiro item de "Minha Página" e o de "Administração"), tire a propriedade
+   `shortcuts` e os imports de ícone que só ela usava. O carimbo passa para a direita sozinho.
+3. Troque a versão na seção "Interface" do `AGENTS.md` para 2.5.0.
+
 ## 2.4.4 — 2026-11-23
 
 Achado ao montar os prompts de atualização do Xavier: o teste na mão do `GUIA.html` ainda pedia o modo "sistema" do

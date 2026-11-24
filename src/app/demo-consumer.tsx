@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, ArrowRight, BadgeCheck, BookOpen, Bot, Brain, Copy, Droplets, Dumbbell, Ellipsis, Filter, Flame, FlaskConical, Footprints, Heart, IdCard, LogOut, Mail, Monitor, Moon, Navigation, Play, RotateCcw, ShieldCheck, StretchHorizontal, User, Zap } from "lucide-react";
+import { Activity, ArrowRight, BadgeCheck, Bot, Brain, Copy, Droplets, Dumbbell, Ellipsis, Filter, Flame, FlaskConical, Footprints, Heart, IdCard, LogOut, Mail, Moon, Navigation, Play, RotateCcw, ShieldCheck, StretchHorizontal, User, Zap } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
@@ -54,10 +54,6 @@ function DemoDashboard() {
         greeting="Olá, José Hernandez!"
         description="Bem-vindo ao seu painel. Gerencie sua conta abaixo."
         watermark={ciia}
-        shortcuts={[
-          { label: "Meu Perfil", href: "/perfil", icon: User },
-          { label: "Manual", href: "/manual", icon: BookOpen },
-        ]}
       />
 
       <section>
@@ -364,10 +360,6 @@ function DemoUsuarios() {
         badgeNote="CIIA · MPPA"
         description="Acompanhe os sistemas integrados e gerencie usuários, perfis e registros de acesso."
         watermark={ciia}
-        shortcuts={[
-          { label: "Sistemas Integrados", href: "/administracao/sistemas", icon: Monitor },
-          { label: "Auditoria", href: "/administracao/auditoria", icon: ShieldCheck },
-        ]}
       />
       <FeaturedCard
         onSubmit={filtrar}

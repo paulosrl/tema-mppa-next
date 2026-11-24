@@ -40,9 +40,10 @@ export type OpeningShortcut = {
 };
 
 /**
- * Quadro de abertura: selo, saudação opcional, frase, marca d'água opcional e atalhos à direita (o primeiro primário,
- * os demais secundários). A marca d'água fica fixa, logo antes dos atalhos, no mesmo lugar em toda página, qualquer
- * que seja o tamanho da frase. Sem saudação, o selo dá nome à região. Vai só no primeiro item de cada aba.
+ * Quadro de abertura: selo, saudação opcional, frase, marca d'água opcional e atalhos opcionais à direita (o primeiro
+ * primário, os demais secundários). A marca d'água fica fixa, no mesmo lugar em toda página, qualquer que seja o
+ * tamanho da frase: sem atalhos, à direita do quadro, com o mesmo recuo do texto à esquerda, e o quadro guarda a altura
+ * dela; com atalhos, logo antes deles. Sem saudação, o selo dá nome à região. Vai só no primeiro item de cada aba.
  */
 export function OpeningCard({
   badge,
@@ -71,7 +72,7 @@ export function OpeningCard({
       <CardBackdrop />
       <section
         aria-labelledby={greeting ? greetingId : badgeId}
-        className="relative z-10 flex flex-col justify-between gap-6 pl-2 md:flex-row md:items-center"
+        className={cn("relative z-10 flex flex-col justify-between gap-6 pl-2 md:flex-row md:items-center", watermark?.src && "md:min-h-26")}
       >
         <div className={cn("relative min-w-0 flex-1 space-y-1.5", watermark?.src && "md:pr-40")}>
           <div className="relative z-10 flex flex-wrap items-center gap-2">
@@ -94,7 +95,7 @@ export function OpeningCard({
           <p className="relative z-10 m-0 text-sm leading-relaxed text-muted-foreground">{description}</p>
           <WatermarkSlot
             asset={watermark}
-            className="top-1/2 right-2 size-28 -translate-y-1/2 -rotate-12 md:right-0 md:size-36"
+            className={cn("top-1/2 right-2 size-28 -translate-y-1/2 -rotate-12 md:size-36", shortcuts?.length && "md:right-0")}
           />
         </div>
         {shortcuts?.length ? (

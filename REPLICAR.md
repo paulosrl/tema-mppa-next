@@ -703,7 +703,7 @@ Nenhuma outra tela tem saudação; o Perfil, por exemplo, traz só o retângulo 
 
 | Primitivo | Propriedades |
 | --- | --- |
-| `OpeningCard` | `badge` (texto do selo), `badgeIcon?` (padrão `Sparkles`), `badgeNote?` (ao lado do selo, a partir de 640px), `greeting?` (`h2`; sem ele, o selo dá nome à região), `description`, `watermark?` (`ImageAsset`, sempre decorativa, fixa logo antes dos atalhos; some se faltar ou falhar), `shortcuts?` (`OpeningShortcut[]`: `{ label, href, icon? }`; o primeiro primário, os demais secundários) |
+| `OpeningCard` | `badge` (texto do selo), `badgeIcon?` (padrão `Sparkles`), `badgeNote?` (ao lado do selo, a partir de 640px), `greeting?` (`h2`; sem ele, o selo dá nome à região), `description`, `watermark?` (`ImageAsset`, sempre decorativa; sem atalhos, à direita, com o mesmo recuo do texto à esquerda; com atalhos, logo antes deles; some se faltar ou falhar), `shortcuts?` (`OpeningShortcut[]`: `{ label, href, icon? }`; o primeiro primário, os demais secundários; a demonstração não usa) |
 | `FeaturedCard` | `title?`, `children?` (à esquerda: campos de filtro, indicadores), `actions?` (botões dentro do quadro, à direita), `onSubmit?` (o conteúdo e os botões ficam num `<form>`; o botão de enviar leva `type="submit"`) |
 | `FeaturedNote` | `children`; retângulo em destaque, num `<p>` |
 | `CardBackdrop` | sem propriedades; o fundo dos três, para um quadro próprio: dentro de um `Card` com `overflow-hidden`, e o conteúdo com `relative z-10 pl-2` |
@@ -1081,7 +1081,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.4.4)
+## Interface (tema-mppa 2.5.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).
