@@ -4,7 +4,7 @@ import { useId, type FormEventHandler, type ReactNode } from "react";
 import { buttonVariants } from "./button";
 import { Card } from "./card";
 import { Tag } from "./dashboard";
-import { WatermarkSlot } from "./image-slot";
+import { ImageSlot, WatermarkSlot } from "./image-slot";
 import type { IconComponent, ImageAsset } from "./types";
 import { cn } from "./utils";
 
@@ -44,6 +44,10 @@ export type OpeningShortcut = {
  * primário, os demais secundários). A marca d'água fica fixa, no mesmo lugar em toda página, qualquer que seja o
  * tamanho da frase: sem atalhos, à direita do quadro, com o mesmo recuo do texto à esquerda, e o quadro guarda a altura
  * dela; com atalhos, logo antes deles. Sem saudação, o selo dá nome à região. Vai só no primeiro item de cada aba.
+ *
+ * Logo do sistema opcional (`logo`), no centro do quadro, sobre uma placa clara (`bg-logo-surface`, nos dois temas):
+ * aparece só quando o quadro tem 832px ou mais (1152px com atalhos, para não cobrir a marca d'água), e aí selo,
+ * saudação e frase param antes dela. Some se faltar ou falhar, como as outras imagens opcionais.
  */
 export function OpeningCard({
   badge,
@@ -52,6 +56,7 @@ export function OpeningCard({
   greeting,
   description,
   watermark,
+  logo,
   shortcuts,
   className,
 }: {
@@ -61,21 +66,30 @@ export function OpeningCard({
   greeting?: ReactNode;
   description: ReactNode;
   watermark?: ImageAsset | null;
+  logo?: ImageAsset | null;
   shortcuts?: OpeningShortcut[];
   className?: string;
 }) {
   const id = useId();
   const badgeId = `${id}-selo`;
   const greetingId = `${id}-saudacao`;
+  const withLogo = Boolean(logo?.src);
+  const withShortcuts = Boolean(shortcuts?.length);
+  // Com a logo no centro, o texto para 120px antes do meio do quadro (metade da logo, 80px, e folga).
+  const besideLogo = withLogo
+    ? withShortcuts
+      ? "@[72rem]:max-w-[calc(50cqw-7.5rem)]"
+      : "@[52rem]:max-w-[calc(50cqw-7.5rem)]"
+    : undefined;
   return (
-    <Card className={cn("w-full overflow-hidden", className)}>
+    <Card className={cn("w-full overflow-hidden", withLogo && "@container", className)}>
       <CardBackdrop />
       <section
         aria-labelledby={greeting ? greetingId : badgeId}
         className={cn("relative z-10 flex flex-col justify-between gap-6 pl-2 md:flex-row md:items-center", watermark?.src && "md:min-h-26")}
       >
         <div className={cn("relative min-w-0 flex-1 space-y-1.5", watermark?.src && "md:pr-40")}>
-          <div className="relative z-10 flex flex-wrap items-center gap-2">
+          <div className={cn("relative z-10 flex flex-wrap items-center gap-2", besideLogo)}>
             <Tag tone="institutional">
               <BadgeIcon aria-hidden className="mr-1 size-3" />
               <span id={badgeId}>{badge}</span>
@@ -88,11 +102,11 @@ export function OpeningCard({
             ) : null}
           </div>
           {greeting ? (
-            <h2 id={greetingId} className="relative z-10 m-0 text-base font-semibold tracking-tight text-foreground md:text-lg">
+            <h2 id={greetingId} className={cn("relative z-10 m-0 text-base font-semibold tracking-tight text-foreground md:text-lg", besideLogo)}>
               {greeting}
             </h2>
           ) : null}
-          <p className="relative z-10 m-0 text-sm leading-relaxed text-muted-foreground">{description}</p>
+          <p className={cn("relative z-10 m-0 text-sm leading-relaxed text-muted-foreground", besideLogo)}>{description}</p>
           <WatermarkSlot
             asset={watermark}
             className={cn("top-1/2 right-2 size-28 -translate-y-1/2 -rotate-12 md:size-36", shortcuts?.length && "md:right-0")}
@@ -116,6 +130,13 @@ export function OpeningCard({
           </div>
         ) : null}
       </section>
+      <ImageSlot
+        asset={logo}
+        className={cn(
+          "pointer-events-none absolute top-1/2 left-1/2 z-10 hidden h-[calc(100%-1.5rem)] max-h-28 w-auto max-w-40 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-card-border bg-logo-surface p-1.5 shadow-xs select-none",
+          withShortcuts ? "@[72rem]:block" : "@[52rem]:block",
+        )}
+      />
     </Card>
   );
 }

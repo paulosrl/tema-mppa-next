@@ -361,6 +361,8 @@ export const shellConfig: ShellConfig = {
       { src: "/ciia.png", alt: "CIIA", width: 244, height: 244, href: "https://ciia.mppa.mp.br/" },
       { src: "/ciia-sigla.svg", alt: "", width: 132, height: 76, href: "https://ciia.mppa.mp.br/" }, // sigla decorativa: repete a CIIA
     ],
+    // Volta ao painel principal (o Heimdall): endereço real do consumidor, de configuração ou variável de ambiente.
+    backLink: { href: "<endereço do painel do Heimdall>", label: "Voltar ao painel Heimdall" },
     searchPlaceholder: "Buscar na página",
     signOutLabel: "Sair",
   },
@@ -409,6 +411,12 @@ Regras para preencher:
   na demonstração, até o conteúdo existir. Rota nova da área logada segue a mesma proteção das outras: se o
   consumidor barra quem não tem sessão por uma lista de rotas (no `proxy`, no `middleware` ou numa guarda), inclua
   nela as duas rotas, com os testes que conferem essa lista.
+- `header.backLink`: o botão de volta ao painel principal (o Heimdall), padrão dos sistemas desde a 2.6.0. É o
+  primeiro à direita do título, antes de `headerActions` e do tema: ícone `LayoutDashboard` (ou `icon`) de 16px num
+  botão de 36px sem borda (`ghost`), com `label` no `aria-label` e na dica. Mesma aba, sem "abre em nova aba". O
+  `href` é o endereço real do painel no ambiente do consumidor; se o sistema já tinha um botão de volta ao Heimdall
+  em `headerActions` (como o Ver-o-Prompt), passe-o para `backLink` e tire o de `headerActions`. Sem `href`, o
+  botão some.
 - `header.searchPlaceholder` é o texto da caixa de busca da barra lateral (padrão: "Buscar na página"); `header.signOutLabel`, o
   rótulo do botão de sair.
 - `description` e `keywords` dos itens são opcionais: preencha só com texto real do consumidor (por exemplo,
@@ -491,7 +499,7 @@ Outras propriedades do `AppShell`, todas opcionais:
 | --- | --- |
 | `session={null}` | sessão ainda a caminho: a casca aparece (layout estático, sem salto), sem dado de usuário nem administração, com o botão de sair. Passe a sessão quando ela chegar. |
 | `title` | título vindo do conteúdo, como o nome do registro numa rota de detalhe; substitui o rótulo do item no cabeçalho e sai sem ícone de seção |
-| `headerActions` | ações do sistema no cabeçalho, à esquerda do tema (por exemplo, um botão de volta a outro sistema que só aparece em certa condição) |
+| `headerActions` | ações do sistema no cabeçalho, entre a volta ao painel principal (`header.backLink`) e o tema (por exemplo, um botão que só aparece em certa condição) |
 | `renderSearch` | busca própria do sistema no lugar da paleta do modelo: recebe `{ open, setOpen }` e devolve o diálogo; para listar os mesmos itens da paleta do modelo (menu visível, "Manual" e "Tutorial" do grupo "Apoio" e `searchItems`), chame `shellSearchItems(config, session)`, exportado pela camada; o botão "Abrir busca" e o `Ctrl+K` continuam do modelo, e o diálogo é posto no `<body>` por portal |
 
 `is_admin` tem de ser o booleano estrito vindo da sessão real (por exemplo, `sessao.role === "admin"`). Não
@@ -703,7 +711,7 @@ Nenhuma outra tela tem saudação; o Perfil, por exemplo, traz só o retângulo 
 
 | Primitivo | Propriedades |
 | --- | --- |
-| `OpeningCard` | `badge` (texto do selo), `badgeIcon?` (padrão `Sparkles`), `badgeNote?` (ao lado do selo, a partir de 640px), `greeting?` (`h2`; sem ele, o selo dá nome à região), `description`, `watermark?` (`ImageAsset`, sempre decorativa; sem atalhos, à direita, com o mesmo recuo do texto à esquerda; com atalhos, logo antes deles; some se faltar ou falhar), `shortcuts?` (`OpeningShortcut[]`: `{ label, href, icon? }`; o primeiro primário, os demais secundários; a demonstração não usa) |
+| `OpeningCard` | `badge` (texto do selo), `badgeIcon?` (padrão `Sparkles`), `badgeNote?` (ao lado do selo, a partir de 640px), `greeting?` (`h2`; sem ele, o selo dá nome à região), `description`, `watermark?` (`ImageAsset`, sempre decorativa; sem atalhos, à direita, com o mesmo recuo do texto à esquerda; com atalhos, logo antes deles; some se faltar ou falhar), `logo?` (`ImageAsset`: a logo do sistema, no centro do quadro, sobre placa branca nos dois temas, com 112px de altura no máximo e 160px de largura no máximo; só com o quadro de 832px ou mais, 1152px com atalhos, e o texto para antes dela; `alt` com o nome do sistema, ou vazio se o nome já está ao lado; some se faltar ou falhar; a demonstração a usa só na página inicial), `shortcuts?` (`OpeningShortcut[]`: `{ label, href, icon? }`; o primeiro primário, os demais secundários; a demonstração não usa) |
 | `FeaturedCard` | `title?`, `children?` (à esquerda: campos de filtro, indicadores), `actions?` (botões dentro do quadro, à direita), `onSubmit?` (o conteúdo e os botões ficam num `<form>`; o botão de enviar leva `type="submit"`) |
 | `FeaturedNote` | `children`; retângulo em destaque, num `<p>` |
 | `CardBackdrop` | sem propriedades; o fundo dos três, para um quadro próprio: dentro de um `Card` com `overflow-hidden`, e o conteúdo com `relative z-10 pl-2` |
@@ -990,7 +998,7 @@ Forma dos quadros e das peças:
 
 ```text
 ┌──────────────┬──────────────────────────────────────────────────────────────┐
-│ [▣] Nome [v1.0]│ [ícone] Plataforma / Título        [☼] │ [logos] │ (PL) Nome / Perfil [⇥] │ 62px
+│ [▣] Nome [v1.0]│ [ícone] Plataforma / Título    [▦] [☼] │ [logos] │ (PL) Nome / Perfil [⇥] │ 62px
 ├──────────────┼──────────────────────────────────────────────────────────────┤
 │[Plataf.|Adm.]│  padding 40×36px (24 no tablet, 16 no celular), máx. 1380px  │
 │ ──────────── │  Descrição da página ............ [Ação] [Secundária]        │
@@ -1017,6 +1025,8 @@ Cabeçalho (igual em todos os sistemas):
   rótulo do item (`text-sm`, peso 600). Tem prioridade de espaço: ocupa o que sobra e nunca fica com menos de
   128px; a seção só aparece quando o bloco do título tem 288px ou mais (consulta de contêiner) e encolhe antes
   do rótulo.
+- **Volta ao painel principal** (`header.backLink`): o primeiro à direita do título, botão `ghost` de 36px, sem
+  borda, com o ícone `LayoutDashboard` de 16px; leva ao painel do Heimdall, na mesma aba.
 - **Tema:** botão `chrome` de ícone de 36px (borda, fundo do cartão, sombra leve), sol `text-theme-icon`.
 - **Logos:** 32px de altura em caixas com borda e sombra sobre `bg-logo-surface`, com divisórias antes e depois;
   no cabeçalho a partir de 1024px, ou a partir de 801px com a barra recolhida. Fora disso, sob a marca (barra
@@ -1081,7 +1091,7 @@ para lá, à mão, o `DESIGN.md`, o `verificar-design.mjs` (de `scripts/`), o `C
    `components` ou `src/components`):
 
 ```markdown
-## Interface (tema-mppa 2.5.0)
+## Interface (tema-mppa 2.6.0)
 
 - A camada visual fica em `<pasta>/tema-mppa/` e `<pasta dos estilos>/tema-mppa.css`; não edite esses arquivos
   (exceção: alteração local registrada em `docs/tema-mppa/alteracoes-locais.json`, `REPLICAR.md` 7.1).

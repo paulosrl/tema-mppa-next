@@ -558,7 +558,8 @@ camada. Os pesos 700 e 800 do Tailwind (`font-bold`, `font-extrabold`) valem 600
   e os itens "Manual" (livro, tom azul) e "Tutorial" (capelo, tom verde-água). O sistema só dá os endereços
   (`support`). Com a barra recolhida, só a linha.
 - **Cabeçalho, da esquerda para a direita:** ícone de seção de 28px e título com a seção à frente
-  ("Minha Página / Meus acessos" na demonstração); tema (botão `chrome` de 36px); divisória; logos com 32px de
+  ("Minha Página / Meus acessos" na demonstração); volta ao painel principal (`header.backLink`: botão `ghost` de
+  36px, sem borda, ícone `LayoutDashboard` de 16px); tema (botão `chrome` de 36px); divisória; logos com 32px de
   altura, em caixas com borda e sombra; divisória; avatar de 32px em degradê com ponto verde, nome e perfil (a
   partir de 1280px), botão de sair (36px, com realce destrutivo).
 - **Prioridade do título:** o título ocupa o que sobra e nunca fica com menos de 128px (ícone e cerca de 90px de
@@ -656,7 +657,12 @@ circular opcional, fixa no mesmo lugar em toda página, qualquer que seja o tama
 invertida no escuro). Sem atalhos, como na demonstração, a marca d'água fica à direita do quadro, com o mesmo recuo do
 texto à esquerda (32px da borda), e o conteúdo tem 104px de altura no mínimo a partir de 768px, para ela caber inteira.
 Atalhos opcionais: à direita, caixa de atalhos (`bg-card/80`, raio de 16px, 240px no mínimo a partir de 768px), o
-primeiro primário, os demais secundários, com ↗, e a marca d'água logo antes dela. Sem saudação, o selo dá nome à região. Só no primeiro item de cada aba: com
+primeiro primário, os demais secundários, com ↗, e a marca d'água logo antes dela. Logo do sistema opcional (`logo`),
+no centro do quadro, centrada na vertical, com a altura do quadro menos 24px (112px no máximo, 160px de largura no
+máximo), sobre placa `bg-logo-surface` (branca nos dois temas), raio de 12px, contorno `card-border`, padding de 6px e
+`shadow-xs`; sobe com o quadro no hover. Aparece quando o quadro tem 832px ou mais (1152px com atalhos), e aí selo,
+saudação e frase param 120px antes do meio do quadro; abaixo disso, some, e o texto volta à largura toda. Na
+demonstração, só no quadro de "Meus acessos". Sem saudação, o selo dá nome à região. Só no primeiro item de cada aba: com
 a saudação no de "Minha Página" (na demonstração, Meus acessos) e sem ela no de "Administração" (Usuários & Papéis);
 nenhuma outra tela tem saudação.
 

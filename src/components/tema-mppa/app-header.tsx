@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { LayoutDashboard, Menu } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumbs } from "./breadcrumbs";
 import { buttonVariants } from "./button";
@@ -15,7 +15,8 @@ import { cn } from "./utils";
 /**
  * Cabeçalho padrão dos sistemas: 62px, translúcido com desfoque, borda inferior. À esquerda, o título da página
  * (só aqui); à direita, tema, logos institucionais e identidade com saída, separados por divisórias. As
- * ações do sistema (`headerActions`) vêm antes do tema. A busca fica na barra lateral, acima do "Recolher".
+ * ações do sistema (`headerActions`) vêm antes do tema e, antes delas, o botão de volta ao painel principal
+ * (`header.backLink`, ícone de 36px sem borda, `LayoutDashboard` por padrão). A busca fica na barra lateral, acima do "Recolher".
  * O título tem prioridade de espaço: as logos só entram aqui quando cabem ao lado dele, a partir de 1024px, ou
  * a partir de 801px com a barra recolhida; fora disso, aparecem sob a marca, na barra lateral ou no menu móvel.
  */
@@ -34,7 +35,8 @@ export function AppHeader({
 }) {
   const { setMobileOpen } = useSidebar();
   const logos = (config.header?.logos ?? []).filter((logo) => Boolean(logo.src));
-  const BackIcon = config.header?.backLink?.icon;
+  const backLink = config.header?.backLink?.href?.trim() ? config.header.backLink : null;
+  const BackIcon = backLink?.icon ?? LayoutDashboard;
 
   return (
     <header className="sticky top-0 z-20 flex h-(--shell-bar) shrink-0 items-center gap-2.5 border-b bg-header px-3.5 backdrop-blur-md sm:px-6">
@@ -53,14 +55,14 @@ export function AppHeader({
         <Breadcrumbs config={config} session={session} title={title} />
       </Suspense>
       <div className="ml-auto flex shrink-0 items-center gap-2">
-        {config.header?.backLink ? (
+        {backLink ? (
           <Link
-            href={config.header.backLink.href}
+            href={backLink.href}
             className={buttonVariants({ variant: "ghost", size: "icon" })}
-            aria-label={config.header.backLink.label}
-            title={config.header.backLink.label}
+            aria-label={backLink.label}
+            title={backLink.label}
           >
-            {BackIcon ? <BackIcon /> : null}
+            <BackIcon aria-hidden />
           </Link>
         ) : null}
         {headerActions}

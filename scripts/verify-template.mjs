@@ -457,6 +457,16 @@ requireContrast("claro", light, "tone-red-foreground", "tone-red", 7);
   if ((demoConsumerSource.match(/<OpeningCard\b/g) ?? []).length !== 2) errors.push("demonstração: o quadro de abertura aparece só em Meus acessos e em Usuários & Papéis");
   if ((demoConsumerSource.match(/\bgreeting=/g) ?? []).length !== 1 || !/\bgreeting=/.test(demoBody("DemoDashboard"))) errors.push('demonstração: a saudação ("Olá, ...") só em Meus acessos');
   if (!/<OpeningCard\b/.test(demoBody("DemoUsuarios"))) errors.push("demonstração: o quadro de abertura da Administração fica em Usuários & Papéis, o primeiro item");
+  // Volta ao painel principal no cabeçalho (2.6.0, como no Xavier): ghost de 36px, LayoutDashboard por padrão, antes do tema.
+  {
+    const headerSource = await read("src/components/tema-mppa/app-header.tsx");
+    const back = headerSource.indexOf("{backLink ? (");
+    if (back < 0 || !/BackIcon = backLink\?\.icon \?\? LayoutDashboard/.test(headerSource) || !/buttonVariants\(\{ variant: "ghost", size: "icon" \}\)/.test(headerSource.slice(back)) || back > headerSource.indexOf("<ThemeToggle")) errors.push("app-header.tsx: a volta ao painel principal (header.backLink) é ghost de 36px, com LayoutDashboard por padrão, antes do tema");
+    if (!/backLink: \{ href: /.test(await read("src/app/demo-config.tsx"))) errors.push("demonstração: passe header.backLink (volta ao painel principal)");
+  }
+  // Logo do sistema no centro do quadro de abertura (2.6.0, vinda do Ver-o-Prompt): propriedade `logo`, só na página inicial.
+  if (!/\blogo\?: ImageAsset \| null;/.test(featuredSource) || !/<ImageSlot\s+asset=\{logo\}/.test(featuredSource) || !featuredSource.includes("bg-logo-surface")) errors.push("featured.tsx: o quadro de abertura recebe a logo do sistema (logo?: ImageAsset) no centro, sobre bg-logo-surface");
+  if ((demoConsumerSource.match(/\blogo=\{/g) ?? []).length !== 1 || !/\blogo=\{/.test(demoBody("DemoDashboard"))) errors.push("demonstração: a logo do sistema fica só no quadro de abertura de Meus acessos");
   if ((demoConsumerSource.match(/Conteúdo em elaboração/g) ?? []).length !== 1 || !/Conteúdo em elaboração/.test(demoBody("DemoApoio"))) errors.push('demonstração: Manual e Tutorial dizem "Conteúdo em elaboração"');
   // Grupo "Apoio" (17 nov. 2026, 2.2.0): da camada, em "Minha Página" de todos os sistemas; o sistema só dá os endereços.
   const utilsSource = await read("src/components/tema-mppa/utils.ts");

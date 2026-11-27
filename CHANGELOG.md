@@ -3,6 +3,39 @@
 Dentro de cada versão, a seção "Ao atualizar de X" descreve a atualização de X para essa versão. Quem atualiza
 saltando versões faz as seções de cada versão entre a atual e a nova, uma de cada vez, com uma só cópia (`REPLICAR.md`, seção 7).
 
+## 2.6.0 — 2026-11-27
+
+Pedido do autor, a partir da página inicial do Ver-o-Prompt e do cabeçalho do Xavier: o quadro de abertura recebe a
+logo do sistema, no centro, e o cabeçalho reserva o botão de volta ao painel principal. Por acrescentar uma
+propriedade e mudar a aparência, sobe o número do meio.
+
+### Adicionado
+
+- **Logo do sistema no quadro de abertura (`OpeningCard`, `logo?: ImageAsset`):** no centro do quadro, centrada na
+  vertical, com 112px de altura e 160px de largura no máximo, sobre placa branca nos dois temas (`bg-logo-surface`),
+  com raio de 12px, contorno e sombra leve; sobe com o quadro no hover. Aparece com o quadro de 832px ou mais (1152px
+  com atalhos, para não cobrir a marca d'água); aí selo, saudação e frase param antes dela. Abaixo disso, some. Como
+  as outras imagens opcionais, some se faltar ou falhar.
+- **Volta ao painel principal no cabeçalho (`header.backLink`), agora padrão dos sistemas:** o primeiro botão à
+  direita do título, antes das ações do sistema e do tema, como no Xavier: 36px, sem borda (`ghost`), ícone
+  `LayoutDashboard` de 16px. `icon` passa a ser opcional de fato (sem ele, `LayoutDashboard`; antes, o botão ficava
+  vazio), e `href` vazio tira o botão. A demonstração passa `backLink`.
+- **Demonstração:** "Meus acessos" passa `logo` com uma logo de exemplo (`public/template-logo.svg`, só da
+  demonstração; não vai na pasta entregue). "Usuários & Papéis" segue sem logo.
+
+### Ao atualizar de 2.5.0
+
+1. Copie a pasta `tema-mppa-next/` e rode `node tema-mppa-next/scripts/copy-template.mjs <raiz do consumidor> --force`.
+   A cópia traz o `featured.tsx` novo.
+2. Ponha a logo do sistema em `public/` e passe-a no quadro de abertura da página inicial (o primeiro item de "Minha
+   Página"): `logo={{ src: "/<arquivo da logo>", alt: "<nome do sistema>", width, height }}`. Se o sistema já
+   desenhava a logo por conta própria nesse quadro (por exemplo, uma imagem posta por fora do `OpeningCard`, com
+   restrição de largura no `h2` e no `p`), tire esse código: a camada cuida da posição e da largura do texto.
+3. Passe `header.backLink` com o endereço real do painel do Heimdall:
+   `backLink: { href: "<endereço do painel>", label: "Voltar ao painel Heimdall" }`. Se o sistema já tinha esse
+   botão em `headerActions` (o Ver-o-Prompt tem), tire-o de lá: a camada o desenha no mesmo lugar e no mesmo tamanho.
+4. Troque a versão na seção "Interface" do `AGENTS.md` para 2.6.0.
+
 ## 2.5.0 — 2026-11-24
 
 Pedido do autor: os quadros de abertura de "Meus acessos" e de "Usuários & Papéis" ficam sem os botões, e o carimbo

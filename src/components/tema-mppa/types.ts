@@ -78,6 +78,10 @@ export type LogoAsset = ImageAsset & {
 
 export type HeaderConfig = {
   logos?: LogoAsset[];
+  /**
+   * Volta ao painel principal (o Heimdall): botão de ícone de 36px, sem borda, o primeiro à direita do título, antes
+   * das ações do sistema e do tema. Padrão dos sistemas; `icon` é `LayoutDashboard` quando ausente. Sem `href`, some.
+   */
   backLink?: { href: string; label: string; icon?: IconComponent } | null;
   searchPlaceholder?: string;
   signOutLabel?: string;

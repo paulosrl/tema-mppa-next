@@ -48,6 +48,8 @@ export const demoConfig: ShellConfig = {
       // A sigla repete a CIIA: decorativa, com alt vazio, para o leitor de tela não ler "CIIA, CIIA".
       { src: "/ciia-sigla.svg", alt: "", width: 132, height: 76, href: "https://ciia.mppa.mp.br/" },
     ],
+    /* Volta ao painel principal (o Heimdall, nos sistemas). Na demonstração, a página inicial. */
+    backLink: { href: "/", label: "Voltar ao painel principal" },
     searchPlaceholder: "Ir para…",
     signOutLabel: "Sair",
   },

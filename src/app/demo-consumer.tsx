@@ -43,6 +43,9 @@ import { demoConfig, demoSession } from "./demo-config";
    saudação em "Meus acessos" e sem ela em "Usuários & Papéis". */
 const ciia = { src: "/ciia.png", alt: "", width: 244, height: 244 };
 
+/* Logo do sistema, no centro do quadro de abertura da página inicial. Exemplo: o sistema passa a dele. */
+const templateLogo = { src: "/template-logo.svg", alt: "Template", width: 360, height: 320 };
+
 /** Painel inicial, na estética da página de referência do Heimdall. Dados fictícios. */
 function DemoDashboard() {
   const avisar = (texto: string) => window.alert(texto);
@@ -54,6 +57,7 @@ function DemoDashboard() {
         greeting="Olá, José Hernandez!"
         description="Bem-vindo ao seu painel. Gerencie sua conta abaixo."
         watermark={ciia}
+        logo={templateLogo}
       />
 
       <section>

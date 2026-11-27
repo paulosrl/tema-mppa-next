@@ -18,6 +18,7 @@
 - Exceção: o cabeçalho segue o padrão dos sistemas, definido em 2026-11-10 (REPLICAR.md, seção 9):
   - marca com nome e versão na mesma linha;
   - título com ícone de 28px e a seção à frente;
+  - volta ao painel principal (`header.backLink`, desde a 2.6.0): botão `ghost` de 36px com `LayoutDashboard`, antes do tema;
   - tema;
   - logos entre divisórias;
   - avatar com nome e perfil;

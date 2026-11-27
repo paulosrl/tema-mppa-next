@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="320" viewBox="0 0 360 320" role="img" aria-labelledby="t">
+  <title id="t">Template</title>
+  <!-- Logo de exemplo da demonstração: o sistema passa a dele no quadro de abertura (OpeningCard, logo). -->
+  <polygon points="52,122 180,46 308,122" fill="#1e3a8a"/>
+  <polygon points="92,112 180,62 268,112" fill="#2563eb"/>
+  <circle cx="180" cy="95" r="11" fill="#ffffff"/>
+  <rect x="52" y="122" width="256" height="12" fill="#be123c"/>
+  <rect x="60" y="134" width="240" height="8" fill="#1e3a8a"/>
+  <g fill="#1e3a8a">
+    <rect x="77" y="146" width="22" height="66" rx="3"/>
+    <rect x="121" y="146" width="22" height="66" rx="3"/>
+    <rect x="169" y="146" width="22" height="66" rx="3"/>
+    <rect x="217" y="146" width="22" height="66" rx="3"/>
+    <rect x="261" y="146" width="22" height="66" rx="3"/>
+  </g>
+  <rect x="56" y="214" width="248" height="9" fill="#1e3a8a"/>
+  <rect x="42" y="226" width="276" height="9" fill="#2563eb"/>
+  <text x="180" y="288" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="46" font-weight="700" fill="#1e3a8a">Template</text>
+  <rect x="128" y="300" width="104" height="5" rx="2.5" fill="#be123c"/>
+</svg>
